@@ -1,0 +1,10 @@
+@title libphutil Overview
+
+This document provides a high-level introduction to libphutil.
+
+= Overview =
+
+libphutil is a collection of PHP utility classes and modules.
+
+This project is in an unstable state. See @{article:Project Status} for a 
+description of the project status.

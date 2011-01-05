@@ -1,0 +1,33 @@
+PROJECT STATUS: CAVEAT EMPTOR
+
+This is an unstable preview release. I'm open sourcing some of Facebook's
+internal tools, but they'll be unstable for at least a couple months.
+-epriestley
+
+
+WHAT IS LIBPHUTIL?
+
+libphutil is a collection of utility classes and functions for PHP.
+
+Futures
+  Futures (also known as "promises") are objects which act as placeholders for
+  some future result of computation. They let you express parallel and
+  asynchronous execution with a natural syntax. There are two provided concrete
+  Future implementations:
+    ExecFuture: execute system commands with a Future-based API
+    HTTPFuture: execute simple HTTP requests with a Future-based API
+    execx(): exception-based alternative to exec() with more capabilities
+    
+Filesystem
+  The builtin PHP filesystem functions return error codes and emit warnings.
+  It is tedious to check these consistently. The Filesystem class provides a
+  simple API for common filesystem operations that throws exceptions on failure.
+
+xsprintf
+  This module allows you to build sprintf()-style functions that have arbitrary
+  conversions. This is particularly useful for escaping data correctly. Three
+  concrete implementations are provided:
+    csprintf: safely escape data for system commands
+    jsprintf: safely escape data for Javascript
+    qsprintf: safely escape data for MySQL
+
