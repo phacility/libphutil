@@ -54,7 +54,4 @@ function setup_aphront_basics() {
   if (!ini_get('date.timezone')) {
     date_default_timezone_set('America/Los_Angeles');
   }
-
-
-  phutil_load_library(dirname(__FILE__).'/../src/');
 }

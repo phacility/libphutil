@@ -23,6 +23,7 @@ class AphrontDefaultApplicationController extends AphrontController {
 
     $path = phutil_escape_html($request->getPath());
     $host = phutil_escape_html($request->getHost());
+    $controller_name = phutil_escape_html(get_class($this));
 
     $response = new AphrontWebpageResponse();
     $response->setContent(<<<EOPAGE
@@ -40,6 +41,9 @@ class AphrontDefaultApplicationController extends AphrontController {
       </tr>
       <tr>
         <th>Path</th><td>{$path}</td>
+      </tr>
+      <tr>
+        <th>Controller</th><td>{$controller_name}</td>
       </tr>
     </table>
   </body>

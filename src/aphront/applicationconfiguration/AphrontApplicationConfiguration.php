@@ -40,7 +40,7 @@ abstract class AphrontApplicationConfiguration {
     $mapper = new AphrontURIMapper($map);
     $request = $this->getRequest();
     $path = $request->getPath();
-    list($controller_class, $uri_data) = $mapper->mapPath();
+    list($controller_class, $uri_data) = $mapper->mapPath($path);
 
     phutil_autoload_class($controller_class);
     $controller = newv($controller_class, array($request));
