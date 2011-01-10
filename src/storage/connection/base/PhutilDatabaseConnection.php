@@ -24,13 +24,13 @@ abstract class PhutilDatabaseConnection {
   abstract public function getInsertID();
   abstract public function getAffectedRows();
   abstract public function selectAllResults();
-  abstract public function executeRawQuery();
+  abstract public function executeRawQuery($raw_query);
   abstract protected function getTransactionKey();
 
-  abstract public function escapeString();
-  abstract public function escapeColumnName();
-  abstract public function escapeMultilineComment();
-  abstract public function escapeStringForLikeClause();
+  abstract public function escapeString($string);
+  abstract public function escapeColumnName($string);
+  abstract public function escapeMultilineComment($string);
+  abstract public function escapeStringForLikeClause($string);
 
   public function queryData($pattern/*, $arg, $arg, ... */) {
     $args = func_get_args();

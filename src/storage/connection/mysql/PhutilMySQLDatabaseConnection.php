@@ -98,7 +98,7 @@ class PhutilMySQLDatabaseConnection extends PhutilDatabaseConnection {
       throw new PhutilQueryConnectionException();
     }
 
-    $ret = @mysql_select_db($conn, $this->getConfiguration('database'));
+    $ret = @mysql_select_db($this->getConfiguration('database'), $conn);
     if (!$ret) {
       $this->throwQueryException($conn);
     }
@@ -131,7 +131,7 @@ class PhutilMySQLDatabaseConnection extends PhutilDatabaseConnection {
     if ($res == null) {
       throw new Exception('No query result to fetch from!');
     }
-    while (($row = mysql_fetch_assoc($res) !== false)) {
+    while (($row = mysql_fetch_assoc($res)) !== false) {
       $result[] = $row;
     }
     return $result;
