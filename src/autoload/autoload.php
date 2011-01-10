@@ -39,12 +39,8 @@ function phutil_autoload_class($class, $library = null) {
     }
   }
 
-  try {
-    $require_module = 'phutil_require_module';
-    $require_module($spec['library'], $spec['module']);
-  } catch (PhutilLibraryLoadException $ex) {
-    return false;
-  }
+  $require_module = 'phutil_require_module';
+  $require_module($spec['library'], $spec['module']);
 
   return (class_exists($class, false) || interface_exists($class, false));
 }
@@ -63,12 +59,8 @@ function phutil_autoload_function($function, $library = null) {
     return false;
   }
 
-  try {
-    $require_module = 'phutil_require_module';
-    $require_module($spec['library'], $spec['module']);
-  } catch (PhutilLibraryLoadException $ex) {
-    return false;
-  }
+  $require_module = 'phutil_require_module';
+  $require_module($spec['library'], $spec['module']);
 
   return function_exists($function);
 }

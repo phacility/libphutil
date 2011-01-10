@@ -1,3 +1,13 @@
 .DS_Store
 ._*
 docs/
+*.a
+*.o
+parser.yacc.cpp
+parser.yacc.hpp
+scanner.lex.cpp
+scanner.lex.hpp
+parser.yacc.output
+/support/xhpast/node_names.hpp
+/support/xhpast/xhpast
+/src/parser/xhpast/bin/xhpast

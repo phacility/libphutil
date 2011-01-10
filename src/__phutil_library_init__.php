@@ -26,9 +26,9 @@ function phutil_require_module($library, $module) {
 
 function phutil_require_source($source) {
   $base = phutil_module_stack('peek');
-  $ok = @include_once $base.'/'.$source;
+  $ok = include_once $base.'/'.$source;
   if (!$ok) {
-    throw new PhutilLibraryLoadException($source);
+    throw new PhutilLibraryLoadException("{$base}/{$source}");
   }
 }
 
@@ -61,7 +61,7 @@ function phutil_register_library($library, $path) {
 }
 
 function phutil_load_library($path) {
-  $ok = @include_once $path.'/__phutil_library_init__.php';
+  $ok = include_once $path.'/__phutil_library_init__.php';
   if (!$ok) {
     throw new PhutilLibraryLoadException($path);
   }
