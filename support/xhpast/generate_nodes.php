@@ -150,9 +150,11 @@ foreach ($map as $node => $value) {
 file_put_contents('node_names.hpp', $hpp);
 echo "Wrote C++ definition.\n";
 
-$generated = 'generated';
+$at = '@';
 $php =
-  "<?php\n\n/* @{$generated} */\n\nfunction xhp_parser_node_constants() {\n".
+  "<?php\n\n".
+  "/* {$at}generated {$at}undivinable */\n\n".
+  "function xhp_parser_node_constants() {\n".
   "  return array(\n";
 foreach ($map as $node => $value) {
   $php .= "    {$value} => '{$node}',\n";

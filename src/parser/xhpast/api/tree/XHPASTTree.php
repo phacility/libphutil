@@ -23,7 +23,9 @@ class XHPASTTree {
 
   public static function newFromData($php_source) {
     $future = xhpast_get_parser_future($php_source);
-    return self::newFromDataAndResolvedExecFuture($future->resolve());
+    return self::newFromDataAndResolvedExecFuture(
+      $php_source,
+      $future->resolve());
   }
 
   public static function newFromDataAndResolvedExecFuture(

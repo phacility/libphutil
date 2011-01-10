@@ -1,6 +1,6 @@
 <?php
 
-/* @generated */
+/* @generated @undivinable */
 
 function xhp_parser_node_constants() {
   return array(

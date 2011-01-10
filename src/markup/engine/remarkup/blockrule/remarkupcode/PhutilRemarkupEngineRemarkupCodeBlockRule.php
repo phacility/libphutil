@@ -28,9 +28,19 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
   }
 
   public function markupText($text) {
+    $lines = explode("\n", $text);
+    $first_line = reset($lines);
+
+    $matches = null;
+    if (preg_match('/^\s{2,}lang\s*=\s*(.*)$/i', $first_line, $matches)) {
+      $lang = $matches[1];
+      array_shift($lines);
+    } else {
+      $lang = 'php';
+    }
+
     // Normalize the text back to a 0-level indent.
     $min_indent = 80;
-    $lines = explode("\n", $text);
     foreach ($lines as $line) {
       for ($ii = 0; $ii < strlen($line); $ii++) {
         if ($line[$ii] != ' ') {
@@ -43,6 +53,11 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
       $indent_string = str_repeat(' ', $min_indent);
       $text = preg_replace('/^'.$indent_string.'/m', '', $text);
     }
-    return '<code>'.$this->applyRules($text).'</code>';
+
+    $engine = new PhutilDefaultSyntaxHighlighterEngine();
+    return
+      '<code class="remarkup-code">'.
+        $engine->highlightSource($lang, $text).
+      '</code>';
   }
 }
