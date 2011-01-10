@@ -8,6 +8,14 @@
 phutil_register_library_map(array(
   'class' =>
   array(
+    'AphrontApplicationConfiguration' => 'aphront/applicationconfiguration',
+    'AphrontController' => 'aphront/controller',
+    'AphrontDefaultApplicationConfiguration' => 'aphront/default/configuration',
+    'AphrontDefaultApplicationController' => 'aphront/default/controller',
+    'AphrontRequest' => 'aphront/request',
+    'AphrontResponse' => 'aphront/response',
+    'AphrontURIMapper' => 'aphront/mapper',
+    'AphrontWebpageResponse' => 'aphront/response/webpage',
     'CommandException' => 'future/exec',
     'ConduitClient' => 'conduit/client',
     'ConduitClientException' => 'conduit/client',
@@ -91,6 +99,8 @@ phutil_register_library_map(array(
   ),
   'requires_class' =>
   array(
+    'AphrontDefaultApplicationConfiguration' => 'AphrontApplicationConfiguration',
+    'AphrontDefaultApplicationController' => 'AphrontController',
     'ConduitFuture' => 'HTTPFuture',
     'ExecFuture' => 'Future',
     'HTTPFuture' => 'Future',
