@@ -6,8 +6,8 @@
 
 
 
+phutil_require_module('phutil', 'storage/exception/parameter');
 phutil_require_module('phutil', 'xsprintf');
 
 
-phutil_require_source('QsprintfQueryParameterException.php');
 phutil_require_source('qsprintf.php');

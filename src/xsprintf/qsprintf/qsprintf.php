@@ -17,7 +17,7 @@
  */
 
 /**
- * Format a MySQL query. This function behaves like sprintf(), except that
+ * Format an SQL query. This function behaves like sprintf(), except that
  * all the normal conversions (like %s) will be properly escaped, and
  * additional conversions are supported:
  *
@@ -144,10 +144,16 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
           $value = implode(', ', array_map('intval', $value));
           break;
         case 's': // ...strings.
-          $value = mysql_escape_array_of_strings_for_in_clause($value, $conn);
+          foreach ($value as $k => $v) {
+            $value[$k] = $conn->escapeString($v);
+          }
+          $value = implode(', ', $value);
           break;
         case 'C': // ...columns.
-          $value = implode(', ', array_map('mysql_escape_column_name', $value));
+          foreach ($value as $k => $v) {
+            $value[$k] = $conn->escapeColumnName($v);
+          }
+          $value = implode(', ', $value);
           break;
         default:
           throw new Exception("Unknown conversion %L{$next}.");
@@ -162,7 +168,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         if ($nullable && $value === null) {
           $value = 'NULL';
         } else {
-          $value = "'".mysql_real_escape_string($value, $conn)."'";
+          $value = "'".$conn->escapeString($value)."'";
         }
         $type = 's';
         break;
@@ -174,19 +180,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
       case '~': // Like Substring
       case '>': // Like Prefix
       case '<': // Like Suffix
-        $value = mysql_real_escape_string($value, $conn);
-        // Ideally the query shouldn't be modified after safely escaping it,
-        // but we need to escape _ and % within LIKE terms.
-        $value = str_replace(
-          //  Even though we've already escaped, we need to replace \ with \\
-          //  because MYSQL unescapes twice inside a LIKE clause. See note
-          //  at mysql.com. However, if the \ is being used to escape a single
-          //  quote ('), then the \ should not be escaped. Thus, after all \
-          //  are replaced with \\, we need to revert instances of \\' back to
-          //  \'.
-          array('\\',   '\\\\\'', '_',  '%'),
-          array('\\\\', '\\\'',   '\_', '\%'),
-          $value);
+        $value = $conn->escapeStringForLikeClause($value);
         switch ($type) {
           case '~': $value = "'%".$value."%'"; break;
           case '>': $value = "'" .$value."%'"; break;
@@ -215,12 +209,12 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
 
       case 'T': // Table
       case 'C': // Column
-        $value = mysql_escape_column_name($value);
+        $value = $conn->escapeColumnName($value);
         $type = 's';
         break;
 
       case 'K': // Komment
-        $value = mysql_escape_multiline_comment($value);
+        $value = $conn->escapeMultilineComment($value);
         $type = 's';
         break;
 
@@ -240,12 +234,12 @@ function _qsprintf_check_type($value, $type, $query) {
   switch ($type) {
     case 'Ld': case 'Ls': case 'LC': case 'LA': case 'LO':
       if (!is_array($value)) {
-        throw new QsprintfQueryParameterException(
+        throw new PhutilQueryParameterException(
           $query,
           "Expected array argument for %{$type} conversion.");
       }
       if (empty($value)) {
-        throw new QsprintfQueryParameterException(
+        throw new PhutilQueryParameterException(
           $query,
           "Array for %{$type} conversion is empty.");
       }
@@ -264,7 +258,7 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
   switch ($type) {
     case 'Q': case 'LC': case 'T': case 'C':
       if (!is_string($value)) {
-        throw new QsprintfQueryParameterException(
+        throw new PhutilQueryParameterException(
           $query,
           "Expected a string for %{$type} conversion.");
       }
@@ -272,7 +266,7 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
 
     case 'Ld': case 'd': case 'f':
       if (!is_null($value) && !is_scalar($value)) {
-        throw new QsprintfQueryParameterException(
+        throw new PhutilQueryParameterException(
           $query,
           "Expected a scalar or null for %{$type} conversion.");
       }
@@ -281,7 +275,7 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
     case 'Ls': case 's':
     case '~': case '>': case '<': case 'K':
       if (!is_null($value) && !is_scalar($value)) {
-        throw new QsprintfQueryParameterException(
+        throw new PhutilQueryParameterException(
           $query,
           "Expected a scalar or null for %{$type} conversion.");
       }
@@ -290,7 +284,7 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
     case 'LA': case 'LO':
       if (!is_null($value) && !is_scalar($value) &&
           !(is_array($value) && !empty($value))) {
-        throw new QsprintfQueryParameterException(
+        throw new PhutilQueryParameterException(
           $query,
           "Expected a scalar or null or non-empty array for ".
           "%{$type} conversion.");
@@ -299,48 +293,4 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
     default:
       throw new Exception("Unknown conversion '{$type}'.");
   }
-}
-
-
-function mysql_escape_column_name($value) {
-  return '`'.str_replace('`', '\\`', $value).'`';
-}
-
-function mysql_escape_multiline_comment($comment) {
-
-  //  These can either terminate a comment, confuse the hell out of the parser,
-  //  make MySQL execute the comment as a query, or, in the case of semicolon,
-  //  are quasi-dangerous because the semicolon could turn a broken query into
-  //  a working query plus an ignored query.
-
-  static $bad  = array(
-    '--', '*/', '//', '#', '!', ';');
-  static $safe = array(
-    '(DOUBLEDASH)', '(STARSLASH)', '(SLASHSLASH)', '(HASH)', '(BANG)',
-    '(SEMICOLON)');
-
-  $comment = str_replace($bad, $safe, $comment);
-
-  //  For good measure, kill anything else that isn't a nice printable
-  //  character.
-
-  $comment = preg_replace('/[^\x20-\x7F]+/', ' ', $comment);
-
-  return '/* '.$comment.' */';
-}
-
-function mysql_escape_array_of_strings_for_in_clause($strings, $conn) {
-  if (!count($strings)) {
-    return 'NULL';
-  }
-
-  foreach ($strings as &$string) {
-    if ($string === null) {
-      $string = 'NULL';
-    } else {
-      $string = "'".mysql_real_escape_string($string, $conn)."'";
-    }
-  }
-
-  return implode(', ', $strings);
 }

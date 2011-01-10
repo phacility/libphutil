@@ -16,17 +16,4 @@
  * limitations under the License.
  */
 
-class QsprintfQueryParameterException extends Exception {
-
-  private $query;
-
-  public function __construct($query, $message) {
-    parent::__construct($message." Query: ".$query);
-    $this->query = $query;
-  }
-
-  public function getQuery() {
-    return $this->query;
-  }
-
-}
+class PhutilQueryObjectMissingException extends PhutilQueryException { }
