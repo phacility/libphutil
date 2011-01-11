@@ -2879,7 +2879,9 @@ class_name:
     pop_state();
     push_state(PHP);
     yyextra->used = true;
-//!    $$ = "xhp_" + $2;
+    NTYPE($1, n_CLASS_NAME);
+    NMORE($1, $2);
+    $$ = $1;
   }
 ;
 
@@ -2888,7 +2890,9 @@ fully_qualified_class_name:
     pop_state();
     push_state(PHP);
     yyextra->used = true;
-//!    $$ = "xhp_" + $2;
+    NTYPE($1, n_CLASS_NAME);
+    NMORE($1, $2);
+    $$ = $1;
   }
 ;
 
