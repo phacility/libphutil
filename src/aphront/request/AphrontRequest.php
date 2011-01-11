@@ -18,7 +18,7 @@
 
 class AphrontRequest {
 
-  const TYPE_ASYNC = '__ajax__';
+  const TYPE_AJAX = '__ajax__';
 
   private $host;
   private $path;
