@@ -17,7 +17,8 @@
  */
 
 function phutil_get_library_root($library) {
-  return __phutil_library_registry('find', $library);
+  $bootloader = PhutilBootloader::getInstance();
+  return $bootloader->getLibraryRoot($library);
 }
 
 
@@ -31,19 +32,16 @@ function phutil_get_library_root_for_path($path) {
 }
 
 function phutil_get_library_name_for_root($path) {
-  $loaded = false;
-  while (true) {
-    $libs = __phutil_library_registry('list');
-    $path = rtrim(Filesystem::resolvePath($path), '/');
-    foreach ($libs as $lib => $root) {
-      if (rtrim(Filesystem::resolvePath($root), '/') == $path) {
-        return $lib;
-      }
+  $path = rtrim(Filesystem::resolvePath($path), '/');
+
+  $bootloader = PhutilBootloader::getInstance();
+  $libraries = $bootloader->getAllLibraries();
+  foreach ($libraries as $library) {
+    $root = $bootloader->getLibraryRoot($library);
+    if (rtrim(Filesystem::resolvePath($root), '/') == $path) {
+      return $library;
     }
-    if ($loaded) {
-      return null;
-    } else {
-      phutil_load_library($path);
-    }
-  } while (true);
+  }
+
+  return null;
 }

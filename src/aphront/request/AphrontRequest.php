@@ -59,7 +59,8 @@ class AphrontRequest {
   }
 
   final public function getArr($name, $default = null) {
-    if (isset($this->requestData[$name]) && is_array($this->requestData[$name])) {
+    if (isset($this->requestData[$name]) &&
+        is_array($this->requestData[$name])) {
       return $this->requestData[$name];
     } else {
       return $default;

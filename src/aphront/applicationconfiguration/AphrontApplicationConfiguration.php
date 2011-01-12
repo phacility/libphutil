@@ -42,7 +42,7 @@ abstract class AphrontApplicationConfiguration {
     $path = $request->getPath();
     list($controller_class, $uri_data) = $mapper->mapPath($path);
 
-    phutil_autoload_class($controller_class);
+    PhutilSymbolLoader::loadClass($controller_class);
     $controller = newv($controller_class, array($request));
 
     return array($controller, $uri_data);
