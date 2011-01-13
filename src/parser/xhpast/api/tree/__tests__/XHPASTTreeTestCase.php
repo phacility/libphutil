@@ -69,6 +69,68 @@ class XHPASTTreeTestCase extends ArcanistPhutilTestCase {
 
     // Static evaluation treats '$' as a literal dollar glyph.
     $this->assertEval('$asdf', '"$asdf"');
+
+    $this->assertEval(
+       '\a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z'.
+       '\1\2\3\4\5\6\7\8\9\0'.
+       '\!\@\#\$\%\^\&\*\(\)'.
+       '\`\~\\\|\[\]\{\}\<\>\,\.\/\?\:\;\-\_\=\+',
+
+      "'\\a\\b\\c\\d\\e\\f\\g\\h\\i\\j\\k\\l\\m\\n\\o\\p\\q".
+      "\\r\\s\\t\\u\\v\\w\\x\\y\\z".
+      "\\1\\2\\3\\4\\5\\6\\7\\8\\9\\0".
+      "\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)".
+      "\\`\\~\\\\\\|\\[\\]\\{\\}\\<\\>\\,\\.\\/\\?\\:\\;\\-\\_\\=\\+".
+      "'");
+
+    $this->assertEval(
+       "\a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z".
+       "\1\2\3\4\5\6\7\8\9\0".
+       "\!\@\#\$\%\^\&\*\(\)".
+       "\`\~\\\|\[\]\{\}\<\>\,\.\/\?\:\;\-\_\=\+",
+
+      '"\\a\\b\\c\\d\\e\\f\\g\\h\\i\\j\\k\\l\\m\\n\\o\\p\\q'.
+      '\\r\\s\\t\\u\\v\\w\\x\\y\\z'.
+      '\\1\\2\\3\\4\\5\\6\\7\\8\\9\\0'.
+      '\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)'.
+      '\\`\\~\\\\\\|\\[\\]\\{\\}\\<\\>\\,\\.\\/\\?\\:\\;\\-\\_\\=\\+"');
+
+    $this->assertEval(
+      '\' "',
+      "'\\' \"'");
+
+    $this->assertEval(
+      '\\ \\\\ ',
+      '\'\\\\ \\\\\\\\ \'');
+
+    $this->assertEval(
+      '\ \\ ',
+      "'\\ \\\\ '");
+
+    $this->assertEval(
+      '\x92',
+      '\'\x92\'');
+
+    $this->assertEval(
+      "\x92",
+      '"\x92"');
+
+    $this->assertEval(
+      "\x",
+      '"\x"');
+
+    $this->assertEval(
+      "\x1",
+      '"\x1"');
+
+    $this->assertEval(
+      "\x000 !",
+      '"\x000 !"');
+
+    $this->assertEval(
+      "\x0",
+      '"\x0"');
+
   }
 
   private function assertEval($value, $string) {

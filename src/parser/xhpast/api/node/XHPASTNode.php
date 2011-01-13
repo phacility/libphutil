@@ -132,19 +132,6 @@ class XHPASTNode {
     return implode('', $values);
   }
 
-  public function getStringLiteralValue() {
-    // TODO: This function should accommodate concatenation of literals and
-    // return 'null' if the literal contains variables.
-
-    if ($this->getTypeName() != 'n_STRING_SCALAR') {
-      return null;
-    }
-    $value = $this->getConcreteString();
-    $value = substr($value, 1, -1);
-    $value = stripcslashes($value);
-    return $value;
-  }
-
   public function getSemanticString() {
     $tokens = $this->getTokens();
     foreach ($tokens as $id => $token) {
@@ -234,12 +221,7 @@ class XHPASTNode {
         return $this->getChildByIndex(0)->evalStatic();
         break;
       case 'n_STRING_SCALAR':
-        $value = $this->getSemanticString();
-        $value = substr($value, 1, -1);
-        // NOTE: This intentionally treats '$' in strings as a literal dollar
-        // symbol.
-        $value = stripcslashes($value);
-        return (string)$value;
+        return (string)$this->getStringLiteralValue();
       case 'n_NUMERIC_SCALAR':
         $value = $this->getSemanticString();
         if (preg_match('/^0x/i', $value)) {
@@ -301,5 +283,76 @@ class XHPASTNode {
         throw new Exception("Unexpected node.");
     }
   }
+
+  public function getStringLiteralValue() {
+    if ($this->getTypeName() != 'n_STRING_SCALAR') {
+      return null;
+    }
+
+    $value = $this->getSemanticString();
+    $type  = $value[0];
+    $value = substr($value, 1, -1);
+    $esc   = false;
+    $len   = strlen($value);
+    $out   = '';
+
+    if ($type == "'") {
+      // Single quoted strings treat everything as a literal except "\\" and
+      // "\'".
+      return str_replace(
+        array('\\\\', '\\\''),
+        array('\\',   "'"),
+        $value);
+    }
+
+    // Double quoted strings treat "\X" as a literal if X isn't specifically
+    // a character which needs to be escaped -- e.g., "\q" and "\'" are
+    // literally "\q" and "\'". stripcslashes() is too aggressive, so find
+    // all these under-escaped backslashes and escape them.
+
+    for ($ii = 0; $ii < $len; $ii++) {
+      $c = $value[$ii];
+      if ($esc) {
+        $esc = false;
+        switch ($c) {
+          case 'x':
+            $u = isset($value[$ii + 1]) ? $value[$ii + 1] : null;
+            if (!preg_match('/^[a-z0-9]/i', $u)) {
+              // PHP treats \x followed by anything which is not a hex digit
+              // as a literal \x.
+              $out .= '\\\\'.$c;
+              break;
+            }
+          case 'n':
+          case 'r':
+          case 'f':
+          case 'v':
+          case '"':
+          case '$':
+          case 't':
+          case '0':
+          case '1':
+          case '2':
+          case '3':
+          case '4':
+          case '5':
+          case '6':
+          case '7':
+            $out .= '\\'.$c;
+            break;
+          default:
+            $out .= '\\\\'.$c;
+            break;
+        }
+      } else if ($c == '\\') {
+        $esc = true;
+      } else {
+        $out .= $c;
+      }
+    }
+
+    return stripcslashes($out);
+  }
+
 
 }
