@@ -146,7 +146,7 @@ function mpull(array $list, $method, $key_method = null) {
  *
  *    $names = ipull($list, 'name');
  *
- * See @{function:mpull} for more usage examples. 
+ * See @{function:mpull} for more usage examples.
  *
  * @param   list          Some list of arrays.
  * @param   scalar|null   Determines which **values** will appear in the result

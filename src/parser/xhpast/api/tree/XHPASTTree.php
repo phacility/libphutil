@@ -116,4 +116,18 @@ class XHPASTTree {
     return $return;
   }
 
+
+  public static function evalStaticString($string) {
+    $string = '<?php '.rtrim($string, ';').';';
+    $tree = XHPASTTree::newFromData($string);
+    $statements = $tree->getRootNode()->selectDescendantsOfType('n_STATEMENT');
+    if (count($statements) != 1) {
+      throw new Exception("String does not parse into exactly one statement!");
+    }
+    // Return the first one, trying to use reset() with iterators ends in tears.
+    foreach ($statements as $statement) {
+      return $statement->evalStatic();
+    }
+  }
+
 }

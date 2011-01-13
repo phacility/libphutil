@@ -70,6 +70,7 @@ phutil_register_library_map(array(
     'XHPASTSyntaxErrorException' => 'parser/xhpast/api/exception',
     'XHPASTToken' => 'parser/xhpast/api/token',
     'XHPASTTree' => 'parser/xhpast/api/tree',
+    'XHPASTTreeTestCase' => 'parser/xhpast/api/tree/__tests__',
   ),
   'function' =>
   array(
@@ -90,6 +91,7 @@ phutil_register_library_map(array(
     'msort' => 'utils',
     'newv' => 'utils',
     'nonempty' => 'utils',
+    'phutil_autoload_class' => 'autoload',
     'phutil_console_confirm' => 'console',
     'phutil_console_format' => 'console',
     'phutil_console_prompt' => 'console',
@@ -147,6 +149,7 @@ phutil_register_library_map(array(
     'PhutilRemarkupRuleItalic' => 'PhutilRemarkupRule',
     'PhutilRemarkupRuleLinebreaks' => 'PhutilRemarkupRule',
     'PhutilRemarkupRuleMonospace' => 'PhutilRemarkupRule',
+    'XHPASTTreeTestCase' => 'ArcanistPhutilTestCase',
   ),
   'requires_interface' =>
   array(

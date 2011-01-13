@@ -228,4 +228,78 @@ class XHPASTNode {
     return null;
   }
 
+  public function evalStatic() {
+    switch ($this->getTypeName()) {
+      case 'n_STATEMENT':
+        return $this->getChildByIndex(0)->evalStatic();
+        break;
+      case 'n_STRING_SCALAR':
+        $value = $this->getSemanticString();
+        $value = substr($value, 1, -1);
+        // NOTE: This intentionally treats '$' in strings as a literal dollar
+        // symbol.
+        $value = stripcslashes($value);
+        return (string)$value;
+      case 'n_NUMERIC_SCALAR':
+        $value = $this->getSemanticString();
+        if (preg_match('/^0x/i', $value)) {
+          // Hex
+          return (int)base_convert(substr($value, 2), 16, 10);
+        } else if (preg_match('/^0\d+$/i', $value)) {
+          // Octal
+          return (int)base_convert(substr($value, 1),  8, 10);
+        } else if (preg_match('/^\d+$/', $value)) {
+          return (int)$value;
+        } else {
+          return (double)$value;
+        }
+        break;
+      case 'n_SYMBOL_NAME':
+        $value = $this->getSemanticString();
+        if ($value == 'INF') {
+          return INF;
+        }
+        switch (strtolower($value)) {
+          case 'true':
+            return true;
+          case 'false':
+            return false;
+          case 'null':
+            return null;
+          default:
+            throw new Exception('Unrecognized symbol name.');
+        }
+        break;
+      case 'n_UNARY_PREFIX_EXPRESSION':
+        $operator = $this->getChildOfType(0, 'n_OPERATOR');
+        $operand = $this->getChildByIndex(1);
+        switch ($operator->getSemanticString()) {
+          case '-':
+            return -$operand->evalStatic();
+            break;
+          case '+':
+            return $operand->evalStatic();
+            break;
+          default:
+            throw new Exception("Unexpected operator in static expression.");
+        }
+        break;
+      case 'n_ARRAY_LITERAL':
+        $result = array();
+        $values = $this->getChildOfType(0, 'n_ARRAY_VALUE_LIST');
+        foreach ($values->getChildren() as $child) {
+          $key = $child->getChildByIndex(0);
+          $val = $child->getChildByIndex(1);
+          if ($key->getTypeName() == 'n_EMPTY') {
+            $result[] = $val->evalStatic();
+          } else {
+            $result[$key->evalStatic()] = $val->evalStatic();
+          }
+        }
+        return $result;
+      default:
+        throw new Exception("Unexpected node.");
+    }
+  }
+
 }
