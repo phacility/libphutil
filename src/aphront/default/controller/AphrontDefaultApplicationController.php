@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group aphront
+ */
 class AphrontDefaultApplicationController extends AphrontController {
 
   public function processRequest() {

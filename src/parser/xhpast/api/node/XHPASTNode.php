@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group xhpast
+ */
 class XHPASTNode {
 
   protected $id;
@@ -352,6 +356,10 @@ class XHPASTNode {
     }
 
     return stripcslashes($out);
+  }
+  
+  public function getLineNumber() {
+    return idx($this->tree->getOffsetToLineNumberMap(), $this->getOffset());
   }
 
 

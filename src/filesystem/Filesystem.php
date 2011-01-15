@@ -29,6 +29,7 @@
  * @task file        Files
  * @task path        Paths
  * @task assert      Assertions
+ * @group filesystem
  */
 class Filesystem {
 

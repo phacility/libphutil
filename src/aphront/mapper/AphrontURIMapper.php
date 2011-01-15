@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group aphront
+ */
 final class AphrontURIMapper {
 
   private $map;

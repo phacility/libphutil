@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group futures
+ */
 function Futures($futures) {
   return new FutureIterator($futures);
 }
@@ -40,7 +43,7 @@ function Futures($futures) {
  *    do_some_processing($stdout);
  *  }
  *
- *
+ * @group futures
  */
 class FutureIterator implements Iterator {
 

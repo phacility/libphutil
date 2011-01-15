@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group xhpast
+ */
 class XHPASTSyntaxErrorException extends Exception {
 
   protected $errorLine;

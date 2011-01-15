@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group xhpast
+ */
 class XHPASTNodeList implements Iterator, Countable {
 
   protected $list;

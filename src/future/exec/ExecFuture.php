@@ -34,8 +34,9 @@
  *
  *  // ...or, throw on nonzero exit with 'resolvex()'.
  *  list($stdout, $stderr) = $future->resolvex();
+ *
+ * @group exec
  */
-
 class ExecFuture extends Future {
 
   const TIMED_OUT_EXIT_CODE = 142;

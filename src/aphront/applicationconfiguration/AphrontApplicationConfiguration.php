@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group aphront
+ */
 abstract class AphrontApplicationConfiguration {
 
   private $request;

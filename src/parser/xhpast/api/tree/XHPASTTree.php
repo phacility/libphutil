@@ -16,10 +16,16 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group xhpast
+ */
 class XHPASTTree {
 
   protected $tree = array();
   protected $stream = array();
+  protected $lineMap;
+  protected $rawSource;
 
   public static function newFromData($php_source) {
     $future = xhpast_get_parser_future($php_source);
@@ -69,6 +75,7 @@ class XHPASTTree {
       ++$ii;
     }
 
+    $this->rawSource = $source;
     $this->buildTree(array($tree));
   }
 
@@ -128,6 +135,23 @@ class XHPASTTree {
     foreach ($statements as $statement) {
       return $statement->evalStatic();
     }
+  }
+  
+  public function getOffsetToLineNumberMap() {
+    if ($this->lineMap === null) {
+      $src = $this->rawSource;
+      $len = strlen($src);
+      $lno = 1;
+      $map = array();
+      for ($ii = 0; $ii < $len; ++$ii) {
+        $map[$ii] = $lno;
+        if ($src[$ii] == "\n") {
+          ++$lno;
+        }
+      }
+      $this->lineMap = $map;
+    }
+    return $this->lineMap;
   }
 
 }

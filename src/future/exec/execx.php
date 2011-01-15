@@ -26,6 +26,7 @@
  * @param  string  sprintf()-style command pattern to execute.
  * @param  ...     Arguments to sprintf pattern.
  * @return array   List of stdout and stderr.
+ * @group exec
  */
 function execx($cmd /*, ... */) {
   $args = func_get_args();
@@ -46,6 +47,7 @@ function execx($cmd /*, ... */) {
  * @param  string  sprintf()-style command pattern to execute.
  * @param  ...     Arguments to sprintf pattern.
  * @return array   List of return code, stdout, and stderr.
+ * @group exec
  */
 function exec_manual($cmd /*, ... */) {
   $args = func_get_args();

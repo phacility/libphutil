@@ -30,6 +30,7 @@
  * @param  string  sprintf()-style format string.
  * @param  ...     Zero or more arguments.
  * @return string  Formatted string, escaped appropriately for shell contexts.
+ * @group exec
  */
 function csprintf($pattern/*, ... */) {
   $args = func_get_args();
@@ -42,6 +43,7 @@ function csprintf($pattern/*, ... */) {
  * @param  string  sprintf()-style format string.
  * @param  list    List of zero or more arguments to csprintf().
  * @return string  Formatted string, escaped appropriately for shell contexts.
+ * @group exec
  */
 function vcsprintf($pattern, array $argv) {
   array_unshift($argv, $pattern);
@@ -50,7 +52,8 @@ function vcsprintf($pattern, array $argv) {
 
 
 /**
- *  xsprintf() callback for csprintf().
+ * xsprintf() callback for csprintf().
+ * @group exec
  */
 function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
   $type = $pattern[$pos];

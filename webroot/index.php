@@ -43,6 +43,9 @@ $response = $controller->processRequest();
 
 echo $response->buildResponseString();
 
+/**
+ * @group aphront
+ */
 function setup_aphront_basics() {
   @include_once 'libphutil/src/__phutil_library_init__.php';
   if (!@constant('__LIBPHUTIL__')) {

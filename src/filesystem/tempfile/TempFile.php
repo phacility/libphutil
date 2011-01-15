@@ -36,6 +36,8 @@
  * destruction of $filename when done.
  *
  * Throws Filesystem exceptions for errors.
+ *
+ * @group filesystem
  */
 class TempFile {
   protected $dir;

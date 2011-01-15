@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group markup
+ */
 function phutil_render_tag($tag, array $attributes = array(), $content = null) {
   foreach ($attributes as $k => $v) {
     $v = phutil_escape_html($v);
@@ -31,6 +34,9 @@ function phutil_render_tag($tag, array $attributes = array(), $content = null) {
   }
 }
 
+/**
+ * @group markup
+ */
 function phutil_escape_html($string) {
   return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }

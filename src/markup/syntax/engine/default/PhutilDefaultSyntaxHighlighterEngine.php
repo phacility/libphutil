@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group markup
+ */
 class PhutilDefaultSyntaxHighlighterEngine
   extends PhutilSyntaxHighlighterEngine {
 

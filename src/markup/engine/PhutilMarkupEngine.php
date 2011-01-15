@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group markup
+ */
 abstract class PhutilMarkupEngine {
   abstract public function setConfig($key, $value);
   abstract public function markupText($text);

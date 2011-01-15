@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group console
+ */
 function phutil_console_format($format /* ... */) {
   $args = func_get_args();
   return call_user_func_array(
@@ -23,6 +27,10 @@ function phutil_console_format($format /* ... */) {
     $args);
 }
 
+
+/**
+ * @group console
+ */
 function phutil_console_confirm($prompt, $default_no = true) {
 
   $prompt_options = $default_no ? '[y/N]' : '[Y/n]';
@@ -40,6 +48,10 @@ function phutil_console_confirm($prompt, $default_no = true) {
   }
 }
 
+
+/**
+ * @group console
+ */
 function phutil_console_prompt($prompt) {
 
   $prompt = "\n\n    ".$prompt." ";
@@ -51,6 +63,10 @@ function phutil_console_prompt($prompt) {
   return rtrim($response, "\n");
 }
 
+
+/**
+ * @group console
+ */
 function phutil_console_wrap($text, $indent = 0) {
   $indent_string = '';
   if ($indent) {

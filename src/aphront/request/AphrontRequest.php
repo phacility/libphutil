@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group aphront
+ */
 class AphrontRequest {
 
   const TYPE_AJAX = '__ajax__';

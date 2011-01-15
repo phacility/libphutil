@@ -23,7 +23,7 @@
  * to write is greatly reduced.
  *
  * Lisk makes it fairly easy to build something quickly and end up with
- * fairly high-quality code when you're done (e.g., getters and setters,
+ * reasonably high-quality code when you're done (e.g., getters and setters,
  * objects, transactions, reasonably structured OO code). It's also very thin:
  * you can break past it and use MySQL and other lower-level tools when you
  * need to in those couple of cases where it doesn't handle your workflow
@@ -31,29 +31,27 @@
  *
  * However, Lisk won't scale past one database and lacks many of the features
  * of modern DAOs like Hibernate: for instance, it does not support joins or
- * complicated polymorphic storage.
+ * polymorphic storage.
  *
- * This means that Lisk is well-suited for internal tools like Differential,
- * but often a poor choice elsewhere. And it is strictly unsuitable for many
- * projects. You almost certainly should not use it in production.
+ * This means that Lisk is well-suited for tools like Differential, but often a
+ * poor choice elsewhere. And it is strictly unsuitable for many projects.
  *
  * Lisk's model is object-authoritative: the PHP class definition is the
  * master authority for what the object looks like.
  *
- * BUILDING NEW OBJECTS
+ * =Building New Objects=
  *
- * To create new Lisk objects, extend Lisk_DataAccessObject and implement
- * getSMCTierName(). It should return the name of an SMC tier which you have
- * configured using the Service Management Console; this will tell Lisk where
- * to save your objects.
+ * To create new Lisk objects, extend @{class:LiskDAO} and implement
+ * @{method:establishConnection}. It should return a PhutilDatabaseConnection;
+ * this will tell Lisk where to save your objects.
  *
- *   class Dog extends Lisk_DataAccessObject {
+ *   class Dog extends LiskDAO {
  *
  *     protected $name;
  *     protected $breed;
  *
- *     public function getSMCTierName() {
- *       return 'cdb.example';
+ *     public function establishConnection() {
+ *       return $some_connection_object;
  *     }
  *   }
  *
@@ -63,24 +61,21 @@
  *     id int unsigned not null auto_increment primary key,
  *     name varchar(32) not null,
  *     breed varchar(32) not null,
- *     version int unsigned not null,
  *     dateCreated int unsigned not null,
  *     dateModified int unsigned not null
  *   );
  *
  * For each property in your class, add a column with the same name to the
  * table (see getConfiguration() for information about changing this mapping).
- * Additionally, you should create the four columns `id`, `version`,
- * `dateCreated` and `dateModified`. Lisk will automatically manage these,
- * using them to implement autoincrement IDs, optimistic locking, and
- * timestamps. If you do not want to use these features, see
- * getConfiguration() for information on disabling them. At a bare minimum, you
- * must normally have an `id` column which is a primary or unique key with a
- * numeric type, although you can change its name by overriding getIDKey().
- * However, if you return null from getIDKey(), you will disable use of a
- * single-part primary key entirely. Note that many methods rely on a
- * single-part primary key and will no longer work (they will throw) if you
- * disable it.
+ * Additionally, you should create the three columns `id`,  `dateCreated` and
+ * `dateModified`. Lisk will automatically manage these, using them to implement
+ * autoincrement IDs and timestamps. If you do not want to use these features,
+ * see getConfiguration() for information on disabling them. At a bare minimum,
+ * you must normally have an `id` column which is a primary or unique key with a
+ * numeric type, although you can change its name by overriding getIDKey() or
+ * disable it entirely by overriding getIDKey() to return null. Note that many
+ * methods rely on a single-part primary key and will no longer work (they will
+ * throw) if you disable it.
  *
  * As you add more properties to your class in the future, remember to add them
  * to the database table as well.
@@ -91,7 +86,7 @@
  * an object is created or modified, and some additional specialized
  * operations.
  *
- * CREATING, RETRIEVING, UPDATING, AND DELETING
+ * = Creating, Retrieving, Updating, and Deleting =
  *
  * To create and persist a Lisk object, use save():
  *
@@ -101,7 +96,8 @@
  *     ->save();
  *
  * Note that **Lisk automatically builds getters and setters for all of your
- * object's properties**. You should use these because they love you.
+ * object's properties** via __call(). You can override these by defining
+ * versions yourself.
  *
  * Calling save() will persist the object to the database. After calling
  * save(), you can call getID() to retrieve the object's ID.
@@ -112,9 +108,9 @@
  *
  * This will load the Dog record with ID $id into $dog, or ##null## if no such
  * record exists (load() is an instance method rather than a static method
- * because PHP does not support late static binding, at least until PHP 6).
+ * because PHP does not support late static binding, at least until PHP 5.3).
  *
- * To update an object, change its properites and save it:
+ * To update an object, change its properties and save it:
  *
  *   $dog->setBreed('Lab')->save();
  *
@@ -124,7 +120,7 @@
  *
  * That's Lisk CRUD in a nutshell.
  *
- * QUERIES
+ * = Queries =
  *
  * Often, you want to load a bunch of objects, or execute a more specialized
  * query. Use loadAllWhere() or loadOneWhere() to do this:
@@ -132,36 +128,11 @@
  *   $pugs = $dog->loadAllWhere('breed = %s', 'Pug');
  *   $sawyer = $dog->loadOneWhere('name = %s', 'Sawyer');
  *
- * These methods work like queryfx(), but only take half of a query (the part
- * after the WHERE keyword). Lisk will handle the connection, columns, and
- * object construction; you are responsible for the rest of it. loadAllWhere()
- * returns a list of objects, while loadOneWhere() returns a single object
- * (or null).
- *
- * ADVANCED FEATURES
- *
- * Lisk supports a bunch of other stuff which you probably won't need, but
- * go poke around if you want. It has good support for transactions, locking,
- * and concurrency correctness if you want to use them. Most of this (like
- * optimistic locking) is off by default; some of it (like transaction stacks
- * and object read/write locking) require you to do some additional work as
- * well
- *
- * But, alright, here's how transaction stacks work: you can start, save, or
- * kill a transaction even if one is already open. For example, you may want
- * to clean up resources in delete():
- *
- *   public function delete() {
- *     $this->openTransaction();
- *       foreach ($this->getPuppies() as $puppy) {
- *         $puppy->delete();
- *       }
- *       parent::delete();
- *     $this->saveTransaction();
- *   }
- *
- * This will work properly even if you are already transactional (for instance,
- * because your object is itself being deleted).
+ * These methods work like @{function:queryfx}, but only take half of a query
+ * (the part after the WHERE keyword). Lisk will handle the connection, columns,
+ * and object construction; you are responsible for the rest of it.
+ * loadAllWhere() returns a list of objects, while loadOneWhere() returns a
+ * single object (or null).
  *
  * @task   config  Configuring Lisk
  * @task   load    Loading Objects
@@ -169,6 +140,8 @@
  * @task   save    Writing Objects
  * @task   hook    Hooks and Callbacks
  * @task   util    Utilities
+ *
+ * @group storage
  */
 abstract class LiskDAO {
 

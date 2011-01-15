@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group aphront
+ */
 abstract class AphrontController {
 
   private $request;

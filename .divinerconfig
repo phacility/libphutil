@@ -1,4 +1,20 @@
 {
-  "name" : "libphutil"
+  "name" : "libphutil",
+  "src_base" : "https://github.com/facebook/libphutil/blob/master",
+  "groups" : {
+    "overview" : "Overview",
+    "working" : "Working with libphutil",
+    "util" : "Core Utilities",
+    "library" : "Phutil Module System",
+    "filesystem" : "Filesystem",
+    "exec" : "Command Execution",
+    "futures" : "Futures",
+    "storage" : "Storage",
+    "markup" : "Markup",
+    "console" : "Console Utilities",
+    "xhpast" : "XHPAST (PHP/XHP Parser)",
+    "aphront" : "Aphront (Web Stack)",
+    "conduit" : "Conduit (Service API)"
+  }
 }
 

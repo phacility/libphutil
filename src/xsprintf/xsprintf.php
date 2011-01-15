@@ -23,6 +23,8 @@
  * custom conversions for different datatypes. Two examples are jsprintf()
  * (which builds Javascript strings) and qsprintf() (which builds MySQL
  * strings).
+ *
+ * @group util
  */
 function xsprintf($callback, $userdata, $argv) {
   $argc = count($argv);

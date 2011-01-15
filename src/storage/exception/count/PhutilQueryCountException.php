@@ -16,4 +16,7 @@
  * limitations under the License.
  */
 
+/**
+ * @group storage
+ */
 class PhutilQueryCountException extends PhutilQueryException { }

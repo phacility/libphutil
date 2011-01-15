@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group markup
+ */
 final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
   private $blockRules = array();

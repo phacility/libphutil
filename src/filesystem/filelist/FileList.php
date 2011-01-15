@@ -18,6 +18,8 @@
 
 /**
  * A list of files, e.g. from command line arguments.
+ *
+ * @group filesystem
  */
 class FileList {
 

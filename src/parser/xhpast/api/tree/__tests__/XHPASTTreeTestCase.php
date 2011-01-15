@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group xhpast
+ */
 class XHPASTTreeTestCase extends ArcanistPhutilTestCase {
 
   public function testEvalStaticString() {

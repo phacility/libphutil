@@ -27,6 +27,8 @@
  *
  *    $future = new HTTPFuture('http://www.example.com/');
  *    list($http_response_code, $response_body, $headers) = $future->resolve();
+ *
+ * @group futures
  */
 class HTTPFuture extends Future {
 

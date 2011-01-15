@@ -30,6 +30,7 @@
  * @task create  Creating a New Editor
  * @task edit    Editing Interactively
  * @task config  Configuring Options
+ * @group console
  */
 final class PhutilInteractiveEditor {
 

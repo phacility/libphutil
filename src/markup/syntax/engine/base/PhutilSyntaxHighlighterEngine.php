@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group markup
+ */
 abstract class PhutilSyntaxHighlighterEngine {
   abstract public function setConfig($key, $value);
   abstract public function highlightSource($filename, $source);

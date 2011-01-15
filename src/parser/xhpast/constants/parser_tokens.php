@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+/* @generated @undivinable */
+
 function xhpast_parser_token_constants() {
   return array(
     258 => 'T_REQUIRE_ONCE',

@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group library
+ */
 class PhutilMissingSymbolException extends Exception {
   public function __construct($symbol) {
     throw new Exception(

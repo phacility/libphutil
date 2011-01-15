@@ -28,6 +28,8 @@
  *
  * Futures are a little bit tricky to understand, but provide a very simple
  * way to express parallel execution.
+ *
+ * @group futures
  */
 abstract class Future {
 

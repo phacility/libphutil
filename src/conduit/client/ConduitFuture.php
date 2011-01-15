@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group conduit
+ */
 class ConduitFuture extends HTTPFuture {
 
   protected $traceMode;

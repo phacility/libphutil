@@ -19,6 +19,8 @@
 /**
  * Exception thrown by Filesystem to indicate an error accessing the file
  * system.
+ *
+ * @group filesystem
  */
 class FilesystemException extends Exception {
 

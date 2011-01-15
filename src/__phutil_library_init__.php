@@ -18,26 +18,44 @@
 
 define('__LIBPHUTIL__', true);
 
+/**
+ * @group library
+ */
 function phutil_require_module($library, $module) {
   PhutilBootloader::getInstance()->loadModule($library, $module);
 }
 
+/**
+ * @group library
+ */
 function phutil_require_source($source) {
   PhutilBootloader::getInstance()->loadSource($source);
 }
 
+/**
+ * @group library
+ */
 function phutil_register_library($library, $path) {
   PhutilBootloader::getInstance()->registerLibrary($library, $path);
 }
 
+/**
+ * @group library
+ */
 function phutil_register_library_map(array $map) {
   PhutilBootloader::getInstance()->registerLibraryMap($map);
 }
 
+/**
+ * @group library
+ */
 function phutil_load_library($path) {
   PhutilBootloader::getInstance()->loadLibrary($path);
 }
 
+/**
+ * @group library
+ */
 class PhutilBootloader {
 
   private static $instance;
@@ -141,6 +159,9 @@ class PhutilBootloader {
 
 }
 
+/**
+ * @group library
+ */
 class PhutilBootloaderException extends Exception { }
 
 phutil_register_library('phutil', __FILE__);

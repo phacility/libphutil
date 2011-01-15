@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group library
+ */
 final class PhutilSymbolLoader {
 
   private $type;

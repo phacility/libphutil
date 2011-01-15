@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group storage
+ */
 class PhutilQueryParameterException extends PhutilQueryException {
 
   private $query;

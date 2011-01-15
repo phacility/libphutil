@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group storage
+ */
 abstract class PhutilDatabaseConnection {
 
   private static $transactionStacks             = array();

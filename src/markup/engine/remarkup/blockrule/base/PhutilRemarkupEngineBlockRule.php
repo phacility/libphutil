@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group markup
+ */
 abstract class PhutilRemarkupEngineBlockRule {
 
   private $storage;

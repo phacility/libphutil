@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+
+/**
+ * @group xhpast
+ */
 class XHPASTToken {
 
   protected $id;
@@ -96,7 +100,7 @@ class XHPASTToken {
       ++$ii;
     }
     return $result;
-  }
+  }    
 
 
 }

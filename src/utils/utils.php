@@ -32,6 +32,7 @@
  *
  * @param   wild Anything.
  * @return  wild Unmodified argument.
+ * @group   util
  */
 function id($x) {
   return $x;
@@ -49,6 +50,7 @@ function id($x) {
  *                  array.
  * @return  wild    If $array[$key] exists, that value is returned. If not,
  *                  $default is returned without raising a warning.
+ * @group   util
  */
 function idx(array $array, $key, $default = null) {
   return array_key_exists($key, $array) ? $array[$key] : $default;
@@ -110,6 +112,7 @@ function idx(array $array, $key, $default = null) {
  *                        ##null## to preserve the original keys.
  * @return  dict          A dictionary with keys and values derived according
  *                        to whatever you passed as $method and $key_method.
+ * @group   util
  */
 function mpull(array $list, $method, $key_method = null) {
   $result = array();
@@ -158,6 +161,7 @@ function mpull(array $list, $method, $key_method = null) {
  *                        array, or null to preserve the array keys.
  * @return  dict          A dictionary with keys and values derived according
  *                        to whatever you passed for $index and $key_index.
+ * @group   util
  */
 function ipull(array $list, $index, $key_index = null) {
   $result = array();
@@ -203,6 +207,7 @@ function ipull(array $list, $index, $key_index = null) {
  *                  groups.
  * @return  dict    Dictionary mapping distinct method returns to lists of
  *                  all objects which returned that value.
+ * @group   util
  */
 function mgroup(array $list, $by /*, ... */) {
   $map = mpull($list, $by);
@@ -249,6 +254,7 @@ function mgroup(array $list, $by /*, ... */) {
  * @param   string  Name of a method to call on each object; the return values
  *                  will be used to sort the list.
  * @return  list    Objects ordered by the return values of the method calls.
+ * @group   util
  */
 function msort(array $list, $method) {
   $surrogate = mpull($list, $method);
@@ -278,6 +284,7 @@ function msort(array $list, $method) {
  * @return dict    Dictionary of only those key-value pairs where the key was
  *                 present in the list of keys to select. Ordering is
  *                 determined by the list order.
+ * @group   util
  */
 function array_select_keys(array $dict, array $keys) {
   $result = array();
@@ -295,6 +302,7 @@ function array_select_keys(array $dict, array $keys) {
  *
  * @param  ...         Zero or more arguments of any type.
  * @return mixed       First non-null arg, or null if no such arg exists.
+ * @group  util
  */
 function coalesce(/* ... */) {
   $args = func_get_args();
@@ -318,6 +326,7 @@ function coalesce(/* ... */) {
  * @param  ...         Zero or more arguments of any type.
  * @return mixed       First non-empty() arg, or last arg if no such arg
  *                     exists, or null if you pased in zero args.
+ * @group  util
  */
 function nonempty(/* ... */) {
   $args = func_get_args();
@@ -363,6 +372,7 @@ function nonempty(/* ... */) {
  * @param  list    Array of arguments to pass to its constructor.
  * @return obj     A new object of the specified class, constructed by passing
  *                 the argument vector to its constructor.
+ * @group util
  */
 function newv($class_name, array $argv) {
   $reflector = new ReflectionClass($class_name);

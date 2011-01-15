@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group aphront
+ */
 abstract class AphrontResponse {
 
   abstract public function buildResponseString();

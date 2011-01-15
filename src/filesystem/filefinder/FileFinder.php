@@ -18,6 +18,8 @@
 
 /**
  * PHP API for `find`.
+ *
+ * @group filesystem
  */
 class FileFinder {
 

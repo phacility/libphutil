@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group storage
+ */
 class PhutilMySQLDatabaseConnection extends PhutilDatabaseConnection {
 
   private $config;
