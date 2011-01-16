@@ -17,19 +17,35 @@
  */
 
 /**
- * A list of files, e.g. from command line arguments.
+ * A list of files, primarily useful for parsing command line arguments. This
+ * class makes it easier to deal with user-specified lists of files and
+ * directories used by command line tools.
  *
+ *    $list = new FileList(array_slice($argv, 1));
+ *    foreach ($some_files as $file) {
+ *      if ($list->contains($file)) {
+ *        do_something_to_this($file);
+ *      }
+ *    }
+ *
+ * This sort of construction will allow the user to type "src" in order
+ * to indicate 'all relevant files underneath "src/"'.
+ *
+ * @task create Creating a File List
+ * @task test   Testing File Lists
  * @group filesystem
  */
-class FileList {
+final class FileList {
 
-  protected $files = array();
-  protected $dirs  = array();
+  private $files = array();
+  private $dirs  = array();
 
   /**
    * Build a new FileList from an array of paths, e.g. from $argv.
    *
    * @param  list  List of relative or absolute file paths.
+   * @return this
+   * @task create
    */
   public function __construct($paths) {
     foreach ($paths as $path) {
@@ -52,6 +68,7 @@ class FileList {
    *                 the list contains a parent directory. If false, require
    *                 that the path be part of the list explicitly.
    * @return bool    If true, the file is in the list.
+   * @task test
    */
   public function contains($path, $allow_parent_directory = true) {
 
@@ -80,9 +97,10 @@ class FileList {
 
 
   /**
-   *  Check if the file list is empty -- that is, it contains no files.
+   * Check if the file list is empty -- that is, it contains no files.
    *
-   *  @return   bool  If true, the list is empty.
+   * @return   bool  If true, the list is empty.
+   * @task test
    */
   public function isEmpty() {
     return !$this->files;

@@ -132,9 +132,9 @@ function mpull(array $list, $method, $key_method = null) {
 
 
 /**
- * Choose an index from a list of arrays. Short for "index pull", this this
- * function works just like @{function:mpull}, except that it operates on a list
- * of arrays and selects an index from them instead of operating on a list of
+ * Choose an index from a list of arrays. Short for "index pull", this function
+ * works just like @{function:mpull}, except that it operates on a list of
+ * arrays and selects an index from them instead of operating on a list of
  * objects and calling a method on them.
  *
  * This function simplifies a common type of mapping operation:
@@ -316,12 +316,12 @@ function coalesce(/* ... */) {
 
 
 /**
- * Similar to coalesce(), but less strict: returns the first non-empty()
- * argument, instead of the first argument that is strictly non-null. If no
- * argument is nonempty, it returns the last argument. This is useful
- * idiomatically for setting defaults:
+ * Similar to @{function:coalesce}, but less strict: returns the first
+ * non-empty() argument, instead of the first argument that is strictly
+ * non-null. If no argument is nonempty, it returns the last argument. This is
+ * useful idiomatically for setting defaults:
  *
- *   $value = nonempty($get_value, 0);
+ *   $display_name = nonempty($user_name, $full_name, "Anonymous");
  *
  * @param  ...         Zero or more arguments of any type.
  * @return mixed       First non-empty() arg, or last arg if no such arg
@@ -356,7 +356,7 @@ function nonempty(/* ... */) {
  *
  *   - Build a fake serialized object and unserialize it.
  *   - Invoke the constructor twice.
- *   -just use eval() lol
+ *   - just use eval() lol
  *
  * These are really bad solutions to the problem because they can have side
  * effects (e.g., __wakeup()) and give you an object in an otherwise impossible

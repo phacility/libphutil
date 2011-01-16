@@ -17,48 +17,84 @@
  */
 
 /**
- * PHP API for `find`.
+ * Find files on disk matching criteria, like the 'find' system utility. Use of
+ * this class is straightforward:
  *
+ *    // Find PHP files in /tmp
+ *    $files = id(new FileFinder('/tmp'))
+ *      ->withType('f')
+ *      ->withSuffix('php')
+ *      ->find();
+ *
+ * @task  create    Creating a File Query
+ * @task  config    Configuring File Queries
+ * @task  exec      Executing the File Query
+ * @task  internal  Internal
  * @group filesystem
  */
-class FileFinder {
+final class FileFinder {
 
-  protected $root;
-  protected $exclude = array();
-  protected $paths = array();
-  protected $suffix = array();
-  protected $type;
-  protected $generateChecksums = false;
+  private $root;
+  private $exclude = array();
+  private $paths = array();
+  private $suffix = array();
+  private $type;
+  private $generateChecksums = false;
 
+  /**
+   * Create a new FileFinder.
+   *
+   * @param string Root directory to find files beneath.
+   * @return this
+   * @task create
+   */
   public function __construct($root) {
     $this->root = $root;
   }
 
+  /**
+   * @task config
+   */
   public function excludePath($path) {
     $this->exclude[] = $path;
     return $this;
   }
 
+  /**
+   * @task config
+   */
   public function withSuffix($suffix) {
     $this->suffix[] = '*.'.$suffix;
     return $this;
   }
 
+  /**
+   * @task config
+   */
   public function withPath($path) {
     $this->paths[] = $path;
     return $this;
   }
 
+  /**
+   * @task config
+   */
   public function withType($type) {
     $this->type = $type;
     return $this;
   }
 
+  /**
+   * @task config
+   */
   public function setGenerateChecksums($generate) {
     $this->generateChecksums = $generate;
     return $this;
   }
 
+  /**
+   * @task exec
+   */
   public function find() {
     $args = array();
     $command = array();
@@ -138,7 +174,10 @@ class FileFinder {
     }
   }
 
-  protected function generateList($flag, array $items) {
+  /**
+   * @task internal
+   */
+  private function generateList($flag, array $items) {
     $items = array_map('escapeshellarg', $items);
     foreach ($items as $key => $item) {
       $items[$key] = '-'.$flag.' '.$item;

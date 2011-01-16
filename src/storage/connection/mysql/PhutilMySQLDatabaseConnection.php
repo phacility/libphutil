@@ -48,7 +48,7 @@ class PhutilMySQLDatabaseConnection extends PhutilDatabaseConnection {
     static $map = array(
       '--'  => '(DOUBLEDASH)',
       '*/'  => '(STARSLASH)',
-      '//'  => '(SLASHSLASHL)',
+      '//'  => '(SLASHSLASH)',
       '#'   => '(HASH)',
       '!'   => '(BANG)',
       ';'   => '(SEMICOLON)',
