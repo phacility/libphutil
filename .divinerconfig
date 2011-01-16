@@ -9,11 +9,9 @@
     "filesystem" : "Filesystem",
     "exec" : "Command Execution",
     "futures" : "Futures",
-    "storage" : "Storage",
     "markup" : "Markup",
     "console" : "Console Utilities",
     "xhpast" : "XHPAST (PHP/XHP Parser)",
-    "aphront" : "Aphront (Web Stack)",
     "conduit" : "Conduit (Service API)"
   }
 }

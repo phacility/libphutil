@@ -21,7 +21,8 @@
  */
 class PhutilMissingSymbolException extends Exception {
   public function __construct($symbol) {
-    throw new Exception(
-      "Failed to load symbol '$symbol'. Your library map may be out of date.");
+    parent::__construct(
+      "Failed to load symbol '{$symbol}'. ".
+      "Your library map may be out of date.");
   }
 }
