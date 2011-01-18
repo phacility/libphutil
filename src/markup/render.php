@@ -21,6 +21,9 @@
  */
 function phutil_render_tag($tag, array $attributes = array(), $content = null) {
   foreach ($attributes as $k => $v) {
+    if ($v === null) {
+      continue;
+    }
     $v = phutil_escape_html($v);
     $attributes[$k] = ' '.$k.'="'.$v.'"';
   }
