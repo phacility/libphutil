@@ -28,7 +28,7 @@ class PhutilXHPASTSyntaxHighlighter {
   public function highlightSource($text) {
     $scrub = false;
     if (strpos($text, '<?') === false) {
-      $text = "<?php\n".$text;
+      $text = "<?php\n".$text."\n";
       $scrub = true;
     }
 
@@ -112,6 +112,6 @@ class PhutilXHPASTSyntaxHighlighter {
       array_shift($out);
     }
 
-    return implode('', $out);
+    return rtrim(implode('', $out));
   }
 }
