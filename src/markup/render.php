@@ -43,3 +43,7 @@ function phutil_render_tag($tag, array $attributes = array(), $content = null) {
 function phutil_escape_html($string) {
   return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
+
+function phutil_escape_uri($string) {
+  return rawurlencode($string);
+}

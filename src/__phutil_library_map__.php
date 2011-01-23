@@ -76,6 +76,7 @@ phutil_register_library_map(array(
     'phutil_console_prompt' => 'console',
     'phutil_console_wrap' => 'console',
     'phutil_escape_html' => 'markup',
+    'phutil_escape_uri' => 'markup',
     'phutil_get_library_name_for_root' => 'moduleutils',
     'phutil_get_library_root' => 'moduleutils',
     'phutil_get_library_root_for_path' => 'moduleutils',
