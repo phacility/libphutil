@@ -1,5 +1,6 @@
 .DS_Store
 ._*
+
 /docs/
 *.a
 *.o
@@ -11,3 +12,6 @@ parser.yacc.output
 /support/xhpast/node_names.hpp
 /support/xhpast/xhpast
 /src/parser/xhpast/bin/xhpast
+
+# This is an OS X build artifact.
+/support/xhpast/xhpast.dSYM
