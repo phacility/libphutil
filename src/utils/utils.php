@@ -200,6 +200,9 @@ function ipull(array $list, $index, $key_index = null) {
  * together and all the cats are grouped together, or whatever super
  * businessesey thing is actually happening in your problem domain.
  *
+ * See also @{function:igroup}, which works the same way but operates on
+ * array indexes.
+ *
  * @param   list    List of objects to group by some property.
  * @param   string  Name of a method, like 'getType', to call on each object
  *                  in order to determine which group it should be placed into.
@@ -229,6 +232,46 @@ function mgroup(array $list, $by /*, ... */) {
     foreach ($groups as $group_key => $grouped) {
       $args[0] = $grouped;
       $groups[$group_key] = call_user_func_array('mgroup', $args);
+    }
+  }
+
+  return $groups;
+}
+
+
+/**
+ * Group a list of arrays by the value of some index. This function is the same
+ * as @{function:mgroup}, except it operates on the values of array indexes
+ * rather than the return values of method calls.
+ *
+ * @param   list    List of arrays to group by some index value.
+ * @param   string  Name of an index to select from each array in order to
+ *                  determine which group it should be placed into.
+ * @param   ...     Zero or more additional indexes names, to subgroup the
+ *                  groups.
+ * @return  dict    Dictionary mapping distinct index values to lists of
+ *                  all objects which had that value at the index.
+ * @group   util
+ */
+function igroup(array $list, $by /*, ... */) {
+  $map = ipull($list, $by);
+  
+  $groups = array();
+  foreach ($map as $group) {
+    $groups[$group] = array();
+  }
+  
+  foreach ($map as $key => $group) {
+    $groups[$group][$key] = $list[$key];
+  }
+
+  $args = func_get_args();
+  $args = array_slice($args, 2);
+  if ($args) {
+    array_unshift($args, null);
+    foreach ($groups as $group_key => $grouped) {
+      $args[0] = $grouped;
+      $groups[$group_key] = call_user_func_array('igroup', $args);
     }
   }
 
