@@ -159,6 +159,10 @@ final class FileFinder {
       return explode("\0", trim($stdout));
     } else {
       $stdout = trim($stdout);
+      if (!strlen($stdout)) {
+        return array();
+      }
+
       $map = array();
       foreach (explode("\n", $stdout) as $line) {
         $file = substr($line, 34);
