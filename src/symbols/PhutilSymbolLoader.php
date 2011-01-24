@@ -17,6 +17,16 @@
  */
 
 /**
+ * Query and load Phutil classes, interfaces and functions. PhutilSymbolLoader
+ * is a query object which selects symbols which satisfy certain criteria, and
+ * optionally loads them. For instance, to load all classes in a module:
+ *
+ *    id(new PhutilSymbolLoader())
+ *      ->setType('class')
+ *      ->setLibrary('example')
+ *      ->setModule('some/module')
+ *      ->selectAndLoadSymbols();
+ * 
  * @group library
  */
 final class PhutilSymbolLoader {
@@ -198,7 +208,7 @@ final class PhutilSymbolLoader {
     $bootloader = PhutilBootloader::getInstance();
     $bootloader->loadModule($symbol_spec['library'], $symbol_spec['module']);
     if (!class_exists($name, false) && !interface_exists($name, false)) {
-      throw new PhutilMissingSymbolException();
+      throw new PhutilMissingSymbolException($name);
     }
   }
 
