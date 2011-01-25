@@ -1,0 +1,4 @@
+/**
+ * So long as a @special does not appear at the beginning of a line,
+ * it is parsed as normal text.
+ */
