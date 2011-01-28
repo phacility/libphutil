@@ -314,6 +314,31 @@ function msort(array $list, $method) {
 
 
 /**
+ * Sort a list of arrays by the value of some index. This method is identical to
+ * @{function:msort}, but operates on a list of arrays instead of a list of
+ * objects.
+ *
+ * @param   list    List of arrays to sort by some index value.
+ * @param   string  Index to access on each object; the return values
+ *                  will be used to sort the list.
+ * @return  list    Arrays ordered by the index values.
+ * @group   util
+ */
+function isort(array $list, $index) {
+  $surrogate = ipull($list, $index);
+
+  asort($surrogate);
+
+  $result = array();
+  foreach ($surrogate as $key => $value) {
+    $result[$key] = $list[$key];
+  }
+
+  return $result;
+}
+
+
+/**
  * Selects a list of keys from an array, returning a new array with only the
  * key-value pairs identified by the selected keys, in the specified order.
  *
