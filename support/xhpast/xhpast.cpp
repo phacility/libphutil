@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
   vector<string> files;
   
   if (argc != 1) {
-    cout << "xhpast version 0.51\n";
+    cout << "xhpast version 0.52\n";
     return 0;
   }
   

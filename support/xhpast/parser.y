@@ -2500,7 +2500,7 @@ xhp_literal_text:
     $$ = NTYPE($1, n_XHP_TEXT);
   }
 | T_XHP_ENTITY {
-    $$ = NTYPE($1, n_XHP_ENTITY);
+    $$ = NTYPE($1, n_XHP_TEXT);
   }
 | xhp_literal_text T_XHP_TEXT {
     $$ = NMORE($1, $2);

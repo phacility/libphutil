@@ -118,8 +118,7 @@ function xhp_parser_node_constants() {
     9111 => 'n_XHP_ATTRIBUTE_LITERAL',
     9112 => 'n_XHP_ATTRIBUTE_EXPRESSION',
     9113 => 'n_XHP_NODE_LIST',
-    9114 => 'n_XHP_ENTITY',
-    9115 => 'n_CONCATENATION_LIST',
-    9116 => 'n_PARENTHETICAL_EXPRESSION',
+    9114 => 'n_CONCATENATION_LIST',
+    9115 => 'n_PARENTHETICAL_EXPRESSION',
   );
 }
