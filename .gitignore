@@ -15,3 +15,5 @@ parser.yacc.output
 
 # This is an OS X build artifact.
 /support/xhpast/xhpast.dSYM
+
+/src/.phutil_module_cache

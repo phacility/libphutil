@@ -73,7 +73,7 @@ final class PhutilURI {
       $query = null;
     }
 
-    if (strlen($this->getFramgent())) {
+    if (strlen($this->getFragment())) {
       $fragment = '#'.$this->getFragment();
     } else {
       $fragment = null;
