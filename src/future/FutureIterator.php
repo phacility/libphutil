@@ -109,7 +109,7 @@ class FutureIterator implements Iterator {
 
   protected function updateWorkingSet() {
     if (!$this->limit) {
-      $this->work = null;
+      return;
     }
 
     $old = $this->work;

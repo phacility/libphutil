@@ -62,7 +62,9 @@ class TempFile {
     Filesystem::remove($this->dir);
     // Note that the function tempnam() doesn't guarantee it will return a
     // file inside the dir you passed to the function.
-    @unlink($this->file);
+    if (file_exists($this->file)) {
+      unlink($this->file);
+    }
   }
 
   public function preserve() {
