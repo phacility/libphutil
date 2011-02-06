@@ -145,11 +145,7 @@ final class PhutilURI {
 
   public function alter($key, $value) {
     $altered = clone $this;
-    if ($value !== null) {
-      $altered->addQueryData($key, $value);
-    } else {
-      $altered->removeQueryData($key);
-    }
+    $altered->setQueryParam($key, $value);
     return $altered;
   }
 
