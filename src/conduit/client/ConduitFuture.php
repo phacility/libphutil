@@ -26,6 +26,15 @@ class ConduitFuture extends HTTPFuture {
   protected $startTime;
   protected $endTime;
 
+  protected $client;
+  protected $conduitMethod;
+  
+  public function setClient(ConduitClient $client, $method) {
+    $this->client = $client;
+    $this->conduitMethod = $method;
+    return $this;
+  }
+
   public function setTraceMode($trace_mode) {
     $this->traceMode = $trace_mode;
     return $this;
@@ -71,8 +80,14 @@ class ConduitFuture extends HTTPFuture {
         $data['error_code'],
         $data['error_info']);
     }
-
-    return $data['result'];
+    
+    $result = $data['result'];
+    
+    $result = $this->client->didReceiveResponse(
+      $this->conduitMethod,
+      $result);
+    
+    return $result;
   }
 
 }

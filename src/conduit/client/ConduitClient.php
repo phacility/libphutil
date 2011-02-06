@@ -26,10 +26,7 @@ class ConduitClient {
   protected $traceMode;
   protected $connectionID;
 
-  public function setConnectionID($connection_id) {
-    $this->connectionID = $connection_id;
-    return $this;
-  }
+  protected $sessionKey;
 
   public function getConnectionID() {
     return $this->connectionID;
@@ -49,12 +46,35 @@ class ConduitClient {
   public function callMethodSynchronous($method, array $params) {
     return $this->callMethod($method, $params)->resolve();
   }
+  
+  public function didReceiveResponse($method, array $data) {
+    if ($method == 'conduit.connect') {
+      $this->sessionKey = idx($data, 'sessionKey');
+      $this->connectionID = idx($data, 'connectionID');
+    }
+    return $data;
+  }
 
   public function callMethod($method, array $params) {
 
     $meta = array();
-    if ($this->getConnectionID()) {
-      $meta['connectionID'] = $this->getConnectionID();
+
+    if ($this->sessionKey) {
+      $meta['sessionKey'] = $this->sessionKey;
+    }
+
+    if ($this->connectionID) {
+      $meta['connectionID'] = $this->connectionID;
+    }
+    
+    if ($method == 'conduit.connect') {
+      $certificate = idx($params, 'certificate');
+      if ($certificate) {
+        $token = time();
+        $params['authToken'] = $token;
+        $params['authSignature'] = sha1($token.$certificate);
+      }
+      unset($params['certificate']);
     }
 
     if ($meta) {
@@ -69,6 +89,7 @@ class ConduitClient {
         'output' => 'json',
       ));
     $future->setMethod('POST');
+    $future->setClient($this, $method);
     $future->isReady();
 
     if ($this->getTraceMode()) {
