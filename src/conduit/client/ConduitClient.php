@@ -46,7 +46,7 @@ class ConduitClient {
   public function callMethodSynchronous($method, array $params) {
     return $this->callMethod($method, $params)->resolve();
   }
-  
+
   public function didReceiveResponse($method, array $data) {
     if ($method == 'conduit.connect') {
       $this->sessionKey = idx($data, 'sessionKey');
@@ -66,7 +66,7 @@ class ConduitClient {
     if ($this->connectionID) {
       $meta['connectionID'] = $this->connectionID;
     }
-    
+
     if ($method == 'conduit.connect') {
       $certificate = idx($params, 'certificate');
       if ($certificate) {

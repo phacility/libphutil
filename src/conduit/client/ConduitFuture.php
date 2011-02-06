@@ -28,7 +28,7 @@ class ConduitFuture extends HTTPFuture {
 
   protected $client;
   protected $conduitMethod;
-  
+
   public function setClient(ConduitClient $client, $method) {
     $this->client = $client;
     $this->conduitMethod = $method;
@@ -80,13 +80,13 @@ class ConduitFuture extends HTTPFuture {
         $data['error_code'],
         $data['error_info']);
     }
-    
+
     $result = $data['result'];
-    
+
     $result = $this->client->didReceiveResponse(
       $this->conduitMethod,
       $result);
-    
+
     return $result;
   }
 

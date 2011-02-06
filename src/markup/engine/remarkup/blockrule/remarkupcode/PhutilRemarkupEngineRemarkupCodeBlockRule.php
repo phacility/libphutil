@@ -32,7 +32,7 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
 
   public function markupText($text) {
     $lines = explode("\n", $text);
-    
+
     $lang = 'php';
     $aux_class = '';
     do {
@@ -44,13 +44,13 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
         array_shift($lines);
         continue;
       }
-      
+
       if (preg_match('/^\s{2,}COUNTEREXAMPLE$/i', $first_line, $matches)) {
         $aux_class = ' remarkup-counterexample';
         array_shift($lines);
         continue;
       }
-    
+
     } while (false);
 
     // Normalize the text back to a 0-level indent.

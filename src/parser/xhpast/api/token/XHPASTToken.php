@@ -100,7 +100,7 @@ class XHPASTToken {
       ++$ii;
     }
     return $result;
-  }    
+  }
 
 
 }

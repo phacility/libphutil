@@ -43,7 +43,7 @@
  * ("C"), with values "moon" and "cheese" respectively.
  *
  * @param   string  The name of a callback to pass conversions to.
- * @param   wild    Optional userdata to pass to the callback. For 
+ * @param   wild    Optional userdata to pass to the callback. For
  *                  @{function:qsprintf}, this is the database connection.
  * @param   list    List of arguments, with the sprintf() pattern in position 0.
  * @return  string  Formatted string.
@@ -121,7 +121,7 @@ function xsprintf($callback, $userdata, $argv) {
  * @param   int     The current character position in the string.
  * @param   wild    The value to convert.
  * @param   int     The string length.
- * 
+ *
  * @group util
  */
 function xsprintf_callback_example(

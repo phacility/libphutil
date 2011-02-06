@@ -255,12 +255,12 @@ function mgroup(array $list, $by /*, ... */) {
  */
 function igroup(array $list, $by /*, ... */) {
   $map = ipull($list, $by);
-  
+
   $groups = array();
   foreach ($map as $group) {
     $groups[$group] = array();
   }
-  
+
   foreach ($map as $key => $group) {
     $groups[$group][$key] = $list[$key];
   }

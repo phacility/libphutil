@@ -136,7 +136,7 @@ class XHPASTTree {
       return $statement->evalStatic();
     }
   }
-  
+
   public function getOffsetToLineNumberMap() {
     if ($this->lineMap === null) {
       $src = $this->rawSource;

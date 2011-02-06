@@ -357,7 +357,7 @@ class XHPASTNode {
 
     return stripcslashes($out);
   }
-  
+
   public function getLineNumber() {
     return idx($this->tree->getOffsetToLineNumberMap(), $this->getOffset());
   }

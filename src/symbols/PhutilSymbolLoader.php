@@ -26,7 +26,7 @@
  *      ->setLibrary('example')
  *      ->setModule('some/module')
  *      ->selectAndLoadSymbols();
- * 
+ *
  * @group library
  */
 final class PhutilSymbolLoader {
@@ -158,7 +158,7 @@ final class PhutilSymbolLoader {
 
     return $symbols;
   }
-  
+
   private function selectDescendantsOf($tree, $root) {
     $result = array();
     foreach ($tree[$root] as $child) {
