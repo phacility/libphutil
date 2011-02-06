@@ -84,6 +84,9 @@ namespace xhpast {
       }
       
       Node *firstChild() {
+        if (this->children.empty()) {
+          return NULL;
+        }
         return *(this->children.begin());
       }
       
