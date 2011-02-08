@@ -21,6 +21,7 @@
  */
 class ConduitClient {
 
+  protected $protocol;
   protected $host;
   protected $path;
   protected $traceMode;
@@ -33,6 +34,7 @@ class ConduitClient {
   }
 
   public function __construct($uri) {
+    $this->protocol = parse_url($uri, PHP_URL_SCHEME);
     $this->host = parse_url($uri, PHP_URL_HOST);
     $this->path = parse_url($uri, PHP_URL_PATH);
 
@@ -47,7 +49,7 @@ class ConduitClient {
     return $this->callMethod($method, $params)->resolve();
   }
 
-  public function didReceiveResponse($method, array $data) {
+  public function didReceiveResponse($method, $data) {
     if ($method == 'conduit.connect') {
       $this->sessionKey = idx($data, 'sessionKey');
       $this->connectionID = idx($data, 'connectionID');
@@ -82,25 +84,34 @@ class ConduitClient {
     }
 
     $start_time = microtime(true);
-    $future = new ConduitFuture(
-      'http://'.$this->host.'/'.$this->path.$method,
-      array(
-        'params' => json_encode($params),
-        'output' => 'json',
-      ));
-    $future->setMethod('POST');
-    $future->setClient($this, $method);
-    $future->isReady();
+
+
+    $uri = $this->protocol.'://'.$this->host.'/'.$this->path.$method;
+    $data = array(
+      'params' => json_encode($params),
+      'output' => 'json',
+    );
+
+    if ($this->protocol == 'https') {
+      $core_future = new HTTPSFuture($uri, $data);
+    } else {
+      $core_future = new HTTPFuture($uri, $data);
+      $core_future->setMethod('POST');
+    }
+
+    $conduit_future = new ConduitFuture($core_future);
+    $conduit_future->setClient($this, $method);
+    $conduit_future->isReady();
 
     if ($this->getTraceMode()) {
       $future_name = $method;
-      $future->setTraceMode(true);
-      $future->setStartTime($start_time);
-      $future->setTraceName($future_name);
+      $conduit_future->setTraceMode(true);
+      $conduit_future->setStartTime($start_time);
+      $conduit_future->setTraceName($future_name);
       echo "[Conduit] >>> Send {$future_name}()...\n";
     }
 
-    return $future;
+    return $conduit_future;
   }
 
   public function setTraceMode($mode) {

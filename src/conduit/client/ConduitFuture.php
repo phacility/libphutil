@@ -19,7 +19,7 @@
 /**
  * @group conduit
  */
-class ConduitFuture extends HTTPFuture {
+class ConduitFuture extends FutureProxy {
 
   protected $traceMode;
   protected $traceName;
@@ -50,9 +50,7 @@ class ConduitFuture extends HTTPFuture {
     return $this;
   }
 
-  protected function getResult() {
-    $result = parent::getResult();
-
+  protected function didReceiveResult($result) {
     if (empty($this->endTime)) {
       $this->endTime = microtime(true);
       $time = (int)(1000 * ($this->endTime - $this->startTime));

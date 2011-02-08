@@ -19,7 +19,9 @@ phutil_register_library_map(array(
     'FilesystemException' => 'filesystem',
     'Future' => 'future',
     'FutureIterator' => 'future',
+    'FutureProxy' => 'future/proxy',
     'HTTPFuture' => 'future/http',
+    'HTTPSFuture' => 'future/https',
     'PhutilConsoleFormatter' => 'console',
     'PhutilDefaultSyntaxHighlighterEngine' => 'markup/syntax/engine/default',
     'PhutilDocblockParser' => 'parser/docblock',
@@ -101,9 +103,11 @@ phutil_register_library_map(array(
   ),
   'requires_class' =>
   array(
-    'ConduitFuture' => 'HTTPFuture',
+    'ConduitFuture' => 'FutureProxy',
     'ExecFuture' => 'Future',
+    'FutureProxy' => 'Future',
     'HTTPFuture' => 'Future',
+    'HTTPSFuture' => 'Future',
     'PhutilDefaultSyntaxHighlighterEngine' => 'PhutilSyntaxHighlighterEngine',
     'PhutilDocblockParserTestCase' => 'ArcanistPhutilTestCase',
     'PhutilRemarkupEngine' => 'PhutilMarkupEngine',
