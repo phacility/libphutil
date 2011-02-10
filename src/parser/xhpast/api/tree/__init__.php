@@ -11,7 +11,5 @@ phutil_require_module('phutil', 'parser/xhpast/api/node');
 phutil_require_module('phutil', 'parser/xhpast/api/token');
 phutil_require_module('phutil', 'parser/xhpast/bin');
 
-phutil_require_module('phutil', 'utils');
-
 
 phutil_require_source('XHPASTTree.php');

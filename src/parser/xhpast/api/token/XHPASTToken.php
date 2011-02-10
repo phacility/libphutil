@@ -26,6 +26,7 @@ class XHPASTToken {
   protected $typeID;
   protected $value;
   protected $offset;
+  protected $tree;
 
   public function __construct($id, $type, $value, $offset, XHPASTTree $tree) {
     $this->id = $id;

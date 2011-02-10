@@ -64,6 +64,7 @@ class XHPASTTree {
   public function __construct(array $tree, array $stream, $source) {
     $ii = 0;
     $offset = 0;
+
     foreach ($stream as $token) {
       $this->stream[$ii] = new XHPASTToken(
         $ii,
@@ -95,12 +96,18 @@ class XHPASTTree {
       if (isset($node[3])) {
         $children = $this->buildTree($node[3]);
         foreach ($children as $child) {
-          $child->setParentNode($this->tree[$node_id]);
+          $child->parentNode = $this->tree[$node_id];
         }
-        $this->tree[$node_id]->setChildren($children);
+        $this->tree[$node_id]->children = $children;
       }
     }
-    return array_select_keys($this->tree, array_keys($nodes));
+
+    $result = array();
+    foreach ($nodes as $key => $node) {
+      $result[$key] = $this->tree[$key];
+    }
+
+    return $result;
   }
 
   public function getRawTokenStream() {

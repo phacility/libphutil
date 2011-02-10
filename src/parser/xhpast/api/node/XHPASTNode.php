@@ -26,30 +26,31 @@ class XHPASTNode {
   protected $l;
   protected $r;
   protected $typeID;
-  protected $children = array();
   protected $tree;
-  protected $parentNode;
+
+  // These are public only as a microoptimization to make tree construction
+  // faster; do not access them directly.
+  public $children = array();
+  public $parentNode;
 
   public function __construct($id, array $data, XHPASTTree $tree) {
     $this->id = $id;
     $this->typeID = $data[0];
-    $this->l = idx($data, 1, -1);
-    $this->r = idx($data, 2, -1);
+    if (isset($data[1])) {
+      $this->l = $data[1];
+    } else {
+      $this->l = -1;
+    }
+    if (isset($data[2])) {
+      $this->r = $data[2];
+    } else {
+      $this->r = -1;
+    }
     $this->tree = $tree;
-  }
-
-  public function setParentNode($parent_node) {
-    $this->parentNode = $parent_node;
-    return $this;
   }
 
   public function getParentNode() {
     return $this->parentNode;
-  }
-
-  public function setChildren(array $children) {
-    $this->children = $children;
-    return $this;
   }
 
   public function getID() {
