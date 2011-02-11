@@ -29,7 +29,7 @@ function xhpast_is_available() {
       list($err, $stdout) = exec_manual('%s --version', $bin);
       if (!$err) {
         $version = trim($stdout);
-        if ($version === "xhpast version 0.53") {
+        if ($version === "xhpast version 0.54") {
           $available = true;
         }
       }
