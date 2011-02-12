@@ -1100,9 +1100,11 @@ global_var:
   }
 | '$' r_variable {
     $$ = NTYPE($1, n_VARIABLE_VARIABLE);
+    $$->appendChild($2);
   }
 | '$' '{' expr '}' {
     $$ = NTYPE($1, n_VARIABLE_VARIABLE);
+    $$->appendChild($3);
   }
 ;
 
@@ -2137,7 +2139,16 @@ method_or_not:
 variable_without_objects:
   reference_variable
 | simple_indirect_reference reference_variable {
-    $$ = $1->appendChild($2);
+    xhpast::Node *last = $1;
+    NMORE($1, $2);
+    while (last->firstChild() &&
+           last->firstChild()->type == n_VARIABLE_VARIABLE) {
+      NMORE(last, $2);
+      last = last->firstChild();
+    }
+    last->appendChild($2);
+
+    $$ = $1;
   }
 ;
 
@@ -2166,7 +2177,16 @@ base_variable_with_function_calls:
 base_variable:
   reference_variable
 | simple_indirect_reference reference_variable {
-    $$ = $1->appendChild($2);
+    xhpast::Node *last = $1;
+    NMORE($1, $2);
+    while (last->firstChild() &&
+           last->firstChild()->type == n_VARIABLE_VARIABLE) {
+      NMORE(last, $2);
+      last = last->firstChild();
+    }
+    last->appendChild($2);
+
+    $$ = $1;
   }
 | static_member
 ;
@@ -2243,7 +2263,16 @@ simple_indirect_reference:
     $$ = NTYPE($1, n_VARIABLE_VARIABLE);
   }
 | simple_indirect_reference '$' {
-    $$ = NMORE($1, $2);
+    $2 = NTYPE($2, n_VARIABLE_VARIABLE);
+    
+    xhpast::Node *last = $1;
+    while (last->firstChild() &&
+           last->firstChild()->type == n_VARIABLE_VARIABLE) {
+      last = last->firstChild();
+    }
+    last->appendChild($2);
+
+    $$ = $1;
   }
 ;
 
