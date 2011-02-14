@@ -2100,7 +2100,7 @@ variable:
         $$ = NNEW(n_METHOD_CALL)->appendChild($1);
         $$->appendChild((*ii));
       } else {
-        $$ = NNEW(n_OBJECT_PROPERTY_ACCESS);
+        $$ = NNEW(n_OBJECT_PROPERTY_ACCESS)->appendChild($$);
         $$->appendChild((*ii));
       }
     }

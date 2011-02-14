@@ -231,17 +231,28 @@ class Filesystem {
 
 
   /**
-   * Determine if a file is an image, approximately. This is a simple path
-   * test which exists primarily to reduce code duplication.
+   * Read random bytes from /dev/urandom or equivalent.
    *
-   * @param   string  Path in question.
-   * @return  bool    True if the corresponding file is (probably) an image.
+   * @param   int     Number of bytes to read.
+   * @return  string  Random bytestring of the provided length.
    *
    * @task file
    */
-  public static function isImageFilename($path) {
-    $path = self::resolvePath($path);
-    return (bool)preg_match('/[.](jpe?g|gif|png)$/i', $path);
+  public static function readRandomBytes($bytes) {
+
+    $urandom = @fopen('/dev/urandom', 'rb');
+    if (!$urandom) {
+      throw new FilesystemException('Failed to open /dev/urandom for reading!');
+    }
+    
+    $data = @fread($urandom, $bytes);
+    if (strlen($data) != $bytes) {
+      throw new FilesystemException('Failed to read random bytes!');
+    }
+    
+    @fclose($urandom);
+    
+    return $data;
   }
 
 
