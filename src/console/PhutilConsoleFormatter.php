@@ -40,6 +40,8 @@ class PhutilConsoleFormatter {
   }
 
   public static function formatString($format /* ... */) {
+    $colors = implode('|', array_keys(self::$colorCodes));
+
     if (self::$disableANSI) {
       $format = preg_replace('/\*\*(.*)\*\*/sU',  '\1',   $format);
       $format = preg_replace('/__(.*)__/sU',      '\1',   $format);
@@ -53,8 +55,6 @@ class PhutilConsoleFormatter {
       $bold       = $esc.'[1m'.'\\1'.$esc.'[m';
       $underline  = $esc.'[4m'.'\\1'.$esc.'[m';
       $invert     = $esc.'[7m'.'\\1'.$esc.'[m';
-
-      $colors = implode('|', array_keys(self::$colorCodes));
 
       $format = preg_replace('/\*\*(.*)\*\*/sU',  $bold,      $format);
       $format = preg_replace('/__(.*)__/sU',      $underline, $format);
