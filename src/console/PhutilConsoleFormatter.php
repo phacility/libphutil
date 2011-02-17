@@ -48,7 +48,7 @@ class PhutilConsoleFormatter {
       $format = preg_replace('/##(.*)##/sU',      '\1',   $format);
       $format = preg_replace(
         '@<(fg|bg):('.$colors.')>(.*)</\1>@sU',
-        '\1',
+        '\2',
         $format);
     } else {
       $esc        = chr(27);
