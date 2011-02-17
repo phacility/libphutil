@@ -44,7 +44,7 @@ class PhutilConsoleFormatter {
       $format = preg_replace('/\*\*(.*)\*\*/sU',  '\1',   $format);
       $format = preg_replace('/__(.*)__/sU',      '\1',   $format);
       $format = preg_replace('/##(.*)##/sU',      '\1',   $format);
-      $format = preg_replace_callback(
+      $format = preg_replace(
         '@<(fg|bg):('.$colors.')>(.*)</\1>@sU',
         '\1',
         $format);
