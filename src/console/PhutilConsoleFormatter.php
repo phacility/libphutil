@@ -32,9 +32,18 @@ class PhutilConsoleFormatter {
     'white'   => 7,
     'default' => 9,
   );
-
+  
+  private static $disableANSI = false;
+  
+  public static function disableANSI($disable) {
+    self::$disableANSI = $disable;
+  }
 
   public static function formatString($format /* ... */) {
+    if (self::$disableANSI) {
+      return $format;
+    }
+    
     $esc        = chr(27);
     $bold       = $esc.'[1m'.'\\1'.$esc.'[m';
     $underline  = $esc.'[4m'.'\\1'.$esc.'[m';
