@@ -66,11 +66,18 @@ class ConduitFuture extends FutureProxy {
         "to a Conduit method call.");
     }
 
-    $data = json_decode($result[1], true);
+    $raw = $result[1];
+
+    $shield = 'for(;;);';
+    if (!strncmp($raw, $shield, strlen($shield))) {
+      $raw = substr($raw, strlen($shield));
+    }
+
+    $data = json_decode($raw, true);
     if (!is_array($data)) {
       throw new Exception(
         "Host returned HTTP/200, but invalid JSON data in response to ".
-        "a Conduit method call:\n{$result[1]}");
+        "a Conduit method call:\n{$raw}");
     }
 
     if ($data['error_code']) {
