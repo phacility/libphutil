@@ -13,7 +13,9 @@
     "markup" : "Markup",
     "console" : "Console Utilities",
     "xhpast" : "XHPAST (PHP/XHP Parser)",
-    "conduit" : "Conduit (Service API)"
+    "conduit" : "Conduit (Service API)",
+    "parser" : "Other Parsers",
+    "testcase" : "Test Cases"
   }
 }
 

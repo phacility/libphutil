@@ -16,6 +16,11 @@
  * limitations under the License.
  */
 
+/**
+ * Basic URI parser object.
+ *
+ * @group util
+ */
 final class PhutilURI {
 
   private $protocol;

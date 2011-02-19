@@ -19,6 +19,8 @@
 /**
  * Parse a docblock comment from source code into raw text documentation and
  * metadata (like "@author" and "@return").
+ *
+ * @group parser
  */
 class PhutilDocblockParser {
 

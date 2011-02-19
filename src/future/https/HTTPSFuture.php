@@ -17,7 +17,11 @@
  */
 
 /**
+ * Very basic HTTPS future.
+ *
  * TODO: This class is extremely limited.
+ *
+ * @group futures
  */
 class HTTPSFuture extends Future {
 

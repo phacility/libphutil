@@ -16,6 +16,12 @@
  * limitations under the License.
  */
 
+/**
+ * Wraps another Future and allows you to post-process its result once it
+ * resolves.
+ *
+ * @group futures
+ */
 abstract class FutureProxy extends Future {
 
   private $proxied;

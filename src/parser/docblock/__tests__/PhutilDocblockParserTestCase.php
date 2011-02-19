@@ -16,6 +16,11 @@
  * limitations under the License.
  */
 
+/**
+ * Test cases for @{class:PhutilDocblockParser}.
+ *
+ * @group testcase
+ */
 class PhutilDocblockParserTestCase extends ArcanistPhutilTestCase {
 
   public function testParser() {

@@ -32,9 +32,9 @@ class PhutilConsoleFormatter {
     'white'   => 7,
     'default' => 9,
   );
-  
+
   private static $disableANSI = false;
-  
+
   public static function disableANSI($disable) {
     self::$disableANSI = $disable;
   }

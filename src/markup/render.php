@@ -44,6 +44,9 @@ function phutil_escape_html($string) {
   return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * @group markup
+ */
 function phutil_escape_uri($string) {
   return rawurlencode($string);
 }
