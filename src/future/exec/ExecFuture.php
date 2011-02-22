@@ -45,7 +45,7 @@ class ExecFuture extends Future {
   protected $proc         = null;
   protected $start        = null;
   protected $timeout      = null;
-  protected $pid;
+  protected $procStatus   = null;
 
   protected $stdout       = null;
   protected $stderr       = null;
@@ -95,7 +95,21 @@ class ExecFuture extends Future {
   }
 
   public function getPID() {
-    return $this->pid;
+    $status = $this->procGetStatus();
+    return $status['pid'];
+  }
+
+  private function procGetStatus() {
+    // After the process exits, we only get one chance to read proc_get_status()
+    // before it starts returning garbage. Make sure we don't throw away the
+    // last good read.
+    if ($this->procStatus) {
+      if (!$this->procStatus['running']) {
+        return $this->procStatus;
+      }
+    }
+    $this->procStatus = proc_get_status($this->proc);
+    return $this->procStatus;
   }
 
   public function __construct($command) {
@@ -225,13 +239,6 @@ class ExecFuture extends Future {
         throw new Exception('Failed to open process.');
       }
 
-      $status = proc_get_status($proc);
-      if (!$status) {
-        throw new Exception('Failed to get process status.');
-      }
-
-      $this->pid = $status['pid'];
-
       $this->start = time();
       $this->pipes = $pipes;
       $this->proc  = $proc;
@@ -275,7 +282,7 @@ class ExecFuture extends Future {
 
     //  Read status before reading pipes so that we can never miss data that
     //  arrives between our last read and the process exiting.
-    $status = proc_get_status($this->proc);
+    $status = $this->procGetStatus();
 
     $this->stdout .= $this->readAndDiscard(
       $stdout,
