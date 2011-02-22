@@ -1,0 +1,68 @@
+<?php
+
+/*
+ * Copyright 2011 Facebook, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Scaffolding for implementing robust background processing scripts.
+ *
+ * @group daemon
+ */
+class PhutilDaemon {
+
+  private $argv;
+
+  private static $sighandlerInstalled;
+
+  final public function __construct(array $argv) {
+
+    declare(ticks = 1);
+    $this->argv = $argv;
+
+    if (!self::$sighandlerInstalled) {
+      self::$sighandlerInstalled = true;
+      pcntl_signal(SIGINT,  __CLASS__.'::__exitOnSignal');
+      pcntl_signal(SIGTERM, __CLASS__.'::__exitOnSignal');
+    }
+  }
+
+  final public function stillWorking() {
+    posix_kill(posix_getppid(), SIGUSR1);
+  }
+
+  public static function __exitOnSignal($signo) {
+    // Normally, PHP doesn't invoke destructors when existing in response to
+    // a signal. This forces it to do so, so we have a fighting chance of
+    // releasing any locks on our way out.
+    exit(128 + $signo);
+  }
+
+  final protected function getArgv() {
+    return $this->argv;
+  }
+
+  final public function execute() {
+    $this->willRun();
+    $this->run();
+  }
+
+  protected function willRun() {
+
+  }
+
+  abstract protected function run();
+
+}

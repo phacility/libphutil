@@ -45,6 +45,7 @@ class ExecFuture extends Future {
   protected $proc         = null;
   protected $start        = null;
   protected $timeout      = null;
+  protected $pid;
 
   protected $stdout       = null;
   protected $stderr       = null;
@@ -64,7 +65,6 @@ class ExecFuture extends Future {
     1 => array('pipe', 'w'),  // stdout
     2 => array('pipe', 'w'),  // stderr
   );
-
 
   public static function pushEchoMode($mode) {
     self::$echoMode[] = $mode;
@@ -92,6 +92,10 @@ class ExecFuture extends Future {
 
   public function getStderrSizeLimit() {
     return $this->stderrSizeLimit;
+  }
+
+  public function getPID() {
+    return $this->pid;
   }
 
   public function __construct($command) {
@@ -220,6 +224,13 @@ class ExecFuture extends Future {
       if (!is_resource($proc)) {
         throw new Exception('Failed to open process.');
       }
+
+      $status = proc_get_status($proc);
+      if (!$status) {
+        throw new Exception('Failed to get process status.');
+      }
+
+      $this->pid = $status['pid'];
 
       $this->start = time();
       $this->pipes = $pipes;

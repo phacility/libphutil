@@ -14,6 +14,7 @@
     "console" : "Console Utilities",
     "xhpast" : "XHPAST (PHP/XHP Parser)",
     "conduit" : "Conduit (Service API)",
+    "daemon" : "Daemons",
     "parser" : "Other Parsers",
     "testcase" : "Test Cases"
   }
