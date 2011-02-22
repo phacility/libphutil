@@ -92,7 +92,7 @@ class PhutilDaemonOverseer {
           if ($result !== null) {
             list($err) = $result;
             if ($err) {
-              $this->logMessage('[FAIL] Process edited with error '.$err.'.');
+              $this->logMessage('[FAIL] Process exited with error '.$err.'.');
             } else {
               $this->logMessage('[DONE] Process exited successfully.');
             }

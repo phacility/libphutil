@@ -17,10 +17,13 @@
  * limitations under the License.
  */
 
-$sid = posix_setsid();
-if ($sid <= 0) {
-  throw new Exception('Failed to create new process session!');
+if (!posix_isatty(STDOUT)) {
+  $sid = posix_setsid();
+  if ($sid <= 0) {
+    throw new Exception('Failed to create new process session!');
+  }
 }
+
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root.'/scripts/__init_script__.php';

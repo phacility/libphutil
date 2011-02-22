@@ -21,7 +21,7 @@
  *
  * @group daemon
  */
-class PhutilDaemon {
+abstract class PhutilDaemon {
 
   private $argv;
 
@@ -34,8 +34,8 @@ class PhutilDaemon {
 
     if (!self::$sighandlerInstalled) {
       self::$sighandlerInstalled = true;
-      pcntl_signal(SIGINT,  __CLASS__.'::__exitOnSignal');
-      pcntl_signal(SIGTERM, __CLASS__.'::__exitOnSignal');
+      pcntl_signal(SIGINT,  __CLASS__.'::exitOnSignal');
+      pcntl_signal(SIGTERM, __CLASS__.'::exitOnSignal');
     }
   }
 
@@ -43,7 +43,7 @@ class PhutilDaemon {
     posix_kill(posix_getppid(), SIGUSR1);
   }
 
-  public static function __exitOnSignal($signo) {
+  public static function exitOnSignal($signo) {
     // Normally, PHP doesn't invoke destructors when existing in response to
     // a signal. This forces it to do so, so we have a fighting chance of
     // releasing any locks on our way out.

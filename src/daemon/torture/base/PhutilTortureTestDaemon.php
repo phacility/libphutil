@@ -21,6 +21,6 @@
  *
  * @group testcase
  */
-class PhutilTortureTestDaemon extends PhutilDaemon {
+abstract class PhutilTortureTestDaemon extends PhutilDaemon {
 
 }
