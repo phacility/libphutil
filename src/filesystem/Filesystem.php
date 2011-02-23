@@ -244,14 +244,14 @@ class Filesystem {
     if (!$urandom) {
       throw new FilesystemException('Failed to open /dev/urandom for reading!');
     }
-    
+
     $data = @fread($urandom, $bytes);
     if (strlen($data) != $bytes) {
       throw new FilesystemException('Failed to read random bytes!');
     }
-    
+
     @fclose($urandom);
-    
+
     return $data;
   }
 
@@ -406,8 +406,9 @@ class Filesystem {
    */
   public static function walkToRoot($path) {
     $path = self::resolvePath($path);
-    if ($path == '/') {
-      return array('/');
+
+    if (is_link($path)) {
+      $path = realpath($path);
     }
 
     $walk = array();
