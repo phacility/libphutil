@@ -130,7 +130,13 @@ class PhutilBootloader {
   }
 
   public function loadLibrary($path) {
-    $okay = include_once $path.'/__phutil_library_init__.php';
+    $root = null;
+    if (!empty($_SERVER['PHUTIL_LIBRARY_ROOT'])) {
+      if ($path[0] != '/') {
+        $root = $_SERVER['PHUTIL_LIBRARY_ROOT'];
+      }
+    }
+    $okay = include_once $root.$path.'/__phutil_library_init__.php';
     if (!$okay) {
       throw new PhutilBootloaderException(
         "Include of '{$path}/__phutil_library_init__.php' failed!");
