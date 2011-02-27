@@ -196,7 +196,7 @@ final class PhutilSymbolLoader {
     $bootloader = PhutilBootloader::getInstance();
     $bootloader->loadModule($symbol_spec['library'], $symbol_spec['module']);
     if (!function_exists($name)) {
-      throw new PhutilMissingSymbolException();
+      throw new PhutilMissingSymbolException($name);
     }
   }
 

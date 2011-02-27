@@ -242,12 +242,16 @@ class Filesystem {
 
     $urandom = @fopen('/dev/urandom', 'rb');
     if (!$urandom) {
-      throw new FilesystemException('Failed to open /dev/urandom for reading!');
+      throw new FilesystemException(
+        '/dev/urandom',
+        'Failed to open /dev/urandom for reading!');
     }
 
     $data = @fread($urandom, $bytes);
     if (strlen($data) != $bytes) {
-      throw new FilesystemException('Failed to read random bytes!');
+      throw new FilesystemException(
+        '/dev/urandom',
+        'Failed to read random bytes!');
     }
 
     @fclose($urandom);
