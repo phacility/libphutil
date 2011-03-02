@@ -24,6 +24,40 @@
  */
 class PhutilDocblockParser {
 
+  public function extractDocblocks($text) {
+    $blocks = array();
+
+    $matches = null;
+    $match = preg_match_all(
+      '@(/\*\*.*?\*/)@s',
+      $text,
+      $matches,
+      PREG_OFFSET_CAPTURE | PREG_PATTERN_ORDER);
+
+    if (!$match) {
+      return $blocks;
+    }
+
+    // Build a map of character offset -> line number.
+    $map = array();
+    $lines = explode("\n", $text);
+    $num = 1;
+    foreach ($lines as $line) {
+      $len = strlen($line) + 1;
+      for ($jj = 0; $jj < $len; $jj++) {
+        $map[] = $num;
+      }
+      ++$num;
+    }
+
+    foreach ($matches[0] as $match) {
+      list($data, $offset) = $match;
+      $blocks[] = array($data, $map[$offset]);
+    }
+
+    return $blocks;
+  }
+
   public function parse($docblock) {
 
     // Strip off comments.

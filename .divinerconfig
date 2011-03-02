@@ -17,6 +17,10 @@
     "daemon" : "Daemons",
     "parser" : "Other Parsers",
     "testcase" : "Test Cases"
-  }
+  },
+  "engines" : [
+    ["DivinerArticleEngine", {}],
+    ["DivinerXHPEngine", {}]
+  ]
 }
 
