@@ -90,8 +90,11 @@ final class PhutilInteractiveEditor {
     $arg_offset = escapeshellarg($offset);
     $arg_path   = escapeshellarg($path);
 
-    $err = 0;
-    passthru("{$arg_editor} +{$arg_offset} {$arg_path}", $err);
+    // Ensure the child process shares the real STD[IN|OUT] and not a
+    // pipe.  This is necessary for emacsclient to work properly.
+    $pipes = array();
+    $err = proc_close(proc_open("{$arg_editor} +{$arg_offset} {$arg_path}",
+                                array(STDIN, STDOUT, STDERR), $pipes));
 
     if ($err) {
       Filesystem::remove($tmp);
