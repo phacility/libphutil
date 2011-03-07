@@ -24,6 +24,8 @@
 abstract class PhutilDaemon {
 
   private $argv;
+  private $traceMode;
+  private $traceMemory;
 
   private static $sighandlerInstalled;
 
@@ -41,12 +43,26 @@ abstract class PhutilDaemon {
 
   final public function stillWorking() {
     posix_kill(posix_getppid(), SIGUSR1);
+    if ($this->traceMemory) {
+      $memuse = number_format(memory_get_usage() / 1024, 1);
+      $daemon = get_class($this);
+      fprintf(STDERR, "<RAMS> {$daemon} Memory Usage: {$memuse} KB\n");
+    }
+  }
+
+  final protected function sleep($duration) {
+    $this->stillWorking();
+    while ($duration > 0) {
+      sleep(min($duration, 60));
+      $duration -= 60;
+      $this->stillWorking();
+    }
   }
 
   public static function exitOnSignal($signo) {
     // Normally, PHP doesn't invoke destructors when existing in response to
     // a signal. This forces it to do so, so we have a fighting chance of
-    // releasing any locks on our way out.
+    // releasing any locks, leases or resources on our way out.
     exit(128 + $signo);
   }
 
@@ -59,10 +75,33 @@ abstract class PhutilDaemon {
     $this->run();
   }
 
-  protected function willRun() {
+  abstract protected function run();
 
+  final public function setTraceMemory() {
+    $this->traceMemory = true;
+    return $this;
   }
 
-  abstract protected function run();
+  final public function getTraceMemory() {
+    return $this->traceMemory;
+  }
+
+  final public function setTraceMode() {
+    $this->traceMode = true;
+    ExecFuture::pushEchoMode(true);
+    $this->didSetTraceMode();
+  }
+
+  final public function getTraceMode() {
+    return $this->traceMode;
+  }
+
+  protected function willRun() {
+    // This is a hook for subclasses.
+  }
+
+  protected function didSetTraceMode() {
+    // This is a hook for subclasses.
+  }
 
 }

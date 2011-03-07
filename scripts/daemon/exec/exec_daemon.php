@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+error_reporting(E_ALL | E_STRICT);
+
 if (!posix_isatty(STDOUT)) {
   $sid = posix_setsid();
   if ($sid <= 0) {
@@ -24,17 +26,25 @@ if (!posix_isatty(STDOUT)) {
   }
 }
 
-
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root.'/scripts/__init_script__.php';
 
+$trace_mode = false;
+$trace_memory = false;
 $load = array();
 $len = count($argv);
-for ($ii = 1; $ii < $len; $ii++) {
+for ($ii = 2; $ii < $len; $ii++) {
   $value = $argv[$ii];
   $matches = null;
   if ($value == '--') {
     break;
+  } else if ($value == '--trace') {
+    $trace_mode = true;
+    unset($argv[$ii]);
+  } else if ($value == '--trace-memory') {
+    $trace_mode = true;
+    $trace_memory = true;
+    unset($argv[$ii]);
   } else if (preg_match('/^--load-phutil-library=(.*)$/', $value, $matches)) {
     $load[] = $matches[1];
     unset($argv[$ii]);
@@ -54,6 +64,15 @@ if ($load) {
 phutil_require_module('phutil', 'symbols');
 
 $daemon = $argv[1];
+
+$argv = array_slice($argv, 2);
+
 PhutilSymbolLoader::loadClass($daemon);
 $daemon = newv($daemon, array($argv));
+if ($trace_mode) {
+  $daemon->setTraceMode();
+}
+if ($trace_memory) {
+  $daemon->setTraceMemory();
+}
 $daemon->execute();

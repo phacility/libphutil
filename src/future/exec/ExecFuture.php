@@ -165,6 +165,15 @@ class ExecFuture extends Future {
     return $this;
   }
 
+  public function discardBuffers() {
+    $this->stdout = '';
+    $this->stderr = '';
+    $this->stdoutPos = 0;
+    $this->stderrPos = 0;
+
+    return $this;
+  }
+
   public function getReadSockets() {
     list($stdin, $stdout, $stderr) = $this->pipes;
     $sockets = array();

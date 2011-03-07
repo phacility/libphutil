@@ -36,8 +36,24 @@ class PhutilDaemonOverseer {
   private $signaled;
   private static $instance;
 
+  private $traceMode;
+  private $traceMemory;
+
   public function __construct($daemon, array $argv) {
     $this->daemon = $daemon;
+
+    $len = count($argv);
+    for ($ii = 1; $ii < $len; $ii++) {
+      if ($argv[$ii] == '--') {
+        break;
+      } else if ($argv[$ii] == '--trace') {
+        $this->traceMode = true;
+      } else if ($argv[$ii] == '--trace-memory') {
+        $this->traceMode = true;
+        $this->traceMemory = true;
+      }
+    }
+
     $this->argv = array_slice($argv, 1);
 
     if (self::$instance) {
@@ -55,6 +71,10 @@ class PhutilDaemonOverseer {
   }
 
   public function run() {
+    if (!$this->traceMode) {
+      echo "Running daemon '{$this->daemon}' silently. Use '--trace' to ".
+           "produce debugging output.\n";
+    }
 
     $root = phutil_get_library_root('phutil');
     $root = dirname($root);
@@ -82,12 +102,27 @@ class PhutilDaemonOverseer {
 
       do {
         do {
-          // $memuse = number_format(memory_get_usage() / 1024, 1);
-          // $this->logMessage('[STAT] Memory Usage: '.$memuse.' KB');
+          if ($this->traceMemory) {
+            $memuse = number_format(memory_get_usage() / 1024, 1);
+            $this->logMessage('[RAMS] Overseer Memory Usage: '.$memuse.' KB');
+          }
 
           // We need a shortish timeout here so we can run the tick handler
           // frequently in order to process signals.
           $result = $future->resolve(1);
+
+          if ($this->traceMode) {
+            list($stdout, $stderr) = $future->read();
+            $stdout = trim($stdout);
+            $stderr = trim($stderr);
+            if (strlen($stdout)) {
+              $this->logMessage('[:OUT] '.$stdout);
+            }
+            if (strlen($stderr)) {
+              $this->logMessage('[:ERR] '.$stderr);
+            }
+            $future->discardBuffers();
+          }
 
           if ($result !== null) {
             list($err) = $result;
@@ -124,7 +159,9 @@ class PhutilDaemonOverseer {
   }
 
   private function logMessage($message) {
-    echo date('Y-m-d g:i:s A').' '.$message."\n";
+    if ($this->traceMode) {
+      echo date('Y-m-d g:i:s A').' '.$message."\n";
+    }
   }
 
   private function annihilateProcessGroup() {
@@ -133,7 +170,15 @@ class PhutilDaemonOverseer {
     if ($pid && $pgid) {
       exec("kill -TERM -- -{$pgid}");
       sleep($this->killDelay);
-      exec("kill -KILL -- -{$pgid}");
+
+      // On OSX, we'll get a permission error on stderr if the SIGTERM was
+      // successful in ending the life of the process group, presumably because
+      // all that's left is the daemon itself as a zombie waiting for us to
+      // reap it. However, we still need to issue this command for process
+      // groups that resist SIGTERM. Rather than trying to figure out if the
+      // process group is still around or not, just SIGKILL unconditionally and
+      // ignore any error which may be raised.
+      exec("kill -KILL -- -{$pgid} 2>/dev/null");
       $this->childPID = null;
     }
   }

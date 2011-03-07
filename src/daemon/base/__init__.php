@@ -6,5 +6,7 @@
 
 
 
+phutil_require_module('phutil', 'future/exec');
+
 
 phutil_require_source('PhutilDaemon.php');
