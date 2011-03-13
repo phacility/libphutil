@@ -22,6 +22,7 @@ phutil_register_library_map(array(
     'FutureProxy' => 'future/proxy',
     'HTTPFuture' => 'future/http',
     'HTTPSFuture' => 'future/https',
+    'LinesOfALargeFile' => 'filesystem/linesofalargefile',
     'PhutilConsoleFormatter' => 'console',
     'PhutilDaemon' => 'daemon/base',
     'PhutilDaemonOverseer' => 'daemon/overseer',
