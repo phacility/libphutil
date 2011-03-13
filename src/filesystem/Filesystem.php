@@ -385,7 +385,7 @@ class Filesystem {
 
     $list = @scandir($path);
     if ($list === false) {
-      throw new Exception(
+      throw new FilesystemException(
         $path,
         "Unable to list contents of directory `{$path}'.");
     }
