@@ -6,6 +6,8 @@
 
 
 
+phutil_require_module('phutil', 'conduit/client');
+phutil_require_module('phutil', 'filesystem');
 phutil_require_module('phutil', 'future/exec');
 phutil_require_module('phutil', 'moduleutils');
 

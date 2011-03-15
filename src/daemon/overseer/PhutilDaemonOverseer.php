@@ -26,8 +26,8 @@ class PhutilDaemonOverseer {
   private $captureBufferSize = 65536;
 
   private $deadline;
-  private $deadlineTimeout  = 300;
-  private $restartDelay     = 30;
+  private $deadlineTimeout  = 86400;
+  private $restartDelay     = 60;
   private $killDelay        = 3;
 
   private $daemon;
@@ -38,12 +38,18 @@ class PhutilDaemonOverseer {
 
   private $traceMode;
   private $traceMemory;
+  private $daemonize;
+  private $phddir;
+  private $conduitURI;
 
   public function __construct($daemon, array $argv) {
     $this->daemon = $daemon;
 
+    $original_argv = $argv;
+
     $len = count($argv);
     for ($ii = 1; $ii < $len; $ii++) {
+      $matches = null;
       if ($argv[$ii] == '--') {
         break;
       } else if ($argv[$ii] == '--trace') {
@@ -51,6 +57,15 @@ class PhutilDaemonOverseer {
       } else if ($argv[$ii] == '--trace-memory') {
         $this->traceMode = true;
         $this->traceMemory = true;
+      } else if ($argv[$ii] == '--daemonize') {
+        $this->daemonize = true;
+        unset($argv[$ii]);
+      } else if (preg_match('/^--phd=(.*)$/', $argv[$ii], $matches)) {
+        $this->phddir = $matches[1];
+        unset($argv[$ii]);
+      } else if (preg_match('/^--conduit-uri=(.*)$/', $argv[$ii], $matches)) {
+        $this->conduitURI = $matches[1];
+        unset($argv[$ii]);
       }
     }
 
@@ -62,6 +77,45 @@ class PhutilDaemonOverseer {
     }
 
     self::$instance = $this;
+
+    if ($this->daemonize) {
+
+      // We need to get rid of these or the daemon will hang when we TERM it
+      // waiting for something to read the buffers. TODO: Learn how unix works.
+      fclose(STDOUT);
+      fclose(STDERR);
+      ob_start();
+
+      $pid = pcntl_fork();
+      if ($pid === -1) {
+        throw new Exception("Unable to fork!");
+      } else if ($pid) {
+        exit(0);
+      }
+    }
+
+    if ($this->phddir) {
+      $desc = array(
+        'name'            => $this->daemon,
+        'pid'             => getmypid(),
+        'start'           => time(),
+      );
+      Filesystem::writeFile(
+        $this->phddir.'/daemon.'.getmypid(),
+        json_encode($desc));
+    }
+
+    if ($this->conduitURI) {
+      $this->conduit = new ConduitClient($this->conduitURI);
+      $this->daemonLogID = $this->conduit->callMethodSynchronous(
+        'daemon.launched',
+        array(
+          'daemon'  => $this->daemon,
+          'host'    => php_uname('n'),
+          'pid'     => getmypid(),
+          'argv'    => json_encode(array_slice($original_argv, 1)),
+        ));
+    }
 
     declare(ticks = 1);
     pcntl_signal(SIGUSR1, array($this, 'didReceiveKeepaliveSignal'));
@@ -78,18 +132,25 @@ class PhutilDaemonOverseer {
 
     $root = phutil_get_library_root('phutil');
     $root = dirname($root);
-    $exec_daemon = $root.'/scripts/daemon/exec/exec_daemon.php';
 
+    // Massage things here so that 'ps' ends up looking somewhat reasonable.
+    $exec_dir = $root.'/scripts/daemon/exec/';
+    $ok = chdir($exec_dir);
+    if (!$ok) {
+      throw new Exception("Unable to change directory to {$exec_dir}!");
+    }
+
+    $exec_daemon = './exec_daemon.php';
     $argv = $this->argv;
     array_unshift($argv, $exec_daemon, $this->daemon);
     foreach ($argv as $k => $arg) {
       $argv[$k] = escapeshellarg($arg);
     }
 
-    $command = 'exec '.implode(' ', $argv);
+    $command = implode(' ', $argv);
 
     while (true) {
-      $this->logMessage('[INIT] Starting process.');
+      $this->logMessage('INIT', 'Starting process.');
 
       $future = new ExecFuture($command);
       $future->setStdoutSizeLimit($this->captureBufferSize);
@@ -104,22 +165,22 @@ class PhutilDaemonOverseer {
         do {
           if ($this->traceMemory) {
             $memuse = number_format(memory_get_usage() / 1024, 1);
-            $this->logMessage('[RAMS] Overseer Memory Usage: '.$memuse.' KB');
+            $this->logMessage('RAMS', 'Overseer Memory Usage: '.$memuse.' KB');
           }
 
           // We need a shortish timeout here so we can run the tick handler
           // frequently in order to process signals.
           $result = $future->resolve(1);
 
-          if ($this->traceMode) {
+          if ($this->traceMode || $this->conduit) {
             list($stdout, $stderr) = $future->read();
             $stdout = trim($stdout);
             $stderr = trim($stderr);
             if (strlen($stdout)) {
-              $this->logMessage('[:OUT] '.$stdout);
+              $this->logMessage('STDO', $stdout, $stdout);
             }
             if (strlen($stderr)) {
-              $this->logMessage('[:ERR] '.$stderr);
+              $this->logMessage('STDE', $stderr, $stderr);
             }
             $future->discardBuffers();
           }
@@ -127,19 +188,22 @@ class PhutilDaemonOverseer {
           if ($result !== null) {
             list($err) = $result;
             if ($err) {
-              $this->logMessage('[FAIL] Process exited with error '.$err.'.');
+              $this->logMessage(
+                'FAIL',
+                'Process exited with error '.$err.'.',
+                $err);
             } else {
-              $this->logMessage('[DONE] Process exited successfully.');
+              $this->logMessage('DONE', 'Process exited successfully.');
             }
             break 2;
           }
         } while (time() < $this->deadline);
 
-        $this->logMessage('[HANG] Hang detected. Restarting process.');
+        $this->logMessage('HANG', 'Hang detected. Restarting process.');
         $this->annihilateProcessGroup();
       } while (false);
 
-      $this->logMessage('[WAIT] Waiting to restart process.');
+      $this->logMessage('WAIT', 'Waiting to restart process.');
       sleep($this->restartDelay);
     }
   }
@@ -152,15 +216,31 @@ class PhutilDaemonOverseer {
     if ($this->signaled) {
       exit(128 + $signo);
     }
+
     echo "\n>>> Shutting down...\n";
+    fflush(STDOUT);
+    fflush(STDERR);
+    fclose(STDOUT);
+    fclose(STDERR);
     $this->signaled = true;
     $this->annihilateProcessGroup();
     exit(128 + $signo);
   }
 
-  private function logMessage($message) {
+  private function logMessage($type, $message, $remote = null) {
     if ($this->traceMode) {
-      echo date('Y-m-d g:i:s A').' '.$message."\n";
+      echo date('Y-m-d g:i:s A').' ['.$type.'] '.$message."\n";
+    }
+    if ($this->conduit) {
+      // TODO: This is kind of sketchy to do without any timeouts since a
+      // conduit server hang could throw a wrench into things.
+      $this->conduit->callMethodSynchronous(
+        'daemon.log',
+        array(
+          'daemonLogID' => $this->daemonLogID,
+          'type'         => $type,
+          'message'      => substr($remote, 0, 1024 * 128),
+        ));
     }
   }
 
