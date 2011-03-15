@@ -42,7 +42,9 @@ abstract class PhutilDaemon {
   }
 
   final public function stillWorking() {
-    posix_kill(posix_getppid(), SIGUSR1);
+    if (!posix_isatty(STDOUT)) {
+      posix_kill(posix_getppid(), SIGUSR1);
+    }
     if ($this->traceMemory) {
       $memuse = number_format(memory_get_usage() / 1024, 1);
       $daemon = get_class($this);
