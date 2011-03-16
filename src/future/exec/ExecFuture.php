@@ -55,6 +55,7 @@ class ExecFuture extends Future {
   protected $stdoutPos    = 0;
   protected $stderrPos    = 0;
   protected $command      = null;
+  protected $cwd;
 
   protected $stdoutSizeLimit = PHP_INT_MAX;
   protected $stderrSizeLimit = PHP_INT_MAX;
@@ -92,6 +93,11 @@ class ExecFuture extends Future {
 
   public function getStderrSizeLimit() {
     return $this->stderrSizeLimit;
+  }
+
+  public function setCWD($cwd) {
+    $this->cwd = $cwd;
+    return $this;
   }
 
   public function getPID() {
@@ -243,7 +249,11 @@ class ExecFuture extends Future {
       }
 
       $pipes = array();
-      $proc = proc_open($this->command, self::$descriptorSpec, $pipes);
+      $proc = proc_open(
+        $this->command,
+        self::$descriptorSpec,
+        $pipes,
+        $this->cwd);
       if (!is_resource($proc)) {
         throw new Exception('Failed to open process.');
       }

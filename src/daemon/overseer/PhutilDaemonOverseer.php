@@ -133,12 +133,7 @@ class PhutilDaemonOverseer {
     $root = phutil_get_library_root('phutil');
     $root = dirname($root);
 
-    // Massage things here so that 'ps' ends up looking somewhat reasonable.
     $exec_dir = $root.'/scripts/daemon/exec/';
-    $ok = chdir($exec_dir);
-    if (!$ok) {
-      throw new Exception("Unable to change directory to {$exec_dir}!");
-    }
 
     $exec_daemon = './exec_daemon.php';
     $argv = $this->argv;
@@ -153,6 +148,7 @@ class PhutilDaemonOverseer {
       $this->logMessage('INIT', 'Starting process.');
 
       $future = new ExecFuture($command);
+      $future->setCWD($exec_dir);
       $future->setStdoutSizeLimit($this->captureBufferSize);
       $future->setStderrSizeLimit($this->captureBufferSize);
 
