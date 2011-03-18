@@ -339,6 +339,103 @@ function isort(array $list, $index) {
 
 
 /**
+ * Filter a list of objects by executing a method across all the objects and
+ * filter out the ones wth empty() results. this function works just like
+ * @{function:ifilter}, except that it operates on a list of objects instead
+ * of a list of arrays.
+ *
+ * For example, to remove all objects with no children from a list, where
+ * 'hasChildren' is a method name, do this:
+ *
+ *   mfilter($list, 'hasChildren');
+ *
+ * The optional third parameter allows you to negate the operation and filter
+ * out nonempty objects. To remove all objects that DO have children, do this:
+ *
+ *   mfilter($list, 'hasChildren', true);
+ *
+ * @param  array        List of objects to filter.
+ * @param  string       A method name.
+ * @param  bool         Optionally, pass true to drop objects which pass the
+ *                      filter instead of keeping them.
+ *
+ * @return array   List of objects which pass the filter.
+ *
+ * @group  util
+ */
+function mfilter(array $list, $method, $negate = false) {
+  if (!is_string($method)) {
+    throw new InvalidArgumentException('Argument method is not a string.');
+  }
+
+  $result = array();
+  foreach ($list as $key => $object) {
+    $value = $object->$method();
+
+    if (!$negate) {
+      if (!empty($value)) {
+        $result[$key] = $object;
+      }
+    } else {
+      if (empty($value)) {
+        $result[$key] = $object;
+      }
+    }
+  }
+
+  return $result;
+}
+
+
+/**
+ * Filter a list of arrays by removing the ones with an empty() value for some
+ * index. This function works just like @{function:mfilter}, except that it
+ * operates on a list of arrays instead of a list of objects.
+ *
+ * For example, to remove all arrays without value for key 'username', do this:
+ *
+ *   mfilter($list, 'username');
+ *
+ * The optional third parameter allows you to negate the operation and filter
+ * out nonempty arrays. To remove all arrays that DO have value for key
+ * 'username', do this:
+ *
+ *   mfilter($list, 'username', true);
+ *
+ * @param  array        List of arrays to filter.
+ * @param  scalar       The index.
+ * @param  bool         Optionally, pass true to drop arrays which pass the
+ *                      filter instead of keeping them.
+ *
+ * @return array   List of arrays which pass the filter.
+ *
+ * @group  util
+ */
+function ifilter(array $list, $index, $negate = false) {
+  if (!is_scalar($index)) {
+    throw new InvalidArgumentException('Argument index is not a scalar.');
+  }
+
+  $result = array();
+  if (!$negate) {
+    foreach ($list as $key => $array) {
+      if (!empty($array[$index])) {
+        $result[$key] = $array;
+      }
+    }
+  } else {
+    foreach ($list as $key => $array) {
+      if (empty($array[$index])) {
+        $result[$key] = $array;
+      }
+    }
+  }
+
+  return $result;
+}
+
+
+/**
  * Selects a list of keys from an array, returning a new array with only the
  * key-value pairs identified by the selected keys, in the specified order.
  *
@@ -363,6 +460,7 @@ function array_select_keys(array $dict, array $keys) {
   }
   return $result;
 }
+
 
 /**
  * Returns the first argument which is not strictly null, or ##null## if there
