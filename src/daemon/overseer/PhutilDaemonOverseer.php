@@ -230,13 +230,17 @@ class PhutilDaemonOverseer {
     if ($this->conduit) {
       // TODO: This is kind of sketchy to do without any timeouts since a
       // conduit server hang could throw a wrench into things.
-      $this->conduit->callMethodSynchronous(
-        'daemon.log',
-        array(
-          'daemonLogID' => $this->daemonLogID,
-          'type'         => $type,
-          'message'      => substr($remote, 0, 1024 * 128),
-        ));
+      try {
+        $this->conduit->callMethodSynchronous(
+          'daemon.log',
+          array(
+            'daemonLogID'  => $this->daemonLogID,
+            'type'         => $type,
+            'message'      => $remote,
+          ));
+      } catch (Exception $ex) {
+        // TOOD: Send this somewhere useful instead of eating it.
+      }
     }
   }
 
