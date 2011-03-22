@@ -293,9 +293,9 @@ class ExecFuture extends Future {
         $this->pipes[0] = null;
       }
     } else {
-      // make sure to remove any references to the pipe in the case when stdin
-      // length was zero. avoid the overhead of calling fclose() as it is not
-      // necessary.
+      if ($this->closePipe) {
+  //      @fclose($stdin);
+      }
       $this->pipes[0] = null;
     }
 
