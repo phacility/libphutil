@@ -99,7 +99,12 @@ final class PhutilSymbolLoader {
     foreach ($libraries as $library) {
       $map = $bootloader->getLibraryMap($library);
       foreach ($types as $type) {
-        foreach ($map[$type] as $name => $module) {
+        if ($type == 'interface') {
+          $lookup_map = $map['class'];
+        } else {
+          $lookup_map = $map[$type];
+        }
+        foreach ($lookup_map as $name => $module) {
           if ($this->name && ($name != $this->name)) {
             continue;
           }
