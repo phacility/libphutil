@@ -294,7 +294,7 @@ class ExecFuture extends Future {
       }
     } else {
       if ($this->closePipe) {
-  //      @fclose($stdin);
+        @fclose($stdin);
       }
       $this->pipes[0] = null;
     }
