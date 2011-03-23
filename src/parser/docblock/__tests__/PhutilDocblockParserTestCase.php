@@ -57,6 +57,16 @@ class PhutilDocblockParserTestCase extends ArcanistPhutilTestCase {
           "Cozy lummox gives smart squid who asks for job pen.",
           $docblock);
         break;
+      case 'multiline-special.docblock':
+        $this->assertEqual(
+          array(
+            'special' => "x y z",
+          ),
+          $specials);
+        $this->assertEqual(
+          "",
+          $docblock);
+        break;
       case 'multi-specials.docblock':
         $this->assertEqual(
           array(

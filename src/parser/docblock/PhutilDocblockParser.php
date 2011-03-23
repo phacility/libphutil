@@ -72,10 +72,9 @@ class PhutilDocblockParser {
     foreach ($lines as $k => $line) {
       if (preg_match('/^\s*@\w/i', $line)) {
         $last = $k;
-        continue;
       } else if (preg_match('/^\s*$/', $line)) {
         $last = false;
-      } else if ($last) {
+      } else if ($last !== false) {
         $lines[$last] = rtrim($lines[$last]).' '.trim($line);
         unset($lines[$k]);
       }
