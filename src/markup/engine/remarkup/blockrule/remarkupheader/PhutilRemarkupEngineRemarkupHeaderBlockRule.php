@@ -31,10 +31,14 @@ class PhutilRemarkupEngineRemarkupHeaderBlockRule
   }
 
   public function markupText($text) {
+    $text = trim($text);
+
     $level = 1;
     for ($ii = 0; $ii < min(5, strlen($text)); $ii++) {
       if ($text[$ii] == '=') {
         ++$level;
+      } else {
+        break;
       }
     }
     $text = trim($text, ' =');

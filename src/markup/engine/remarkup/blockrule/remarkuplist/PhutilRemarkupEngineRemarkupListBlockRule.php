@@ -39,6 +39,6 @@ class PhutilRemarkupEngineRemarkupListBlockRule
         $items[$key] = '<li>'.$this->applyRules($item).'</li>';
       }
     }
-    return '<ul>'.implode("\n", $items).'</ul>';
+    return "<ul>\n".implode("\n", $items)."\n</ul>";
   }
 }

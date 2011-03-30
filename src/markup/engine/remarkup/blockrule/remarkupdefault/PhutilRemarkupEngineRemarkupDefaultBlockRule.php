@@ -31,11 +31,11 @@ class PhutilRemarkupEngineRemarkupDefaultBlockRule
   }
 
   public function markupText($text) {
-    $lines = explode("\n", $text);
+    $lines = explode("\n", trim($text));
     foreach ($lines as $key => $line) {
       $lines[$key] = $this->applyRules($line."\n");
     }
-    return '<p>'.implode('', $lines).'</p>';
+    return '<p>'.trim(implode('<br />', $lines)).'</p>';
   }
 
 }
