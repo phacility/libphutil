@@ -293,7 +293,7 @@ class ExecFuture extends Future {
         $this->pipes[0] = null;
       }
     } else {
-      if ($this->closePipe) {
+      if ($this->closePipe && $stdin) {
         @fclose($stdin);
       }
       $this->pipes[0] = null;
