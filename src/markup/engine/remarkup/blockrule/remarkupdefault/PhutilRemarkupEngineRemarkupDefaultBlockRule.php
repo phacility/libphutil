@@ -35,7 +35,7 @@ class PhutilRemarkupEngineRemarkupDefaultBlockRule
     foreach ($lines as $key => $line) {
       $lines[$key] = $this->applyRules($line."\n");
     }
-    return '<p>'.trim(implode('<br />', $lines)).'</p>';
+    return '<p>'.trim(implode('', $lines)).'</p>';
   }
 
 }

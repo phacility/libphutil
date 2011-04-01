@@ -3,5 +3,5 @@ http://www.example.com/..
 http://www.example.com/!!!
 ~~~~~~~~~~
 <p><a href="http://www.example.com/" target="_blank">http://www.example.com/</a>,
-<br /><a href="http://www.example.com/" target="_blank">http://www.example.com/</a>..
-<br /><a href="http://www.example.com/" target="_blank">http://www.example.com/</a>!!!</p>
+<a href="http://www.example.com/" target="_blank">http://www.example.com/</a>..
+<a href="http://www.example.com/" target="_blank">http://www.example.com/</a>!!!</p>

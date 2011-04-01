@@ -21,11 +21,31 @@
  * is a query object which selects symbols which satisfy certain criteria, and
  * optionally loads them. For instance, to load all classes in a module:
  *
- *    id(new PhutilSymbolLoader())
+ *    $symbols = id(new PhutilSymbolLoader())
  *      ->setType('class')
  *      ->setLibrary('example')
  *      ->setModule('some/module')
  *      ->selectAndLoadSymbols();
+ *
+ * When you execute the loading query, it returns a dictionary of matching
+ * symbols:
+ *
+ *    array(
+ *      'class$Example' => array(
+ *        'type'    => 'class',
+ *        'name'    => 'Example',
+ *        'library' => 'libexample',
+ *        'module'  => 'examples/example',
+ *      ),
+ *      // ... more ...
+ *    );
+ *
+ * The **library** and **module** keys show where the symbol is defined. The
+ * **type** and **name** keys identify the symbol itself.
+ *
+ * @task config   Configuring the Query
+ * @task load     Loading Symbols
+ * @task internal Internals
  *
  * @group library
  */
@@ -39,11 +59,28 @@ final class PhutilSymbolLoader {
 
   private $suppressLoad;
 
+
+  /**
+   * Select the type of symbol to load, either ##class## or ##function##.
+   *
+   * @param string  Type of symbol to load.
+   * @return this
+   * @task config
+   */
   public function setType($type) {
     $this->type = $type;
     return $this;
   }
 
+
+  /**
+   * Restrict the symbol query to a specific library; only symbols from this
+   * library will be loaded.
+   *
+   * @param string Library name.
+   * @return this
+   * @task config
+   */
   public function setLibrary($library) {
     // Validate the library name; this throws if the library in not loaded.
     $bootloader = PhutilBootloader::getInstance();
@@ -53,28 +90,60 @@ final class PhutilSymbolLoader {
     return $this;
   }
 
+
+  /**
+   * Restrict the symbol query to a single module.
+   *
+   * @param string Module name.
+   * @return this
+   * @task config
+   */
   public function setModule($module) {
     $this->module = $module;
     return $this;
   }
 
+
+  /**
+   * Restrict the symbol query to a single symbol name, e.g. a specific class
+   * or function name.
+   *
+   * @param string Symbol name.
+   * @return this
+   * @task config
+   */
   public function setName($name) {
     $this->name = $name;
     return $this;
   }
 
+
+  /**
+   * Restrict the symbol query to only descendants of some class. This will
+   * strictly select descendants, the base class will not be selected. This
+   * implies loading only classes.
+   *
+   * @param string Base class name.
+   * @return this
+   * @task config
+   */
   public function setAncestorClass($base) {
     $this->base = $base;
     return $this;
   }
 
-  public function selectSymbolsWithoutLoading() {
-    $this->suppressLoad = true;
-    $result = $this->selectAndLoadSymbols();
-    $this->suppressLoad = false;
-    return $result;
-  }
+/* -(  Load  )--------------------------------------------------------------- */
 
+
+  /**
+   * Execute the query and select matching symbols, then load the modules where
+   * they are defined so they can be used.
+   *
+   * @return dict A dictionary of matching symbols. See top-level class
+   *              documentation for details. These symbols will be loaded
+   *              and available.
+   * @task load
+   */
   public function selectAndLoadSymbols() {
     $map = array();
 
@@ -164,6 +233,51 @@ final class PhutilSymbolLoader {
     return $symbols;
   }
 
+
+  /**
+   * Execute the query and select matching symbols, but do not load the modules
+   * where they are defined. This will perform slightly better if you are only
+   * interested in the existence of the symbols and don't plan to use them;
+   * otherwise, use ##selectAndLoadSymbols()##.
+   *
+   * @return dict A dictionary of matching symbols. See top-level class
+   *              documentation for details.
+   * @task load
+   */
+  public function selectSymbolsWithoutLoading() {
+    $this->suppressLoad = true;
+    $result = $this->selectAndLoadSymbols();
+    $this->suppressLoad = false;
+    return $result;
+  }
+
+
+  /**
+   * Load one class by name from any available library. Useful for autoload,
+   * etc. Throws @{class:PhutilMissingSymbolException} if the class can not
+   * be loaded.
+   *
+   * @param string Class name to load.
+   * @return void
+   * @task load
+   */
+  public static function loadClass($class_name) {
+    $symbols = id(new PhutilSymbolLoader())
+      ->setType('class')
+      ->setName($class_name)
+      ->selectAndLoadSymbols();
+    if (!$symbols) {
+      throw new PhutilMissingSymbolException($class_name);
+    }
+  }
+
+
+/* -(  Internals  )---------------------------------------------------------- */
+
+
+  /**
+   * @task internal
+   */
   private function selectDescendantsOf($tree, $root) {
     $result = array();
     foreach ($tree[$root] as $child) {
@@ -175,16 +289,10 @@ final class PhutilSymbolLoader {
     return $result;
   }
 
-  public static function loadClass($class_name) {
-    $symbols = id(new PhutilSymbolLoader())
-      ->setType('class')
-      ->setName($class_name)
-      ->selectAndLoadSymbols();
-    if (!$symbols) {
-      throw new PhutilMissingSymbolException($class_name);
-    }
-  }
 
+  /**
+   * @task internal
+   */
   private function loadSymbol(array $symbol_spec) {
     if ($symbol_spec['type'] == 'function') {
       $this->loadFunctionSymbol($symbol_spec);
@@ -193,6 +301,10 @@ final class PhutilSymbolLoader {
     }
   }
 
+
+  /**
+   * @task internal
+   */
   private function loadFunctionSymbol(array $symbol_spec) {
     $name = $symbol_spec['name'];
     if (function_exists($name)) {
@@ -205,6 +317,9 @@ final class PhutilSymbolLoader {
     }
   }
 
+  /**
+   * @task internal
+   */
   private function loadClassOrInterfaceSymbol(array $symbol_spec) {
     $name = $symbol_spec['name'];
     if (class_exists($name, false) || interface_exists($name, false)) {
