@@ -171,3 +171,10 @@ class PhutilBootloader {
 class PhutilBootloaderException extends Exception { }
 
 phutil_register_library('phutil', __FILE__);
+
+phutil_require_module('phutil', 'symbols');
+
+function __autoload($class) {
+  PhutilSymbolLoader::loadClass($class);
+}
+
