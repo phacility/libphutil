@@ -120,5 +120,7 @@ function xhp_parser_node_constants() {
     9113 => 'n_XHP_NODE_LIST',
     9114 => 'n_CONCATENATION_LIST',
     9115 => 'n_PARENTHETICAL_EXPRESSION',
+    9116 => 'n_YIELD',
+    9117 => 'n_YIELD_EXPRESSION',
   );
 }

@@ -83,7 +83,7 @@ static bool utf8ize(uint32_t v, char* buf /* [5] */) {
 %option bison-bridge
 %option 8bit
 
- /* I think an interactive scanner is required because of the bison state 
+ /* I think an interactive scanner is required because of the bison state
   * pushing we do. I'm putting an explicit interactive declaration here in case
   * someone tries adding -CF or whatever to the make flags. */
 %option interactive
@@ -314,6 +314,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
   namespace tok(T_NAMESPACE);
   __namespace__ tok(T_NS_C);
   __dir__ tok(T_DIR);
+  yield tok(T_YIELD);
   attribute {
     // expecting_xhp_class_statements is set in some actions in the grammar.
     // This means the lexer and parser are interdependent.
@@ -373,7 +374,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
   "\\" tok(T_NS_SEPARATOR);
   ":" {
     // A colon can either mean the start (or component) of an XHP class,
-    // a ternary expression (as in 1?false:null), the colon of a 'case', 
+    // a ternary expression (as in 1?false:null), the colon of a 'case',
     // or finally the start of a block in the old PHP syntax. The following
     // disambiguate between the XHP case, which requires a special token,
     // and the other cases.

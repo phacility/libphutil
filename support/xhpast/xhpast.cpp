@@ -29,18 +29,18 @@ void print_node(xhpast::Node *node);
 
 int main(int argc, char* argv[]) {
   vector<string> files;
-  
+
   if (argc != 1) {
-    cout << "xhpast version 0.55\n";
+    cout << "xhpast version 0.56\n";
     return 0;
   }
-  
+
   ifstream inputFile;
   istream *inputStream;
 //  inputFile.open(argv[1]);
 //  inputStream = &inputFile;
   inputStream = &cin;
-  
+
   std::stringbuf sb;
   *inputStream >> noskipws >> &sb;
   std::string buffer = sb.str();
@@ -50,12 +50,12 @@ int main(int argc, char* argv[]) {
 }
 
 int xhpast_process(std::string &in) {
-  
+
   char *buffer;
   in.reserve(in.size() + 1);
   buffer = const_cast<char*>(in.c_str());
   buffer[in.size() + 1] = 0; // need double NULL for scan_buffer
-  
+
   void* scanner;
   yy_extra_type extra;
   extra.idx_expr = true;//flags.idx_expr;
@@ -63,15 +63,12 @@ int xhpast_process(std::string &in) {
   extra.insert_token = 0;//flags.eval ? T_OPEN_TAG_FAKE : 0;
   extra.short_tags = true;//flags.short_tags;
   extra.asp_tags = false;//flags.asp_tags;
-  
+
   xhpast::Node *root = NULL;
 
   xhpastlex_init(&scanner);
   xhpastset_extra(&extra, scanner);
   xhpast_scan_buffer(buffer, in.size() + 2, scanner);
-#ifdef DEBUG
-  xhpdebug = 1;
-#endif
   xhpastparse(scanner, &root);
   xhpastlex_destroy(scanner);
 
@@ -83,7 +80,7 @@ int xhpast_process(std::string &in) {
       (int)extra.lineno);
     return 1;
   }
-  
+
   printf("{");
   printf("\"tree\":");
   if (root) {
@@ -99,7 +96,7 @@ int xhpast_process(std::string &in) {
   printf(",");
   printf("\"stream\":");
   printf("[");
-  
+
   if (!extra.token_list.empty()) {
     for (xhpast::token_list_t::iterator ii = extra.token_list.begin();;) {
       printf("[%d, %d]", (*ii)->type, (int)(*ii)->value.length());
@@ -112,7 +109,7 @@ int xhpast_process(std::string &in) {
   }
   printf("]");
   printf("}\n");
-  
+
   return 0;
 }
 

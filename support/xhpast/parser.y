@@ -40,7 +40,7 @@
 
 #define NNEW(t) \
   (new xhpast::Node(t))
-  
+
 #define NTYPE(n, type) \
   ((n)->setType(type))
 
@@ -49,10 +49,10 @@
 
 #define NSPAN(n, type, end) \
   (NMORE(NTYPE((n), type), end))
-  
+
 #define NLMORE(n, begin) \
   ((n)->setBegin(begin))
-  
+
 #define NEXPAND(l, n, r) \
   ((n)->setBegin(l)->setEnd(r))
 
@@ -92,6 +92,7 @@ static void replacestr(string &source, const string &find, const string &rep) {
 
 %left T_INCLUDE T_INCLUDE_ONCE T_EVAL T_REQUIRE T_REQUIRE_ONCE
 %left ','
+%left T_YIELD
 %left T_LOGICAL_OR
 %left T_LOGICAL_XOR
 %left T_LOGICAL_AND
@@ -195,6 +196,7 @@ static void replacestr(string &source, const string &find, const string &rep) {
 %token T_NS_C
 %token T_DIR
 %token T_NS_SEPARATOR
+%token T_YIELD
 
 %token T_XHP_WHITESPACE
 %token T_XHP_TEXT
@@ -388,17 +390,17 @@ unticked_statement:
   }
 | T_IF '(' expr ')' statement elseif_list else_single {
     $$ = NNEW(n_CONDITION_LIST);
-    
+
     $1 = NTYPE($1, n_IF);
     $1->appendChild(NSPAN($2, n_CONTROL_CONDITION, $4)->appendChild($3));
     $1->appendChild($5);
-    
+
     $$->appendChild($1);
     $$->appendChildren($6);
-    
+
     // Hacks: merge a list of if (x) { } else if (y) { } into a single condition
     // list instead of a condition tree.
-    
+
     if ($7->type == n_EMPTY) {
       // Ignore.
     } else if ($7->type == n_ELSE) {
@@ -413,8 +415,8 @@ unticked_statement:
     } else {
       $$->appendChild($7);
     }
-    
-    $$ = NNEW(n_STATEMENT)->appendChild($$);    
+
+    $$ = NNEW(n_STATEMENT)->appendChild($$);
   }
 | T_IF '(' expr ')' ':' inner_statement_list new_elseif_list new_else_single T_ENDIF ';' {
 
@@ -422,13 +424,13 @@ unticked_statement:
     NTYPE($1, n_IF);
     $1->appendChild(NSPAN($2, n_CONTROL_CONDITION, $4)->appendChild($3));
     $1->appendChild($6);
-    
+
     $$->appendChild($1);
     $$->appendChildren($7);
     $$->appendChild($8);
     NMORE($$, $9);
 
-    $$ = NNEW(n_STATEMENT)->appendChild($$);    
+    $$ = NNEW(n_STATEMENT)->appendChild($$);
     NMORE($$, $10);
   }
 | T_WHILE '(' expr ')' while_statement {
@@ -448,15 +450,15 @@ unticked_statement:
   }
 | T_FOR '(' for_expr ';' for_expr ';' for_expr ')' for_statement {
     NTYPE($1, n_FOR);
-    
+
     NSPAN($2, n_FOR_EXPRESSION, $8)
       ->appendChild($3)
       ->appendChild($5)
       ->appendChild($7);
-    
+
     $1->appendChild($2);
     $1->appendChild($9);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
 | T_SWITCH '(' expr ')' switch_case_list {
@@ -469,49 +471,49 @@ unticked_statement:
 | T_BREAK ';' {
     NTYPE($1, n_BREAK);
     $1->appendChild(NNEW(n_EMPTY));
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
     NMORE($$, $2);
   }
 | T_BREAK expr ';' {
     NTYPE($1, n_BREAK);
     $1->appendChild($2);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
     NMORE($$, $3);
   }
 | T_CONTINUE ';' {
     NTYPE($1, n_CONTINUE);
     $1->appendChild(NNEW(n_EMPTY));
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
     NMORE($$, $2);
   }
 | T_CONTINUE expr ';' {
     NTYPE($1, n_CONTINUE);
     $1->appendChild($2);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
     NMORE($$, $3);
   }
 | T_RETURN ';' {
     NTYPE($1, n_RETURN);
     $1->appendChild(NNEW(n_EMPTY));
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
     NMORE($$, $2);
   }
 | T_RETURN expr_without_variable ';' {
     NTYPE($1, n_RETURN);
     $1->appendChild($2);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
     NMORE($$, $3);
   }
 | T_RETURN variable ';' {
     NTYPE($1, n_RETURN);
     $1->appendChild($2);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
     NMORE($$, $3);
   }
@@ -556,9 +558,9 @@ unticked_statement:
       $2->appendChild($6);
     }
     $1->appendChild($2);
-    
+
     $1->appendChild($8);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
 | T_FOREACH '(' expr_without_variable T_AS variable foreach_optional_arg ')' foreach_statement {
@@ -574,7 +576,7 @@ unticked_statement:
     }
     $1->appendChild($2);
     $1->appendChild($8);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
 | T_DECLARE '(' declare_list ')' declare_statement {
@@ -590,14 +592,14 @@ unticked_statement:
 | T_TRY '{' inner_statement_list '}' T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' additional_catches {
     NTYPE($1, n_TRY);
     $1->appendChild($3);
-    
+
     NTYPE($5, n_CATCH);
     $5->appendChild($7);
     $5->appendChild(NTYPE($8, n_VARIABLE));
     $5->appendChild($11);
-    
+
     $1->appendChild(NNEW(n_CATCH_LIST)->appendChild($5)->appendChildren($13));
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
 | T_THROW expr ';' {
@@ -612,7 +614,7 @@ unticked_statement:
   NTYPE($1, n_GOTO);
   NTYPE($2, n_STRING);
   $1->appendChild($2);
-  
+
   $$ = NNEW(n_STATEMENT)->appendChild($1);
   NMORE($$, $3);
   }
@@ -688,7 +690,7 @@ unticked_function_declaration_statement:
     $1->appendChild(NEXPAND($4, $5, $6));
     $$->appendChild(NNEW(n_EMPTY));
     $1->appendChild($8);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
 ;
@@ -714,7 +716,7 @@ unticked_class_declaration_statement:
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild($5);
     NMORE($$, $6);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($$);
   }
 ;
@@ -729,14 +731,14 @@ class_entry_type:
     NTYPE($2, n_CLASS_ATTRIBUTES);
     NLMORE($2, $1);
     $2->appendChild(NTYPE($1, n_STRING));
-    
+
     $$ = $1;
   }
 | T_FINAL T_CLASS {
     NTYPE($2, n_CLASS_ATTRIBUTES);
     NLMORE($2, $1);
     $2->appendChild(NTYPE($1, n_STRING));
-    
+
     $$ = $1;
   }
 ;
@@ -841,7 +843,7 @@ declare_list:
     $$ = NNEW(n_DECLARE_DECLARATION);
     $$->appendChild(NTYPE($3, n_STRING));
     $$->appendChild($5);
-    
+
     $1->appendChild($$);
     $$ = $1;
   }
@@ -895,7 +897,7 @@ case_list:
 | case_list T_DEFAULT case_separator inner_statement_list {
     NTYPE($2, n_DEFAULT);
     $2->appendChild($4);
-    
+
     $1->appendChild($2);
     $$ = $1;
   }
@@ -923,7 +925,7 @@ elseif_list:
     NTYPE($2, n_ELSEIF);
     $2->appendChild(NSPAN($3, n_CONTROL_CONDITION, $5)->appendChild($4));
     $2->appendChild($6);
-    
+
     $$ = $1->appendChild($2);
   }
 ;
@@ -936,7 +938,7 @@ new_elseif_list:
     NTYPE($2, n_ELSEIF);
     $2->appendChild($4);
     $2->appendChild($7);
-    
+
     $$ = $1->appendChild($2);
   }
 ;
@@ -976,7 +978,7 @@ non_empty_parameter_list:
     $$->appendChild($1);
     $$->appendChild(NTYPE($2, n_VARIABLE));
     $$->appendChild(NNEW(n_EMPTY));
-    
+
     $$ = NNEW(n_DECLARATION_PARAMETER_LIST)->appendChild($$);
   }
 | optional_class_type '&' T_VARIABLE {
@@ -985,7 +987,7 @@ non_empty_parameter_list:
     $$->appendChild(NTYPE($2, n_VARIABLE_REFERENCE));
       $2->appendChild(NTYPE($3, n_VARIABLE));
     $$->appendChild(NNEW(n_EMPTY));
-    
+
     $$ = NNEW(n_DECLARATION_PARAMETER_LIST)->appendChild($$);
   }
 | optional_class_type '&' T_VARIABLE '=' static_scalar {
@@ -994,7 +996,7 @@ non_empty_parameter_list:
     $$->appendChild(NTYPE($2, n_VARIABLE_REFERENCE));
       $2->appendChild(NTYPE($3, n_VARIABLE));
     $$->appendChild($5);
-    
+
     $$ = NNEW(n_DECLARATION_PARAMETER_LIST)->appendChild($$);
   }
 | optional_class_type T_VARIABLE '=' static_scalar {
@@ -1002,7 +1004,7 @@ non_empty_parameter_list:
     $$->appendChild($1);
     $$->appendChild(NTYPE($2, n_VARIABLE));
     $$->appendChild($4);
-    
+
     $$ = NNEW(n_DECLARATION_PARAMETER_LIST)->appendChild($$);
   }
 | non_empty_parameter_list ',' optional_class_type T_VARIABLE {
@@ -1010,7 +1012,7 @@ non_empty_parameter_list:
     $$->appendChild($3);
     $$->appendChild(NTYPE($4, n_VARIABLE));
     $$->appendChild(NNEW(n_EMPTY));
-    
+
     $$ = $1->appendChild($$);
   }
 | non_empty_parameter_list ',' optional_class_type '&' T_VARIABLE {
@@ -1157,7 +1159,7 @@ class_statement:
     $$ = NNEW(n_CLASS_MEMBER_DECLARATION_LIST);
     $$->appendChild($1);
     $$->appendChildren($2);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($$);
     NMORE($$, $3);
   }
@@ -1178,7 +1180,7 @@ class_statement:
     $$->appendChild(NEXPAND($6, $7, $8));
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild($9);
-    
+
     $$ = NNEW(n_STATEMENT)->appendChild($$);
   }
 ;
@@ -1236,7 +1238,7 @@ class_variable_declaration:
     $$ = NNEW(n_CLASS_MEMBER_DECLARATION);
     $$->appendChild(NTYPE($3, n_VARIABLE));
     $$->appendChild(NNEW(n_EMPTY));
-    
+
     $$ = $1->appendChild($$);
   }
 | class_variable_declaration ',' T_VARIABLE '=' static_scalar {
@@ -1250,7 +1252,7 @@ class_variable_declaration:
     $$ = NNEW(n_CLASS_MEMBER_DECLARATION);
     $$->appendChild(NTYPE($1, n_VARIABLE));
     $$->appendChild(NNEW(n_EMPTY));
-    
+
     $$ = NNEW(n_CLASS_MEMBER_DECLARATION_LIST)->appendChild($$);
   }
 | T_VARIABLE '=' static_scalar {
@@ -1278,7 +1280,7 @@ class_constant_declaration:
     $$->appendChild(NTYPE($2, n_STRING));
     $$->appendChild($4);
     $1->appendChild($$);
-    
+
     $$ = $1;
   }
 ;
@@ -1330,24 +1332,24 @@ expr_without_variable:
     $$ = NNEW(n_BINARY_EXPRESSION);
     $$->appendChild($1);
     $$->appendChild(NTYPE($2, n_OPERATOR));
-    
+
     NTYPE($3, n_VARIABLE_REFERENCE);
     $3->appendChild($4);
-    
+
     $$->appendChild($3);
   }
 | variable '=' '&' T_NEW class_name_reference ctor_arguments {
     $$ = NNEW(n_BINARY_EXPRESSION);
     $$->appendChild($1);
     $$->appendChild(NTYPE($2, n_OPERATOR));
-    
+
     NTYPE($4, n_NEW);
     $4->appendChild($5);
     $4->appendChild($6);
-    
+
     NTYPE($3, n_VARIABLE_REFERENCE);
     $3->appendChild($4);
-    
+
     $$->appendChild($3);
   }
 | T_NEW class_name_reference ctor_arguments {
@@ -1734,25 +1736,35 @@ expr_without_variable:
     $1->appendChild(NEXPAND($3, $4, $5));
     $$->appendChild($6);
     $1->appendChild($8);
-    
+
     $$ = $1;
   }
 | T_STATIC function is_reference '(' parameter_list ')' lexical_vars '{' inner_statement_list '}' {
     NSPAN($2, n_FUNCTION_DECLARATION, $10);
     NLMORE($2, $1);
-    
+
     $$ = NNEW(n_FUNCTION_MODIFIER_LIST);
     $$->appendChild(NTYPE($1, n_STRING));
     $2->appendChild($1);
-    
+
     $2->appendChild(NNEW(n_EMPTY));
     $2->appendChild($3);
     $2->appendChild(NNEW(n_EMPTY));
     $2->appendChild(NEXPAND($4, $5, $6));
     $2->appendChild($7);
     $2->appendChild($9);
-    
+
     $$ = $2;
+  }
+| T_YIELD T_BREAK {
+    $$ = NNEW(n_YIELD_EXPRESSION);
+    $$->appendChild(NTYPE($1, n_YIELD));
+    $$->appendChild(NTYPE($2, n_BREAK));
+  }
+| T_YIELD expr {
+    $$ = NNEW(n_YIELD_EXPRESSION);
+    $$->appendChild(NTYPE($1, n_YIELD));
+    $$->appendChild($2);
   }
 ;
 
@@ -1814,7 +1826,7 @@ function_call:
     $$ = NNEW(n_CLASS_STATIC_ACCESS);
     $$->appendChild($1);
     $$->appendChild(NTYPE($3, n_STRING));
-    
+
     $$ = NNEW(n_FUNCTION_CALL)->appendChild($$);
     $$->appendChild(NEXPAND($4, $5, $6));
   }
@@ -1822,7 +1834,7 @@ function_call:
     $$ = NNEW(n_CLASS_STATIC_ACCESS);
     $$->appendChild($1);
     $$->appendChild(NTYPE($3, n_STRING));
-    
+
     $$ = NNEW(n_FUNCTION_CALL)->appendChild($$);
     $$->appendChild(NEXPAND($4, $5, $6));
   }
@@ -1830,7 +1842,7 @@ function_call:
     $$ = NNEW(n_CLASS_STATIC_ACCESS);
     $$->appendChild($1);
     $$->appendChild(NTYPE($3, n_STRING));
-    
+
     $$ = NNEW(n_FUNCTION_CALL)->appendChild($$);
     $$->appendChild(NEXPAND($4, $5, $6));
   }
@@ -1838,7 +1850,7 @@ function_call:
     $$ = NNEW(n_CLASS_STATIC_ACCESS);
     $$->appendChild($1);
     $$->appendChild(NTYPE($3, n_STRING));
-    
+
     $$ = NNEW(n_FUNCTION_CALL)->appendChild($$);
     $$->appendChild(NEXPAND($4, $5, $6));
   }
@@ -2089,7 +2101,7 @@ variable:
     $$ = NNEW(n_OBJECT_PROPERTY_ACCESS);
     $$->appendChild($1);
     $$->appendChild($3);
-    
+
     if ($4->type != n_EMPTY) {
       $$ = NNEW(n_METHOD_CALL)->appendChild($$);
       $$->appendChild($4);
@@ -2264,7 +2276,7 @@ simple_indirect_reference:
   }
 | simple_indirect_reference '$' {
     $2 = NTYPE($2, n_VARIABLE_VARIABLE);
-    
+
     xhpast::Node *last = $1;
     while (last->firstChild() &&
            last->firstChild()->type == n_VARIABLE_VARIABLE) {
@@ -2312,56 +2324,56 @@ non_empty_array_pair_list:
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild($3);
     $$->appendChild($5);
-    
+
     $$ = $1->appendChild($$);
   }
 | non_empty_array_pair_list ',' expr {
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild($3);
-    
+
     $$ = $1->appendChild($$);
   }
 | expr T_DOUBLE_ARROW expr {
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild($1);
     $$->appendChild($3);
-    
+
     $$ = NNEW(n_ARRAY_VALUE_LIST)->appendChild($$);
   }
 | expr {
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild($1);
-    
+
     $$ = NNEW(n_ARRAY_VALUE_LIST)->appendChild($$);
   }
 | non_empty_array_pair_list ',' expr T_DOUBLE_ARROW '&' w_variable {
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild($3);
     $$->appendChild(NTYPE($5, n_VARIABLE_REFERENCE)->appendChild($6));
-    
+
     $$ = $1->appendChild($$);
   }
 | non_empty_array_pair_list ',' '&' w_variable {
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild(NTYPE($3, n_VARIABLE_REFERENCE)->appendChild($4));
-    
+
     $$ = $1->appendChild($$);
   }
 | expr T_DOUBLE_ARROW '&' w_variable {
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild($1);
     $$->appendChild(NTYPE($3, n_VARIABLE_REFERENCE)->appendChild($4));
-    
+
     $$ = NNEW(n_ARRAY_VALUE_LIST)->appendChild($$);
   }
 | '&' w_variable {
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild(NTYPE($1, n_VARIABLE_REFERENCE)->appendChild($2));
-    
+
     $$ = NNEW(n_ARRAY_VALUE_LIST)->appendChild($$);
   }
 ;
@@ -2369,7 +2381,7 @@ non_empty_array_pair_list:
 internal_functions_in_yacc:
   T_ISSET '(' isset_variables ')' {
     NTYPE($1, n_SYMBOL_NAME);
-    
+
     NSPAN($2, n_CALL_PARAMETER_LIST, $4);
     $2->appendChildren($3);
 
@@ -2379,7 +2391,7 @@ internal_functions_in_yacc:
   }
 | T_EMPTY '(' variable ')' {
     NTYPE($1, n_SYMBOL_NAME);
-    
+
     NSPAN($2, n_CALL_PARAMETER_LIST, $4);
     $2->appendChild($3);
 
@@ -2395,7 +2407,7 @@ internal_functions_in_yacc:
   }
 | T_EVAL '(' expr ')' {
     NTYPE($1, n_SYMBOL_NAME);
-    
+
     NSPAN($2, n_CALL_PARAMETER_LIST, $4);
     $2->appendChild($3);
 
