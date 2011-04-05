@@ -614,3 +614,13 @@ function phutil_is_utf8($string) {
   return preg_match($regex, $string);
 }
 
+/**
+ * Returns the first element of an array. Exactly like reset(), but doesn't
+ * choke if you pass it some non-referencable value.
+ *
+ * @param    Array to retrieve the first element from.
+ * @return   The first value of the array.
+ */
+function head(array $arr) {
+  return reset($arr);
+}
