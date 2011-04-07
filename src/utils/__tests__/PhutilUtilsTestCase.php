@@ -174,6 +174,13 @@ class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
     $this->assertEqual($input, phutil_utf8ize($input));
   }
 
+  public function testUTF8ize_LongString_nosegfault() {
+    // For some reason my laptop is segfaulting on long inputs inside
+    // preg_match(). Forestall this craziness in the common case, at least.
+    phutil_utf8ize(str_repeat('x', 1024 * 1024));
+    $this->assertEqual(true, true);
+  }
+
   public function testUTF8ize_invalidUTF8_fixed() {
     $input =
       "\xc3 this has \xe6\x9d some invalid utf8 \xe6";

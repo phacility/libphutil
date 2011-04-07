@@ -606,7 +606,8 @@ function phutil_is_utf8($string) {
   }
 
   $regex =
-    "/^([\x01-\x7F]".
+    "/^(".
+      "[\x01-\x7F]+".
     "|([\xC2-\xDF][\x80-\xBF])".
     "|([\xE0-\xEF][\x80-\xBF][\x80-\xBF])".
     "|([\xF0-\xF4][\x80-\xBF][\x80-\xBF][\x80-\xBF]))*\$/";
