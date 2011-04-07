@@ -2109,7 +2109,7 @@ variable:
 
     for (xhpast::node_list_t::iterator ii = $5->children.begin(); ii != $5->children.end(); ++ii) {
       if ((*ii)->type == n_CALL_PARAMETER_LIST) {
-        $$ = NNEW(n_METHOD_CALL)->appendChild($1);
+        $$ = NNEW(n_METHOD_CALL)->appendChild($$);
         $$->appendChild((*ii));
       } else {
         $$ = NNEW(n_OBJECT_PROPERTY_ACCESS)->appendChild($$);
