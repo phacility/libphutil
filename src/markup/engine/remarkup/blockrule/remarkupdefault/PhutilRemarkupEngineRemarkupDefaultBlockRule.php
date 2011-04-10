@@ -35,7 +35,12 @@ class PhutilRemarkupEngineRemarkupDefaultBlockRule
     foreach ($lines as $key => $line) {
       $lines[$key] = $this->applyRules($line."\n");
     }
-    return '<p>'.trim(implode('', $lines)).'</p>';
+
+    $implode_on = $this->getEngine()->getConfig('preserve-linebreaks')
+      ? '<br />'
+      : '';
+
+    return '<p>'.trim(implode($implode_on, $lines)).'</p>';
   }
 
 }
