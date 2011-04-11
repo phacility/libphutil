@@ -68,10 +68,12 @@ class PhutilErrorHandler {
    * dispatched to the listener
    */
   public static function dispatchErrorMessage($event, $value, $metadata) {
+    $timestamp = strftime("%F %T");
     switch ($event) {
       case PhutilErrorHandler::ERROR:
         error_log(sprintf(
-                    "ERROR %d: %s at [%s:%d]",
+                    "[%s] ERROR %d: %s at [%s:%d]",
+                    $timestamp,
                     $metadata['error_code'],
                     $value,
                     $metadata['file'],
@@ -79,14 +81,16 @@ class PhutilErrorHandler {
         break;
       case PhutilErrorHandler::EXCEPTION:
         error_log(sprintf(
-                    "EXCEPTION: %s at [%s:%d]",
+                    "[%s] EXCEPTION: %s at [%s:%d]",
+                    $timestamp,
                     $value->getMessage(),
                     $value->getFile(),
                     $value->getLine()));
         break;
       case PhutilErrorHandler::PHLOG:
         error_log(sprintf(
-                    "PHLOG: %s at [%s:%d]",
+                    "[%s] PHLOG: %s at [%s:%d]",
+                    $timestamp,
                     PhutilReadableSerializer::printShort($value),
                     $metadata['file'],
                     $metadata['line']));

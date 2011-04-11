@@ -91,15 +91,15 @@ class PhutilReadableSerializer {
 
     $shallow = array();
     if ($depth < $max_depth) {
-      foreach ($value as $v) {
-        $shallow[] = self::printShallow($v, $max_depth, $depth + 1,
-                                        $max_members, '    ');
+      foreach ($value as $k => $v) {
+        $shallow[$k] = self::printShallow($v, $max_depth, $depth + 1,
+                                          $max_members, '    ');
       }
     } else {
-      foreach ($value as $v) {
+      foreach ($value as $k => $v) {
         // Extra indentation is for empty arrays, because they wrap on multiple
         // lines and lookup stupid without the extra indentation
-        $shallow[] = self::addIndentation(self::printShort($v), $indent, 1);
+        $shallow[$k] = self::addIndentation(self::printShort($v), $indent, 1);
       }
     }
 
