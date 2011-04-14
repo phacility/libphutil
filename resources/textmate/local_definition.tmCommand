@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/env php
+&lt;?php
+
+if (getenv('TM_SELECTED_TEXT')) {
+  $word = getenv('TM_SELECTED_TEXT');
+} else {
+  $word = getenv('TM_CURRENT_WORD');
+}
+
+$file = getenv('TM_FILEPATH');
+
+if (!is_dir($file)) {
+  $file = dirname($file);
+}
+$file = escapeshellarg($file);
+
+$ref = null;
+$err = 0;
+$root = exec("(cd {$file} &amp;&amp; /usr/bin/env git rev-parse --show-cdup)", $ref, $err);
+if ($err) {
+  echo "File is not in a git working copy.\n";
+  exit($err);
+}
+
+$word = preg_quote($word, $delim = NULL);
+$patterns = array(
+  "((abstract|final) +)*class +{$word}( |$)",
+  "interface +{$word}( |$)",
+  "function +&amp;?{$word}( |\(|$)",
+  " *const +{$word}( |=|$)",
+  "@provides {$word}( |$)",
+);
+foreach ($patterns as $k =&gt; $pattern) {
+  $patterns[$k] = '-e '.escapeshellarg($pattern);
+}
+$patterns = implode(' --or ', $patterns);
+
+$err = 0;
+$cmd = "(cd {$root} &amp;&amp; /usr/bin/env git grep --no-index -n -z -I -E {$patterns} | head -n1)";
+$output = exec($cmd, $ref, $err);
+$output = trim($output);
+if (!$output) {
+  $untracked = exec("(cd {$root} &amp;&amp; /usr/bin/env git ls-files --others --exclude-standard)");
+  if ($untracked) {
+    echo "No results found, but you have untracked files which 'git grep' does not search.\n";
+  } else {
+    echo "No results found.\n";
+  }
+  exit(0);
+}
+
+list($local, $line) = explode("\0", $output);
+
+$target = $root.'/'.$local;
+exec('/usr/bin/env mate '.escapeshellarg($target).' -l '.escapeshellarg($line));
+
+</string>
+	<key>fallbackInput</key>
+	<string>word</string>
+	<key>input</key>
+	<string>selection</string>
+	<key>keyEquivalent</key>
+	<string>@</string>
+	<key>name</key>
+	<string>Open Definition (PHP, Local Git)</string>
+	<key>output</key>
+	<string>showAsTooltip</string>
+	<key>scope</key>
+	<string>source.php</string>
+	<key>uuid</key>
+	<string>0D267B50-2E9C-4B48-9D0C-0FB8E9807552</string>
+</dict>
+</plist>

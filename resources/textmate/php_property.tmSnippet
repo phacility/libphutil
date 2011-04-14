@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>${2:public} function set${1/./\u$0/}(\$${1/[A-Z]+/_\L$0\E/g}) {
+  \$this-&gt;${1:property} = \$${1/[A-Z]+/_\L$0\E/g};
+  return \$this;
+}
+
+${2:public} function get${1/./\u$0/}() {
+  return \$this-&gt;$1;
+}
+
+$0</string>
+	<key>name</key>
+	<string>PHP Property</string>
+	<key>scope</key>
+	<string>source.php</string>
+	<key>tabTrigger</key>
+	<string>prop</string>
+	<key>uuid</key>
+	<string>7C1971CD-6BC0-433B-8604-9F008B6CC29D</string>
+</dict>
+</plist>
