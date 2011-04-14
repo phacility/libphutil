@@ -1,0 +1,182 @@
+
+This document describes how to use queryfx(), an extended form of queryf().
+
+= What queryfx() Does =
+
+queryfx() stands for something like "query, formatted + extensions", (or "exceptions", depending on who you ask) and is a method for easily and correctly executing queries against a MySQL database. queryfx() is similar to queryf(), but provides more conversions and better error handling.
+
+The API is similar to the sprintf() family of functions.
+
+<code>  resource queryfx(managed_connection $conn, string $query_pattern, ...);
+
+</code>Example usage might look like this.
+
+<code>  $ret = queryfx($conn_w, 'INSERT INTO stuff (name) VALUES (%s)', $name);
+
+</code>queryfx() will properly escape parameters so they are safe in SQL and protect you from SQL injection holes.
+
+= queryfx_one() and queryfx_all() =
+
+Many queries either expect to select exactly one row, or want to select all result rows as a list of dictionaries. In these cases, you may use queryfx_one() or queryfx_all(), respectively.
+
+queryfx_one() will return either null if zero rows match, or a dictionary if exactly one row matches. If more than one row matches, a <tt>QueryCountException</tt> will be thrown.
+
+<code>  $pie = queryfx_one($conn_r, 'SELECT * FROM pie WHERE id = %d', $id);
+  if ($pie) {
+    echo "The pie's flavor is {$pie['flavor']}.";
+  } else {
+    echo 'No such pie exists. This is sad times.';
+  }
+
+</code>queryfx_all() will always return a list of dictionaries, although it may be empty.
+
+<code>  $list = queryfx_all(
+    $conn_r,
+    'SELECT * FROM pie WHERE baked > %d',
+    time() - (60 * 60));
+
+  if (count($list)) {
+    echo 'Pies baked in the last hour: '.count($list);
+  } else {
+    echo 'No pies were baked in the last hour. This is sad times indeed.';
+  }
+
+</code>These convenience wrappers don't cover every case, but can simplify your code in many cases.
+
+= Supported Conversions =
+
+queryfx() supports three simple conversions, <b>%d</b> (integer), <b>%s</b> (string), and <b>%f</b> (float). These work exactly like sprintf(), except that they will be properly escaped for a MySQL context.
+
+<code>  $res = queryfx(
+    $conn_w,
+    'INSERT INTO pie (flavor, size) values (%s, %d)',
+    $pie_flavor,
+    $pie_size);
+
+</code>Note that <b>%s</b> is binary-safe, so it is safe to convert UTF-8 strings or raw byte sequences using <b>%s</b>.
+
+In addition to these simple conversions, a wide array of additional conversions is supported.
+
+<b>Nullable conversions</b> work like the simple conversions but handle <tt>NULL</tt> properly. The nullable conversions are <b>%nd</b>, <b>%ns</b>, and <b>%ns</b>. These conversions behave exactly like the corresponding normal conversions, except when the value they are passed is a strict null. In this case, they will print <tt>NULL</tt>.
+
+<code>  //  INSERT INTO t (u, v) VALUES (3, NULL)
+  queryfx($conn_w, 'INSERT INTO t (u, v) VALUES (%nd, %nd)', 3, null);
+
+</code><b>Nullable test conversions</b> work like the simple conversions but handle equivalence with NULL properly by printing either an <tt>=</tt> or an <tt>IS NULL</tt> clause. The nullable test conversions are <b>%=d</b>, <b>%=s</b>, and <b>%=f</b>.
+
+<code>  //  SELECT * FROM t WHERE u = 3 AND v IS NULL
+  queryfx($conn_r, 'SELECT * FROM t WHERE u %=d AND v %=d, 3, null);
+
+</code><b>List conversions</b> accept a list of values and produce a comma-separated list, appropriate for insertion into an <tt>IN</tt> clause. The list conversions are <b>%Ld</b>, <b>%Ls</b>, and <b>%Lf</b>. Note: these conversions treat their arguments as nullable, so <tt>null</tt> will be converted to NULL in the query, not 0 or empty string.
+
+<code>  //  SELECT * FROM t WHERE u IN ('a', 'b', 'c')
+  queryfx($conn_r, 'SELECT * FROM t WHERE u IN (%Ls)', array('a', 'b', 'c'));
+
+</code><b>Identifier conversions</b> escape SQL identifiers like table or column names. The identifier conversions are <b>%T</b> (table), <b>%C</b> (column) and <b>%LC</b> (list of columns).
+
+<code>  //  SELECT `select` FROM `from` WHERE `where` = 4
+  queryfx(
+    $conn_r,
+    'SELECT %C FROM %T WHERE %C = %d',
+    'select', 'from', 'where', 4);
+
+</code><b>Dictionary conversions</b> escape a dictionary of key-value pairs into column-value pairs. The dictionary conversions are <b>%U</b> (update clause), <b>%LA</b> (list of predicates joined by AND), and <b>%LO</b> (list of predicates joined by OR). <b>%LA</b> and <b>%LO</b> also support array values for generating "IN" clauses.
+
+<code>  //  UPDATE t SET a = 1, b = 2, c = 3 WHERE u = 5 AND d = 6 AND e IN (1, 2, 3)
+  queryfx(
+    $conn_w,
+    'UPDATE t SET %U WHERE %LA',
+    array('a' => 1, 'b' => 2, 'c' => 3),
+    array('u' => 5, 'd' => 6, 'e' => array(1, 2, 3)));
+
+</code><b>Like conversions</b> escape a string for a LIKE (or NOT LIKE) clause. The like conversions are <b>%~</b> (substring match), <b>%></b> (prefix match), and <b>%<</b> (suffix match).
+
+<code>  //  SELECT * FROM t WHERE u LIKE '%example%' OR v LIKE 'prefix%'
+  queryfx(
+    $conn_w,
+    'SELECT * FROM t WHERE u LIKE %~ OR v LIKE %>',
+    'example',
+    'prefix');
+
+</code><b>Miscellaneous conversions</b> escape other random junk. The miscellaneous conversions are <b>%K</b> (comment) and <b>%Q</b> (raw subquery). You must be <b>extremely careful</b> with <b>%Q</b> -- unlike other conversions, it does <i>no</i> escaping. If you do not use it properly, you will open a SQL injection hole.
+
+<code>  //  UPDATE /* hey guys what is up */ t SET u = "v"
+  queryfx(
+    $conn_w,
+    'UPDATE %K t SET %Q',
+    'hey guys what is up', 'u = "v"');
+
+</code>Be careful with <b>%Q</b> because it's extremely dangerous. It should be rarely (if ever) used. Often, vqueryfx() is a better approach.
+
+= Handling Exceptions =
+
+queryfx() throws exceptions on failure, which means that <b>you need to catch and handle them</b>. All exceptions descend from <tt>QueryException</tt>. Generally, you should catch <tt>QueryExceptions</tt> at or near the top level -- that is, catching exceptions high in the callstack is often better than catching them low in the callstack.
+
+<code>  try {
+    $pies = pies_get_for_user($uid);
+  } catch (QueryException $ex) {
+    $errmsg = 'Pies are not available at this time, try again later.';
+  }
+
+</code>You should <b>not</b> catch exceptions in your database/generator function. You can't do anything useful with them here.
+
+<code>  COUNTEREXAMPLE
+  try {
+    $ret = queryfx($conn_r, 'SELECT * FROM pie WHERE owner = %d', $uid);
+  } catch (QueryException $ex) {
+    return null;
+  }
+
+</code>This means that writing generators is much easier:
+
+<code>  function pies_for_users_dbget($user_ids) {
+    $rows = queryfx_all(
+        pies_get_conn('r'),
+        'SELECT * FROM pies WHERE owner IN (%Ld)',
+        $user_ids);
+    return array_group($rows, 'owner') + array_fill_keys($user_ids, array());
+  }
+
+</code>This is a complete, correct database/generator function under queryfx(). Notably, you do not need to test either the connection or the return for `null', because exceptions will be thrown in either case.
+
+Note that the cache_get_scb() layer will properly catch and handle exceptions thrown by queryfx().
+
+There are several kinds of :QueryException:
+
+<code>  QueryException
+    Abstract base class for all query exceptions.
+
+  QueryParameterException (extends QueryException)
+    A parameter to the query was wrong: for instance, an empty list was passed
+    to a %Ld conversion, or the connection was `null'.
+
+  QueryErrorException (extends QueryException)
+    The database returned with an error code not specifically recognized as
+    recoverable.
+
+  QueryCountException (extends QueryException)
+    You issued a queryfx_one() call that returned more than one row.
+
+</code>There are also several exceptions that are considered recoverable:
+
+<code>  RecoverableQueryException (extends QueryException)
+    Abstract base class for all "recoverable" exceptions; these are nonpermanent
+    failures.
+
+  QueryDeadlockException (extends RecoverableQueryException)
+    The database returned, reporting a deadlock. The correct response to a
+    deadlock condition is often to retry the query.
+
+  QueryConnectionException (extends RecoverableQueryException)
+    The MySQL connection dropped. This shouldn't happen with ManagedConnections,
+    but you may run into it if you aren't using ManagedConnections.
+
+  QueryDuplicateKeyException (extends RecoverableQueryException)
+    You issued an insert or update statement which would have caused a duplicate
+    key (on the primary key or some unique key) collision. Attempting the insert
+    and catching this exception is often the correct way to ensure uniqueness.
+
+</code>In most cases, it is sufficient to catch <tt>QueryException</tt> and consider it an unrecoverable error at the top level. However, you may find the fine-grained exceptions useful when building abstractions, debugging, or under unusual use cases.
+
+One caveat is that memcache_dispatch() is exception-aware but can not currently expose exceptions at the top level. Instead, it will convert <tt>QueryExceptions</tt> into an implicity null return value from your database/generator function. This may be fixed in the future but requires improving some abstractions.
+

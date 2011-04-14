@@ -1,0 +1,117 @@
+This document explains how to use exceptions to handle error conditions in PHP. You should also read the newer guidelines at:
+http://www.intern.facebook.com/intern/wiki/index.php/PHPErrorHandling.
+
+= Use Exceptions =
+
+<b>Use Exceptions</b>: Error conditions in our PHP stack should be communicated through exceptions, which provide a simple, robust mechanism for handling errors.
+
+In some cases, extenuating circumstances (like legacy code which is difficult to untangle or needs to be phased in) may prevent immediate enactment, but exception-based error handling should be strongly preferred wherever reasonable, and particularly in new features.
+
+= Overview =
+
+Traditionally error handling, including much of the error handling in our codebase, revolves around returning error codes. Return codes are straightforward, but they need to be manually returned, and then manually passed up the stack. They need to be handled at every level. If they aren't, they silently vanish.
+
+The behavior of error codes is pathological: they resist doing the right thing. Unless they are handled at every level they will leap headlong into the void, never to be heard from again. Exceptions are a more powerful error handling mechanism than error codes. They have the right default behaviors: they can effect function return, and they make their way up the stack unaided by default.
+
+As a top-level caller using an API that throws exceptions, you <i>must</i> handle error conditions, because ignoring them means program termination. This relationship between callers (which are in a position to handle errors) and lower level APIs (which are not), which is explored in greater detail below, is both correct and desirable. Only callers can be responsible for error handling, and exceptions ensure they are.
+
+Using exceptions will make your life easier and your code better, because:
+
+* exceptions <b>simplify error handling</b> because they can effect function return and unwind the stack without coddling
+* exceptions <b>make your code robust</b> by preventing errors from silently vanishing
+* exceptions carry <b>more information</b> about error conditions, so you can better react to them
+* exceptions <b>make error conditions explicit</b> by providing a single, unambiguous way to communicate errors
+* exceptions <b>simplify APIs</b> by allowing you to use return values for returning data only
+
+However, handling error conditions with exceptions instead of error codes requires you to change your approach somewhat in order to reap the benefits:
+
+* you should catch exceptions <b>at the highest level</b> that can deal with them, often the top level
+* you should use exceptions to indicate <b>exceptional conditions</b>, not to affect control flow
+* you should not catch the base class <b>Exception</b> (except in very special circumstances)
+
+The remainder of this document explains these points in greater detail.
+
+=Simplified Error Handling=
+
+Exceptions simplify error handling by reducing the number of checks you need to make against return codes. Generally, exceptions allow you to omit many checks against return values and all the boilerplate code responsible for pushing error codes up the stack. Exceptions are explicitly able to effect function return and make their way up the stack without help.
+
+=Robustness=
+
+Exceptions make your code more robust because they prevent error codes from being silently dropped. With traditional error codes, any caller can forget to check them. To counteract this, we've developed the "debug_rlog()-and-return" idiom:
+
+<code>  COUNTEREXAMPLE
+  $ok = some_function();
+  if (!$ok) {
+    debug_rlog('Something didn't work!');
+    // Now I'm covered if my caller is lazy! Also, if I'm the caller, I don't
+    // have to handle this error because it has already been "handled"! Great!
+    return false;
+  }
+
+</code>This idiom arose as a compromise between two concerns: you can't handle errors properly from deep in the stack, but you need to make sure they get handled. This idiom mitigates both but solves neither: callers feel okay about ignoring errors because they've already been ``handled'' through logging, and it's easy to ignore them because there are no real consequences.
+
+The right way to resolve this is to <b>throw an exception</b>.
+
+Throwing sends an exception scurrying toward top level where it can be dispatched properly, and forces it to be handled or the program will terminate. This means no log spew and a guarantee that callers aren't ignoring error conditions.
+
+A concern sometimes raised about exceptions is that an uncaught exception that escapes the stack causes program termination. But, this is an extremely desirable behavior. Stated another way, exceptions mean that when your program is wrong it stops. Error codes mean that when your program is wrong, it keeps going, it just does the wrong thing. Doing the wrong thing is a <b>much</b> worse behavior.
+
+Unexpected program termination is not particularly bad. It's obvious, it is less likely to make it through testing in the first place, and even if it does it will show up in the logs and get fixed quickly. Most importantly, its badness is bounded: even in the worst case, it can't do more than bring the site down for a few minutes. This is already a condition we have to deal with even without exceptions, because program termination can be caused in a number of other ways (like calling a function which is not defined).
+
+Conversely, silent failure is very difficult to detect so it is more likely to make it to production in the first place. It may not show up in the logs once it's live. Most importantly, continuing execution when the program is wrong is unboundedly bad. Data corruption and privacy violations are much, much worse than bringing the site down. They can take weeks to clean up, or be impossible to completely revert. It takes only minutes to revert a bad push that caused program termination via uncaught exception.
+
+Although the risk of these severe outcomes is small, the risk of taking the site down is also small and these severe outcomes are much worse than the worst possible case of uncaught exceptions. Using exceptions and coding defensively is essentially insurance: you are accepting an increased risk of program termination and other well-defined failures that are easy to deal with because you want to lower the risk of nebulous failures that are difficult or impossible to deal with. This is a highly desirable tradeoff which you should be eager to make.
+
+We already have a number of libraries that communicate error conditions through exceptions or react gracefully in the presence of exceptions: for examples, see :AsyncResponse, :CodedException, :queryfx() ([[Articles/Using queryfx()]]), :Filesystem, Hypershell ([[Articles/Hypershell Architecture]]), Hyperpush ([[Articles/Hyperpush Architecture]]), Sitevars ([[Articles/Sitevar Architecture]]), and :execx() ([[Articles/System Commands]]). Far from being harbingers of uncaught-exception doom, these systems have resulted in simplified code and increased reliability.
+
+=Catch At Top Level=
+
+When you catch exceptions, you should generally catch them at the highest level where you can correctly handle the error. Often, this is at or very near the top level. It is usually wrong to convert an :Exception to a return code:
+
+<code>  COUNTEREXAMPLE
+  try {
+    $this->flip();
+  } catch (PancakeException $ex) {
+    return false;
+  }
+
+</code>Converting an exception to a return code throws away much of the power of exceptions (e.g., automatic navigation up the stack, guaranteed handling, additional information). However, you may sometimes need to do this as an interim step in the process of converting a legacy API into an exception-oriented API.
+
+It is almost certainly wrong to convert an Exception into a debug_rlog():
+
+<code>  COUNTEREXAMPLE
+  try {
+    $this->flip();
+  } catch (PancakeException $ex) {
+    debug_rlog('Couldn't flip pancake.');
+  }
+
+</code>This is basically equivalent to:
+
+<code>  COUNTEREXAMPLE
+  $err = pancake_flip();
+  if ($err) {
+    debug_rlog('Hurf durf I am absolving myself of responsibility.');
+    $err = false; // No more error! Magic!
+  }
+
+</code>Instead, you should catch and handle exceptions at the top level, where they can be meaningfully acted upon.
+
+<code>  try {
+    $pancake = new Pancake();
+    $pancake->cook();
+
+    $breakfast = $pancake;  //  Yum!
+  } catch (PancakeException $ex) {
+    $breakfast = $cereal;   //  Ick. :(
+  }
+
+</code>
+=Don't Catch "Exception"=
+
+You should usually avoid catching :Exception unless you are implementing a very general, top-level exception handling mechanism like the one in :AsyncResponse. Instead, catch a specific exception or exception subtree, like :CodedException, :QueryException, :CommandException, or :FilesystemException.
+
+A corollary to this is that you should avoid throwing :Exception unless you do not expect any caller to handle the exception. Essentially, throwing Exception is guaranteeing program termination (albeit via a graceful stack unwind and sensible top-level behavior rather than abrupt exit). The major use for this is checking invariants to detect that an API is being misused so you can communicate to the caller that they have strictly and unambiguously abused your interface.
+
+Because PHP has no <tt>finally</tt> clause, it is acceptable to catch :Exception if you are cleaning up resources and then re-throwing, although most kinds of resources that need cleanup (like database transactions and temporary files) already have exception-aware APIs that will handle this for you.
+

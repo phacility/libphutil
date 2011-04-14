@@ -1,0 +1,96 @@
+This document describes best practices for executing system commands in PHP.
+
+=Overview=
+
+PHP has several built-in mechanisms for executing system commands, like exec(), system(), and the backtick operator. However, these mechanisms often make it difficult to get all the information you need to handle error conditions, properly escaping commands is cumbersome, and they do not provide more advanced features like parallel execution and timeouts.
+
+This document describes how to use the APIs in <tt>flib/resource/future</tt> to execute commands without encountering these problems.
+
+When executing system commands, you <b>MUST</b> always check exit codes, and you <b>MUST</b> always properly escape arguments.
+
+=Simple Commands: execx() and exec_manual()=
+
+execx() and exec_manual() are replacements for exec(), system(), shell_exec(), and the backtick operator. The APIs look like this:
+
+<code> list($stdout, $stderr) = execx('ls %s', $path);
+ list($err, $stdout, $stderr) = exec_manual('ls %s', $path);
+
+</code>The major advantages of these methods over the exec() family are that you can easily check return codes, capture both stdout and stderr, and use a simple sprintf()-style formatting string to properly escape commands. execx() will throw a :CommandException if the command you execute terminates with a nonzero exit code, while exec_manual() returns the error code. If you use exec_manual(), you <b>MUST</b> manually check the error code.
+
+=Advanced Commands: ExecFutures=
+
+If you need more advanced features like parallel execution, command timeouts, and asynchronous I/O, you should use ExecFuture.
+
+<code> list($err, $stdout, $stderr) = new ExecFuture($command)->resolve();
+
+</code>You may pass either a raw string as the $command, or an array. If you pass an array, it will be interpreted as a sprintf()-style pattern and a list of arguments, so these are equivalent:
+
+<code> new ExecFuture('ls '.escapeshellarg($path));
+ new ExecFuture(array('ls %s', $path));
+
+</code>When you create the ExecFuture, it immediately begins asynchronous execution. You can prevent it from executing immediately by passing <tt>false</tt> as the <tt>$start_immediately</tt> constructor parameter:
+
+<code> new ExecFuture($command, false);
+
+</code>You can set a timeout on an ExecFuture, which will SIGKILL the command if it takes longer than the specified number of seconds to execute:
+
+<code> new ExecFuture($command)->setTimeout(30);
+
+</code>When you call ExecFuture->resolve(), your process will block until the future is resolved. To efficiently execute several commands in parallel, use future iterators:
+
+<code> $futures = array();
+ foreach ($files as $file) {
+   $futures[$file] = new ExecFuture(array('gzip %s', $file));
+ }
+
+ foreach (Futures($futures) as $key => $future) {
+   list ($err, $stdout, $stderr) = $future->resolve();
+   if ($err) {
+     // handle it
+   } else {
+     echo "Compressed {$key}.\n";
+   }
+ }
+
+</code>The future iterator will return results in the order they become available and parallelize command execution.
+
+You can also limit the maximum amount of parallelism if you have a large number of commands to execute. To do this, first prevent your :ExecFuture-s from executing immediately. Then, use the ExecFuture->limit() method to impose a level of parallelism:
+
+<code> $futures = array();
+ foreach ($files as $file) {
+   $futures[$file] = new ExecFuture(array('gzip', $file), false);
+ }
+
+ foreach (Futures($futures)->limit(4) as $key => $future) {
+   list ($err, $stdout, $stderr) = $future->resolve();
+   if ($err) {
+     // handle it
+   } else {
+     echo "Compressed {$key}.\n";
+   }
+ }
+
+</code>For CPU-bound processes, you can use ExecFuture->limitPerCore() to define a limit as a function of the number of processor cores in the current machine.
+
+You can also write to the stdin of a process by using the ExecFuture->write() method.
+
+<code> list($err, $stdout, $stderr) = new ExecFuture('bc')->write('2+2')->resolve();  
+
+</code>=Full Asynchronous Multiprocess I/O=
+
+If you really need to do this (in PHP? Really?), it's technically supported. The <tt>write()</tt> method takes a second parameter which lets you keep stdin open, and you can use <tt>read()</tt> to retrieve partial results:
+
+<code> $irc = new ExecFuture('nc irc.ircserver.com 6667');
+ $irc->write('USER hurf durf hurf durf', true);
+ $irc->write('NICK copycat', true);
+ $irc->write('JOIN #e', true);
+ while (true) {
+   list ($stdout, $stderr) = $irc->read();
+   if ($stdout) {
+     $irc->write('SAY #e '.$stdout, true);
+   }
+   usleep(10000);
+ }
+
+</code>Why would you do this? Why?
+

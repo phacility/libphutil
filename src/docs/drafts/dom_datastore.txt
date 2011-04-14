@@ -1,0 +1,73 @@
+
+This document describes what you should put in the DOM (display) and what you shouldn't (data). It is adapted from an e-mail to javascript@lists.
+
+=The DOM is Not a Datastore. Don't Store Application State in the DOM.=
+
+I don't know why this is so compelling, but it happens pretty often and everyone who is doing it really needs to stop doing it. What I mean by "application state" is that the DOM elements representing the page you're producing should be a rendered view of some state which you're storing internally in a Javascript object or datastructure. They should NOT themselves be the datastructure. Suppose you have a WidgetCounter, which counts widgets. Here's a reasonable implementation:
+
+<code>  function /* class */ WidgetCounter(display_field) {
+    this.display = $(display_field);
+    this.widgetCount = 0;
+    this._redraw();
+  }
+
+  WidgetCounter.prototype.getWidgetCount = function() {
+    return this.widgetCount;
+  }
+
+  WidgetCounter.prototype.addWidget = function() {
+    this.widgetCount++;
+    this._redraw();
+  }
+
+  WidgetCounter.prototype._redraw = function() {
+    DOM.setContent(this.display, 'Widgets: '+this.widgetCount);
+  }
+
+</code>Sometimes, though, we'll get a design that looks like this:
+
+<code>  COUNTEREXAMPLE
+  function /* class */ HorribleWidgetCounter(display_field) {
+    this.display = $(display_field);
+    DOM.setContent(this.display, 'Widgets: 0');
+  }
+
+  HorribleWidgetCounter.prototype.getWigetCount = function() {
+    return this.display.innerHTML.match(/\d+/)[0];
+  }
+
+  HorribleWidgetCounter.prototype.addWidget = function() {
+    DOM.setContent(this.display, 'Widgets: '+(this.getWidgetCount()+1));
+  }
+
+</code>Even ignoring internationalization concerns, I hope this example is so egregiously bad that it speaks for itself. I don't think anyone would actually implement this, but we get many more subtle flavors of it. For example, the photo tagging code limits the number of tags to 30; it does this by counting the number of childNodes:
+
+<code>  COUNTEREXAMPLE
+  if (tagsDiv.childNodes.length < 30 && ge(tagsID+'_error')) {
+    $(tagsID+'_error').style.display = 'none';
+  }
+
+</code>This practice is pervasive. A recent bug (circa July 2008) came down to a system storing its state not only in the DOM but in the "className" field. Someone changed some CSS on another page, which necessitated a followup CSS fix to deal with long field names, which cascaded into a minor CSS fix, which broke a portion of the underlying system. If a third-degree cascade of CSS-only changes can break your feature -- not by changing the display, but by changing actual execution paths -- you're doing it wrong.
+
+Two tangents here:
+
+First, it's also bad to rely on DOM context, like this (paraphrased but not really exaggerated) line that used to exist somewhere in poke:
+
+<code>  COUNTEREXAMPLE
+  hide(pokeContainer.parentNode.parentNode.parentNode.parentNode.parentNode);
+
+</code>"If there are no pokes left, hide the whole poke panel." (Someone removed a couple divs and this started hiding the BODY tag.)
+
+You should generally acquire references to nodes either by using $() or by using DOM.scry() from some parent container you've used $() on. The advantage of using DOM.scry() over DOM-walking chains is that the nodes can be moved around in a lot of ways without breaking you code. You should generally avoid using and particularly avoid chaining parentNode, childNodes, firstChild, nextSibling, etc. This isn't completely hard-and-fast, but almost all cases of "element.childNodes[3].firstChild" are bad and all of them are fragile.
+
+Second, it's way way less bad to use non-DOM properties of DOM objects to hold appropriate state. For instance, code like this (related to the earlier bug) is inherently fragile:
+
+<code>  COUNTEREXAMPLE
+  if (container.childNodes[i].className == 'friends_'+entity) 
+
+</code>It relies on unchanging DOM relationships, it relies on nothing and no one ever touching className, and it constructs a classname programmatically which makes it more difficult to debug when it breaks or find when it you're changing things. A far less bad implementation might use :DOMStorage:
+
+<code>  if (DOMStorage.getData(container.childNodes[i], 'privacyType') == entity)
+
+</code>This is still kind of nasty and I'd argue that a better design would see the code iterating over objects instead of over DOM nodes, using getters, and calling rendering methods to make changes reflect in the DOM. But, at the least, this is much less fragile and usually a practical alternative which doesn't require all that time-consuming "software engineering" associated with using classes and objects.
+

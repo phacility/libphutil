@@ -1,0 +1,101 @@
+This document describes the behaviors of Object and Array in Javascript.
+
+=Primitives=
+
+Javascript has two native datatype primitives, Object and Array. Both are classes, so you can use <tt>new</tt> to instantiate new objects and arrays:
+
+<code badcode>
+ var a = new Array();    //  Not preferred.
+ var o = new Object();
+
+</code>However, <b>you should prefer the shorthand notation</b> because it's more concise:
+
+<code> var a = [];             // Preferred.
+ var o = {};
+
+</code>(A possible exception to this rule is if you want to use the allocation behavior of the Array constructor, but you almost certainly don't.)
+
+The language relationship between Object and Array is somewhat tricky. Object and Array are both classes, but "object" is also a primitive type. Object is <i>also</i> the base class of all classes.
+
+<code> typeof Object;        // "function"
+ typeof Array;         // "function"
+ typeof {};            // "object"
+ typeof [];            // "object"
+
+ var a = [], o = {};
+ o instanceof Object;  // true
+ o instanceof Array;   // false
+ a instanceof Object;  // true
+ a instanceof Array;   // true
+
+</code>If this is confusing (it is), refer to [[Articles/Object-Oriented Javascript]] for a run-down on how this stuff works.
+
+=Objects are Maps, Arrays are Lists=
+
+PHP has a single <tt>array</tt> datatype which behaves like as both map and a list, and a common mistake is to treat Javascript arrays (or objects) in the same way. <b>Don't do this.</b> It sort of works until it doesn't. Instead, learn how Javascript's native datatypes work and use them properly.
+
+<b>In Javascript, you should think of Objects as maps ("dictionaries") and Arrays as lists ("vectors").</b>
+
+You store keys-value pairs in a map, and store ordered values in a list. So, store key-value pairs in Objects.
+
+<code> var o = {               //  Good, an object is a map.
+      name: 'Hubert',
+   species: 'zebra'
+ };
+
+ console.log(o.name);
+
+</code>And store ordered values in Arrays.
+
+<code> var a = [1, 2, 3];      //  Good, an array is a list.
+ a.push(4);
+
+</code>Don't store key-value pairs in Arrays and don't expect Objects to be ordered.
+
+<code badcode>
+ var a = [];
+ a['name'] = 'Hubert';   //  No! Don't do this!
+
+</code>This technically works because Arrays are Objects and you think everything is fine and dandy, but it won't do what you want and will burn you.
+
+=Iterating over Maps and Lists=
+
+Iterate over a map like this:
+
+<code> for (var k in object) {
+   f(object[k]);
+ }
+
+</code>Iterate over a list like this:
+
+<code> for (var ii = 0; ii < list.length; ii++) {
+   f(list[ii]);
+ }
+
+</code>Note that there are a bunch of provided iterators for Array, like Array.each.
+
+If you try to use <tt>for (var k in ...)</tt> syntax to iterate over an Array, you'll pick up a  whole pile of keys you didn't intend to and it won't work. If you try to use <tt>for (var ii = 0; ...)</tt> syntax to iterate over an Object, it won't work at all.
+
+<b>If you consistently treat Arrays as lists and Objects as maps and use the corresponding iterators, everything will always work properly.</b>
+
+=Sparse Arrays=
+
+One wrench in this mess is that Arrays aren't precisely like lists, because they do have indexes and may be sparse:
+
+<code> var a = []; a[2] = 1;
+ console.log(a);       // [undefined, undefined, 1]
+
+</code>The correct way to deal with this (as implemented by the provided iterators) is:
+
+<code> for (var ii = 0; ii < list.length; ii++) {
+   if (list[ii] == undefined) {
+     continue;
+   }
+   f(list[ii]);
+ }
+
+</code>
+=Ordered Maps=
+
+If you need an ordered map, you need to have a map for key-value associations and a list for key order. Don't try to build an ordered map using one Object or one Array. This generally applies for other complicated datatypes, as well; you need to build them out of more than one primitive.
+

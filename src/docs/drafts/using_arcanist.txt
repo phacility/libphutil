@@ -1,0 +1,114 @@
+This document describes how to use Arcanist, a tool that for code review and revision management. Arcanists glues together several other tools, like Differential and lint. It is also used to get changesets into Differential for review.
+
+A detailed command reference is available by running <tt>arc help</tt>. This document provides a high level overview of common workflows.
+
+=Overview=
+
+Arcanist is a wrapper script that sits on top of other tools (e.g., Differential, Lint, SVN, and git) and provides a simple command-line API to manage code review and some related revision control operations.
+
+Arcanist allows you to do things like:
+
+* send your code to Differential for review with <tt>arc diff</tt>
+* check your code for syntax and style errors with <tt>arc lint</tt>
+* run unit tests that cover your changes with <tt>arc unit</tt>
+* find likely reviewers for a change with <tt>arc cover</tt>
+* download a patch from Differential with <tt>arc patch</tt>
+* build www (main website) with <tt>arc build</tt>
+
+Except where otherwise noted, these workflows are agnostic to the underlying version control system and will work properly in git or SVN repositories.
+
+=Running Arcanist=
+
+First consider running the [[Arcanist | New Arcanist]]
+
+The Arcanist script is located here, in the main ''tfb'' Facebook repository:
+
+<code>./scripts/arc/arc</code>
+On most hosts, this is mounted in <tt>engshare</tt>:
+<code>/home/engshare/svnroot/tfb/trunk/www/scripts/arc/arc</code>
+
+If you are sourcing the <tt>master.shellrc</tt>, it should already be available in your path. To run it, change directory to a git or svn working copy and then execute an <tt>arc</tt> command. If you run <tt>arc</tt> without a specified command, it will display help.
+
+Generally speaking, <tt>arc</tt> commands operate on changed files in the working copy by default in svn, and on HEAD in git.
+
+= SVN Basics =
+
+In SVN, do this to create a new revision:
+
+<code>  # CREATING A REVISION (SVN)
+  $ nano file.php # make changes
+  $ arc diff
+
+</code>This will give you a diff URL, which you can use to create a new revision via the web UI. To later update it, just do the same thing:
+
+<code>  # UPDATING A REVISION (SVN)
+  $ nano file.php # make more changes
+  $ arc diff
+
+</code>This time, attach the diff to your existing revision. Once your revision has been accepted, you can commit like this:
+
+<code>  # COMMITTING A REVISION (SVN)
+  $ arc commit
+
+</code>
+
+= git Basics =
+
+There are two git workflows. The git web workflow is very similar to the SVN workflow. In the git CLI workflow, you enter revision information into your commit message instead of into the web interface.
+
+= git Web Workflow =
+
+<code>  # CREATING A REVISION (git, web workflow)
+  $ nano file.php # make changes
+  $ git commit -a -m 'made some sweet changes'
+  $ arc diff --preview
+
+</code>This will give you a diff URL, just like the SVN workflow.
+
+<code>  # UPDATING A REVISION (git, web workflow)
+  $ nano file.php # make more changes
+  $ git commit -a --amend
+  $ arc diff --preview
+
+</code>This also works just like the SVN workflow.
+
+<code>  # COMMITTING A REVISION (git, web workflow)
+  $ arc amend <differential_revision>
+
+</code>This will amend your commit message, synchronizing it from Differential. You can then <tt>git svn dcommit</tt> or <tt>git push</tt> or whatever else, depending on whether or not you are working in an SVN-bridged or pure git repository.
+
+= git CLI Workflow =
+
+Alternatively, you can use the CLI workflow, provided you have correctly configured your commit template (this should happen by default):
+
+<code>  # CREATING A REVISION (git, CLI workflow)
+  $ nano file.php # make changes
+  $ git commit -a # fill out the commit template
+  $ arc diff
+
+</code>This will create the revision immediately, using the information you provide in your template.
+
+<code>  # UPDATING A REVISION (git, CLI workflow)
+  $ nano file.php # make more changes
+  $ git commit -a --amend
+  $ arc diff # or `arc diff --edit` if you want to edit the revision info
+
+</code>Once your revision has been accepted, use amend to finalize it:
+
+<code>  # COMMITTING A REVISION (git, CLI workflow)
+  $ arc amend
+
+</code>You are now free to <tt>git svn dcommit</tt> or <tt>git push</tt> as applicable.
+
+=Advanced git=
+
+By default, arc only looks at HEAD under git. If you prefer not to squash commits as you work, you can provide some other ancestor instead. For example:
+
+<code>  $ arc diff HEAD^^^ # create a revision from the last three commits
+
+</code>This will diff from HEAD^^^..HEAD instead of HEAD^..HEAD when determining which files have been changed.
+
+=Pure git Repositories=
+
+For the most part, using arc in pure git repositories is the same as using it in git-svn repositories. However, you should use <tt>--mark-committed</tt> when you amend to mark Differential revisions as committed, since Differential won't be able to tell when you push to an arbitrary remote.
+

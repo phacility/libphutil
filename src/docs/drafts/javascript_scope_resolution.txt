@@ -1,0 +1,149 @@
+This article describes how scope resolution works in Javascript. <i>Note that Firebug creates a fake global scope, so if you try some of these examples in Firebug they may behave differently than if you put them in a .js file.</i>
+
+=<tt>window</tt>=
+
+Javascript's global scope is a variable named window. At global scope, these statements are all equivalent:
+
+<code>  u = 1;
+  var u = 1;
+  window.u = 1;
+
+</code>Everything you define at global scope exists at global scope, so you can iterate over window to get a list of all the functions and classes, plus a whole pile of browser builtins. For instance, to test if a function exists at global scope:
+
+<code>  if (window['function']) { ... }
+
+</code>
+=Scope=
+
+There are two ways to create a new scope: <tt>function</tt> and <tt>with</tt>. Never use <tt>with</tt> -- it's a cute idea, but some of the browser implementations suck and it's more trouble than it's worth (see [[Articles/Javascript Design Flaws]]). Other statements do not introduce scope in Javascript.
+
+So there's one way to create a new scope that you are actually allowed to use: creating a function. A function definition creates a new scope:
+
+<code>  function f(param) {
+    var local;
+    param = 'param';
+    local = 'local';
+    global = 'global';
+  }
+
+</code>Local variables and parameter variables have resolution precedence over global variables, so <tt>param</tt> is resolved to the parameter and <tt>local</tt> is resolved to the function-local. However, <tt>global</tt> is not declared anywhere in this scope, so it will resolve to the global <tt>global</tt>.
+
+Equivalently, you could write <tt>window.global</tt>. In general, you can force global resolution with <tt>window</tt>.
+
+Two notes: first, <b>don't ever give a local and a parameter the same name</b>. You will be decidedly unhappy about the result. Second, the <tt>var</tt> keyword applies regardless of where in the function scope it appears, so this block also creates a local called <tt>local</tt>, even though the line <tt>var local;</tt> will never be executed. That is, this function will always return <tt>undefined</tt> regardless of the value of <tt>window.local</tt>.
+
+<code>  function f() {
+    return local;
+    if (false) {
+      var local;
+    }
+  }
+
+</code>It may be helpful to think of this as: one pass to find all the <tt>var</tt> keywords, then a second pass to actually execute the code.
+
+=Advanced Scope=
+
+Of course, you can define functions inside functions. In this case, identifiers which are not locals or parameters will be resolved at the parent scope, and so on until <tt>window</tt> is reached.
+
+<code>  function f() {
+    var l = 35;
+    function g() {
+      return l;
+    }
+    g(); // 35
+  }
+
+</code>Here, <tt>l</tt> is resolved at <tt>f</tt>'s scope. Note that <tt>g</tt> is a ``closure'' -- it encloses a variable from its containing scope. This reference does not dissolve when the scope dissolves:
+
+<code>  function buildBeancounterFunctions() {
+    var bean_count = 0;
+    return {
+      inc : function() { bean_count++; },
+      get : function() { return bean_count; }
+    };
+  }
+
+  var b = buildBeancounterFunctions();
+  b.inc();
+  b.inc();
+  b.get();  //  2
+
+</code>This works as expected; the reference to the <tt>bean_count</tt> local is preserved by the closures even though the scope created by <tt>buildBeancounterFunctions</tt> has dissolved. If you call <tt>buildBeancounterFunctions</tt> again, you'll get a different set of functions enclosing a different variable. (But don't build classes like this, see [[Articles/Object-Oriented Javascript]] instead.)
+
+=Really Advanced Scope=
+
+One caveat is that this goes the other way, too:
+
+<code>  function assignButtonHandlers(buttons) {
+    for (var ii = 0; ii < buttons.length; ii++) {
+      buttons[ii].onclick = function() {
+        alert(ii);
+      }
+    }
+  }
+
+</code>Suppose you pass in an array of three buttons. Since all of the closures are referencing the same variable, the buttons will not alert 0, 1, and 2, but 3, 3, and 3.
+
+The solution to this is to reference different variables; to do this, you need to introduce more scope.
+
+<code>  function assignButtonHandlers(buttons) {
+    for (var ii = 0; ii < buttons.length; ii++) {
+      buttons[ii].onclick = (function(n) {
+        return function() {
+          alert(n);
+        })(ii);
+      }
+    }
+  }
+
+</code>This creates and calls a function which takes the current value of the iterator and returns a function which encloses that value. This is difficult to understand. But generally you can just learn how bind() works and use that instead, far more simply:
+
+<code>  function assignButtonHandlers(buttons) {
+    for (var ii = 0; ii < buttons.length; ii++) {
+      buttons[ii].onclick = alert.bind(buttons[ii], ii);
+    }
+  }
+
+</code>
+=<tt>arguments</tt> and <tt>this</tt>=
+
+When you create a function scope, two <i>magic</i> variables are automatically injected: <tt>this</tt> and <tt>arguments</tt>. <tt>arguments</tt> is an Array-like object with the function's arguments (so you can write functions which take a variable number of arguments, like sprintf()). <tt>arguments</tt> also has some other properties, like <tt>callee</tt>, which are occasionally useful. Look it up on the internet if you really care so very much.
+
+<code>  function howManyArguments() {
+    return arguments.length;
+  }
+
+  howManyArguments(1, 2, 3, 4, 5); // 5
+
+</code><tt>this</tt> is a variable that contains the function's calling context. What this means is that if a function is invoked as a property of an object, <tt>this</tt> will be the object which it is a property of. Basically, what you would expect from other object-oriented languages.
+
+<code>  o.f();        //  inside the scope of f(), `this' is `o'
+  o['f']();     //  inside the scope of f(), `this' is `o'
+  a.b.c.f();    //  inside the scope of f(), `this' is `c'
+
+</code><b>But! If a function has no calling context, <tt>this</tt> will be defined but set to <tt>window</tt>.</b> So, <tt>this</tt> <b>always exists</b> inside a function scope, but sometimes it is <tt>window</tt> which is 100% Bad News Bears and almost certainly not what you want.
+
+<code>  f();          //  `this' is window! That is terrible!
+
+</code>This is particularly tricky because it is the <b>immediate calling context</b> that becomes <tt>this</tt>.
+
+<code>  o.f();        //  inside the scope of f(), `this' is `o', but...
+  var g = o.f;
+  g();          //  ...now it's window, sucker.
+
+</code>Fortunately, you can inject a specific calling context using Function.call() or Function.apply().
+
+=<tt>call</tt> and <tt>apply</tt>=
+
+Function.call() takes one or more arguments; the first is the object to inject as the function's calling context and the rest (if any) are arguments to pass.
+
+<code>  function add(n) { return this + n; }
+  add.call(3, 5); // 8
+
+</code>Function.apply() works the same way, but it takes two arguments: the object to inject as <tt>this</tt> and an array of arguments to pass. So these are equivalent:
+
+<code>  add.call(3, 5);
+  add.apply(3, [5]);
+
+</code>But, there's generally an easier way than <tt>call</tt> or <tt>apply</tt>: bind() (which you should probably read next).
+
