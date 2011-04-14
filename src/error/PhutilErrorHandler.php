@@ -69,8 +69,17 @@ class PhutilErrorHandler {
    */
   public static function dispatchErrorMessage($event, $value, $metadata) {
     $timestamp = strftime("%F %T");
+
     switch ($event) {
       case PhutilErrorHandler::ERROR:
+        if (error_reporting() === 0) {
+          // Respect the use of "@" to silence warnings: if this error was
+          // emitted from a context where "@" was in effect, the
+          // value returned by error_reporting() will be 0. This is the
+          // recommended way to check for this, see set_error_handler() docs
+          // on php.net.
+          break;
+        }
         error_log(sprintf(
                     "[%s] ERROR %d: %s at [%s:%d]",
                     $timestamp,
