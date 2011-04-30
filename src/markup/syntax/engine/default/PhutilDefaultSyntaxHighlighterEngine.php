@@ -22,7 +22,10 @@
 class PhutilDefaultSyntaxHighlighterEngine
   extends PhutilSyntaxHighlighterEngine {
 
+  private $config = array();
+
   public function setConfig($key, $value) {
+    $this->config[$key] = $value;
     return $this;
   }
 
@@ -37,6 +40,19 @@ class PhutilDefaultSyntaxHighlighterEngine
           return id(new PhutilXHPASTSyntaxHighlighter())
             ->highlightSource($source);
         default:
+          if (!empty($this->config['pygments.enabled'])) {
+            $future = new ExecFuture('pygmentize -f html -l %s', $lang);
+            $future->write($source);
+            list($err, $stdout, $stderr) = $future->resolve();
+            if (!$err && strlen($stdout)) {
+              // Strip off fluff Pygments adds.
+              $stdout = preg_replace(
+                '@^<div class="highlight"><pre>(.*)</pre></div>\s*$@s',
+                '\1',
+                $stdout);
+              return $stdout;
+            }
+          }
           return phutil_escape_html($source);
       }
     } catch (Exception $ex) {

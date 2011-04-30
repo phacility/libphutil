@@ -6,6 +6,7 @@
 
 
 
+phutil_require_module('phutil', 'future/exec');
 phutil_require_module('phutil', 'markup');
 phutil_require_module('phutil', 'markup/syntax/engine/base');
 phutil_require_module('phutil', 'markup/syntax/highlighter/xhpast');

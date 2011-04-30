@@ -72,6 +72,9 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
     }
 
     $engine = new PhutilDefaultSyntaxHighlighterEngine();
+    $engine->setConfig(
+      'pygments.enabled',
+      $this->getEngine()->getConfig('pygments.enabled'));
     return
       '<code class="remarkup-code'.$aux_class.'">'.
         $engine->highlightSource($lang, $text).
