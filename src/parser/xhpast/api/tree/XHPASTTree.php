@@ -80,6 +80,17 @@ class XHPASTTree {
     $this->buildTree(array($tree));
   }
 
+  /**
+   * Unlink internal datastructures so that PHP's will garbage collect the tree.
+   * This renders the object useless.
+   *
+   * @return void
+   */
+  public function dispose() {
+    unset($this->tree);
+    unset($this->stream);
+  }
+
   public function getRootNode() {
     return $this->tree[0];
   }
