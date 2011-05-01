@@ -17,17 +17,9 @@
  */
 
 /**
- * A 'future' or 'promise' is an object which acts as a proxy for the output
- * of some process which hasn't completed yet. For instance, you might create
- * a future that references the result of a system command. While the command
- * is executing asynchronously, you can do other computation in your PHP
- * process and pass around the future as a reference to the eventual results
- * of the expensive computation. When you need those results, you resolve the
- * future. If the result isn't ready yet, this makes the PHP process block
- * until the external process has completed.
- *
- * Futures are a little bit tricky to understand, but provide a very simple
- * way to express parallel execution.
+ * A 'future' or 'promise' is an object which represents the result of some
+ * pending computation. For a more complete overview of futures, see
+ * @{article:Using Futures}.
  *
  * @group futures
  */

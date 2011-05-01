@@ -18,8 +18,8 @@
 
 /**
  * Execute a command and capture stdout and stderr. If the command exits with
- * a nonzero error code, a CommandException will be thrown. If you need to
- * manually handle error conditions, use exec_manual().
+ * a nonzero error code, a @{class:CommandException} will be thrown. If you need
+ * to manually handle error conditions, use @{function:exec_manual}.
  *
  *   list ($stdout, $stderr) = execx('ls %s', $file);
  *
@@ -40,9 +40,9 @@ function execx($cmd /*, ... */) {
  *
  *   list ($err, $stdout, $stderr) = exec_manual('ls %s', $file);
  *
- * When invoking this function, you MUST **manually** handle the error
- * condition. Error flows can often be simplified by using execx() instead,
- * which throws an exception when it encounters an error.
+ * When invoking this function, you must manually handle the error
+ * condition. Error flows can often be simplified by using @{function:execx}
+ * instead, which throws an exception when it encounters an error.
  *
  * @param  string  sprintf()-style command pattern to execute.
  * @param  ...     Arguments to sprintf pattern.

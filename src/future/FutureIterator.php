@@ -16,32 +16,46 @@
  * limitations under the License.
  */
 
+
 /**
+ * Convenience function for instantiating a new @{class:FutureIterator}.
+ *
+ * @param list              List of @{class:Future}s.
+ * @return FutureIterator   New @{class:FutureIterator} over those futures.
  * @group futures
  */
 function Futures($futures) {
   return new FutureIterator($futures);
 }
 
+
 /**
  * FutureIterator aggregates @{class:Future}s and allows you to respond to them
  * in the order they resolve. This is useful because it minimizes the amount of
  * time your program spends waiting on parallel processes.
  *
- *  $futures = array(
- *    'a.txt' => new ExecFuture('wc -c a.txt'),
- *    'b.txt' => new ExecFuture('wc -c b.txt'),
- *    'c.txt' => new ExecFuture('wc -c c.txt'),
- *  );
- *  foreach (Futures($futures) as $key => $future) {
- *    // IMPORTANT: keys are preserved but the order of elements is not. This
- *    // construct iterates over the futures in the order they resolve, so the
- *    // fastest future is the one you'll get first. This allows you to start
- *    // doing followup processing as soon as possible.
+ *   $futures = array(
+ *     'a.txt' => new ExecFuture('wc -c a.txt'),
+ *     'b.txt' => new ExecFuture('wc -c b.txt'),
+ *     'c.txt' => new ExecFuture('wc -c c.txt'),
+ *   );
  *
- *    list($stdout) = $future->resolvex();
- *    do_some_processing($stdout);
- *  }
+ *   foreach (Futures($futures) as $key => $future) {
+ *     // IMPORTANT: keys are preserved but the order of elements is not. This
+ *     // construct iterates over the futures in the order they resolve, so the
+ *     // fastest future is the one you'll get first. This allows you to start
+ *     // doing followup processing as soon as possible.
+ *
+ *     list($stdout) = $future->resolvex();
+ *     do_some_processing($stdout);
+ *   }
+ *
+ * For a general overview of futures, see @{article:Using Futures}.
+ *
+ * @task  basics    Basics
+ * @task  config    Configuring Iteration
+ * @task  iterator  Iterator Interface
+ * @task  internal  Internals
  *
  * @group futures
  */
@@ -57,6 +71,18 @@ class FutureIterator implements Iterator {
   protected $timeout;
   protected $isTimeout = false;
 
+
+/* -(  Basics  )------------------------------------------------------------- */
+
+
+  /**
+   * Create a new iterator over a list of futures. By convention, use the
+   * convenience function @{function:Futures} instead of instantiating this
+   * class directly.
+   *
+   * @param list  List of @{class:Future}s to resolve.
+   * @task basics
+   */
   public function __construct(array $futures) {
     foreach ($futures as $future) {
       if (!$future instanceof Future) {
@@ -65,6 +91,23 @@ class FutureIterator implements Iterator {
     }
     $this->futures = $futures;
   }
+
+
+  /**
+   * Block until all futures resolve.
+   *
+   * @return void
+   * @task basics
+   */
+  public function resolveAll() {
+    foreach ($this as $_) {
+      // This implicitly forces all the futures to resolve.
+    }
+  }
+
+
+/* -(  Configuring Iteration  )---------------------------------------------- */
+
 
   /**
    * Set a maximum amount of time you want to wait before the iterator will
@@ -86,12 +129,39 @@ class FutureIterator implements Iterator {
    * @param float Maximum number of seconds to block waiting on futures before
    *              yielding null.
    * @return this
+   *
+   * @task config
    */
   public function setUpdateInterval($interval) {
     $this->timeout = $interval;
     return $this;
   }
 
+
+  /**
+   * Limit the number of simultaneously executing futures.
+   *
+   *  foreach (Futures($futures)->limit(4) as $future) {
+   *    // Run no more than 4 futures simultaneously.
+   *  }
+   *
+   * @param int Maximum number of simultaneous jobs allowed.
+   * @return this
+   *
+   * @task config
+   */
+  public function limit($max) {
+    $this->limit = $max;
+    return $this;
+  }
+
+
+/* -(  Iterator Interface  )------------------------------------------------- */
+
+
+  /**
+   * @task iterator
+   */
   public function rewind() {
     $this->wait = array_keys($this->futures);
     $this->work = null;
@@ -99,32 +169,9 @@ class FutureIterator implements Iterator {
     $this->next();
   }
 
-  protected function getWorkingSet() {
-    if ($this->work === null) {
-      return $this->wait;
-    }
-
-    return $this->work;
-  }
-
-  protected function updateWorkingSet() {
-    if (!$this->limit) {
-      return;
-    }
-
-    $old = $this->work;
-    $this->work = array_slice($this->wait, 0, $this->limit, true);
-
-    //  If we're using a limit, our futures are sleeping and need to be polled
-    //  to begin execution, so poll any futures which weren't in our working set
-    //  before.
-    foreach ($this->work as $work => $key) {
-      if (!isset($old[$work])) {
-        $this->futures[$key]->isReady();
-      }
-    }
-  }
-
+  /**
+   * @task iterator
+   */
   public function next() {
     $this->key = null;
     if (!count($this->wait)) {
@@ -212,7 +259,9 @@ class FutureIterator implements Iterator {
     $this->updateWorkingSet();
   }
 
-
+  /**
+   * @task iterator
+   */
   public function current() {
     if ($this->isTimeout) {
       return null;
@@ -220,6 +269,9 @@ class FutureIterator implements Iterator {
     return $this->futures[$this->key];
   }
 
+  /**
+   * @task iterator
+   */
   public function key() {
     if ($this->isTimeout) {
       return null;
@@ -227,6 +279,9 @@ class FutureIterator implements Iterator {
     return $this->key;
   }
 
+  /**
+   * @task iterator
+   */
   public function valid() {
     if ($this->isTimeout) {
       return true;
@@ -234,21 +289,40 @@ class FutureIterator implements Iterator {
     return ($this->key !== null);
   }
 
-  public function resolveAll() {
-    foreach ($this as $_) {
-      // This implicitly forces all the futures to resolve.
+
+/* -(  Internals  )---------------------------------------------------------- */
+
+
+  /**
+   * @task internal
+   */
+  protected function getWorkingSet() {
+    if ($this->work === null) {
+      return $this->wait;
     }
+
+    return $this->work;
   }
 
   /**
-   * Limits the number of simultaneous tasks.
-   *
-   * @param int Maximum number of simultaneous jobs allowed.
-   * @return this
+   * @task internal
    */
-  public function limit($max) {
-    $this->limit = $max;
-    return $this;
+  protected function updateWorkingSet() {
+    if (!$this->limit) {
+      return;
+    }
+
+    $old = $this->work;
+    $this->work = array_slice($this->wait, 0, $this->limit, true);
+
+    //  If we're using a limit, our futures are sleeping and need to be polled
+    //  to begin execution, so poll any futures which weren't in our working set
+    //  before.
+    foreach ($this->work as $work => $key) {
+      if (!isset($old[$work])) {
+        $this->futures[$key]->isReady();
+      }
+    }
   }
 
 }

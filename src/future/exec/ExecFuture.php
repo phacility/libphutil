@@ -19,22 +19,6 @@
 /**
  * Execute system commands in parallel using futures.
  *
- *  // execx() API: synchronous, throws on nonzero exit code
- *  list($stdout, $stderr) = execx('wc -l %s', $file);
- *
- *  // exec_manual() API: synchronous, returns exit code
- *  list($err, $stdout, $stderr) = exec_manual('wc -l %s', $file);
- *
- *  // Raw ExecFuture API: asynchronous
- *  $future = new ExecFuture(
- *    csprintf('wc -l %s'),
- *    $file);
- *
- *  list($err, $stdout, $stderr) = $future->resolve();
- *
- *  // ...or, throw on nonzero exit with 'resolvex()'.
- *  list($stdout, $stderr) = $future->resolvex();
- *
  * @group exec
  */
 class ExecFuture extends Future {

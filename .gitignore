@@ -2,6 +2,8 @@
 ._*
 
 /docs/
+/.divinercache/
+
 *.a
 *.o
 parser.yacc.cpp
@@ -17,3 +19,4 @@ parser.yacc.output
 /support/xhpast/xhpast.dSYM
 
 /src/.phutil_module_cache
+
