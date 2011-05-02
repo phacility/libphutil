@@ -40,6 +40,7 @@ class PhutilDaemonOverseer {
   private $traceMemory;
   private $daemonize;
   private $phddir;
+  private $conduit;
   private $conduitURI;
 
   public function __construct($daemon, array $argv) {
@@ -135,9 +136,22 @@ class PhutilDaemonOverseer {
 
     $exec_dir = $root.'/scripts/daemon/exec/';
 
+    // NOTE: PHP implements proc_open() by running 'sh -c'. On most systems this
+    // is bash, but on Ubuntu it's dash. When you proc_open() using bash, you
+    // get one new process (the command you ran). When you proc_open() using
+    // dash, you get two new processes: the command you ran and a parent
+    // "dash -c" (or "sh -c") process. This means that the child process's PID
+    // is actually the 'dash' PID, not the command's PID. To avoid this, use
+    // 'exec' to replace the shell process with the real process; without this,
+    // the child will call posix_getppid(), be given the pid of the 'sh -c'
+    // process, and send it SIGUSR1 to keepalive which will terminate it
+    // immediately. We also won't be able to do process group management because
+    // the shell process won't properly posix_setsid() so the pgid of the child
+    // won't be meaningful.
+
     $exec_daemon = './exec_daemon.php';
     $argv = $this->argv;
-    array_unshift($argv, $exec_daemon, $this->daemon);
+    array_unshift($argv, 'exec', $exec_daemon, $this->daemon);
     foreach ($argv as $k => $arg) {
       $argv[$k] = escapeshellarg($arg);
     }
