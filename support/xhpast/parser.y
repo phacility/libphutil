@@ -15,6 +15,11 @@
  */
 
 %{
+/*
+ * If you modify this grammar, please update the version number in
+ * ./xhpast.cpp and libphutil/src/parser/xhpast/bin/xhpast_parse.php
+ */
+ 
 #include "ast.hpp"
 #include "node_names.hpp"
 // PHP's if/else rules use right reduction rather than left reduction which
@@ -2797,11 +2802,7 @@ xhp_attribute_enum:
 ;
 
 xhp_attribute_default:
-  '=' common_scalar {
-//!    $2.strip_lines();
-//!    $$ = $2;
-  }
-| '=' T_STRING {
+  '=' static_scalar {
 //!    $2.strip_lines();
 //!    $$ = $2;
   }
