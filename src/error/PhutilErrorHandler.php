@@ -119,7 +119,7 @@ class PhutilErrorHandler {
         error_log(sprintf(
                     "[%s] EXCEPTION: %s at [%s:%d]",
                     $timestamp,
-                    $value->getMessage(),
+                    '('.get_class($value).') '.$value->getMessage(),
                     $value->getFile(),
                     $value->getLine()));
         break;
@@ -165,7 +165,9 @@ function phlog($value) {
   $line = $trace[0]['line'];
 
   PhutilErrorHandler::dispatchErrorMessage(
-    PhutilErrorHandler::PHLOG,
+    $value instanceof Exception
+      ? PhutilErrorHandler::EXCEPTION
+      : PhutilErrorHandler::PHLOG,
     $value,
     array('file'  => $file,
           'line'  => $line,

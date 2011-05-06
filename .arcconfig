@@ -3,5 +3,6 @@
   "conduit_uri" : "https://secure.phabricator.com/api/",
   "lint_engine" : "PhutilLintEngine",
   "unit_engine" : "PhutilUnitTestEngine",
+  "remote_hooks_installed" : true,
   "copyright_holder" : "Facebook, Inc."
 }

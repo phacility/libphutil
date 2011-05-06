@@ -40,6 +40,7 @@ final class FileFinder {
   private $suffix = array();
   private $type;
   private $generateChecksums = false;
+  private $followSymlinks;
 
   /**
    * Create a new FileFinder.
@@ -87,6 +88,14 @@ final class FileFinder {
   /**
    * @task config
    */
+  public function withFollowSymlinks($follow) {
+    $this->followSymlinks = $follow;
+    return $this;
+  }
+
+  /**
+   * @task config
+   */
   public function setGenerateChecksums($generate) {
     $this->generateChecksums = $generate;
     return $this;
@@ -102,7 +111,11 @@ final class FileFinder {
     $command[] = '(cd %s; ';
     $args[] = $this->root;
 
-    $command[] = 'find .';
+    $command[] = 'find';
+    if ($this->followSymlinks) {
+      $command[] = '-L';
+    }
+    $command[] = '.';
 
     if ($this->exclude) {
       $command[] = $this->generateList('path', $this->exclude).' -prune';
