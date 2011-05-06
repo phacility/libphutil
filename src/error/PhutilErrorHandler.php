@@ -64,6 +64,32 @@ class PhutilErrorHandler {
   }
 
   /**
+   * Outputs a stacktrace to error log
+   */
+  public static function outputStacktrace($trace) {
+    foreach ($trace as $key => $entry) {
+      $line = '  #'.$key.' ';
+      if (isset($entry['class'])) {
+        $line .= $entry['class'].'::';
+      }
+      $line .= idx($entry, 'function', '');
+
+      if (isset($entry['args'])) {
+        $args = array();
+        foreach ($entry['args'] as $arg) {
+          $args[] = PhutilReadableSerializer::printShort($arg);
+        }
+        $line .= '('.implode(', ', $args).')';
+      }
+
+      if (isset($entry['file'])) {
+        $line .= ' called at ['.$entry['file'].':'.$entry['line'].']';
+      }
+      error_log($line);
+    }
+  }
+
+  /**
    * All different type of error messages come here before they are
    * dispatched to the listener
    */
@@ -87,6 +113,7 @@ class PhutilErrorHandler {
                     $value,
                     $metadata['file'],
                     $metadata['line']));
+        self::outputStacktrace($metadata['trace']);
         break;
       case PhutilErrorHandler::EXCEPTION:
         error_log(sprintf(
