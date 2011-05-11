@@ -281,17 +281,16 @@ function igroup(array $list, $by /*, ... */) {
 
 /**
  * Sort a list of objects by the return value of some method. In PHP, this is
- * often vastly more efficient than usort() and similar.
+ * often vastly more efficient than ##usort()## and similar.
  *
  *    // Sort a list of Duck objects by name.
  *    $sorted = msort($ducks, 'getName');
  *
  * It is usually significantly more efficient to define an ordering method
- * on objects and call msort() than to write a comparator. It is often more
+ * on objects and call ##msort()## than to write a comparator. It is often more
  * convenient, as well.
  *
- * **NOTE:** This method does not take the list by reference; it returns a new
- * list.
+ * NOTE: This method does not take the list by reference; it returns a new list.
  *
  * @param   list    List of objects to sort by some property.
  * @param   string  Name of a method to call on each object; the return values
@@ -360,7 +359,6 @@ function isort(array $list, $index) {
  *                      filter instead of keeping them.
  *
  * @return array   List of objects which pass the filter.
- *
  * @group  util
  */
 function mfilter(array $list, $method, $negate = false) {
@@ -408,7 +406,6 @@ function mfilter(array $list, $method, $negate = false) {
  *                      filter instead of keeping them.
  *
  * @return array   List of arrays which pass the filter.
- *
  * @group  util
  */
 function ifilter(array $list, $index, $negate = false) {
@@ -467,7 +464,7 @@ function array_select_keys(array $dict, array $keys) {
  * are no such arguments. Identical to the MySQL function of the same name.
  *
  * @param  ...         Zero or more arguments of any type.
- * @return mixed       First non-null arg, or null if no such arg exists.
+ * @return mixed       First non-##null## arg, or null if no such arg exists.
  * @group  util
  */
 function coalesce(/* ... */) {
@@ -483,19 +480,20 @@ function coalesce(/* ... */) {
 
 /**
  * Similar to @{function:coalesce}, but less strict: returns the first
- * non-empty() argument, instead of the first argument that is strictly
- * non-null. If no argument is nonempty, it returns the last argument. This is
- * useful idiomatically for setting defaults:
+ * non-##empty()## argument, instead of the first argument that is strictly
+ * non-##null##. If no argument is nonempty, it returns the last argument. This
+ * is useful idiomatically for setting defaults:
  *
  *   $display_name = nonempty($user_name, $full_name, "Anonymous");
  *
  * @param  ...         Zero or more arguments of any type.
- * @return mixed       First non-empty() arg, or last arg if no such arg
- *                     exists, or null if you pased in zero args.
+ * @return mixed       First non-##empty()## arg, or last arg if no such arg
+ *                     exists, or null if you passed in zero args.
  * @group  util
  */
 function nonempty(/* ... */) {
   $args = func_get_args();
+  $arg = null;
   foreach ($args as $arg) {
     if ($arg) {
       break;
@@ -549,9 +547,12 @@ function newv($class_name, array $argv) {
 /**
  * Convert a string into valid UTF-8. This function is quite slow.
  *
- * @param   string String to convert to valid UTF-8.
- * @return  string String with invalid UTF-8 byte subsequences removed.
+ * When invalid byte subsequences are encountered, they will be replaced with
+ * U+FFFD, the Unicode replacement character.
  *
+ * @param   string  String to convert to valid UTF-8.
+ * @return  string  String with invalid UTF-8 byte subsequences replaced with
+ *                  U+FFFD.
  * @group util
  */
 function phutil_utf8ize($string) {
@@ -595,7 +596,6 @@ function phutil_utf8ize($string) {
  *
  * @param string  Some string which may or may not be valid UTF-8.
  * @param bool    True if the string is valid UTF-8.
- *
  * @group util
  */
 function phutil_is_utf8($string) {
@@ -615,12 +615,15 @@ function phutil_is_utf8($string) {
   return preg_match($regex, $string);
 }
 
+
 /**
  * Returns the first element of an array. Exactly like reset(), but doesn't
- * choke if you pass it some non-referencable value.
+ * choke if you pass it some non-referenceable value like the return value of
+ * a function.
  *
- * @param    Array to retrieve the first element from.
- * @return   The first value of the array.
+ * @param    array Array to retrieve the first element from.
+ * @return   wild  The first value of the array.
+ * @group util
  */
 function head(array $arr) {
   return reset($arr);

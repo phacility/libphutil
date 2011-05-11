@@ -174,7 +174,11 @@ phutil_register_library('phutil', __FILE__);
 
 phutil_require_module('phutil', 'symbols');
 
-function __autoload($class) {
+/**
+ * @group library
+ */
+function __phutil_autoload($class) {
   PhutilSymbolLoader::loadClass($class);
 }
 
+spl_autoload_register('__phutil_autoload', $throw = true);
