@@ -1,0 +1,41 @@
+@title Core Utilities Quick Reference
+@group util
+
+Summary of libphutil core utilities.
+
+= Overview =
+
+This document provides a brief overview of the libphutil core utilities.
+
+= Language Capabilities =
+
+Functions @{function:id}, @{function:head} and @{function:newv} address language
+grammar and implementation limitations.
+
+= Default Value Selection =
+
+Functions @{function:idx}, @{function:nonempty} and @{function:coalesce} help
+you to select default values when keys or parameters are missing or empty.
+
+= Array and Object Manipulation =
+
+Functions @{function:ipull}, @{function:igroup}, @{function:isort} and
+@{function:ifilter} (**i** stands for **index**) simplify common data
+manipulations applied to lists of arrays.
+
+Functions @{function:mpull}, @{function:mgroup}, @{function:msort} and
+@{function:mfilter} (**m** stands for **method**) provide the same capabilities
+for lists of objects.
+
+@{function:array_select_keys} allows you to choose or reorder keys from a
+dictionary.
+
+= UTF-8 =
+
+You can test a string for being valid UTF-8 with @{function:phutil_is_utf8},
+and sanitize strings to UTF-8 with @{function:phutil_utf8ize}.
+
+= xsprintf =
+
+@{function:xsprintf} allows you to define ##sprintf()##-style functions with
+custom conversions.

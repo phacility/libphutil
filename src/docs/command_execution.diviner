@@ -41,8 +41,9 @@ and asynchronous I/O, use @{class:ExecFuture}.
   list($stdout, $stderr) = $future->resolvex();
 
 @{class:ExecFuture} is a @{class:Future}, and can be used with constructs like
-@{class:FutureIterator} to achieve and manage paralleism. See @{article:Using
-Futures} for general information on how to use futures in libphutil.
+@{class:FutureIterator} to achieve and manage parallelism. See
+@{article:Using Futures} for general information on how to use futures in
+libphutil.
 
 In addition to futures-based parallelism, you can set a timeout on an
 ExecFuture, which will kill the command if it takes longer than the specified
@@ -53,8 +54,8 @@ number of seconds to execute:
 If the command runs longer than the timeout, the process will be killed and the
 future will resolve with a failure code (ExecFuture::TIMED_OUT_EXIT_CODE).
 
-You can also write to the stdin of a process by using the ExecFuture->write()
-method.
+You can also write to the stdin of a process by using the
+@{method:ExecFuture::write} method.
 
   $future = new ExecFuture('bc');
   $future->write('2+2');
