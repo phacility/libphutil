@@ -168,14 +168,14 @@ final class FileFinder {
         array(implode(' ', $command)),
         $args));
 
-    if (!$this->generateChecksums) {
-      return explode("\0", trim($stdout));
-    } else {
-      $stdout = trim($stdout);
-      if (!strlen($stdout)) {
-        return array();
-      }
+    $stdout = trim($stdout);
+    if (!strlen($stdout)) {
+      return array();
+    }
 
+    if (!$this->generateChecksums) {
+      return explode("\0", $stdout);
+    } else {
       $map = array();
       foreach (explode("\n", $stdout) as $line) {
         $file = substr($line, 34);

@@ -101,6 +101,7 @@ phutil_register_library_map(array(
     'phutil_console_format' => 'console',
     'phutil_console_prompt' => 'console',
     'phutil_console_wrap' => 'console',
+    'phutil_error_listener_example' => 'error',
     'phutil_escape_html' => 'markup',
     'phutil_escape_uri' => 'markup',
     'phutil_get_library_name_for_root' => 'moduleutils',
