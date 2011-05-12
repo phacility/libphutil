@@ -540,7 +540,11 @@ function nonempty(/* ... */) {
  */
 function newv($class_name, array $argv) {
   $reflector = new ReflectionClass($class_name);
-  return $reflector->newInstanceArgs($argv);
+  if ($argv) {
+    return $reflector->newInstanceArgs($argv);
+  } else {
+    return $reflector->newInstance();
+  }
 }
 
 
