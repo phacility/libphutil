@@ -632,3 +632,23 @@ function phutil_is_utf8($string) {
 function head(array $arr) {
   return reset($arr);
 }
+
+
+/**
+ * Merge a vector of arrays performantly. This has the same semantics as
+ * array_merge(), so these calls are equivalent:
+ *
+ *   array_merge($a, $b, $c);
+ *   array_mergev(array($a, $b, $c));
+ *
+ * However, when you have a vector of arrays, it is vastly more performant to
+ * merge them with this function than by calling array_merge() in a loop,
+ * because using a loop generates an intermediary array on each iteration.
+ *
+ * @param list Vector of arrays to merge.
+ * @return list Arrays, merged with array_merge() semantics.
+ * @group util
+ */
+function array_mergev(array $arrayv) {
+  return call_user_func_array('array_merge', $arrayv);
+}
