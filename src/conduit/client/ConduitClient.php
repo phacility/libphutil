@@ -28,6 +28,7 @@ class ConduitClient {
   protected $profilerCallID;
 
   protected $sessionKey;
+  private $timeout = 30;
 
   public function getConnectionID() {
     return $this->connectionID;
@@ -62,6 +63,11 @@ class ConduitClient {
       $this->connectionID = idx($data, 'connectionID');
     }
     return $data;
+  }
+
+  public function setTimeout($timeout) {
+    $this->timeout = $timeout;
+    return $this;
   }
 
   public function callMethod($method, array $params) {
@@ -102,6 +108,8 @@ class ConduitClient {
       $core_future = new HTTPFuture($uri, $data);
       $core_future->setMethod('POST');
     }
+
+    $core_future->setTimeout($this->timeout);
 
     $profiler = PhutilServiceProfiler::getInstance();
     $this->profilerCallID = $profiler->beginServiceCall(

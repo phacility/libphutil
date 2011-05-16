@@ -25,20 +25,54 @@
  */
 class HTTPSFuture extends Future {
 
+  private $timeout = 30;
+  private $uri;
+  private $data;
+
+  /**
+   * Set a timeout for the service call.
+   *
+   * @param float Maximum timeout in seconds.
+   * @return this
+   */
+  public function setTimeout($timeout) {
+    $this->timeout = $timeout;
+    return $this;
+  }
+
   public function __construct($uri, array $data = array()) {
+    $this->uri = $uri;
+    $this->data = $data;
+  }
+
+  public function isReady() {
+    if (isset($this->result)) {
+      return true;
+    }
+
+    $uri = $this->uri;
+    $data = $this->data;
+
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $uri);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     if ($data) {
       curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
     }
+    $timeout = max(1, ceil($this->timeout));
+    curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
     $result = curl_exec($curl);
+
+    $err = curl_errno($curl);
+
+    if ($err) {
+      $this->result = array(2000 + $err, curl_error($curl));
+    } else {
+      $this->result = array(200, $result);
+    }
+
     curl_close($curl);
 
-    $this->result = array(200, $result);
-  }
-
-  public function isReady() {
     return true;
   }
 }
