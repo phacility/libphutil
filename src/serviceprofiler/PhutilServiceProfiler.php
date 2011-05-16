@@ -105,6 +105,9 @@ final class PhutilServiceProfiler {
         case 'exec':
           echo '$ '.$data['command'];
           break;
+        case 'conduit':
+          echo $data['method'].'()';
+          break;
       }
     }
 

@@ -21,11 +21,6 @@
  */
 class ConduitFuture extends FutureProxy {
 
-  protected $traceMode;
-  protected $traceName;
-  protected $startTime;
-  protected $endTime;
-
   protected $client;
   protected $conduitMethod;
 
@@ -35,31 +30,7 @@ class ConduitFuture extends FutureProxy {
     return $this;
   }
 
-  public function setTraceMode($trace_mode) {
-    $this->traceMode = $trace_mode;
-    return $this;
-  }
-
-  public function setTraceName($trace_name) {
-    $this->traceName = $trace_name;
-    return $this;
-  }
-
-  public function setStartTime($time) {
-    $this->startTime = $time;
-    return $this;
-  }
-
   protected function didReceiveResult($result) {
-    if (empty($this->endTime)) {
-      $this->endTime = microtime(true);
-      $time = (int)(1000 * ($this->endTime - $this->startTime));
-      $time = number_format($time).' ms';
-      if ($this->traceMode) {
-        echo "[Conduit] <<< Completed {$this->traceName} in {$time}.\n";
-      }
-    }
-
     if ($result[0] !== 200) {
       throw new Exception(
         "Host returned an HTTP error response #{$result[0]} in response ".

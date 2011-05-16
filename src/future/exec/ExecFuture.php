@@ -67,24 +67,6 @@ class ExecFuture extends Future {
     2 => array('pipe', 'w'),  // stderr
   );
 
-  public static function pushEchoMode($mode) {
-    phutil_deprecated(
-      'ExecFuture::pushEchoMode()',
-      'Use PhutilServiceProfiler.');
-  }
-
-  public static function popEchoMode() {
-    phutil_deprecated(
-      'ExecFuture::popEchoMode()',
-      'Use PhutilServiceProfiler.');
-  }
-
-  public static function peekEchoMode() {
-    phutil_deprecated(
-      'ExecFuture::peekEchoMode()',
-      'Use PhutilServiceProfiler.');
-  }
-
 
 /* -(  Creating ExecFutures  )----------------------------------------------- */
 

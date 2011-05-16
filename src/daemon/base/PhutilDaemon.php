@@ -39,6 +39,10 @@ abstract class PhutilDaemon {
       pcntl_signal(SIGINT,  __CLASS__.'::exitOnSignal');
       pcntl_signal(SIGTERM, __CLASS__.'::exitOnSignal');
     }
+
+    // Without discard mode, this consumes unbounded amounts of memory. Keep
+    // memory bounded.
+    PhutilServiceProfiler::getInstance()->enableDiscardMode();
   }
 
   final public function stillWorking() {

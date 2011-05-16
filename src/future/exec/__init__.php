@@ -7,7 +7,6 @@
 
 
 phutil_require_module('phutil', 'future');
-phutil_require_module('phutil', 'moduleutils');
 phutil_require_module('phutil', 'serviceprofiler');
 phutil_require_module('phutil', 'utils');
 phutil_require_module('phutil', 'xsprintf/csprintf');

@@ -117,11 +117,4 @@ class ConduitClient {
     return $conduit_future;
   }
 
-  public function setTraceMode($mode) {
-    phutil_deprecated(
-      'ConduitClient::setTraceMode()',
-      'Use PhutilServiceProfiler.');
-    return $this;
-  }
-
 }
