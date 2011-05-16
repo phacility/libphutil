@@ -51,25 +51,42 @@ function execx($cmd /*, ... */) {
  */
 function exec_manual($cmd /*, ... */) {
   $args = func_get_args();
+  $ef = newv('ExecFuture', $args);
+  return $ef->resolve();
+}
 
-  if (ExecFuture::peekEchoMode()) {
-    ExecFuture::pushEchoMode(false);
 
-    echo "  >>> \$ {$cmd} ... ";
-    $t_start = microtime(true);
+/**
+ * Execute a command which takes over stdin, stdout and stderr, similar to
+ * passthru(), but which preserves TTY semantics, escapes arguments, and is
+ * traceable.
+ *
+ * @param  string  sprintf()-style command pattern to execute.
+ * @param  ...     Arguments to sprintf pattern.
+ * @return int     Return code.
+ * @group exec
+ */
+function phutil_passthru($cmd /*, ... */) {
+  $args = func_get_args();
+  $command = call_user_func_array('csprintf', $args);
 
-      $ef = newv('ExecFuture', $args);
-      $result = $ef->resolve();
+  $profiler = PhutilServiceProfiler::getInstance();
+  $call_id = $profiler->beginServiceCall(
+    array(
+      'type'    => 'exec',
+      'subtype' => 'passthru',
+      'command' => $command,
+    ));
 
-    $t_end = microtime(true);
-    $duration = number_format((int)(1000 * ($t_end - $t_start))).' ms';
-    echo " {$duration}\n";
+  $pipes = array();
+  $proc = proc_open($command, array(STDIN, STDOUT, STDERR), $pipes);
+  $err = proc_close($proc);
 
-    ExecFuture::popEchoMode();
-  } else {
-    $ef = newv('ExecFuture', $args);
-    $result = $ef->resolve();
-  }
+  $profiler->endServiceCall(
+    $call_id,
+    array(
+      'err' => $err,
+    ));
 
-  return $result;
+  return $err;
 }

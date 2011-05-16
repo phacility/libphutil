@@ -90,7 +90,7 @@ abstract class PhutilDaemon {
 
   final public function setTraceMode() {
     $this->traceMode = true;
-    ExecFuture::pushEchoMode(true);
+    PhutilServiceProfiler::installEchoListener();
     $this->didSetTraceMode();
   }
 

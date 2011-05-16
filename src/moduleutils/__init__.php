@@ -6,6 +6,7 @@
 
 
 
+phutil_require_module('phutil', 'error');
 phutil_require_module('phutil', 'filesystem');
 
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 /*
@@ -16,15 +17,20 @@
  * limitations under the License.
  */
 
-/**
- * @group library
- */
-function phutil_autoload_class($class) {
+$root = dirname(dirname(dirname(__FILE__)));
+require_once $root.'/scripts/__init_script__.php';
 
-  phutil_deprecated(
-    'phutil_autoload_class',
-    'Use PhutilSymbolLoader::loadClass() or rely on implicit autoload.');
+// Simple test script for PhutilServiceProfiler.
 
-  PhutilSymbolLoader::loadClass($class);
-  return true;
-}
+PhutilServiceProfiler::installEchoListener();
+
+phutil_require_module('phutil', 'future/exec');
+
+execx('ls %s', '/tmp');
+
+exec_manual('sleep %s', 1);
+
+phutil_passthru('cat');
+
+echo "\n\nSERVICE CALL LOG\n";
+var_dump(PhutilServiceProfiler::getInstance()->getServiceCallLog());

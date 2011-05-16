@@ -6,7 +6,7 @@
 
 
 
-phutil_require_module('phutil', 'serviceprofiler');
+phutil_require_module('phutil', 'utils');
 
 
-phutil_require_source('PhutilDaemon.php');
+phutil_require_source('PhutilServiceProfiler.php');

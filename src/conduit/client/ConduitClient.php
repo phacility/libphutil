@@ -24,8 +24,8 @@ class ConduitClient {
   protected $protocol;
   protected $host;
   protected $path;
-  protected $traceMode;
   protected $connectionID;
+  protected $profilerCallID;
 
   protected $sessionKey;
 
@@ -50,6 +50,13 @@ class ConduitClient {
   }
 
   public function didReceiveResponse($method, $data) {
+    if ($this->profilerCallID !== null) {
+      $profiler = PhutilServiceProfiler::getInstance();
+      $profiler->endServiceCall(
+        $this->profilerCallID,
+        array());
+    }
+
     if ($method == 'conduit.connect') {
       $this->sessionKey = idx($data, 'sessionKey');
       $this->connectionID = idx($data, 'connectionID');
@@ -83,9 +90,6 @@ class ConduitClient {
       $params['__conduit__'] = $meta;
     }
 
-    $start_time = microtime(true);
-
-
     $uri = $this->protocol.'://'.$this->host.'/'.$this->path.$method;
     $data = array(
       'params' => json_encode($params),
@@ -99,30 +103,25 @@ class ConduitClient {
       $core_future->setMethod('POST');
     }
 
+    $profiler = PhutilServiceProfiler::getInstance();
+    $this->profilerCallID = $profiler->beginServiceCall(
+      array(
+        'type'    => 'conduit',
+        'method'  => $method,
+      ));
+
     $conduit_future = new ConduitFuture($core_future);
     $conduit_future->setClient($this, $method);
     $conduit_future->isReady();
-
-    if ($this->getTraceMode()) {
-      $future_name = $method;
-      $conduit_future->setTraceMode(true);
-      $conduit_future->setStartTime($start_time);
-      $conduit_future->setTraceName($future_name);
-      echo "[Conduit] >>> Send {$future_name}()...\n";
-    }
 
     return $conduit_future;
   }
 
   public function setTraceMode($mode) {
-    $this->traceMode = $mode;
+    phutil_deprecated(
+      'ConduitClient::setTraceMode()',
+      'Use PhutilServiceProfiler.');
     return $this;
   }
 
-  protected function getTraceMode() {
-    if (!empty($this->traceMode)) {
-      return true;
-    }
-    return false;
-  }
 }

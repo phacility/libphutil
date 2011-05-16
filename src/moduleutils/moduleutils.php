@@ -54,3 +54,17 @@ function phutil_get_library_name_for_root($path) {
 
   return null;
 }
+
+/**
+ * Warns about use of deprecated behavior.
+ *
+ * @group library
+ */
+function phutil_deprecated($what, $why) {
+  PhutilErrorHandler::dispatchErrorMessage(
+    PhutilErrorHandler::DEPRECATED,
+    $what,
+    array(
+      'why' => $why,
+    ));
+}

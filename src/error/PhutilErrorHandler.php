@@ -53,9 +53,10 @@ final class PhutilErrorHandler {
   private static $errorListener = null;
   private static $initialized = false;
 
-  const EXCEPTION = 'exception';
-  const ERROR = 'error';
-  const PHLOG = 'phlog';
+  const EXCEPTION   = 'exception';
+  const ERROR       = 'error';
+  const PHLOG       = 'phlog';
+  const DEPRECATED  = 'deprecated';
 
 
 /* -(  Configuring Error Dispatch  )----------------------------------------- */
@@ -232,6 +233,13 @@ final class PhutilErrorHandler {
                     PhutilReadableSerializer::printShort($value),
                     $metadata['file'],
                     $metadata['line']));
+        break;
+      case PhutilErrorHandler::DEPRECATED:
+        error_log(sprintf(
+          "[%s] DEPRECATED: %s is deprecated; %s",
+          $timestamp,
+          $value,
+          $metadata['why']));
         break;
       default:
         error_log('Unknown event '.$event);

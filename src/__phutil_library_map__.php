@@ -58,6 +58,7 @@ phutil_register_library_map(array(
     'PhutilRemarkupRuleLinebreaks' => 'markup/engine/remarkup/markuprule/linebreaks',
     'PhutilRemarkupRuleMonospace' => 'markup/engine/remarkup/markuprule/monospace',
     'PhutilSaturateStdoutDaemon' => 'daemon/torture/saturatestdout',
+    'PhutilServiceProfiler' => 'serviceprofiler',
     'PhutilSymbolLoader' => 'symbols',
     'PhutilSyntaxHighlighter' => 'markup/syntax/highlighter/base',
     'PhutilSyntaxHighlighterEngine' => 'markup/syntax/engine/base',
@@ -76,6 +77,7 @@ phutil_register_library_map(array(
   'function' =>
   array(
     'Futures' => 'future',
+    'array_mergev' => 'utils',
     'array_select_keys' => 'utils',
     'coalesce' => 'utils',
     'csprintf' => 'xsprintf/csprintf',
@@ -101,6 +103,7 @@ phutil_register_library_map(array(
     'phutil_console_format' => 'console',
     'phutil_console_prompt' => 'console',
     'phutil_console_wrap' => 'console',
+    'phutil_deprecated' => 'moduleutils',
     'phutil_error_listener_example' => 'error',
     'phutil_escape_html' => 'markup',
     'phutil_escape_uri' => 'markup',
@@ -108,6 +111,7 @@ phutil_register_library_map(array(
     'phutil_get_library_root' => 'moduleutils',
     'phutil_get_library_root_for_path' => 'moduleutils',
     'phutil_is_utf8' => 'utils',
+    'phutil_passthru' => 'future/exec',
     'phutil_render_tag' => 'markup',
     'phutil_utf8ize' => 'utils',
     'vcsprintf' => 'xsprintf/csprintf',

@@ -59,7 +59,8 @@ class ExecFuture extends Future {
   protected $stdoutSizeLimit = PHP_INT_MAX;
   protected $stderrSizeLimit = PHP_INT_MAX;
 
-  protected static $echoMode = array();
+  private $profilerCallID;
+
   protected static $descriptorSpec = array(
     0 => array('pipe', 'r'),  // stdin
     1 => array('pipe', 'w'),  // stdout
@@ -67,15 +68,21 @@ class ExecFuture extends Future {
   );
 
   public static function pushEchoMode($mode) {
-    self::$echoMode[] = $mode;
+    phutil_deprecated(
+      'ExecFuture::pushEchoMode()',
+      'Use PhutilServiceProfiler.');
   }
 
   public static function popEchoMode() {
-    array_pop(self::$echoMode);
+    phutil_deprecated(
+      'ExecFuture::popEchoMode()',
+      'Use PhutilServiceProfiler.');
   }
 
   public static function peekEchoMode() {
-    return end(self::$echoMode);
+    phutil_deprecated(
+      'ExecFuture::peekEchoMode()',
+      'Use PhutilServiceProfiler.');
   }
 
 
@@ -489,9 +496,12 @@ class ExecFuture extends Future {
 
     if (!$this->pipes) {
 
-      if (self::peekEchoMode()) {
-        echo "  >>> \$ {$this->command}\n";
-      }
+      $profiler = PhutilServiceProfiler::getInstance();
+      $this->profilerCallID = $profiler->beginServiceCall(
+        array(
+          'type'    => 'exec',
+          'command' => $this->command,
+        ));
 
       $pipes = array();
       $proc = proc_open(
@@ -564,6 +574,7 @@ class ExecFuture extends Future {
         $this->stderr,
       );
       $this->__destruct();
+      $this->endProfile();
       return true;
     }
 
@@ -579,8 +590,9 @@ class ExecFuture extends Future {
         $this->stdout,
         $this->stderr."\n".
         "(This process was prematurely terminated by timeout.)");
-     $this->__destruct();
-     return true;
+      $this->__destruct();
+      $this->endProfile();
+      return true;
     }
 
   }
@@ -604,6 +616,23 @@ class ExecFuture extends Future {
       $this->proc = null;
     }
     $this->stdin  = null;
+  }
+
+  /**
+   * End the service call profiler for this command.
+   *
+   * @return void
+   * @task internal
+   */
+  private function endProfile() {
+    if ($this->profilerCallID !== null) {
+      $profiler = PhutilServiceProfiler::getInstance();
+      $profiler->endServiceCall(
+        $this->profilerCallID,
+        array(
+          'err' => $this->result ? idx($this->result, 0) : null,
+        ));
+    }
   }
 
   /**
