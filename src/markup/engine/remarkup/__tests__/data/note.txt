@@ -1,0 +1,3 @@
+NOTE: interesting stuff
+~~~~~~~~~~
+<div class="remarkup-note">NOTE: interesting stuff</div>
