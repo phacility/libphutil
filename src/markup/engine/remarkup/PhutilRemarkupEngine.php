@@ -64,8 +64,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     foreach ($text as $block) {
       $match = false;
       foreach ($block_rules as $key => $block_rule) {
-        $pattern = $block_rule->getBlockPattern();
-        if (!preg_match($pattern, trim($block, "\n"))) {
+        if (!$block_rule->shouldMatchBlock(trim($block, "\n"))) {
           continue;
         }
         if (($last !== null) &&

@@ -29,6 +29,10 @@ abstract class PhutilRemarkupEngineBlockRule {
   abstract public function shouldMergeBlocks();
   abstract public function markupText($text);
 
+  public function shouldMatchBlock($block) {
+    return preg_match($this->getBlockPattern(), $block);
+  }
+
   final public function setEngine(PhutilRemarkupEngine $engine) {
     $this->engine = $engine;
     return $this;

@@ -26,6 +26,18 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
     return "/^\s{2,}/";
   }
 
+  public function shouldMatchBlock($block) {
+    if (!preg_match($this->getBlockPattern(), $block)) {
+      return false;
+    }
+
+    if (preg_match('@^[a-z]+://\S+$@', trim($block))) {
+      return false;
+    }
+
+    return true;
+  }
+
   public function shouldMergeBlocks() {
     return true;
   }
