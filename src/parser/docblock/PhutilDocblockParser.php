@@ -70,7 +70,7 @@ class PhutilDocblockParser {
     $lines = explode("\n", $docblock);
     $last = false;
     foreach ($lines as $k => $line) {
-      if (preg_match('/^\s*@\w/i', $line)) {
+      if (preg_match('/^\s?@\w/i', $line)) {
         $last = $k;
       } else if (preg_match('/^\s*$/', $line)) {
         $last = false;
@@ -86,12 +86,12 @@ class PhutilDocblockParser {
     // Parse @specials.
     $matches = null;
     $have_specials = preg_match_all(
-      '/^\s*@(\w+)\s*([^\n]*)/m',
+      '/^\s?@(\w+)\s*([^\n]*)/m',
       $docblock,
       $matches,
       PREG_SET_ORDER);
     if ($have_specials) {
-      $docblock = preg_replace('/^\s*@(\w+)\s*([^\n]*)/m', '', $docblock);
+      $docblock = preg_replace('/^\s?@(\w+)\s*([^\n]*)/m', '', $docblock);
       foreach ($matches as $match) {
         list($_, $type, $data) = $match;
         $data = trim($data);

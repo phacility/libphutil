@@ -98,6 +98,13 @@ class PhutilDocblockParserTestCase extends ArcanistPhutilTestCase {
           "This is normal text, not part of the @title.",
           $docblock);
         break;
+      case 'indented-specials.docblock':
+        $this->assertEqual(
+          array(
+            'title' => 'sendmail',
+          ),
+          $specials);
+        break;
       default:
         throw new Exception("No test case to handle file '{$file}'!");
     }
