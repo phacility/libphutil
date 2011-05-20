@@ -41,7 +41,8 @@ class PhutilDefaultSyntaxHighlighterEngine
             ->highlightSource($source);
         default:
           if (!empty($this->config['pygments.enabled'])) {
-            $future = new ExecFuture('pygmentize -f html -l %s', $lang);
+            $future = new ExecFuture(
+              'pygmentize -O stripnl=False -f html -l %s', $lang);
             $future->write($source);
             list($err, $stdout, $stderr) = $future->resolve();
             if (!$err && strlen($stdout)) {
