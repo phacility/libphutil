@@ -262,7 +262,12 @@ class PhutilDaemonOverseer {
     $pid = $this->childPID;
     $pgid = posix_getpgid($pid);
     if ($pid && $pgid) {
-      exec("kill -TERM -- -{$pgid}");
+
+      // NOTE: On Ubuntu, 'kill' does not recognize the use of "--" to
+      // explicitly delineate PID/PGIDs from signals. We don't actually need it,
+      // so use the implicit "kill -TERM -pgid" form instead of the explicit
+      // "kill -TERM -- -pgid" form.
+      exec("kill -TERM -{$pgid}");
       sleep($this->killDelay);
 
       // On OSX, we'll get a permission error on stderr if the SIGTERM was
@@ -272,7 +277,7 @@ class PhutilDaemonOverseer {
       // groups that resist SIGTERM. Rather than trying to figure out if the
       // process group is still around or not, just SIGKILL unconditionally and
       // ignore any error which may be raised.
-      exec("kill -KILL -- -{$pgid} 2>/dev/null");
+      exec("kill -KILL -{$pgid} 2>/dev/null");
       $this->childPID = null;
     }
   }
