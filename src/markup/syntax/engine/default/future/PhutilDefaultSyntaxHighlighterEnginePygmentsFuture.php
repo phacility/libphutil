@@ -19,12 +19,26 @@
 /**
  * @group markup
  */
-abstract class PhutilSyntaxHighlighterEngine {
-  abstract public function setConfig($key, $value);
-  abstract public function getHighlightFuture($filename, $source);
+class PhutilDefaultSyntaxHighlighterEnginePygmentsFuture extends FutureProxy {
 
-  final public function highlightSource($name, $source) {
-    return $this->getHighlightFuture($name, $source)->resolve();
+  private $source;
+
+  public function __construct(Future $proxied, $source) {
+    parent::__construct($proxied);
+    $this->source = $source;
+  }
+
+  protected function didReceiveResult($result) {
+    list($err, $stdout, $stderr) = $result;
+    if (!$err && strlen($stdout)) {
+      // Strip off fluff Pygments adds.
+      $stdout = preg_replace(
+        '@^<div class="highlight"><pre>(.*)</pre></div>\s*$@s',
+        '\1',
+        $stdout);
+      return $stdout;
+    }
+    return phutil_escape_html($this->source);
   }
 
 }

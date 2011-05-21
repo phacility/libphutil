@@ -29,35 +29,33 @@ class PhutilDefaultSyntaxHighlighterEngine
     return $this;
   }
 
-  public function highlightSource($name, $source) {
-
+  public function getHighlightFuture($name, $source) {
     $name = explode('.', $name);
     $lang = end($name);
 
+    $result = null;
     try {
       switch ($lang) {
         case 'php':
-          return id(new PhutilXHPASTSyntaxHighlighter())
+          $result = id(new PhutilXHPASTSyntaxHighlighter())
             ->highlightSource($source);
+          break;
         default:
           if (!empty($this->config['pygments.enabled'])) {
             $future = new ExecFuture(
               'pygmentize -O stripnl=False -f html -l %s', $lang);
             $future->write($source);
-            list($err, $stdout, $stderr) = $future->resolve();
-            if (!$err && strlen($stdout)) {
-              // Strip off fluff Pygments adds.
-              $stdout = preg_replace(
-                '@^<div class="highlight"><pre>(.*)</pre></div>\s*$@s',
-                '\1',
-                $stdout);
-              return $stdout;
-            }
+            return new PhutilDefaultSyntaxHighlighterEnginePygmentsFuture(
+              $future,
+              $source);
           }
-          return phutil_escape_html($source);
+          $result = phutil_escape_html($source);
+          break;
       }
     } catch (Exception $ex) {
-      return phutil_escape_html($source);
+      $result = phutil_escape_html($source);
     }
+
+    return new ImmediateFuture($result);
   }
 }

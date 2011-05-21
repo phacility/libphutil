@@ -17,14 +17,19 @@
  */
 
 /**
- * @group markup
+ * Degenerate future which returns an already-existing result without performing
+ * any computation.
+ *
+ * @group futures
  */
-abstract class PhutilSyntaxHighlighterEngine {
-  abstract public function setConfig($key, $value);
-  abstract public function getHighlightFuture($filename, $source);
+class ImmediateFuture extends Future {
 
-  final public function highlightSource($name, $source) {
-    return $this->getHighlightFuture($name, $source)->resolve();
+  public function __construct($result) {
+    $this->result = $result;
+  }
+
+  public function isReady() {
+    return true;
   }
 
 }
