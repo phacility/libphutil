@@ -103,7 +103,6 @@ phutil_register_library_map(array(
     'newv' => 'utils',
     'nonempty' => 'utils',
     'phlog' => 'error',
-    'phutil_autoload_class' => 'autoload',
     'phutil_console_confirm' => 'console',
     'phutil_console_format' => 'console',
     'phutil_console_prompt' => 'console',
