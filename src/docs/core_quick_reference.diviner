@@ -12,6 +12,8 @@ This document provides a brief overview of the libphutil core utilities.
 Functions @{function:id}, @{function:head} and @{function:newv} address language
 grammar and implementation limitations.
 
+You can efficiently merge a vector of arrays with @{function:array_mergev}.
+
 = Default Value Selection =
 
 Functions @{function:idx}, @{function:nonempty} and @{function:coalesce} help

@@ -10,7 +10,7 @@ a collection of PHP utility classes and functions which provide powerful
 extensions to the standard library.
 
 This code was originally developed at Facebook and parts of it appear in the
-core libraries for <http://www.facebook.com/>
+core libraries for <http://www.facebook.com/>.
 
 libphutil is principally the shared library for **Arcanist** and
 **Phabricator** (see <http://www.phabricator.org/>), but is suitable for
@@ -67,3 +67,10 @@ The major components of libphutil are:
   - **Module System**: an introspectable, inventoried system for organizing PHP
   code and managing dependencies, supported by static analysis.
 
+= Extending and Contributing =
+
+Information on extending and contributing to libphutil is available in the
+Phabricator documentation:
+
+  - to get started as a contributor, see @{article@phabricator:Contributor
+    Introduction}.
