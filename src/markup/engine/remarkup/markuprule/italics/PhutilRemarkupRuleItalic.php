@@ -24,7 +24,7 @@ class PhutilRemarkupRuleItalic
 
   public function apply($text) {
     return preg_replace(
-      '@(?<!:)//(.+?)//@',
+      '@(?<!:)//(.+?)//@s',
       '<em>\1</em>',
       $text);
   }

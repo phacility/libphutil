@@ -31,16 +31,15 @@ class PhutilRemarkupEngineRemarkupDefaultBlockRule
   }
 
   public function markupText($text) {
+    $text = $this->applyRules($text);
+
     $lines = explode("\n", trim($text));
-    foreach ($lines as $key => $line) {
-      $lines[$key] = $this->applyRules($line."\n");
-    }
 
     $implode_on = $this->getEngine()->getConfig('preserve-linebreaks')
       ? '<br />'
       : '';
 
-    return '<p>'.trim(implode($implode_on, $lines)).'</p>';
+    return '<p>'.trim(implode($implode_on."\n", $lines)).'</p>';
   }
 
 }

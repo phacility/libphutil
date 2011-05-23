@@ -24,7 +24,7 @@ class PhutilRemarkupRuleBold
 
   public function apply($text) {
     return preg_replace(
-      '@\\*\\*(.+?)\\*\\*@',
+      '@\\*\\*(.+?)\\*\\*@s',
       '<strong>\1</strong>',
       $text);
   }
