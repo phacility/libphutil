@@ -37,6 +37,7 @@ phutil_register_library_map(array(
     'PhutilFatalDaemon' => 'daemon/torture/fatal',
     'PhutilHangForeverDaemon' => 'daemon/torture/hangforever',
     'PhutilInteractiveEditor' => 'console/editor',
+    'PhutilJSON' => 'parser/json',
     'PhutilMarkupEngine' => 'markup/engine',
     'PhutilMissingSymbolException' => 'symbols/exception/missing',
     'PhutilNiceDaemon' => 'daemon/torture/nice',
