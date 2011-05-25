@@ -2076,11 +2076,15 @@ non_empty_static_array_pair_list:
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild($1);
     $$->appendChild($3);
+
+    $$ = NNEW(n_ARRAY_VALUE_LIST)->appendChild($$);
   }
 | static_scalar {
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild($1);
+
+    $$ = NNEW(n_ARRAY_VALUE_LIST)->appendChild($$);
   }
 ;
 
