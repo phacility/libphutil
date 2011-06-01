@@ -151,7 +151,7 @@ class PhutilBootloader {
         $root = $_SERVER['PHUTIL_LIBRARY_ROOT'];
       }
     }
-    $okay = include_once $root.$path.'/__phutil_library_init__.php';
+    $okay = $this->executeInclude($root.$path.'/__phutil_library_init__.php');
     if (!$okay) {
       throw new PhutilBootloaderException(
         "Include of '{$path}/__phutil_library_init__.php' failed!");
@@ -166,7 +166,7 @@ class PhutilBootloader {
 
   public function loadSource($source) {
     $base = $this->peekModuleStack();
-    $okay = include_once $base.'/'.$source;
+    $okay = $this->executeInclude($base.'/'.$source);
     if (!$okay) {
       throw new PhutilBootloaderException(
         "Include of '{$base}/{$source}' failed!");
@@ -176,6 +176,16 @@ class PhutilBootloader {
   public function moduleExists($library, $module) {
     $path = $this->getLibraryRoot($library);
     return @file_exists($path.'/'.$module.'/__init__.php');
+  }
+
+  private function executeInclude($path) {
+    // Suppress warning spew if the file does not exist; we'll throw an
+    // exception instead. We still emit error text in the case of syntax errors.
+    $old = error_reporting(E_ALL & ~E_WARNING);
+    $okay = include_once $path;
+    error_reporting($old);
+
+    return $okay;
   }
 
 }
