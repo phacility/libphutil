@@ -8,7 +8,7 @@ echo
 echo "Building XHPAST..."
 echo
 
-(cd $ROOT && make clean && make && make install)
+(cd $ROOT && make clean all install)
 
 echo
 echo "Build successful!"

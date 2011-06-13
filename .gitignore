@@ -1,3 +1,10 @@
+## NOTE: Don't .gitignore these files! Even though they're build artifacts, we
+## want to check them in so users can build xhpast without flex/bison.
+# parser.yacc.cpp
+# parser.yacc.hpp
+# scanner.lex.cpp
+# scanner.lex.hpp
+
 .DS_Store
 ._*
 
@@ -6,10 +13,6 @@
 
 *.a
 *.o
-parser.yacc.cpp
-parser.yacc.hpp
-scanner.lex.cpp
-scanner.lex.hpp
 parser.yacc.output
 /support/xhpast/node_names.hpp
 /support/xhpast/xhpast

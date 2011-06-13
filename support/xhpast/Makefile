@@ -13,21 +13,24 @@ ROOT = ../../src/parser/xhpast
 all: xhpast
 
 clean:
-	-rm xhpast parser.yacc.cpp scanner.lex.cpp scanner.lex.hpp parser.yacc.output parser.yacc.hpp libxhpast.a *.o 2>/dev/null
+	-rm xhpast parser.yacc.output libxhpast.a *.o 2>/dev/null
+
+cleanall: clean
+	-rm scanner.lex.cpp scanner.lex.hpp parser.yacc.cpp parser.yacc.hpp
 
 install: xhpast
 	cp xhpast $(ROOT)/bin/xhpast
 
-parser.yacc.cpp: parser.y
-	bison --debug --verbose -d -o $@ $<
+scanner: scanner.l
+	./find_flex.sh >/dev/null && \
+		`./find_flex.sh` -C --header-file=scanner.lex.hpp -o scanner.lex.cpp -d $<
+	echo '/* @generated */' >> scanner.lex.cpp
+	echo '/* @generated */' >> scanner.lex.hpp
 
-parser.yacc.hpp: parser.yacc.cpp
-
-scanner.lex.cpp: scanner.l
-	`which flex35 2>/dev/null || which flex 2>/dev/null` \
-	  -C --header-file=scanner.lex.hpp -o $@ -d $<
-
-scanner.lex.hpp: scanner.lex.cpp
+parser: parser.y
+	bison --debug --verbose -d -o parser.yacc.cpp $<
+	echo '/* @generated */' >> parser.yacc.cpp
+	echo '/* @generated */' >> parser.yacc.hpp
 
 node_names.hpp: generate_nodes.php
 	php -f generate_nodes.php
@@ -36,9 +39,14 @@ node_names.hpp: generate_nodes.php
 %.o: %.cpp
 	$(CXX) -c $(CPPFLAGS) -o $@ $<
 
-parser.yacc.o: scanner.lex.hpp
+needparserscanner:
+	 @([ -e parser.yacc.hpp ] && [ -e parser.yacc.cpp ] && \
+	   [ -e scanner.lex.hpp ] && [ -e scanner.lex.cpp ]) \
+		|| (echo "Run 'make parser scanner' first.'" && exit 1)
 
-scanner.lex.o: parser.yacc.hpp node_names.hpp
+parser.yacc.o: needparserscanner scanner.lex.hpp
+
+scanner.lex.o: needparserscanner parser.yacc.hpp node_names.hpp
 
 libxhpast.a: astnode.o scanner.lex.o parser.yacc.o
 	$(AR) -crs $@ $^
@@ -46,4 +54,4 @@ libxhpast.a: astnode.o scanner.lex.o parser.yacc.o
 xhpast: xhpast.cpp libxhpast.a
 	$(CXX) $(CPPFLAGS) -o $@ $^
 
-.PHONY: all clean tags
+.PHONY: all clean

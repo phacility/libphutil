@@ -1,0 +1,18 @@
+BUILDING
+
+Normally, you can build 'xhpast' by running "make", which will create a binary
+in this directory:
+
+  xhpast/ $ make
+
+You can run "make install" to copy that binary to the right place in libphutil
+so that libphutil, Phabricator, Diviner, etc., can use xhpast.
+
+If you are developing 'xhpast', you need to "make parser scanner xhpast"
+instead to regenerate the parser and scanner:
+
+  xhpast/ $ make parser scanner xhpast
+
+We ship the generated parser and scanner and do not rebuild them by default to
+prevent users from needing to install flex and bison and fiddle around with
+flex versions.

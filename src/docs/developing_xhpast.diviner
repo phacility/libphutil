@@ -1,0 +1,17 @@
+@title Developing XHPAST
+@group xhpast
+
+Instructions for developing XHPAST.
+
+= XHPAST Development Builds =
+
+To develop XHPAST, you need to install flex and bison. These install out of most
+package systems, with the caveat that you need flex 2.3.35 (which is NEWER than
+flex 2.3.4) and some package systems don't have it yet. If this is the case
+for you, you can grab the source here:
+
+  http://flex.sourceforge.net/
+
+When building, run "make scanner parser all" instead of "make" to build the
+entire toolchain. By default the scanner and parser are not rebuild, to avoid
+requiring normal users to install flex and bison.
