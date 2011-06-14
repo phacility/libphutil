@@ -58,6 +58,9 @@ class PhutilDaemonOverseer {
       } else if ($argv[$ii] == '--trace-memory') {
         $this->traceMode = true;
         $this->traceMemory = true;
+      } else if (preg_match('/^--log=(.*)$/', $argv[$ii], $matches)) {
+        ini_set('error_log', $matches[1]);
+        error_log("Bringing '{$daemon}' online...");
       } else if ($argv[$ii] == '--daemonize') {
         $this->daemonize = true;
         unset($argv[$ii]);

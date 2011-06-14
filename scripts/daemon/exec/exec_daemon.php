@@ -45,6 +45,8 @@ for ($ii = 2; $ii < $len; $ii++) {
     $trace_mode = true;
     $trace_memory = true;
     unset($argv[$ii]);
+  } else if (preg_match('/^--log=(.*)$/', $value, $matches)) {
+    ini_set('error_log', $matches[1]);
   } else if (preg_match('/^--load-phutil-library=(.*)$/', $value, $matches)) {
     $load[] = $matches[1];
     unset($argv[$ii]);
