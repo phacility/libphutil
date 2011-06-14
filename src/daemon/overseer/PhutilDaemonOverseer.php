@@ -81,17 +81,6 @@ class PhutilDaemonOverseer {
 
     if ($this->daemonize) {
 
-      if ($this->conduitURI) {
-        // Ping the server BEFORE we daemonize so "phd launch" can report
-        // problems. It's fairly common to have issues here, e.g. because
-        // Phabricator isn't running, isn't accessible, you put the domain
-        // in your hostsfile but it isn't available on the production host,
-        // etc. If any of this doesn't work, conduit will throw.
-        $conduit = new ConduitClient($this->conduitURI);
-        $conduit->setTimeout(5);
-        $conduit->callMethodSynchronous('conduit.ping', array());
-      }
-
       // We need to get rid of these or the daemon will hang when we TERM it
       // waiting for something to read the buffers. TODO: Learn how unix works.
       fclose(STDOUT);
