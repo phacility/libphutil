@@ -24,6 +24,7 @@ class ConduitClient {
   protected $protocol;
   protected $host;
   protected $path;
+  protected $port;
   protected $connectionID;
   protected $profilerCallID;
 
@@ -38,6 +39,7 @@ class ConduitClient {
     $this->protocol = parse_url($uri, PHP_URL_SCHEME);
     $this->host = parse_url($uri, PHP_URL_HOST);
     $this->path = parse_url($uri, PHP_URL_PATH);
+    $this->port = parse_url($uri, PHP_URL_PORT);
 
     if (!$this->host) {
       throw new Exception("Conduit URI '{$uri}' must include a valid host.");
@@ -96,7 +98,13 @@ class ConduitClient {
       $params['__conduit__'] = $meta;
     }
 
-    $uri = $this->protocol.'://'.$this->host.'/'.$this->path.$method;
+    $port = null;
+    if ($this->port) {
+      $port = ':'.$this->port;
+    }
+
+    $uri = $this->protocol.'://'.$this->host.$port.'/'.$this->path.$method;
+
     $data = array(
       'params' => json_encode($params),
       'output' => 'json',

@@ -273,9 +273,9 @@ class HTTPFuture extends Future {
 
   protected function parseHTTPResponse($response) {
 
-    static $rex_base = "@^(?<head>.*?)\r?\n\r?\n(?<body>.*)$@s";
-    static $rex_head = "@^HTTP/\S+ (?<code>\d+) .*?(?:\r?\n(?<headers>.*))?$@s";
-    static $rex_header = '@^(?<name>.*?):\s*(?<value>.*)$@';
+    static $rex_base = "@^(?P<head>.*?)\r?\n\r?\n(?P<body>.*)$@s";
+    static $rex_head = "@^HTTP/\S+ (?P<code>\d+) .*?(?:\r?\n(?P<headers>.*))?$@s";
+    static $rex_header = '@^(?P<name>.*?):\s*(?P<value>.*)$@';
 
     static $malformed = array(
       self::ERROR_MALFORMED_RESPONSE,
