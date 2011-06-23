@@ -17,3 +17,4 @@
  */
 
 phutil_require_source('utils.php');
+phutil_require_source('utf8.php');

@@ -164,43 +164,6 @@ class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
     $this->assertEqual($expected, $actual);
   }
 
-  public function testUTF8ize_ASCII_ignored() {
-    $input = "this\x01 is a \x7f test string";
-    $this->assertEqual($input, phutil_utf8ize($input));
-  }
-
-  public function testUTF8ize_UTF8_ignored() {
-    $input = "\xc3\x9c \xc3\xbc \xe6\x9d\xb1!";
-    $this->assertEqual($input, phutil_utf8ize($input));
-  }
-
-  public function testUTF8ize_LongString_nosegfault() {
-    // For some reason my laptop is segfaulting on long inputs inside
-    // preg_match(). Forestall this craziness in the common case, at least.
-    phutil_utf8ize(str_repeat('x', 1024 * 1024));
-    $this->assertEqual(true, true);
-  }
-
-  public function testUTF8ize_invalidUTF8_fixed() {
-    $input =
-      "\xc3 this has \xe6\x9d some invalid utf8 \xe6";
-    $expect =
-      "\xEF\xBF\xBD this has \xEF\xBF\xBD\xEF\xBF\xBD some invalid utf8 ".
-      "\xEF\xBF\xBD";
-    $result = phutil_utf8ize($input);
-    $this->assertEqual($expect, $result);
-  }
-
-  public function testUTF8ize_owl_isCuteAndFerocious() {
-    // This was once a ferocious owl when we used to use "?" as the replacement
-    // character instead of U+FFFD, but now he is sort of not as cute or
-    // ferocious.
-    $input = "M(o\xEE\xFF\xFFo)M";
-    $expect = "M(o\xEF\xBF\xBD\xEF\xBF\xBD\xEF\xBF\xBDo)M";
-    $result = phutil_utf8ize($input);
-    $this->assertEqual($expect, $result);
-  }
-
   public function testmergev_merging_basicallyWorksCorrectly() {
     $this->assertEqual(
       array(1, 2, 3, 4, 5),

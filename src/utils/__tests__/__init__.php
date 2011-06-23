@@ -12,4 +12,5 @@ phutil_require_module('phutil', 'utils');
 
 
 phutil_require_source('MFilterTestHelper.php');
+phutil_require_source('PhutilUTF8TestCase.php');
 phutil_require_source('PhutilUtilsTestCase.php');
