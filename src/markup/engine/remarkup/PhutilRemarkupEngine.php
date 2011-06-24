@@ -24,6 +24,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
   private $blockRules = array();
   private $config = array();
+  private $metadata = array();
 
   public function setConfig($key, $value) {
     $this->config[$key] = $value;
@@ -39,11 +40,21 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     return $this;
   }
 
+  public function getTextMetadata($key, $default = null) {
+    return idx($this->metadata, $key, $default);
+  }
+
+  public function setTextMetadata($key, $value) {
+    $this->metadata[$key] = $value;
+    return $this;
+  }
+
   public function storeText($text) {
     return $this->storage->store($text);
   }
 
   public function markupText($text) {
+    $this->metadata = array();
     $this->storage = new PhutilRemarkupBlockStorage();
 
     $block_rules = $this->blockRules;
