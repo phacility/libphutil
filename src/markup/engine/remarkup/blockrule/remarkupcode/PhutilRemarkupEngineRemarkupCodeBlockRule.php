@@ -45,7 +45,10 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
   public function markupText($text) {
     $lines = explode("\n", $text);
 
-    $lang = 'php';
+    $lang = nonempty(
+      $this->getEngine()->getConfig('phutil.codeblock.language-default'),
+      'php');
+
     $aux_class = '';
     do {
       $first_line = reset($lines);
