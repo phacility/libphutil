@@ -153,6 +153,12 @@ final class PhutilErrorHandler {
         'trace' => $ex->getTrace(),
         'catch_trace' => debug_backtrace(),
       ));
+
+    // Normally, PHP exits with code 255 after an uncaught exception is thrown.
+    // However, if we install an exception handler (as we have here), it exits
+    // with code 0 instead. Script execution terminates after this function
+    // exits in either case, so exit explicitly with the correct exit code.
+    exit(255);
   }
 
   /**
