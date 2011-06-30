@@ -108,6 +108,8 @@ function phutil_utf8_strlen($string) {
 /**
  * Split a UTF-8 string into an array of characters.
  *
+ * NOTE: This function does not deal properly with combining characters.
+ *
  * @param string A valid utf-8 string.
  * @return list  A list of characters in the string.
  * @group utf8
@@ -145,5 +147,109 @@ function phutil_utf8v($string) {
     throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
   }
 
+  // TODO: We should merge combining characters; currently we will separate
+  // them.
+
   return $matches[1];
+}
+
+
+/**
+ * Shorten a string to provide a summary, respecting UTF-8 characters. This
+ * function attempts to truncate strings at word boundaries.
+ *
+ * NOTE: This function makes a best effort to apply some reasonable rules but
+ * will not work well for the full range of unicode languages. For instance,
+ * no effort is made to deal with combining characters.
+ *
+ * @param   string  UTF-8 string to shorten.
+ * @param   int     Maximum length of the result.
+ * @param   string  If the string is shortened, add this at the end. Defaults to
+ *                  horizontal ellipsis.
+ * @return  string  A string with no more than the specified character length.
+ */
+function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
+  $terminal_len = count(phutil_utf8v($terminal));
+  if ($terminal_len >= $length) {
+    // If you provide a terminal we still enforce that the result (including
+    // the terminal) is no longer than $length, but we can't do that if the
+    // terminal is too long.
+    throw new Exception(
+      "String terminal length must be less than string length!");
+  }
+
+  $string_v = phutil_utf8v($string);
+  $string_len = count($string_v);
+
+  if ($string_len <= $length) {
+    // If the string is already shorter than the requested length, simply return
+    // it unmodified.
+    return $string;
+  }
+
+  // NOTE: This is not complete, and there are many other word boundary
+  // characters and reasonable places to break words in the UTF-8 character
+  // space. For now, this gives us reasonable behavior for latin langauges. We
+  // don't necessarily have access to PCRE+Unicode so there isn't a great way
+  // for us to look up character attributes.
+
+  // If we encounter these, prefer to break on them instead of cutting the
+  // string off in the middle of a word.
+  static $break_characters = array(
+    ' '   => true,
+    "\n"  => true,
+    ';'   => true,
+    ':'   => true,
+    '['   => true,
+    '('   => true,
+    ','   => true,
+    '-'   => true,
+  );
+
+  // If we encounter these, shorten to this character exactly without appending
+  // the terminal.
+  static $stop_characters = array(
+    '.'   => true,
+    '!'   => true,
+    '?'   => true,
+  );
+
+  // Search backward in the string, looking for reasonable places to break it.
+  $word_boundary = null;
+  $stop_boundary = null;
+
+  // If we do a word break with a terminal, we have to look beyond at least the
+  // number of characters in the terminal.
+  $terminal_area = $length - $terminal_len;
+  for ($ii = $length; $ii >= 0; $ii--) {
+    $c = $string_v[$ii];
+
+    if (isset($break_characters[$c]) && ($ii <= $terminal_area)) {
+      $word_boundary = $ii;
+    } else if (isset($stop_characters[$c]) && ($ii < $length)) {
+      $stop_boundary = $ii + 1;
+      break;
+    } else {
+      if ($word_boundary !== null) {
+        break;
+      }
+    }
+  }
+
+  if ($stop_boundary !== null) {
+    // We found a character like ".". Cut the string there, without appending
+    // the terminal.
+    $string_part = array_slice($string_v, 0, $stop_boundary);
+    return implode('', $string_part);
+  }
+
+  // If we didn't find any boundary characters or we found ONLY boundary
+  // characters, just break at the maximum character length.
+  if ($word_boundary === null || $word_boundary === 0) {
+    $word_boundary = $length - $terminal_len;
+  }
+
+  $string_part = array_slice($string_v, 0, $word_boundary);
+  $string_part = implode('', $string_part);
+  return $string_part.$terminal;
 }

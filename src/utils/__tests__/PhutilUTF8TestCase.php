@@ -80,10 +80,58 @@ class PhutilUTF8TestCase extends ArcanistPhutilTestCase {
       'x'                 => array('x'),
       'quack'             => array('q', 'u', 'a', 'c', 'k'),
       "x\xe6\x9d\xb1y"    => array('x', "\xe6\x9d\xb1", 'y'),
+
+      // TODO: This test does not pass. phutil_utf8v() should merge combining
+      // characters.
+      // "x\xCD\xA0y"        => array("x\xCD\xA0", 'y'),
     );
     foreach ($strings as $str => $expect) {
       $this->assertEqual($expect, phutil_utf8v($str), 'Vector of '.$str);
     }
+  }
+
+  public function testUTF8shorten() {
+    $inputs = array(
+      array("1erp derp derp", 9, "", "1erp derp"),
+      array("2erp derp derp", 12, "...", "2erp derp..."),
+      array("derpxderpxderp", 12, "...", "derpxderp..."),
+      array("derp\xE2\x99\x83derpderp", 12, "...", "derp\xE2\x99\x83derp..."),
+      array("", 12, "...", ""),
+      array("derp", 12, "...", "derp"),
+      array("11111", 5, "2222", "11111"),
+      array("111111", 5, "2222", "12222"),
+
+      array("D1rp. Derp derp.", 7, "...", "D1rp."),
+      array("D2rp. Derp derp.", 5, "...", "D2rp."),
+      array("D3rp. Derp derp.", 4, "...", "D..."),
+      array("D4rp. Derp derp.", 14, "...", "D4rp. Derp..."),
+      array("D5rpderp, derp derp", 16, "...", "D5rpderp..."),
+      array("D6rpderp, derp derp", 17, "...", "D6rpderp, derp..."),
+
+      // This behavior is maybe a little bad, but it seems mostly reasonable,
+      // at least for latin languages.
+      array("Derp, supercalafragalisticexpialadoshus", 30, "...",
+              "Derp..."),
+
+      // If a string has only word-break characters in it, we should just cut
+      // it, not produce only the terminal.
+      array("((((((((((", 8, '...', '(((((...'),
+    );
+
+    foreach ($inputs as $input) {
+      list($string, $length, $terminal, $expect) = $input;
+      $result = phutil_utf8_shorten($string, $length, $terminal);
+      $this->assertEqual($expect, $result, 'Shortening of '.$string);
+    }
+
+    try {
+      phutil_utf8_shorten('derp', 3, 'quack');
+      $caught = false;
+    } catch (Exception $ex) {
+      $caught = true;
+    }
+
+    $this->assertEqual(true, $caught, 'Expect exception for terminal.');
   }
 
 }
