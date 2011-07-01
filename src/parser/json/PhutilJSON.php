@@ -92,7 +92,7 @@ final class PhutilJSON {
         return $this->encodeFormattedObject($value, $depth);
       }
     } else {
-      return json_encode($value, true);
+      return json_encode($value);
     }
   }
 
