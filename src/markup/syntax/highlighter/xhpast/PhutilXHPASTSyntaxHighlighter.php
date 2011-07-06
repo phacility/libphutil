@@ -21,102 +21,121 @@
  */
 class PhutilXHPASTSyntaxHighlighter {
 
+  private $config = array();
+
   public function setConfig($key, $value) {
+    $this->config[$key] = $value;
     return $this;
   }
 
-  public function highlightSource($text) {
+  public function getHighlightFuture($source) {
     try {
-      $scrub = false;
-      if (strpos($text, '<?') === false) {
-        $text = "<?php\n".$text."\n";
-        $scrub = true;
-      }
-
-      $tree = XHPASTTree::newFromData($text);
-
-      $out = array();
-      $next = null;
-      foreach ($tree->getRootNode()->getTokens() as $token) {
-        $value = phutil_escape_html($token->getValue());
-        $class = null;
-        $multi = false;
-        switch ($token->getTypeName()) {
-          case 'T_WHITESPACE':
-            break;
-          case 'T_DOC_COMMENT':
-            $class = 'dc';
-            $multi = true;
-            break;
-          case 'T_COMMENT':
-            $class = 'c';
-            $multi = true;
-            break;
-          case 'T_CONSTANT_ENCAPSED_STRING':
-          case 'T_ENCAPSED_AND_WHITESPACE':
-          case 'T_INLINE_HTML':
-            $class = 's';
-            $multi = true;
-            break;
-          case 'T_VARIABLE':
-            $class = 'nv';
-            break;
-          case 'T_OPEN_TAG':
-          case 'T_OPEN_TAG_WITH_ECHO':
-          case 'T_CLOSE_TAG':
-            $class = 'o';
-            break;
-          case 'T_OBJECT_OPERATOR':
-            $next = 'na';
-            $class = 'k';
-            break;
-          case 'T_LNUMBER':
-          case 'T_DNUMBER':
-            $class = 'm';
-            break;
-          case 'T_STRING':
-            static $magic = array(
-              'true' => true,
-              'false' => true,
-              'null' => true,
-            );
-            if (isset($magic[$value])) {
-              $class = 'k';
-              break;
-            }
-            if ($next) {
-              $class = $next;
-              $next = null;
-            } else {
-              $class = 'nx';
-            }
-            break;
-          default:
-            $class = 'k';
-            break;
-        }
-        if ($class) {
-          $value = '<span class="'.$class.'">'.$value.'</span>';
-          if ($multi) {
-            $value = str_replace(
-              "\n",
-              "</span>\n<span=\"{$class}\">",
-              $value);
-          }
-          $out[] = $value;
-        } else {
-          $out[] = $value;
-        }
-      }
-
-      if ($scrub) {
-        array_shift($out);
-      }
-
-      return rtrim(implode('', $out));
+      $result = $this->applyXHPHighlight($source);
+      return new ImmediateFuture($result);
     } catch (Exception $ex) {
-      phlog($ex);
-      throw $ex;
+      if (!empty($this->config['pygments.enabled'])) {
+        // Fall back to Pygments if we failed to highlight using XHP. The XHP
+        // highlighter currently uses a parser, not just a lexer, so it fails on
+        // snippets which aren't valid syntactically.
+        return id(new PhutilPygmentsSyntaxHighlighter())
+          ->setConfig('language', 'php')
+          ->getHighlightFuture($source);
+      } else {
+        return id(new PhutilDefaultSyntaxHighlighter())
+          ->getHighlightFuture($source);
+      }
     }
   }
+
+  private function applyXHPHighlight($source) {
+
+    $scrub = false;
+    if (strpos($source, '<?') === false) {
+      $source = "<?php\n".$source."\n";
+      $scrub = true;
+    }
+
+    $tree = XHPASTTree::newFromData($source);
+
+    $out = array();
+    $next = null;
+    foreach ($tree->getRootNode()->getTokens() as $token) {
+      $value = phutil_escape_html($token->getValue());
+      $class = null;
+      $multi = false;
+      switch ($token->getTypeName()) {
+        case 'T_WHITESPACE':
+          break;
+        case 'T_DOC_COMMENT':
+          $class = 'dc';
+          $multi = true;
+          break;
+        case 'T_COMMENT':
+          $class = 'c';
+          $multi = true;
+          break;
+        case 'T_CONSTANT_ENCAPSED_STRING':
+        case 'T_ENCAPSED_AND_WHITESPACE':
+        case 'T_INLINE_HTML':
+          $class = 's';
+          $multi = true;
+          break;
+        case 'T_VARIABLE':
+          $class = 'nv';
+          break;
+        case 'T_OPEN_TAG':
+        case 'T_OPEN_TAG_WITH_ECHO':
+        case 'T_CLOSE_TAG':
+          $class = 'o';
+          break;
+        case 'T_OBJECT_OPERATOR':
+          $next = 'na';
+          $class = 'k';
+          break;
+        case 'T_LNUMBER':
+        case 'T_DNUMBER':
+          $class = 'm';
+          break;
+        case 'T_STRING':
+          static $magic = array(
+            'true' => true,
+            'false' => true,
+            'null' => true,
+          );
+          if (isset($magic[$value])) {
+            $class = 'k';
+            break;
+          }
+          if ($next) {
+            $class = $next;
+            $next = null;
+          } else {
+            $class = 'nx';
+          }
+          break;
+        default:
+          $class = 'k';
+          break;
+      }
+      if ($class) {
+        $value = '<span class="'.$class.'">'.$value.'</span>';
+        if ($multi) {
+          $value = str_replace(
+            "\n",
+            "</span>\n<span=\"{$class}\">",
+            $value);
+        }
+        $out[] = $value;
+      } else {
+        $out[] = $value;
+      }
+    }
+
+    if ($scrub) {
+      array_shift($out);
+    }
+
+    return rtrim(implode('', $out));
+  }
+
 }

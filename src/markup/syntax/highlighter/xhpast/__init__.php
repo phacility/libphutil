@@ -6,9 +6,12 @@
 
 
 
-phutil_require_module('phutil', 'error');
+phutil_require_module('phutil', 'future/immediate');
 phutil_require_module('phutil', 'markup');
+phutil_require_module('phutil', 'markup/syntax/highlighter/default');
+phutil_require_module('phutil', 'markup/syntax/highlighter/pygments');
 phutil_require_module('phutil', 'parser/xhpast/api/tree');
+phutil_require_module('phutil', 'utils');
 
 
 phutil_require_source('PhutilXHPASTSyntaxHighlighter.php');

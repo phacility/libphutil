@@ -38,7 +38,10 @@ class PhutilDefaultSyntaxHighlighterEnginePygmentsFuture extends FutureProxy {
         $stdout);
       return $stdout;
     }
-    return phutil_escape_html($this->source);
+
+    return id(new PhutilDefaultSyntaxHighlighter())
+      ->getHighlightFuture($this->source)
+      ->resolve();
   }
 
 }

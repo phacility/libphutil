@@ -6,12 +6,11 @@
 
 
 
-phutil_require_module('phutil', 'future/exec');
-phutil_require_module('phutil', 'future/immediate');
-phutil_require_module('phutil', 'markup');
 phutil_require_module('phutil', 'markup/syntax/engine/base');
-phutil_require_module('phutil', 'markup/syntax/engine/default/future');
+phutil_require_module('phutil', 'markup/syntax/highlighter/default');
+phutil_require_module('phutil', 'markup/syntax/highlighter/pygments');
 phutil_require_module('phutil', 'markup/syntax/highlighter/xhpast');
+phutil_require_module('phutil', 'parser/xhpast/bin');
 phutil_require_module('phutil', 'utils');
 
 

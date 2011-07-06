@@ -29,33 +29,53 @@ class PhutilDefaultSyntaxHighlighterEngine
     return $this;
   }
 
-  public function getHighlightFuture($name, $source) {
-    $name = explode('.', $name);
-    $lang = end($name);
+  public function getLanguageFromFilename($filename) {
 
-    $result = null;
-    try {
-      switch ($lang) {
-        case 'php':
-          $result = id(new PhutilXHPASTSyntaxHighlighter())
-            ->highlightSource($source);
-          break;
-        default:
-          if (!empty($this->config['pygments.enabled'])) {
-            $future = new ExecFuture(
-              'pygmentize -O stripnl=False -f html -l %s', $lang);
-            $future->write($source);
-            return new PhutilDefaultSyntaxHighlighterEnginePygmentsFuture(
-              $future,
-              $source);
+    static $default_map = array(
+      // All files which have file extensions that we haven't already matched
+      // map to their extensions.
+      '@\\.(.*)$@'        => 1,
+    );
+
+    $maps = array();
+    if (!empty($this->config['filename.map'])) {
+      $maps[] = $this->config['filename.map'];
+    }
+    $maps[] = $default_map;
+
+    foreach ($maps as $map) {
+      foreach ($map as $regexp => $lang) {
+        $matches = null;
+        if (preg_match($regexp, $filename, $matches)) {
+          if (is_numeric($lang)) {
+            return idx($matches, $lang);
+          } else {
+            return $lang;
           }
-          $result = phutil_escape_html($source);
-          break;
+        }
       }
-    } catch (Exception $ex) {
-      $result = phutil_escape_html($source);
     }
 
-    return new ImmediateFuture($result);
+    return null;
+  }
+
+  public function getHighlightFuture($language, $source) {
+
+    $have_pygments = !empty($this->config['pygments.enabled']);
+
+    if ($language == 'php' && xhpast_is_available()) {
+      return id(new PhutilXHPASTSyntaxHighlighter())
+        ->setConfig('pygments.enabled', $have_pygments)
+        ->getHighlightFuture($source);
+    }
+
+    if ($have_pygments) {
+      return id(new PhutilPygmentsSyntaxHighlighter())
+        ->setConfig('language', $language)
+        ->getHighlightFuture($source);
+    }
+
+    return id(new PhutilDefaultSyntaxHighlighter())
+      ->getHighlightFuture($source);
   }
 }

@@ -19,13 +19,14 @@
 /**
  * @group markup
  */
-abstract class PhutilSyntaxHighlighterEngine {
-  abstract public function setConfig($key, $value);
-  abstract public function getHighlightFuture($language, $source);
-  abstract public function getLanguageFromFilename($filename);
+class PhutilDefaultSyntaxHighlighter {
 
-  final public function highlightSource($language, $source) {
-    return $this->getHighlightFuture($language, $source)->resolve();
+  public function setConfig($key, $value) {
+    return $this;
   }
 
+  public function getHighlightFuture($source) {
+    $result = phutil_escape_html($source);
+    return new ImmediateFuture($result);
+  }
 }

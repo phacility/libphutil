@@ -6,8 +6,8 @@
 
 
 
-phutil_require_module('phutil', 'future/proxy');
+phutil_require_module('phutil', 'future/immediate');
 phutil_require_module('phutil', 'markup');
 
 
-phutil_require_source('PhutilDefaultSyntaxHighlighterEnginePygmentsFuture.php');
+phutil_require_source('PhutilDefaultSyntaxHighlighter.php');
