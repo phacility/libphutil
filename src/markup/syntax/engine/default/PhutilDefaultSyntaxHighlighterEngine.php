@@ -34,7 +34,7 @@ class PhutilDefaultSyntaxHighlighterEngine
     static $default_map = array(
       // All files which have file extensions that we haven't already matched
       // map to their extensions.
-      '@\\.(.*)$@'        => 1,
+      '@\\.([^./]+)$@' => 1,
     );
 
     $maps = array();
