@@ -52,8 +52,12 @@ function id($x) {
  *                  $default is returned without raising a warning.
  * @group   util
  */
-function idx(array $array, $key, $default = null) {
-  return array_key_exists($key, $array) ? $array[$key] : $default;
+
+if (!function_exists('idx')) {
+  // 'idx' is builtin inside HPHP...
+  function idx(array $array, $key, $default = null) {
+    return array_key_exists($key, $array) ? $array[$key] : $default;
+  }
 }
 
 
