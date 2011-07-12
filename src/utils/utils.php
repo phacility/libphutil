@@ -53,11 +53,8 @@ function id($x) {
  * @group   util
  */
 
-if (!function_exists('idx')) {
-  // 'idx' is builtin inside HPHP...
-  function idx(array $array, $key, $default = null) {
-    return array_key_exists($key, $array) ? $array[$key] : $default;
-  }
+function idx(array $array, $key, $default = null) {
+  return array_key_exists($key, $array) ? $array[$key] : $default;
 }
 
 
