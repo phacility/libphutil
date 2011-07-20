@@ -69,6 +69,11 @@ class PhutilDefaultSyntaxHighlighterEngine
         ->getHighlightFuture($source);
     }
 
+    if ($language == 'diviner' || $language == 'remarkup') {
+      return id(new PhutilDivinerSyntaxHighlighter())
+        ->getHighlightFuture($source);
+    }
+
     if ($have_pygments) {
       return id(new PhutilPygmentsSyntaxHighlighter())
         ->setConfig('language', $language)

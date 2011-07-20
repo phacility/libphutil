@@ -32,6 +32,7 @@ phutil_register_library_map(array(
     'PhutilDefaultSyntaxHighlighterEngine' => 'markup/syntax/engine/default',
     'PhutilDefaultSyntaxHighlighterEnginePygmentsFuture' => 'markup/syntax/highlighter/pygments/future',
     'PhutilDefaultSyntaxHighlighterEngineTestCase' => 'markup/syntax/engine/default/__tests__',
+    'PhutilDivinerSyntaxHighlighter' => 'markup/syntax/highlighter/diviner',
     'PhutilDocblockParser' => 'parser/docblock',
     'PhutilDocblockParserTestCase' => 'parser/docblock/__tests__',
     'PhutilErrorHandler' => 'error',
