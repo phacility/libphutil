@@ -8,6 +8,8 @@
 phutil_register_library_map(array(
   'class' =>
   array(
+    'AbstractDirectedGraph' => 'utils/abstractgraph',
+    'AbstractDirectedGraphTestCase' => 'utils/abstractgraph/__tests__',
     'CommandException' => 'future/exec',
     'ConduitClient' => 'conduit/client',
     'ConduitClientException' => 'conduit/client',
@@ -77,6 +79,7 @@ phutil_register_library_map(array(
     'PhutilUtilsTestCase' => 'utils/__tests__',
     'PhutilXHPASTSyntaxHighlighter' => 'markup/syntax/highlighter/xhpast',
     'TempFile' => 'filesystem/tempfile',
+    'TestAbstractDirectedGraph' => 'utils/abstractgraph/__tests__',
     'XHPASTNode' => 'parser/xhpast/api/node',
     'XHPASTNodeList' => 'parser/xhpast/api/list',
     'XHPASTSyntaxErrorException' => 'parser/xhpast/api/exception',
@@ -141,6 +144,7 @@ phutil_register_library_map(array(
   ),
   'requires_class' =>
   array(
+    'AbstractDirectedGraphTestCase' => 'ArcanistPhutilTestCase',
     'ConduitFuture' => 'FutureProxy',
     'ExecFuture' => 'Future',
     'FutureProxy' => 'Future',
@@ -176,6 +180,7 @@ phutil_register_library_map(array(
     'PhutilTortureTestDaemon' => 'PhutilDaemon',
     'PhutilUTF8TestCase' => 'ArcanistPhutilTestCase',
     'PhutilUtilsTestCase' => 'ArcanistPhutilTestCase',
+    'TestAbstractDirectedGraph' => 'AbstractDirectedGraph',
     'XHPASTTreeTestCase' => 'ArcanistPhutilTestCase',
   ),
   'requires_interface' =>
