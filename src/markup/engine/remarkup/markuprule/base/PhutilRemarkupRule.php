@@ -33,4 +33,8 @@ abstract class PhutilRemarkupRule {
   }
 
   abstract public function apply($text);
+
+  public function didMarkupText() {
+    return;
+  }
 }

@@ -21,13 +21,16 @@
  */
 abstract class PhutilRemarkupEngineBlockRule {
 
-  private $storage;
   private $engine;
-  private $rules;
+  private $rules = array();
 
   abstract public function getBlockPattern();
   abstract public function shouldMergeBlocks();
   abstract public function markupText($text);
+
+  protected function didMarkupText() {
+    return;
+  }
 
   public function shouldMatchBlock($block) {
     return preg_match($this->getBlockPattern(), $block);
@@ -49,6 +52,15 @@ abstract class PhutilRemarkupEngineBlockRule {
 
   final private function getMarkupRules() {
     return $this->rules;
+  }
+
+  final public function postprocess() {
+    $engine = $this->getEngine();
+    $this->didMarkupText();
+    foreach ($this->getMarkupRules() as $rule) {
+      $rule->setEngine($engine);
+      $rule->didMarkupText();
+    }
   }
 
   final protected function applyRules($text) {

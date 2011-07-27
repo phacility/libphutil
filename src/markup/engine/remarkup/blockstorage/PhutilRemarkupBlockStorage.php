@@ -18,6 +18,35 @@
 
 
 /**
+ * Remarkup prevents several classes of text-processing problems by replacing
+ * tokens in the text as they are marked up. For example, if you write something
+ * like this:
+ *
+ *   //D12//
+ *
+ * It is processed in several stages. First the "D12" matches and is replaced:
+ *
+ *   //~1%//
+ *
+ * Now the italics match and are replaced:
+ *
+ *   ~2%
+ *
+ * When processing completes, all the tokens are replaced again in reverse
+ * order:
+ *
+ *   <em>~1%</em>
+ *
+ * Then:
+ *
+ *   <em><a href="http://...">...</a></em>
+ *
+ * If we didn't do this, the italics rule could match the "//" in "http://",
+ * or any other number of processing mistakes could occur, some of which create
+ * security risks.
+ *
+ * This class generates keys, and stores the map of keys to replacement text.
+ *
  * @group markup
  */
 final class PhutilRemarkupBlockStorage {
@@ -25,9 +54,9 @@ final class PhutilRemarkupBlockStorage {
   private $map = array();
   private $index;
 
-  public function store($token) {
+  public function store($text) {
     $key = "~".(++$this->index)."%";
-    $this->map[$key] = $token;
+    $this->map[$key] = $text;
     return $key;
   }
 
@@ -40,6 +69,20 @@ final class PhutilRemarkupBlockStorage {
       $this->map = array();
     }
     return $corpus;
+  }
+
+  public function overwrite($key, $new_text) {
+    $this->map[$key] = $new_text;
+    return $this;
+  }
+
+  public function getMap() {
+    return $this->map;
+  }
+
+  public function setMap(array $map) {
+    $this->map = $map;
+    return $this;
   }
 
 }

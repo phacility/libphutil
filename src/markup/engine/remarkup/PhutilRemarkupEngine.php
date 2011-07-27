@@ -53,7 +53,16 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     return $this->storage->store($text);
   }
 
+  public function overwriteStoredText($token, $new_text) {
+    $this->storage->overwrite($token, $new_text);
+    return $this;
+  }
+
   public function markupText($text) {
+    return $this->postProcessText($this->preprocessText($text));
+  }
+
+  private function setupProcessing() {
     $this->metadata = array();
     $this->storage = new PhutilRemarkupBlockStorage();
 
@@ -64,11 +73,17 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     foreach ($block_rules as $rule) {
       $rule->setEngine($this);
     }
+  }
+
+  public function preprocessText($text) {
+    $this->setupProcessing();
 
     // Apply basic block and paragraph normalization to the text.
     $text = preg_replace("/\r\n?/", "\n", $text);
     $text = preg_replace("/[ \t]*$/m", '', $text);
     $text = preg_split("/\n\n/", $text);
+
+    $block_rules = $this->blockRules;
 
     $blocks = array();
     $last   = null;
@@ -104,11 +119,27 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
       $output[] = $block['rule']->markupText($block['block']);
     }
 
-    $output = implode("\n\n", $output);
-    $output = $this->storage->restore($output);
-
+    $map = $this->storage->getMap();
     unset($this->storage);
+    $metadata = $this->metadata;
 
-    return $output;
+    return array(
+      'output'    => implode("\n\n", $output),
+      'storage'   => $map,
+      'metadata'  => $metadata,
+    );
+  }
+
+  public function postprocessText(array $dict) {
+    $this->setupProcessing();
+
+    $this->metadata = idx($dict, 'metadata', array());
+    $this->storage->setMap(idx($dict, 'storage', array()));
+
+    foreach ($this->blockRules as $block_rule) {
+      $block_rule->postprocess();
+    }
+
+    return $this->storage->restore(idx($dict, 'output'));
   }
 }
