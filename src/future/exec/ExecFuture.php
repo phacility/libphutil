@@ -517,6 +517,7 @@ class ExecFuture extends Future {
 
     list($stdin, $stdout, $stderr) = $this->pipes;
 
+    $close_stdin = false;
     if (isset($this->stdin) && strlen($this->stdin)) {
       $bytes = fwrite($stdin, $this->stdin);
       if ($bytes === false) {
@@ -526,13 +527,14 @@ class ExecFuture extends Future {
       }
 
       if (!strlen($this->stdin) && $this->closePipe) {
-        @fclose($stdin);
-        $this->pipes[0] = null;
+        $close_stdin = true;
       }
-    } else {
-      if ($this->closePipe && $stdin) {
-        @fclose($stdin);
-      }
+    } else if ($this->closePipe && $stdin) {
+      $close_stdin = true;
+    }
+
+    if ($close_stdin) {
+      @fclose($stdin);
       $this->pipes[0] = null;
     }
 
