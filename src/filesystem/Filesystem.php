@@ -106,6 +106,52 @@ class Filesystem {
 
 
   /**
+   * Write data to unique file, without overwriting existing files. This is
+   * useful if you want to write a ".bak" file or something similar, but want
+   * to make sure you don't overwrite something already on disk.
+   *
+   * This function will add a number to the filename if the base name already
+   * exists, e.g. "example.bak", "example.bak.1", "example.bak.2", etc. (Don't
+   * rely on this exact behavior, of course.)
+   *
+   * @param   string  Suggested filename, like "example.bak". This name will
+   *                  be used if it does not exist, or some similar name will
+   *                  be chosen if it does.
+   * @param   string  Data to write to the file.
+   * @return  string  Path to a newly created and written file which did not
+   *                  previously exist, like "example.bak.3".
+   * @task file
+   */
+  public static function writeUniqueFile($base, $data) {
+    $full_path = Filesystem::resolvePath($base);
+    $sequence = 0;
+
+    // Try 'file', 'file.1', 'file.2', etc., until something doesn't exist.
+
+    while (true) {
+      $try_path = $full_path;
+      if ($sequence) {
+        $try_path .= '.'.$sequence;
+      }
+
+      $handle = @fopen($try_path, 'x');
+      if ($handle) {
+        $ok = fwrite($handle, $data);
+        fclose($handle);
+        if (!$ok) {
+          throw new FilesystemException(
+            $try_path,
+            "Failed to write file data.");
+        }
+        return $try_path;
+      }
+
+      $sequence++;
+    }
+  }
+
+
+  /**
    * Append to a file without having to deal with file handles, with
    * detailed exceptions on failure.
    *
