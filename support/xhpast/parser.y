@@ -19,7 +19,7 @@
  * If you modify this grammar, please update the version number in
  * ./xhpast.cpp and libphutil/src/parser/xhpast/bin/xhpast_parse.php
  */
- 
+
 #include "ast.hpp"
 #include "node_names.hpp"
 // PHP's if/else rules use right reduction rather than left reduction which
@@ -269,9 +269,7 @@ top_statement:
 | T_NAMESPACE namespace_name '{' top_statement_list '}' {
   NSPAN($1, n_NAMESPACE, $5);
   $1->appendChild($2);
-  NMORE($4, $5);
-  NLMORE($4, $3);
-  $1->appendChild($4);
+  $1->appendChild(NEXPAND($3, $4, $5));
   $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
 | T_NAMESPACE '{' top_statement_list '}' {
@@ -389,9 +387,7 @@ statement:
 
 unticked_statement:
   '{' inner_statement_list '}' {
-    NMORE($2, $3);
-    NLMORE($2, $1);
-    $$ = $2;
+    $$ = NEXPAND($1, $2, $3);
   }
 | T_IF '(' expr ')' statement elseif_list else_single {
     $$ = NNEW(n_CONDITION_LIST);
@@ -596,12 +592,12 @@ unticked_statement:
   }
 | T_TRY '{' inner_statement_list '}' T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' additional_catches {
     NTYPE($1, n_TRY);
-    $1->appendChild($3);
+    $1->appendChild(NEXPAND($2, $3, $4));
 
     NTYPE($5, n_CATCH);
     $5->appendChild($7);
     $5->appendChild(NTYPE($8, n_VARIABLE));
-    $5->appendChild($11);
+    $5->appendChild(NEXPAND($10, $11, $12));
 
     $1->appendChild(NNEW(n_CATCH_LIST)->appendChild($5)->appendChildren($13));
 
@@ -648,7 +644,7 @@ additional_catch:
     NTYPE($1, n_CATCH);
     $1->appendChild($3);
     $1->appendChild(NTYPE($4, n_VARIABLE));
-    $1->appendChild($7);
+    $1->appendChild(NEXPAND($6, $7, $8));
     NMORE($1, $8);
     $$ = $1;
   }
@@ -694,7 +690,7 @@ unticked_function_declaration_statement:
     $1->appendChild(NTYPE($3, n_STRING));
     $1->appendChild(NEXPAND($4, $5, $6));
     $$->appendChild(NNEW(n_EMPTY));
-    $1->appendChild($8);
+    $1->appendChild(NEXPAND($7, $8, $9));
 
     $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
@@ -707,7 +703,7 @@ unticked_class_declaration_statement:
     $$->appendChild(NTYPE($2, n_CLASS_NAME));
     $$->appendChild($3);
     $$->appendChild($4);
-    $$->appendChild($6);
+    $$->appendChild(NEXPAND($5, $6, $7));
     NMORE($$, $7);
 
     $$ = NNEW(n_STATEMENT)->appendChild($$);
@@ -719,7 +715,7 @@ unticked_class_declaration_statement:
     $$->appendChild(NTYPE($2, n_CLASS_NAME));
     $$->appendChild($3);
     $$->appendChild(NNEW(n_EMPTY));
-    $$->appendChild($5);
+    $$->appendChild(NEXPAND($4, $5, $6));
     NMORE($$, $6);
 
     $$ = NNEW(n_STATEMENT)->appendChild($$);
@@ -856,9 +852,7 @@ declare_list:
 
 switch_case_list:
   '{' case_list '}' {
-    NMORE($2, $3);
-    NLMORE($2, $1);
-    $$ = $2;
+    $$ = NEXPAND($1, $2, $3);
   }
 | '{' ';' case_list '}' {
     // ...why does this rule exist?
@@ -868,8 +862,7 @@ switch_case_list:
 
     $$ = NNEW(n_STATEMENT_LIST)->appendChild($2);
     $$->appendChildren($3);
-    NMORE($$, $4);
-    NLMORE($$, $1);
+    NEXPAND($1, $$, $4);
   }
 | ':' case_list T_ENDSWITCH ';' {
     NMORE($2, $4);
@@ -1195,9 +1188,7 @@ method_body:
     $$ = NNEW(n_EMPTY);
   }
 | '{' inner_statement_list '}' {
-    NMORE($2, $3);
-    NLMORE($2, $1);
-    $$ = $2;
+    $$ = NEXPAND($1, $2, $3);
   }
 ;
 
@@ -1740,7 +1731,7 @@ expr_without_variable:
     $1->appendChild(NNEW(n_EMPTY));
     $1->appendChild(NEXPAND($3, $4, $5));
     $$->appendChild($6);
-    $1->appendChild($8);
+    $1->appendChild(NEXPAND($7, $8, $9));
 
     $$ = $1;
   }
@@ -1757,7 +1748,7 @@ expr_without_variable:
     $2->appendChild(NNEW(n_EMPTY));
     $2->appendChild(NEXPAND($4, $5, $6));
     $2->appendChild($7);
-    $2->appendChild($9);
+    $2->appendChild(NEXPAND($8, $9, $10));
 
     $$ = $2;
   }

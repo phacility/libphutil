@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
 
   if (argc != 1) {
     //coupling: modify also libphutil/src/parser/xhpast/bin/xhpast_parse.php
-    cout << "xhpast version 0.59\n";
+    cout << "xhpast version 0.60\n";
     return 0;
   }
 
