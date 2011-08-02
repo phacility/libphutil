@@ -42,10 +42,16 @@ class PhutilConsoleFormatter {
   public static function formatString($format /* ... */) {
     $colors = implode('|', array_keys(self::$colorCodes));
 
+    // Sequence should be preceeded by start-of-string or non-backslash
+    // escaping
+    $bold_re      = '/(?<=^|[^\\\\])\*\*(.*)\*\*/sU';
+    $underline_re = '/(?<=^|[^\\\\])__(.*)__/sU';
+    $invert_re    = '/(?<=^|[^\\\\])##(.*)##/sU';
+
     if (self::$disableANSI) {
-      $format = preg_replace('/\*\*(.*)\*\*/sU',  '\1',   $format);
-      $format = preg_replace('/__(.*)__/sU',      '\1',   $format);
-      $format = preg_replace('/##(.*)##/sU',      '\1',   $format);
+      $format = preg_replace($bold_re,      '\1',   $format);
+      $format = preg_replace($underline_re, '\1',   $format);
+      $format = preg_replace($invert_re,    '\1',   $format);
       $format = preg_replace(
         '@<(fg|bg):('.$colors.')>(.*)</\1>@sU',
         '\3',
@@ -56,14 +62,17 @@ class PhutilConsoleFormatter {
       $underline  = $esc.'[4m'.'\\1'.$esc.'[m';
       $invert     = $esc.'[7m'.'\\1'.$esc.'[m';
 
-      $format = preg_replace('/\*\*(.*)\*\*/sU',  $bold,      $format);
-      $format = preg_replace('/__(.*)__/sU',      $underline, $format);
-      $format = preg_replace('/##(.*)##/sU',      $invert,    $format);
+      $format = preg_replace($bold_re,      $bold,      $format);
+      $format = preg_replace($underline_re, $underline, $format);
+      $format = preg_replace($invert_re,    $invert,    $format);
       $format = preg_replace_callback(
         '@<(fg|bg):('.$colors.')>(.*)</\1>@sU',
         array('PhutilConsoleFormatter', 'replaceColorCode'),
         $format);
     }
+
+    // Remove backslash escaping
+    $format = preg_replace('/\\\\(\*\*.*\*\*|__.*__|##.*##)/sU', '\1', $format);
 
     $args = func_get_args();
     $args[0] = $format;
