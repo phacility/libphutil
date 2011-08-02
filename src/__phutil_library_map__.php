@@ -48,6 +48,7 @@ phutil_register_library_map(array(
     'PhutilNiceDaemon' => 'daemon/torture/nice',
     'PhutilProcessGroupDaemon' => 'daemon/torture/processgroup',
     'PhutilPygmentsSyntaxHighlighter' => 'markup/syntax/highlighter/pygments',
+    'PhutilRainbowSyntaxHighlighter' => 'markup/syntax/highlighter/rainbow',
     'PhutilReadableSerializer' => 'readableserializer',
     'PhutilRemarkupBlockStorage' => 'markup/engine/remarkup/blockstorage',
     'PhutilRemarkupEngine' => 'markup/engine/remarkup',

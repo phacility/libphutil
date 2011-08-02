@@ -74,6 +74,11 @@ class PhutilDefaultSyntaxHighlighterEngine
         ->getHighlightFuture($source);
     }
 
+    if ($language == 'rainbow') {
+      return id(new PhutilRainbowSyntaxHighlighter())
+        ->getHighlightFuture($source);
+    }
+
     if ($have_pygments) {
       return id(new PhutilPygmentsSyntaxHighlighter())
         ->setConfig('language', $language)
