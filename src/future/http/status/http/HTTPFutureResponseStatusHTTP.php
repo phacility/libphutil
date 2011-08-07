@@ -16,6 +16,26 @@
  * limitations under the License.
  */
 
-phutil_require_module('phutil', 'future');
+final class HTTPFutureResponseStatusHTTP extends HTTPFutureResponseStatus {
 
-phutil_require_source('HTTPFuture.php');
+  protected function getErrorCodeType($code) {
+    return 'HTTP';
+  }
+
+  public function isError() {
+    return ($this->getStatusCode() < 200) || ($this->getStatusCode() > 299);
+  }
+
+  public function isTimeout() {
+    return false;
+  }
+
+  protected function getErrorCodeDescription($code) {
+    static $map = array(
+      404 => 'Not Found',
+    );
+    return idx($map, $code);
+  }
+
+}
+

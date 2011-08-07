@@ -31,13 +31,12 @@ class ConduitFuture extends FutureProxy {
   }
 
   protected function didReceiveResult($result) {
-    if ($result[0] !== 200) {
-      throw new Exception(
-        "Host returned an HTTP error response #{$result[0]} in response ".
-        "to a Conduit method call.");
+    list($status, $body, $headers) = $result;
+    if ($status->isError()) {
+      throw $status;
     }
 
-    $raw = $result[1];
+    $raw = $body;
 
     $shield = 'for(;;);';
     if (!strncmp($raw, $shield, strlen($shield))) {

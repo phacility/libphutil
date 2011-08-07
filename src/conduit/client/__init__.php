@@ -6,8 +6,8 @@
 
 
 
-phutil_require_module('phutil', 'future/http');
-phutil_require_module('phutil', 'future/https');
+phutil_require_module('phutil', 'future/http/http');
+phutil_require_module('phutil', 'future/http/https');
 phutil_require_module('phutil', 'future/proxy');
 phutil_require_module('phutil', 'serviceprofiler');
 phutil_require_module('phutil', 'utils');

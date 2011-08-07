@@ -30,53 +30,22 @@
  *
  * @group futures
  */
-class HTTPFuture extends Future {
+final class HTTPFuture extends BaseHTTPFuture {
 
-  /** Remote host returned something other than an HTTP response. */
-  const ERROR_MALFORMED_RESPONSE  = 1000;
+  private $host;
+  private $port = 80;
+  private $fullRequestPath;
 
-  /** Future walltime exceeded the allowable walltime (see setTimeout()). */
-  const ERROR_TIMEOUT             = 1001;
+  private $socket;
+  private $writeBuffer;
+  private $response;
 
-  /** Connection was aborted before writing was complete. */
-  const ERROR_CONNECTION_ABORTED  = 1002;
+  private $stateConnected     = false;
+  private $stateWriteComplete = false;
+  private $stateReady         = false;
+  private $stateStartTime;
 
-  /** Connection was refused by remote host. */
-  const ERROR_CONNECTION_REFUSED  = 1003;
-
-  /** Connection failed entirely, hostname is probably invalid. */
-  const ERROR_CONNECTION_FAILED   = 1004;
-
-  protected $method   = 'GET';
-  protected $uri;
-  protected $data;
-  protected $host;
-  protected $port     = 80;
-  protected $timeout  = 30.0;
-  /**
-   * Whether to log debugging output to scribe.  Hopefully, this will be a
-   * short-term measure.
-   */
-  private $debug = false;
-  /**
-   * A string intended to uniquely identify this HTTPFuture for debugging
-   * purposes.
-   */
-  private $debugFutureID = null;
-
-  protected $socket;
-  protected $writeBuffer;
-  protected $response;
-  protected $headers  = array();
-
-  protected $stateConnected     = false;
-  protected $stateWriteComplete = false;
-  protected $stateReady         = false;
-  protected $stateStartTime;
-
-  public function __construct($uri, array $data = array()) {
-    $this->data = $data;
-
+  public function setURI($uri) {
     $parts = parse_url($uri);
     if (!$parts) {
       throw new Exception("Could not parse URI '{$uri}'.");
@@ -93,7 +62,6 @@ class HTTPFuture extends Future {
     }
 
     $this->host = $parts['host'];
-    $this->headers['Host'] = $this->host;
 
     if (!empty($parts['port'])) {
       $this->port = $parts['port'];
@@ -105,37 +73,16 @@ class HTTPFuture extends Future {
     }
 
     if (isset($parts['path'])) {
-      $this->uri = $parts['path'];
+      $this->fullRequestPath = $parts['path'];
     } else {
-      $this->uri = '/';
+      $this->fullRequestPath = '/';
     }
 
     if (isset($parts['query'])) {
-      $this->uri .= '?'.$parts['query'];
+      $this->fullRequestPath .= '?'.$parts['query'];
     }
 
-  }
-
-  public function getURI() {
-    return $this->uri;
-  }
-
-  public function setHeader($header, $value) {
-    $this->headers[$header] = $value;
-    return $this;
-  }
-
-  public function setTimeout($timeout) {
-    $this->timeout = $timeout;
-    return $this;
-  }
-
-  public function setMethod($method) {
-    if ($method !== 'GET' && $method !== 'POST') {
-      throw new Exception('Only GET and POST are supported HTTP methods.');
-    }
-    $this->method = $method;
-    return $this;
+    return parent::setURI($uri);
   }
 
   public function __destruct() {
@@ -159,7 +106,7 @@ class HTTPFuture extends Future {
     return array();
   }
 
-  public function getDefaultUserAgent() {
+  private function getDefaultUserAgent() {
     return 'HTTPFuture/1.0';
   }
 
@@ -212,7 +159,7 @@ class HTTPFuture extends Future {
     return $this->checkSocket();
   }
 
-  protected function buildSocket() {
+  private function buildSocket() {
 
     $errno = null;
     $errstr = null;
@@ -225,7 +172,8 @@ class HTTPFuture extends Future {
 
     if (!$socket) {
       $this->stateReady = true;
-      $this->result = $this->buildErrorResult(self::ERROR_CONNECTION_FAILED);
+      $this->result = $this->buildErrorResult(
+        HTTPFutureResponseStatusTransport::ERROR_CONNECTION_FAILED);
       return null;
     }
 
@@ -239,11 +187,11 @@ class HTTPFuture extends Future {
     return $socket;
   }
 
-  protected function checkSocket() {
+  private function checkSocket() {
 
     $timeout = false;
     $now = microtime(true);
-    if ($now - $this->stateStartTime > $this->timeout) {
+    if (($now - $this->stateStartTime) > $this->getTimeout()) {
       $timeout = true;
     }
 
@@ -251,109 +199,86 @@ class HTTPFuture extends Future {
       return false;
     }
 
-    if ($timeout) {
-      $result = $this->buildErrorResult(self::ERROR_TIMEOUT);
-    } else if (!$this->stateConnected) {
-      $result = $this->buildErrorResult(self::ERROR_CONNECTION_REFUSED);
-    } else if (!$this->stateWriteComplete) {
-      $result = $this->buildErrorResult(self::ERROR_CONNECTION_FAILED);
-    } else {
-      $result = $this->parseHTTPResponse($this->response);
-    }
-
-    $this->result     = $result;
     $this->stateReady = true;
+
+    if ($timeout) {
+      $this->result = $this->buildErrorResult(
+        HTTPFutureResponseStatusTransport::ERROR_TIMEOUT);
+    } else if (!$this->stateConnected) {
+      $this->result = $this->buildErrorResult(
+        HTTPFutureResponseStatusTransport::ERROR_CONNECTION_REFUSED);
+    } else if (!$this->stateWriteComplete) {
+      $this->result = $this->buildErrorResult(
+        HTTPFutureResponseStatusTransport::ERROR_CONNECTION_FAILED);
+    } else {
+      $this->result = $this->parseRawHTTPResponse($this->response);
+    }
 
     return true;
   }
 
-  protected function buildErrorResult($error) {
-    return array($error, null, array());
-  }
-
-  protected function parseHTTPResponse($response) {
-
-    static $rex_base = "@^(?P<head>.*?)\r?\n\r?\n(?P<body>.*)$@s";
-    static $rex_head = "@^HTTP/\S+ (?P<code>\d+) .*?(?:\r?\n(?P<headers>.*))?$@s";
-    static $rex_header = '@^(?P<name>.*?):\s*(?P<value>.*)$@';
-
-    static $malformed = array(
-      self::ERROR_MALFORMED_RESPONSE,
-      null,
-      array(),
-    );
-
-    $matches = null;
-    if (!preg_match($rex_base, $response, $matches)) {
-      return $malformed;
-    }
-
-    $head = $matches['head'];
-    $body = $matches['body'];
-
-    if (!preg_match($rex_head, $head, $matches)) {
-      return $malformed;
-    }
-
-    $response_code = (int)$matches['code'];
-
-    $headers = array();
-    if (isset($matches['headers'])) {
-      $head_raw = $matches['headers'];
-      if (strlen($head_raw)) {
-        $headers_raw = preg_split("/\r?\n/", $head_raw);
-        foreach ($headers_raw as $header) {
-          $m = null;
-          if (preg_match($rex_header, $header, $m)) {
-            $headers[] = array($m['name'], $m['value']);
-          } else {
-            $headers[] = array($header, null);
-          }
-        }
-      }
-    }
-
+  private function buildErrorResult($error) {
     return array(
-      $response_code,
-      $body,
-      $headers,
-    );
+      $status = new HTTPFutureResponseStatusTransport($error),
+      $body = null,
+      $headers = array());
   }
 
-  public function buildHTTPRequest() {
-    $data = http_build_query($this->data);
-    $length = strlen($data);
+  private function buildHTTPRequest() {
+    $data = $this->getData();
+    $method = $this->getMethod();
+    $uri = $this->fullRequestPath;
 
-    $force_headers = array();   // These are always sent.
-    $default_headers = array(); // These can be overridden with setHeader().
+    $add_headers = array();
 
-    $uri = $this->uri;
-    if ($this->method == 'GET') {
-      if ($data) {
+    if ($this->getMethod() == 'GET') {
+      if (is_array($data)) {
+        $data = http_build_query($data);
         if (strpos($uri, '?') !== false) {
           $uri .= '&'.$data;
         } else {
           $uri .= '?'.$data;
         }
+        $data = '';
       }
-      $data = null;
-      $length = 0;
     } else {
-      $force_headers['Content-Type'] = 'application/x-www-form-urlencoded';
-      $data .= "\r\n";
+      if (is_array($data)) {
+        $data = http_build_query($data)."\r\n";
+        $add_headers[] = array(
+          'Content-Type',
+          'application/x-www-form-urlencoded');
+      }
     }
 
-    $force_headers['Content-Length'] = $length;
-    $default_headers['User-Agent'] = $this->getDefaultUserAgent();
+    $length = strlen($data);
 
-    $headers = $force_headers + $this->headers + $default_headers;
+    $add_headers[] = array(
+      'Content-Length',
+      $length);
 
+    if (!$this->getHeaders('User-Agent')) {
+      $add_headers[] = array(
+        'User-Agent',
+        $this->getDefaultUserAgent());
+    }
+
+    if (!$this->getHeaders('Host')) {
+      $add_headers[] = array(
+        'Host',
+        $this->host);
+    }
+
+    $headers = array_merge($this->getHeaders(), $add_headers);
     foreach ($headers as $key => $header) {
-      $headers[$key] = $key.': '.$header."\r\n";
+      list($name, $value) = $header;
+      if (strlen($value)) {
+        $value = ': '.$value;
+      }
+      $headers[$key] = $name.$value."\r\n";
     }
 
     return
-      "{$this->method} {$uri} HTTP/1.0\r\n".
+      "{$method} {$uri} HTTP/1.0\r\n".
       implode('', $headers).
       "\r\n".
       $data;

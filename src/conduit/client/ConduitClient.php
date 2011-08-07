@@ -114,9 +114,9 @@ class ConduitClient {
       $core_future = new HTTPSFuture($uri, $data);
     } else {
       $core_future = new HTTPFuture($uri, $data);
-      $core_future->setMethod('POST');
     }
 
+    $core_future->setMethod('POST');
     $core_future->setTimeout($this->timeout);
 
     $profiler = PhutilServiceProfiler::getInstance();
