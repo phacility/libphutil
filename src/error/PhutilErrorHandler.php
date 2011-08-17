@@ -231,6 +231,7 @@ final class PhutilErrorHandler {
                     '('.get_class($value).') '.$value->getMessage(),
                     $value->getFile(),
                     $value->getLine()));
+        self::outputStacktrace($value->getTrace());
         break;
       case PhutilErrorHandler::PHLOG:
         error_log(sprintf(
