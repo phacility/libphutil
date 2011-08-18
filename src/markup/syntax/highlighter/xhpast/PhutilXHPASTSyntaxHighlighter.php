@@ -118,11 +118,17 @@ class PhutilXHPASTSyntaxHighlighter {
           break;
       }
       if ($class) {
-        $value = '<span class="'.$class.'">'.$value.'</span>';
+        $l = '<span class="'.$class.'">';
+        $r = '</span>';
+
+        $value = $l.$value.$r;
         if ($multi) {
+          // If the token may have multiple lines in it, make sure each
+          // <span> crosses no more than one line so the lines can be put
+          // in a table, etc., later.
           $value = str_replace(
             "\n",
-            "</span>\n<span=\"{$class}\">",
+            $r."\n".$l,
             $value);
         }
         $out[] = $value;
