@@ -32,7 +32,6 @@ function phutil_console_format($format /* ... */) {
  * @group console
  */
 function phutil_console_confirm($prompt, $default_no = true) {
-
   $prompt_options = $default_no ? '[y/N]' : '[Y/n]';
 
   do {
@@ -58,6 +57,11 @@ function phutil_console_prompt($prompt) {
   $prompt = phutil_console_wrap($prompt, 4);
 
   echo $prompt;
+
+  // Require after echoing the prompt so the user has some idea what happened
+  // if this throws.
+  phutil_console_require_tty();
+
   $response = fgets(STDIN);
 
   return rtrim($response, "\n");
@@ -73,4 +77,14 @@ function phutil_console_wrap($text, $indent = 0) {
     $indent_string = str_repeat(' ', $indent);
   }
   return wordwrap($text, 78 - $indent, "\n".$indent_string);
+}
+
+
+/**
+ * @group console
+ */
+function phutil_console_require_tty() {
+  if (function_exists('posix_isatty') && !posix_isatty(STDIN)) {
+    throw new PhutilConsoleStdinNotInteractiveException();
+  }
 }
