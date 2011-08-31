@@ -171,7 +171,7 @@ class PhutilPygmentsSyntaxHighlighter {
       'SConstruct' => 'python',
       'SConscript' => 'python',
       'tac' => 'python',
-      'rl' => 'ragel-ruby',
+      'rl' => 'ragel-em',
       'rbw' => 'rb',
       'Rakefile' => 'rb',
       'rake' => 'rb',
