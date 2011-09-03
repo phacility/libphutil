@@ -24,6 +24,8 @@
 final class PhutilURI {
 
   private $protocol;
+  private $user;
+  private $pass;
   private $domain;
   private $port;
   private $path;
@@ -34,29 +36,33 @@ final class PhutilURI {
     $parts = $this->parseURI($uri);
     if ($parts) {
       $this->protocol = $parts[1];
-      $this->domain   = $parts[2];
-      $this->port     = $parts[3];
-      $this->path     = $parts[4];
-      parse_str($parts[5], $this->query);
-      $this->fragment = $parts[6];
+      $this->user     = $parts[2];
+      $this->pass     = $parts[3];
+      $this->domain   = $parts[4];
+      $this->port     = $parts[5];
+      $this->path     = $parts[6];
+      parse_str($parts[7], $this->query);
+      $this->fragment = $parts[8];
     }
   }
 
   private static function parseURI($uri) {
     // NOTE: We allow "+" in the protocol for "svn+ssh" and similar.
     $protocol = '([\w+]+):\/\/';
+    $auth     = '(?:([^:@]+)(?::([^@]+))?@)?';
     $domain   = '([a-zA-Z0-9\.\-_]*)';
     $port     = '(?::(\d+))?';
     $path     = '((?:\/|^)[^#?]*)?';
     $query    = '(?:\?([^#]*))?';
     $anchor   = '(?:#(.*))?';
 
-    $regexp = '/^(?:'.$protocol.$domain.$port.')?'.$path.$query.$anchor.'$/S';
+    $regexp = '/^(?:'.$protocol.$auth.$domain.$port.')?'.
+              $path.$query.$anchor.'$/S';
 
     $matches = null;
     $ok = preg_match($regexp, $uri, $matches);
     if ($ok) {
-      return array_pad($matches, 7, null);
+      return array_pad($matches, 9, '');
     }
 
     return null;
@@ -66,7 +72,15 @@ final class PhutilURI {
     $prefix = null;
     if ($this->protocol || $this->domain || $this->port) {
       $protocol = nonempty($this->protocol, 'http');
-      $prefix = $protocol.'://'.$this->domain;
+
+      $auth = '';
+      if ($this->user && $this->pass) {
+        $auth = $this->user.':'.$this->pass.'@';
+      } else if ($this->user) {
+        $auth = $this->user.'@';
+      }
+
+      $prefix = $protocol.'://'.$auth.$this->domain;
       if ($this->port) {
         $prefix .= ':'.$this->port;
       }
@@ -146,6 +160,24 @@ final class PhutilURI {
 
   public function getFragment() {
     return $this->fragment;
+  }
+
+  public function setUser($user) {
+    $this->user = $user;
+    return $this;
+  }
+
+  public function getUser() {
+    return $this->user;
+  }
+
+  public function setPass($pass) {
+    $this->pass = $pass;
+    return $this;
+  }
+
+  public function getPass() {
+    return $this->pass;
   }
 
   public function alter($key, $value) {
