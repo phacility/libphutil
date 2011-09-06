@@ -49,6 +49,12 @@ class PhutilXHPASTSyntaxHighlighter {
 
   private function applyXHPHighlight($source) {
 
+    // We perform two passes here: one using the AST to find symbols we care
+    // about -- particularly, class names and function names. These are used
+    // in the crossreference stuff to link into Diffusion. After we've done our
+    // AST pass, we do a followup pass on the token stream to catch all the
+    // simple stuff like strings and comments.
+
     $scrub = false;
     if (strpos($source, '<?') === false) {
       $source = "<?php\n".$source."\n";
@@ -56,10 +62,13 @@ class PhutilXHPASTSyntaxHighlighter {
     }
 
     $tree = XHPASTTree::newFromData($source);
+    $root = $tree->getRootNode();
+
+    $tokens = $root->getTokens();
+    $interesting_symbols = $this->findInterestingSymbols($root);
 
     $out = array();
-    $next = null;
-    foreach ($tree->getRootNode()->getTokens() as $token) {
+    foreach ($tokens as $key => $token) {
       $value = phutil_escape_html($token->getValue());
       $class = null;
       $multi = false;
@@ -88,10 +97,6 @@ class PhutilXHPASTSyntaxHighlighter {
         case 'T_CLOSE_TAG':
           $class = 'o';
           break;
-        case 'T_OBJECT_OPERATOR':
-          $next = 'na';
-          $class = 'k';
-          break;
         case 'T_LNUMBER':
         case 'T_DNUMBER':
           $class = 'm';
@@ -106,12 +111,11 @@ class PhutilXHPASTSyntaxHighlighter {
             $class = 'k';
             break;
           }
-          if ($next) {
-            $class = $next;
-            $next = null;
-          } else {
-            $class = 'nx';
+          if (isset($interesting_symbols[$key])) {
+            $class = $interesting_symbols[$key];
+            break;
           }
+          $class = 'nx';
           break;
         default:
           $class = 'k';
@@ -142,6 +146,57 @@ class PhutilXHPASTSyntaxHighlighter {
     }
 
     return rtrim(implode('', $out));
+  }
+
+  private function findInterestingSymbols(XHPASTNode $root) {
+    // Class name symbols appear in:
+    //    class X extends X implements X, X { ... }
+    //    new X();
+    //    $x instanceof X
+    //    catch (X $x)
+    //    function f(X $x)
+    //    X::f();
+    //    X::$m;
+    //    X::CONST;
+
+    // Fortunately XHPAST puts all of these in a special node type so it's
+    // easy to find them.
+
+    $result_map = array();
+    $class_names = $root->selectDescendantsOfType('n_CLASS_NAME');
+    foreach ($class_names as $class_name) {
+      foreach ($class_name->getTokens() as $key => $token) {
+        $result_map[$key] = 'nc'; // "Name, Class"
+      }
+    }
+
+    // Function name symbols appear in:
+    //    f()
+
+    $function_calls = $root->selectDescendantsOfType('n_FUNCTION_CALL');
+    foreach ($function_calls as $call) {
+      $name = $call->getChildByIndex(0);
+      if ($name->getTypeName() == 'n_SYMBOL_NAME') {
+        // This is a normal function call, not some $f() shenanigans.
+        foreach ($name->getTokens() as $key => $token) {
+          $result_map[$key] = 'nf'; // "Name, Function"
+        }
+      }
+    }
+
+    // This is just about making "$x->y" prettier.
+
+    $prop_access = $root->selectDescendantsOfType('n_OBJECT_PROPERTY_ACCESS');
+    foreach ($prop_access as $access) {
+      $right = $access->getChildByIndex(1);
+      if ($name->getTypeName() == 'n_STRING') {
+        foreach ($name->getTokens() as $key => $token) {
+          $result_map[$key] = 'na'; // "Name, Attribute"
+        }
+      }
+    }
+
+    return $result_map;
   }
 
 }
