@@ -173,13 +173,40 @@ final class PhutilSymbolLoader {
         } else {
           $lookup_map = $map[$type];
         }
-        foreach ($lookup_map as $name => $module) {
-          if ($this->name && ($name != $this->name)) {
-            continue;
+
+        // As an optimization, we filter the list of candidate symbols in
+        // several passes, applying a name-based filter first if possible since
+        // it is highly selective and guaranteed to match at most one symbol.
+        // This is the common case and we land here through __autoload() so it's
+        // worthwhile to microoptimize a bit because this code path is very hot
+        // and we save 5-10ms per page for a very moderate increase in
+        // complexity.
+
+
+        if ($this->name) {
+          // If we have a name filter, just pick the matching name out if it
+          // exists.
+          if (isset($lookup_map[$this->name])) {
+            $filtered_map = array(
+              $this->name => $lookup_map[$this->name],
+            );
+          } else {
+            $filtered_map = array();
           }
-          if ($this->module && ($module != $this->module)) {
-            continue;
+        } else {
+          // Otherwise, start with everything.
+          $filtered_map = $lookup_map;
+        }
+
+        if ($this->module) {
+          foreach ($lookup_map as $name => $module) {
+            if ($module != $this->module) {
+              unset($filtered_map[$name]);
+            }
           }
+        }
+
+        foreach ($filtered_map as $name => $module) {
           $symbol = array(
             'type'    => $type,
             'name'    => $name,
