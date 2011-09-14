@@ -175,10 +175,10 @@ class PhutilXHPASTSyntaxHighlighter {
 
     $function_calls = $root->selectDescendantsOfType('n_FUNCTION_CALL');
     foreach ($function_calls as $call) {
-      $name = $call->getChildByIndex(0);
-      if ($name->getTypeName() == 'n_SYMBOL_NAME') {
+      $call = $call->getChildByIndex(0);
+      if ($call->getTypeName() == 'n_SYMBOL_NAME') {
         // This is a normal function call, not some $f() shenanigans.
-        foreach ($name->getTokens() as $key => $token) {
+        foreach ($call->getTokens() as $key => $token) {
           $result_map[$key] = 'nf'; // "Name, Function"
         }
       }
@@ -189,8 +189,8 @@ class PhutilXHPASTSyntaxHighlighter {
     $prop_access = $root->selectDescendantsOfType('n_OBJECT_PROPERTY_ACCESS');
     foreach ($prop_access as $access) {
       $right = $access->getChildByIndex(1);
-      if ($name->getTypeName() == 'n_STRING') {
-        foreach ($name->getTokens() as $key => $token) {
+      if ($right->getTypeName() == 'n_STRING') {
+        foreach ($right->getTokens() as $key => $token) {
           $result_map[$key] = 'na'; // "Name, Attribute"
         }
       }
