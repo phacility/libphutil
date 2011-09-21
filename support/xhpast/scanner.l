@@ -223,7 +223,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
   [^\r\n?]+ yymore();
   "?>" {
     yyless(yyleng - 2);
-		ptok(T_COMMENT);
+    ptok(T_COMMENT);
     pop_state();
   }
   . yymore();
@@ -236,11 +236,11 @@ NEWLINE ("\r\n"|"\n"|"\r")
   [^*\r\n]+|"*" yymore();
 }
 <PHP_DOC_COMMENT>"*/" {
-	ptok(T_DOC_COMMENT);
+  ptok(T_DOC_COMMENT);
   pop_state();
 }
 <PHP_COMMENT>"*/" {
-	ptok(T_COMMENT);
+  ptok(T_COMMENT);
   pop_state();
 }
 

@@ -24,11 +24,27 @@ class PhutilRemarkupRuleHyperlink
 
   public function apply($text) {
 
+    // Hyperlinks with explicit "<>" around them get linked exactly, without
+    // the "<>". Angle brackets are basically special and mean "this is a URL
+    // with weird characters". This is assumed to be reasonable because they
+    // don't appear in normal text or normal URLs.
     $text = preg_replace_callback(
       '@[<](\w{3,}://.+?)[>]@',
       array($this, 'markupHyperlink'),
       $text);
 
+    // Hyperlinks with explicit "()" around them get linked exactly, with the
+    // "()". This is simlar to angle brackets, except that people use parens
+    // in normal text so we preserve them in the output text.
+    $text = preg_replace_callback(
+      '@(?<=\\()(\w{3,}://.+?)(?=\\))@',
+      array($this, 'markupHyperlink'),
+      $text);
+
+    // Anything else we match "ungreedily", which means we'll look for
+    // stuff that's probably puncutation or otherwise not part of the URL and
+    // not link it. This lets someone write "QuicK! Go to
+    // http://www.example.com/!". We also apply some paren balancing rules.
     $text = preg_replace_callback(
       '@(?<=^|\s)(\w{3,}://\S+)(?=\s|$)@',
       array($this, 'markupHyperlinkUngreedy'),
@@ -37,7 +53,7 @@ class PhutilRemarkupRuleHyperlink
     return $text;
   }
 
-  public function markupHyperlink($matches) {
+  private function markupHyperlink($matches) {
     return $this->getEngine()->storeText(
       phutil_render_tag(
         'a',
@@ -48,7 +64,7 @@ class PhutilRemarkupRuleHyperlink
         phutil_escape_html($matches[1])));
   }
 
-  public function markupHyperlinkUngreedy($matches) {
+  private function markupHyperlinkUngreedy($matches) {
     $match = $matches[1];
     $tail = null;
     $trailing = null;
@@ -56,6 +72,22 @@ class PhutilRemarkupRuleHyperlink
       $tail = $trailing[0];
       $match = substr($match, 0, -strlen($tail));
     }
+
+    // If there's a closing paren at the end but no balancing open paren in
+    // the URL, don't link the close paren. This is an attempt to gracefully
+    // handle the two common paren cases, Wikipedia links and English language
+    // parentheticals, e.g.:
+    //
+    //  http://en.wikipedia.org/wiki/Noun_(disambiguation)
+    //  (see also http://www.example.com)
+    //
+    // We could apply a craftier heuristic here which tries to actually balance
+    // the parens, but this is probably sufficient.
+    if (preg_match('/\\)$/', $match) && !preg_match('/\\(/', $match)) {
+      $tail = ')'.$tail;
+      $match = substr($match, 0, -1);
+    }
+
     return $this->markupHyperlink(array(null, $match)).$tail;
   }
 

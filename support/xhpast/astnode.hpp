@@ -26,13 +26,13 @@ namespace xhpast {
   typedef std::list<Token *> token_list_t;
 
   class Token {
-    
-    public: 
+
+    public:
       unsigned int type;
       std::string value;
       unsigned int lineno;
       unsigned int n;
-      
+
       Token(unsigned int type, char *value, unsigned int n) :
         type(type),
         value(value),
@@ -42,17 +42,17 @@ namespace xhpast {
 
   class Node;
   typedef std::list<Node *> node_list_t;
-  
+
   class Node {
-    public: 
+    public:
       unsigned int type;
 
       int l_tok;
       int r_tok;
-    
+
       node_list_t children;
-    
-      
+
+
       Node() : type(0), l_tok(-1), r_tok(-1) {};
 
       Node(unsigned int type) : type(type), l_tok(-1), r_tok(-1) {};
@@ -67,14 +67,14 @@ namespace xhpast {
         type(type),
         l_tok(l_tok),
         r_tok(r_tok) {
-      
+
       }
 
       Node *appendChild(Node *node) {
         this->children.push_back(node);
         return this->setEnd(node);
       }
-      
+
       Node *appendChildren(Node *node) {
         for (node_list_t::iterator ii = node->children.begin(); ii != node->children.end(); ++ii) {
           this->children.push_back(*ii);
@@ -82,25 +82,25 @@ namespace xhpast {
         }
         return this;
       }
-      
+
       Node *firstChild() {
         if (this->children.empty()) {
           return NULL;
         }
         return *(this->children.begin());
       }
-      
+
       Node *setType(unsigned int t) {
         this->type = t;
         return this;
       }
-      
+
       Node *setEnd(Node *n) {
         if (!n) {
           fprintf(stderr, "Trying to setEnd() a null node to one of type %d\n", this->type);
           exit(1);
         }
-        
+
         if (n->r_tok != -1 && (n->r_tok > this->r_tok || (this->r_tok == -1))) {
           this->r_tok = n->r_tok;
         }
@@ -124,6 +124,6 @@ namespace xhpast {
         }
         return this;
       }
-    
+
   };
 }
