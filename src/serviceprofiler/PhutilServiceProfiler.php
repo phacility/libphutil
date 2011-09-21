@@ -102,6 +102,9 @@ final class PhutilServiceProfiler {
 
     if ($is_begin) {
       switch ($type) {
+        case 'query':
+          echo substr($data['query'], 0, 512);
+          break;
         case 'exec':
           echo '$ '.$data['command'];
           break;
