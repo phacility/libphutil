@@ -17,7 +17,7 @@
  */
 
 /**
- * Test cases for @{class:PhutilDocblockParser}.
+ * Test cases for @{class:PhutilURI} parser.
  *
  * @group testcase
  */
