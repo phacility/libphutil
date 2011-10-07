@@ -6,7 +6,6 @@
 
 
 
-phutil_require_module('phutil', 'error');
 phutil_require_module('phutil', 'future/proxy');
 phutil_require_module('phutil', 'markup/syntax/highlighter/default');
 phutil_require_module('phutil', 'utils');

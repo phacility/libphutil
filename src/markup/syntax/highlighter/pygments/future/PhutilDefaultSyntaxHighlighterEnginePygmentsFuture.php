@@ -30,9 +30,6 @@ class PhutilDefaultSyntaxHighlighterEnginePygmentsFuture extends FutureProxy {
 
   protected function didReceiveResult($result) {
     list($err, $stdout, $stderr) = $result;
-    if ($err) {
-      phlog("`pygmentize` failed with error #{$err}: {$stderr}");
-    }
 
     if (!$err && strlen($stdout)) {
       // Strip off fluff Pygments adds.
