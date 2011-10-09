@@ -54,6 +54,18 @@ class PhutilRemarkupRuleHyperlink
   }
 
   private function markupHyperlink($matches) {
+
+    $protocols = $this->getEngine()->getConfig(
+      'uri.allowed-protocols',
+      array());
+
+    $protocol = id(new PhutilURI($matches[1]))->getProtocol();
+    if (!idx($protocols, $protocol)) {
+      // If this URI doesn't use a whitelisted protocol, don't link it. This
+      // is primarily intended to prevent javascript:// silliness.
+      return $this->getEngine()->storeText($matches[1]);
+    }
+
     return $this->getEngine()->storeText(
       phutil_render_tag(
         'a',
