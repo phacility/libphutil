@@ -277,14 +277,15 @@ class Filesystem {
 
 
   /**
-   * Read random bytes from /dev/urandom or equivalent.
+   * Read random bytes from /dev/urandom or equivalent. See also
+   * @{method:readRandomCharacters}.
    *
    * @param   int     Number of bytes to read.
    * @return  string  Random bytestring of the provided length.
    *
    * @task file
    */
-  public static function readRandomBytes($bytes) {
+  public static function readRandomBytes($number_of_bytes) {
 
     $urandom = @fopen('/dev/urandom', 'rb');
     if (!$urandom) {
@@ -293,8 +294,8 @@ class Filesystem {
         'Failed to open /dev/urandom for reading!');
     }
 
-    $data = @fread($urandom, $bytes);
-    if (strlen($data) != $bytes) {
+    $data = @fread($urandom, $number_of_bytes);
+    if (strlen($data) != $number_of_bytes) {
       throw new FilesystemException(
         '/dev/urandom',
         'Failed to read random bytes!');
@@ -303,6 +304,40 @@ class Filesystem {
     @fclose($urandom);
 
     return $data;
+  }
+
+
+  /**
+   * Read random alphanumeric characters from /dev/urandom or equivalent. This
+   * method operates like @{method:readRandomBytes} but produces alphanumeric
+   * output (a-z, 0-9) so it's appropriate for use in URIs and other contexts
+   * where it needs to be human readable.
+   *
+   * @param   int     Number of characters to read.
+   * @return  string  Random character string of the provided length.
+   *
+   * @task file
+   */
+  public static function readRandomCharacters($number_of_characters) {
+
+    // NOTE: To produce the character string, we generate a random byte string
+    // of the same length, select the high 5 bits from each byte, and
+    // map that to 32 alphanumeric characters. This could be improved (we
+    // could improve entropy per character with base-62, and some entropy
+    // sources might be less entropic if we discard the low bits) but for
+    // reasonable cases where we have a good entropy source and are just
+    // generating some kind of human-readable secret this should be more than
+    // sufficient and is vastly simpler than trying to do bit fiddling.
+
+    $map = array_merge(range('a', 'z'), range('2', '7'));
+
+    $result = '';
+    $bytes = self::readRandomBytes($number_of_characters);
+    for ($ii = 0; $ii < $number_of_characters; $ii++) {
+      $result .= $map[ord($bytes[$ii]) >> 3];
+    }
+
+    return $result;
   }
 
 
