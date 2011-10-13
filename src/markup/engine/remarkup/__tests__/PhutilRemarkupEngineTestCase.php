@@ -52,6 +52,12 @@ class PhutilRemarkupEngineTestCase extends ArcanistPhutilTestCase {
   private function buildNewTestEngine() {
     $engine = new PhutilRemarkupEngine();
 
+    $engine->setConfig(
+      'uri.allowed-protocols',
+      array(
+        'http' => true,
+      ));
+
     $rules = array();
     $rules[] = new PhutilRemarkupRuleEscapeRemarkup();
     $rules[] = new PhutilRemarkupRuleHyperlink();
