@@ -53,7 +53,7 @@ class PhutilRemarkupRuleHyperlink
     return $text;
   }
 
-  private function markupHyperlink($matches) {
+  protected function markupHyperlink($matches) {
 
     $protocols = $this->getEngine()->getConfig(
       'uri.allowed-protocols',
