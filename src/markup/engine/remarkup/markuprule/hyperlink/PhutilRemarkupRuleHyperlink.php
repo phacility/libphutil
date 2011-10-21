@@ -66,14 +66,17 @@ class PhutilRemarkupRuleHyperlink
       return $this->getEngine()->storeText($matches[1]);
     }
 
-    return $this->getEngine()->storeText(
-      phutil_render_tag(
-        'a',
-        array(
-          'href'    => $matches[1],
-          'target'  => '_blank',
-        ),
-        phutil_escape_html($matches[1])));
+    return $this->getEngine()->storeText($this->renderHyperlink($matches[1]));
+  }
+
+  protected function renderHyperlink($link) {
+    return phutil_render_tag(
+      'a',
+      array(
+        'href'    => $link,
+        'target'  => '_blank',
+      ),
+      phutil_escape_html($link));
   }
 
   private function markupHyperlinkUngreedy($matches) {
