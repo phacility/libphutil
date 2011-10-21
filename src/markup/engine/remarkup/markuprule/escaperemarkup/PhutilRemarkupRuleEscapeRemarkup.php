@@ -23,14 +23,13 @@ class PhutilRemarkupRuleEscapeRemarkup
   extends PhutilRemarkupRule {
 
   public function apply($text) {
-    return preg_replace_callback(
-      '/~/',
-      array($this, 'escapeRemarkup'),
-      $text);
-  }
+    if (strpos($text, '~') === false) {
+      return $text;
+    }
 
-  public function escapeRemarkup($matches) {
-    return $this->getEngine()->storeText($matches[0]);
+    $replace = $this->getEngine()->storeText('~');
+
+    return str_replace('~', $text, $replace);
   }
 
 }

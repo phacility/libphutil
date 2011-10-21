@@ -26,16 +26,16 @@
  *
  * It is processed in several stages. First the "D12" matches and is replaced:
  *
- *   //~1%//
+ *   //~1Z//
  *
  * Now the italics match and are replaced:
  *
- *   ~2%
+ *   ~2Z
  *
  * When processing completes, all the tokens are replaced again in reverse
  * order:
  *
- *   <em>~1%</em>
+ *   <em>~1Z</em>
  *
  * Then:
  *
@@ -55,7 +55,7 @@ final class PhutilRemarkupBlockStorage {
   private $index;
 
   public function store($text) {
-    $key = "~".(++$this->index)."%";
+    $key = "~".(++$this->index)."Z";
     $this->map[$key] = $text;
     return $key;
   }
