@@ -141,7 +141,7 @@ class PhutilReadableSerializer {
     }
 
     if ($max_members !== null) {
-      $value = array_slice($value, 0, $max_members);
+      $value = array_slice($value, 0, $max_members, $preserve_keys = true);
     }
 
     $shallow = array();
