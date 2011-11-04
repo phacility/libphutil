@@ -29,7 +29,7 @@ class PhutilRemarkupRuleEscapeRemarkup
 
     $replace = $this->getEngine()->storeText('~');
 
-    return str_replace('~', $text, $replace);
+    return str_replace('~', $replace, $text);
   }
 
 }
