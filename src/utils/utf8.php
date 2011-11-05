@@ -115,44 +115,44 @@ function phutil_utf8_strlen($string) {
  * @group utf8
  */
 function phutil_utf8v($string) {
-  // TODO: Investigate the performance of this. It may also make sense to bundle
-  // an optional performance extension with libphutil since even the C library
-  // functions can be made ~10x faster.
+  $res = array();
+  $len = strlen($string);
+  $ii = 0;
+  while ($ii < $len) {
+    $byte = $string[$ii];
+    if ($byte <= "\x7F") {
+      $res[] = $byte;
+      $ii += 1;
+      continue;
+    } else if ($byte < "\xC0") {
+      throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
+    } else if ($byte <= "\xDF") {
+      $seq_len = 2;
+    } else if ($byte <= "\xEF") {
+      $seq_len = 3;
+    } else if ($byte <= "\xF7") {
+      $seq_len = 4;
+    } else if ($byte <= "\xFB") {
+      $seq_len = 5;
+    } else if ($byte <= "\xFD") {
+      $seq_len = 6;
+    } else {
+      throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
+    }
 
-  if ($string === '') {
-    return array();
+    if ($ii + $seq_len > $len) {
+      throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
+    }
+    for ($jj = 1; $jj < $seq_len; ++$jj) {
+      if ($string[$ii + $jj] >= "\xC0") {
+        throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
+      }
+    }
+    $res[] = substr($string, $ii, $seq_len);
+    $ii += $seq_len;
   }
-
-  // TODO: Can't figure out how to make mb_split() work for this.
-
-  static $have_utf8_support_for_pcre;
-  if ($have_utf8_support_for_pcre === null) {
-    $have_utf8_support_for_pcre = @preg_match('/./u', 'x');
-  }
-
-  if ($have_utf8_support_for_pcre) {
-    return preg_split('/(?<!^)(?!$)/u', $string);
-  }
-
-  $regex =
-    "/([\x01-\x7F]".
-    "|[\xC2-\xDF][\x80-\xBF]".
-    "|[\xE0-\xEF][\x80-\xBF][\x80-\xBF]".
-    "|[\xF0-\xF4][\x80-\xBF][\x80-\xBF][\x80-\xBF])".
-    "/";
-
-  $matches = null;
-  $ok = preg_match_all($regex, $string, $matches);
-  if (!$ok) {
-    throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
-  }
-
-  // TODO: We should merge combining characters; currently we will separate
-  // them.
-
-  return $matches[1];
+  return $res;
 }
-
 
 /**
  * Shorten a string to provide a summary, respecting UTF-8 characters. This
