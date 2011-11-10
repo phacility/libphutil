@@ -31,6 +31,7 @@ require_once $root.'/scripts/__init_script__.php';
 
 $trace_mode = false;
 $trace_memory = false;
+$echo_to_stderr = false;
 $load = array();
 $len = count($argv);
 for ($ii = 2; $ii < $len; $ii++) {
@@ -48,6 +49,7 @@ for ($ii = 2; $ii < $len; $ii++) {
   } else if (preg_match('/^--log=(.*)$/', $value, $matches)) {
     ini_set('error_log', $matches[1]);
     unset($argv[$ii]);
+    $echo_to_stderr = true;
   } else if (preg_match('/^--load-phutil-library=(.*)$/', $value, $matches)) {
     $load[] = $matches[1];
     unset($argv[$ii]);
@@ -65,6 +67,23 @@ if ($load) {
 }
 
 phutil_require_module('phutil', 'symbols');
+
+PhutilErrorHandler::initialize();
+function phutil_daemon_error_listener($event, $value, array $metadata) {
+  $message = idx($metadata, 'default_message');
+  if ($message) {
+    file_put_contents('php://stderr', $message);
+  }
+}
+
+if ($echo_to_stderr) {
+  // If the caller has used "--log" to redirect the error log to a file, PHP
+  // won't output it to stderr so the overseer can't capture it and won't
+  // be able to send it to the web console. Install a listener which just echoes
+  // errors to stderr, so we always get all the messages in the log and over
+  // stdio, so they'll show up in the web console.
+  PhutilErrorHandler::setErrorListener('phutil_daemon_error_listener');
+}
 
 $daemon = $argv[1];
 

@@ -215,38 +215,50 @@ final class PhutilErrorHandler {
           // on php.net.
           break;
         }
-        error_log(sprintf(
-                    "[%s] ERROR %d: %s at [%s:%d]",
-                    $timestamp,
-                    $metadata['error_code'],
-                    $value,
-                    $metadata['file'],
-                    $metadata['line']));
+        $default_message = sprintf(
+          '[%s] ERROR %d: %s at [%s:%d]',
+          $timestamp,
+          $metadata['error_code'],
+          $value,
+          $metadata['file'],
+          $metadata['line']);
+
+        $metadata['default_message'] = $default_message;
+        error_log($default_message);
         self::outputStacktrace($metadata['trace']);
         break;
       case PhutilErrorHandler::EXCEPTION:
-        error_log(sprintf(
-                    "[%s] EXCEPTION: %s at [%s:%d]",
-                    $timestamp,
-                    '('.get_class($value).') '.$value->getMessage(),
-                    $value->getFile(),
-                    $value->getLine()));
+        $default_message = sprintf(
+          '[%s] EXCEPTION: %s at [%s:%d]',
+          $timestamp,
+          '('.get_class($value).') '.$value->getMessage(),
+          $value->getFile(),
+          $value->getLine());
+
+        $metadata['default_message'] = $default_message;
+        error_log($default_message);
         self::outputStacktrace($value->getTrace());
         break;
       case PhutilErrorHandler::PHLOG:
-        error_log(sprintf(
-                    "[%s] PHLOG: %s at [%s:%d]",
-                    $timestamp,
-                    PhutilReadableSerializer::printShort($value),
-                    $metadata['file'],
-                    $metadata['line']));
+        $default_message = sprintf(
+          '[%s] PHLOG: %s at [%s:%d]',
+          $timestamp,
+          PhutilReadableSerializer::printShort($value),
+          $metadata['file'],
+          $metadata['line']);
+
+        $metadata['default_message'] = $default_message;
+        error_log($default_message);
         break;
       case PhutilErrorHandler::DEPRECATED:
-        error_log(sprintf(
-          "[%s] DEPRECATED: %s is deprecated; %s",
+        $default_message = sprintf(
+          '[%s] DEPRECATED: %s is deprecated; %s',
           $timestamp,
           $value,
-          $metadata['why']));
+          $metadata['why']);
+
+        $metadata['default_message'] = $default_message;
+        error_log($default_message);
         break;
       default:
         error_log('Unknown event '.$event);
