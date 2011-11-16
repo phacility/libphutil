@@ -1,0 +1,10 @@
+<span class="o">&lt;?php
+</span>
+<span class="k">class</span> <span class="nc">C</span> <span class="k">{</span>
+  <span class="k">public</span> <span class="k">function</span> <span class="nx">f</span><span class="k">(</span><span class="k">)</span> <span class="k">{</span>
+    <span class="nc">D</span><span class="k">::</span><span class="nx">X</span><span class="k">;</span>
+    <span class="nx">self</span><span class="k">::</span><span class="nx">X</span><span class="k">;</span>
+    <span class="nx">parent</span><span class="k">::</span><span class="nx">X</span><span class="k">;</span>
+    <span class="k">static</span><span class="k">::</span><span class="nx">X</span><span class="k">;</span>
+  <span class="k">}</span>
+<span class="k">}</span>

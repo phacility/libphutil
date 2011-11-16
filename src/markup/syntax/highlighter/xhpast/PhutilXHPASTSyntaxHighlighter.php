@@ -159,13 +159,24 @@ class PhutilXHPASTSyntaxHighlighter {
     //    X::$m;
     //    X::CONST;
 
+    // These are PHP builtin tokens which can appear in a classname context.
+    // Don't link them since they don't go anywhere useful.
+    static $builtin_class_tokens = array(
+      'self'    => true,
+      'parent'  => true,
+      'static'  => true,
+    );
+
     // Fortunately XHPAST puts all of these in a special node type so it's
     // easy to find them.
-
     $result_map = array();
     $class_names = $root->selectDescendantsOfType('n_CLASS_NAME');
     foreach ($class_names as $class_name) {
       foreach ($class_name->getTokens() as $key => $token) {
+        if (isset($builtin_class_tokens[$token->getValue()])) {
+          // This is something like "self::method()".
+          continue;
+        }
         $result_map[$key] = 'nc'; // "Name, Class"
       }
     }
