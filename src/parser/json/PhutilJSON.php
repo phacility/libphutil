@@ -86,7 +86,7 @@ final class PhutilJSON {
 
   private function encodeFormattedValue($value, $depth) {
     if (is_array($value)) {
-      if (array_keys($value) === range(0, count($value) - 1)) {
+      if (empty($value) || array_keys($value) === range(0, count($value) - 1)) {
         return $this->encodeFormattedArray($value, $depth);
       } else {
         return $this->encodeFormattedObject($value, $depth);
