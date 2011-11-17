@@ -78,9 +78,10 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   public function preprocessText($text) {
     $this->setupProcessing();
 
-    // Apply basic block and paragraph normalization to the text.
+    // Apply basic block and paragraph normalization to the text. NOTE: We don't
+    // strip trailing whitespace because it is semantic in some contexts,
+    // notably inlined diffs that the author intends to show as a code block.
     $text = preg_replace("/\r\n?/", "\n", $text);
-    $text = preg_replace("/[ \t]*$/m", '', $text);
     $text = preg_split("/\n\n/", $text);
 
     $block_rules = $this->blockRules;
