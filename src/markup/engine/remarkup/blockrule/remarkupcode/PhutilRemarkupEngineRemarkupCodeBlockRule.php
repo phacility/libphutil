@@ -23,7 +23,7 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
   public function getBlockPattern() {
-    return "/^\s{2,}/";
+    return "/^(\s{2,}|```)/";
   }
 
   public function shouldMatchBlock($block) {
@@ -38,11 +38,38 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
     return true;
   }
 
+  public function shouldContinueWithBlock($block, $last_block) {
+    // If the first code block begins with ```, we keep matching blocks until
+    // we hit a terminating ```, regardless of their content.
+    if (preg_match('/^```/', $last_block)) {
+      if (preg_match('/```$/', $last_block)) {
+        return false;
+      }
+      return true;
+    }
+
+    // If we just matched a code block based on indentation, always match the
+    // next block if it is indented, too. This basically means that we'll treat
+    // lists after code blocks as more code, but usually the "-" is from a diff
+    // or from objective C or something; it is rare to intentionally follow a
+    // code block with a list.
+    if (preg_match('/^\s{2,}/', $block)) {
+      return true;
+    }
+
+    return false;
+  }
+
   public function shouldMergeBlocks() {
     return true;
   }
 
   public function markupText($text) {
+    if (preg_match('/^```/', $text)) {
+      // If this is a ```-style block, trim off the backticks.
+      $text = preg_replace('/```\s*$/', '', substr($text, 3));
+    }
+
     $lines = explode("\n", $text);
 
     $lang = nonempty(

@@ -36,6 +36,10 @@ abstract class PhutilRemarkupEngineBlockRule {
     return preg_match($this->getBlockPattern(), $block);
   }
 
+  public function shouldContinueWithBlock($block, $last_block) {
+    return false;
+  }
+
   final public function setEngine(PhutilRemarkupEngine $engine) {
     $this->engine = $engine;
     return $this;

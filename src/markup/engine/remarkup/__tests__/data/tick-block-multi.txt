@@ -1,0 +1,12 @@
+```code
+
+more code
+
+more code```
+
+~~~~~~~~~~
+<code class="remarkup-code">code
+
+more code
+
+more code</code>

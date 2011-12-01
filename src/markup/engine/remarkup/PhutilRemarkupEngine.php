@@ -87,31 +87,51 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     $block_rules = $this->blockRules;
 
     $blocks = array();
-    $last   = null;
+    $last = null;
+    $last_block = null;
     foreach ($text as $block) {
-      $match = false;
-      foreach ($block_rules as $key => $block_rule) {
-        if (!$block_rule->shouldMatchBlock(trim($block, "\n"))) {
-          continue;
+
+      $action = null;
+      if ($last !== null) {
+        if ($block_rules[$last]->shouldContinueWithBlock($block, $last_block)) {
+          $action = 'merge';
         }
-        if (($last !== null) &&
-            ($key == $last) &&
-            $block_rule->shouldMergeBlocks()) {
+      }
+
+      if (!$action) {
+        foreach ($block_rules as $key => $block_rule) {
+          if (!$block_rule->shouldMatchBlock(trim($block, "\n"))) {
+            continue;
+          }
+          if (($last !== null) &&
+              ($key == $last) &&
+              $block_rule->shouldMergeBlocks()) {
+            $action = 'merge';
+          } else {
+            $action = 'append';
+          }
+          $last = $key;
+          break;
+        }
+      }
+
+      $last_block = $block;
+
+      switch ($action) {
+        case 'merge':
           end($blocks);
           $last_block_key = key($blocks);
           $blocks[$last_block_key]['block'] .= "\n\n".$block;
-        } else {
+          $last_block = $blocks[$last_block_key]['block'];
+          break;
+        case 'append':
           $blocks[] = array(
-            'rule'  => $block_rule,
+            'rule'  => $block_rules[$last],
             'block' => $block,
           );
-        }
-        $last = $key;
-        $match = true;
-        break;
-      }
-      if (!$match) {
-        throw new Exception("Block in text did not match any block rule.");
+          break;
+        default:
+          throw new Exception("Block in text did not match any block rule.");
       }
     }
 

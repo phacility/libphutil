@@ -23,7 +23,8 @@ class PhutilRemarkupEngineRemarkupListBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
   public function getBlockPattern() {
-    return '/^\s+-\s+/';
+    // Support either "-" or "*" lists.
+    return '/^\s*[-*]\s+/';
   }
 
   public function shouldMergeBlocks() {
@@ -31,12 +32,12 @@ class PhutilRemarkupEngineRemarkupListBlockRule
   }
 
   public function markupText($text) {
-    $items = preg_split('/^\s*-\s+/m', $text);
+    $items = preg_split($this->getBlockPattern().'m', $text);
     foreach ($items as $key => $item) {
       if (!strlen($item)) {
         unset($items[$key]);
       } else {
-        $items[$key] = '<li>'.$this->applyRules($item).'</li>';
+        $items[$key] = '<li>'.$this->applyRules(rtrim($item)).'</li>';
       }
     }
     return "<ul>\n".implode("\n", $items)."\n</ul>";
