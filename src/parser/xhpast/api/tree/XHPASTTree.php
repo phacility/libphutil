@@ -20,18 +20,47 @@
 /**
  * @group xhpast
  */
-class XHPASTTree {
+class XHPASTTree extends AASTTree {
 
-  protected $tree = array();
-  protected $stream = array();
-  protected $lineMap;
-  protected $rawSource;
+  public function __construct(array $tree, array $stream, $source) {
+    $this->setTreeType('XHP');
+    $this->setNodeConstants(xhp_parser_node_constants());
+    $this->setTokenConstants(xhpast_parser_token_constants());
+
+    parent::__construct($tree, $stream, $source);
+  }
+
+  public function newNode($id, array $data, AASTTree $tree) {
+    return new XHPASTNode($id, $data, $tree);
+  }
+
+  public function newToken(
+    $id,
+    $type,
+    $value,
+    $offset,
+    AASTTree $tree) {
+    return new XHPASTToken($id, $type, $value, $offset, $tree);
+  }
 
   public static function newFromData($php_source) {
     $future = xhpast_get_parser_future($php_source);
     return self::newFromDataAndResolvedExecFuture(
       $php_source,
       $future->resolve());
+  }
+
+  public static function evalStaticString($string) {
+    $string = '<?php '.rtrim($string, ';').';';
+    $tree = XHPASTTree::newFromData($string);
+    $statements = $tree->getRootNode()->selectDescendantsOfType('n_STATEMENT');
+    if (count($statements) != 1) {
+      throw new Exception("String does not parse into exactly one statement!");
+    }
+    // Return the first one, trying to use reset() with iterators ends in tears.
+    foreach ($statements as $statement) {
+      return $statement->evalStatic();
+    }
   }
 
   public static function newFromDataAndResolvedExecFuture(
@@ -59,117 +88,6 @@ class XHPASTTree {
     }
 
     return new XHPASTTree($data['tree'], $data['stream'], $php_source);
-  }
-
-  public function __construct(array $tree, array $stream, $source) {
-    $ii = 0;
-    $offset = 0;
-
-    foreach ($stream as $token) {
-      $this->stream[$ii] = new XHPASTToken(
-        $ii,
-        $token[0],
-        substr($source, $offset, $token[1]),
-        $offset,
-        $this);
-      $offset += $token[1];
-      ++$ii;
-    }
-
-    $this->rawSource = $source;
-    $this->buildTree(array($tree));
-  }
-
-  /**
-   * Unlink internal datastructures so that PHP's will garbage collect the tree.
-   * This renders the object useless.
-   *
-   * @return void
-   */
-  public function dispose() {
-    unset($this->tree);
-    unset($this->stream);
-  }
-
-  public function getRootNode() {
-    return $this->tree[0];
-  }
-
-  protected function buildTree(array $tree) {
-    $ii = count($this->tree);
-    $nodes = array();
-    foreach ($tree as $node) {
-      $this->tree[$ii] = new XHPASTNode($ii, $node, $this);
-      $nodes[$ii] = $node;
-      ++$ii;
-    }
-    foreach ($nodes as $node_id => $node) {
-      if (isset($node[3])) {
-        $children = $this->buildTree($node[3]);
-        foreach ($children as $child) {
-          $child->parentNode = $this->tree[$node_id];
-        }
-        $this->tree[$node_id]->children = $children;
-      }
-    }
-
-    $result = array();
-    foreach ($nodes as $key => $node) {
-      $result[$key] = $this->tree[$key];
-    }
-
-    return $result;
-  }
-
-  public function getRawTokenStream() {
-    return $this->stream;
-  }
-
-  public function renderAsText() {
-    return $this->executeRenderAsText(array($this->getRootNode()), 0);
-  }
-
-  protected function executeRenderAsText($list, $depth) {
-    $return = '';
-    foreach ($list as $node) {
-      if ($depth) {
-        $return .= str_repeat('  ', $depth);
-      }
-      $return .= $node->getDescription()."\n";
-      $return .= $this->executeRenderAsText($node->getChildren(), $depth + 1);
-    }
-    return $return;
-  }
-
-
-  public static function evalStaticString($string) {
-    $string = '<?php '.rtrim($string, ';').';';
-    $tree = XHPASTTree::newFromData($string);
-    $statements = $tree->getRootNode()->selectDescendantsOfType('n_STATEMENT');
-    if (count($statements) != 1) {
-      throw new Exception("String does not parse into exactly one statement!");
-    }
-    // Return the first one, trying to use reset() with iterators ends in tears.
-    foreach ($statements as $statement) {
-      return $statement->evalStatic();
-    }
-  }
-
-  public function getOffsetToLineNumberMap() {
-    if ($this->lineMap === null) {
-      $src = $this->rawSource;
-      $len = strlen($src);
-      $lno = 1;
-      $map = array();
-      for ($ii = 0; $ii < $len; ++$ii) {
-        $map[$ii] = $lno;
-        if ($src[$ii] == "\n") {
-          ++$lno;
-        }
-      }
-      $this->lineMap = $map;
-    }
-    return $this->lineMap;
   }
 
 }

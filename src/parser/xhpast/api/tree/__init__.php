@@ -6,10 +6,12 @@
 
 
 
+phutil_require_module('phutil', 'parser/aast/api/tree');
 phutil_require_module('phutil', 'parser/xhpast/api/exception');
 phutil_require_module('phutil', 'parser/xhpast/api/node');
 phutil_require_module('phutil', 'parser/xhpast/api/token');
 phutil_require_module('phutil', 'parser/xhpast/bin');
+phutil_require_module('phutil', 'parser/xhpast/constants');
 
 
 phutil_require_source('XHPASTTree.php');

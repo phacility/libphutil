@@ -8,6 +8,10 @@
 phutil_register_library_map(array(
   'class' =>
   array(
+    'AASTNode' => 'parser/aast/api/node',
+    'AASTNodeList' => 'parser/aast/api/list',
+    'AASTToken' => 'parser/aast/api/token',
+    'AASTTree' => 'parser/aast/api/tree',
     'AbstractDirectedGraph' => 'utils/abstractgraph',
     'AbstractDirectedGraphTestCase' => 'utils/abstractgraph/__tests__',
     'BaseHTTPFuture' => 'future/http/base',
@@ -99,7 +103,6 @@ phutil_register_library_map(array(
     'TempFile' => 'filesystem/tempfile',
     'TestAbstractDirectedGraph' => 'utils/abstractgraph/__tests__',
     'XHPASTNode' => 'parser/xhpast/api/node',
-    'XHPASTNodeList' => 'parser/xhpast/api/list',
     'XHPASTSyntaxErrorException' => 'parser/xhpast/api/exception',
     'XHPASTToken' => 'parser/xhpast/api/token',
     'XHPASTTree' => 'parser/xhpast/api/tree',
@@ -210,6 +213,9 @@ phutil_register_library_map(array(
     'PhutilUtilsTestCase' => 'ArcanistPhutilTestCase',
     'PhutilXHPASTSyntaxHighlighterTestCase' => 'ArcanistPhutilTestCase',
     'TestAbstractDirectedGraph' => 'AbstractDirectedGraph',
+    'XHPASTNode' => 'AASTNode',
+    'XHPASTToken' => 'AASTToken',
+    'XHPASTTree' => 'AASTTree',
     'XHPASTTreeTestCase' => 'ArcanistPhutilTestCase',
   ),
   'requires_interface' =>

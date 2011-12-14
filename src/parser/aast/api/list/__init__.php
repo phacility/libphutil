@@ -16,4 +16,4 @@
  * limitations under the License.
  */
 
-phutil_require_source('XHPASTNodeList.php');
+phutil_require_source('AASTNodeList.php');

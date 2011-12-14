@@ -18,9 +18,9 @@
 
 
 /**
- * @group xhpast
+ * @group aast
  */
-class XHPASTNodeList implements Iterator, Countable {
+class AASTNodeList implements Iterator, Countable {
 
   protected $list;
   protected $tree;
@@ -51,16 +51,16 @@ class XHPASTNodeList implements Iterator, Countable {
     return $this->ids[$this->pos];
   }
 
-  public static function newFromTreeAndNodes(XHPASTTree $tree, array $nodes) {
-    $obj = new XHPASTNodeList();
+  public static function newFromTreeAndNodes(AASTTree $tree, array $nodes) {
+    $obj = new AASTNodeList();
     $obj->tree = $tree;
     $obj->list = $nodes;
     $obj->ids  = array_keys($nodes);
     return $obj;
   }
 
-  public static function newFromTree(XHPASTTree $tree) {
-    $obj = new XHPASTNodeList();
+  public static function newFromTree(AASTTree $tree) {
+    $obj = new AASTNodeList();
     $obj->tree = $tree;
     $obj->list = array(0 => $tree->getRootNode());
     $obj->ids = array(0 => 0);
@@ -88,7 +88,7 @@ class XHPASTNodeList implements Iterator, Countable {
 
 
   protected function newList(array $nodes) {
-    return XHPASTNodeList::newFromTreeAndNodes(
+    return AASTNodeList::newFromTreeAndNodes(
       $this->tree,
       $nodes);
   }
@@ -120,7 +120,7 @@ class XHPASTNodeList implements Iterator, Countable {
     return $this->newList($results);
   }
 
-  public function add(XHPASTNodeList $list) {
+  public function add(AASTNodeList $list) {
     foreach ($list->list as $id => $node) {
       $this->list[$id] = $node;
     }

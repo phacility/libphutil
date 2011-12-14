@@ -5,8 +5,4 @@
  */
 
 
-
-phutil_require_module('phutil', 'parser/aast/api/token');
-
-
-phutil_require_source('XHPASTToken.php');
+phutil_require_source('AASTToken.php');

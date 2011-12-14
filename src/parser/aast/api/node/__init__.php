@@ -16,30 +16,7 @@
  * limitations under the License.
  */
 
+phutil_require_module('phutil', 'utils');
+phutil_require_module('phutil', 'parser/aast/api/list');
 
-/**
- * @group xhpast
- */
-class XHPASTToken extends AASTToken {
-
-  public function getTypeName() {
-    $type_id = $this->getTypeID();
-
-    if ($type_id <= 255) {
-      return chr($type_id);
-    }
-
-    return parent::getTypeName($type_id);
-  }
-
-  public function isComment() {
-    return ($this->getTypeName() == 'T_COMMENT' ||
-            $this->getTypeName() == 'T_DOC_COMMENT');
-  }
-
-  public function isAnyWhitespace() {
-    return ($this->getTypeName() == 'T_WHITESPACE' ||
-            $this->getTypeName() == 'T_XHP_WHITESPACE');
-  }
-
-}
+phutil_require_source('AASTNode.php');
