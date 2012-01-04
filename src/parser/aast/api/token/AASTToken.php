@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 /**
  * @group xhpast
@@ -57,6 +56,16 @@ abstract class AASTToken {
 
   public function isSemantic() {
     return !($this->isComment() || $this->isAnyWhitespace());
+  }
+
+  public function getPrevToken() {
+    $tokens = $this->tree->getRawTokenStream();
+    return idx($tokens, $this->id - 1);
+  }
+
+  public function getNextToken() {
+    $tokens = $this->tree->getRawTokenStream();
+    return idx($tokens, $this->id + 1);
   }
 
   public function getNonsemanticTokensBefore() {
