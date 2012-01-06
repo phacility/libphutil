@@ -6,6 +6,7 @@
 
 
 
+phutil_require_module('phutil', 'markup');
 phutil_require_module('phutil', 'markup/engine/remarkup/blockrule/base');
 
 
