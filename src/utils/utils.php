@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 /**
  * Identity function, returns its argument unmodified.
@@ -562,6 +561,18 @@ function head(array $arr) {
   return reset($arr);
 }
 
+/**
+ * Returns the last element of an array. This is exactly like end() except
+ * that it won't warn you if you pass some non-referencable array to
+ * it -- e.g., the result of some other array operation.
+ *
+ * @param    array Array to retrieve the last element from.
+ * @return   wild  The last value of the array.
+ * @group util
+ */
+function last($arr) {
+  return end($arr);
+}
 
 /**
  * Merge a vector of arrays performantly. This has the same semantics as

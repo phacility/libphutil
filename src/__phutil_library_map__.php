@@ -126,6 +126,7 @@ phutil_register_library_map(array(
     'ipull' => 'utils',
     'isort' => 'utils',
     'jsprintf' => 'xsprintf/jsprintf',
+    'last' => 'utils',
     'mfilter' => 'utils',
     'mgroup' => 'utils',
     'mpull' => 'utils',
