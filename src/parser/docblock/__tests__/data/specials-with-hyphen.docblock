@@ -1,0 +1,7 @@
+/**
+ * @repeat-hyphen a
+ * @repeat-hyphen b
+ * @multiline-hyphen mmm
+ *                   nnn
+ * @normal-hyphen x
+ */

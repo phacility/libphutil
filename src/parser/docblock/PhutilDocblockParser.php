@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,12 +86,12 @@ class PhutilDocblockParser {
     // Parse @specials.
     $matches = null;
     $have_specials = preg_match_all(
-      '/^\s?@(\w+)\s*([^\n]*)/m',
+      '/^\s?@([\w-]+)\s*([^\n]*)/m',
       $docblock,
       $matches,
       PREG_SET_ORDER);
     if ($have_specials) {
-      $docblock = preg_replace('/^\s?@(\w+)\s*([^\n]*)/m', '', $docblock);
+      $docblock = preg_replace('/^\s?@([\w-]+)\s*([^\n]*)/m', '', $docblock);
       foreach ($matches as $match) {
         list($_, $type, $data) = $match;
         $data = trim($data);

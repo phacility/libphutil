@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,6 +97,15 @@ class PhutilDocblockParserTestCase extends ArcanistPhutilTestCase {
         $this->assertEqual(
           "This is normal text, not part of the @title.",
           $docblock);
+        break;
+      case 'specials-with-hyphen.docblock':
+        $this->assertEqual(
+          array(
+            'repeat-hyphen'     => "a\nb",
+            'multiline-hyphen'  => "mmm nnn",
+            'normal-hyphen'     => "x",
+          ),
+          $specials);
         break;
       case 'indented-specials.docblock':
         $this->assertEqual(
