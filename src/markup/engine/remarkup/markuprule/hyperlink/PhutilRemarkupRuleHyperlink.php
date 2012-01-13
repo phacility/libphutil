@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,11 @@ class PhutilRemarkupRuleHyperlink
       return $this->getEngine()->storeText($matches[1]);
     }
 
-    return $this->getEngine()->storeText($this->renderHyperlink($matches[1]));
+    return $this->storeRenderedHyperlink($matches[1]);
+  }
+
+  protected function storeRenderedHyperlink($link) {
+    return $this->getEngine()->storeText($this->renderHyperlink($link));
   }
 
   protected function renderHyperlink($link) {
