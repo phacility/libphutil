@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-error_reporting(E_ALL | E_STRICT);
+$root = dirname(dirname(dirname(dirname(__FILE__))));
+require_once $root.'/scripts/__init_script__.php';
 
 if (!posix_isatty(STDOUT)) {
   $sid = posix_setsid();
@@ -26,8 +27,6 @@ if (!posix_isatty(STDOUT)) {
   }
 }
 
-$root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root.'/scripts/__init_script__.php';
 
 $trace_mode = false;
 $trace_memory = false;

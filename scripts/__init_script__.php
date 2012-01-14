@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,4 +17,23 @@
  */
 
 $root = dirname(dirname(__FILE__));
-@require_once $root.'/src/__phutil_library_init__.php';
+require_once $root.'/src/__phutil_library_init__.php';
+
+/**
+ * Adjust the runtime language configuration to be reasonable and inline with
+ * expectations.
+ */
+function __phutil_adjust_php_ini() {
+  error_reporting(E_ALL | E_STRICT);
+
+  $config_map = array(
+    'display_errors'  => true,
+    'error_log'       => null,
+  );
+
+  foreach ($config_map as $config_key => $config_value) {
+    ini_set($config_key, $config_value);
+  }
+}
+
+__phutil_adjust_php_ini();
