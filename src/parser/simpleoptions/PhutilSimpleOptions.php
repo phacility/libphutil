@@ -1,0 +1,122 @@
+<?php
+
+/*
+ * Copyright 2012 Facebook, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Utilities for parsing simple option lists used in Remarkup, like codeblocks:
+ *
+ *   lang=php, name=example.php, lines=30, counterexample
+ *
+ * @task parse Parsing Simple Options
+ * @task unparse Unparsing Simple Options
+ * @task internal Interanls
+ */
+final class PhutilSimpleOptions {
+
+
+/* -(  Parsing Simple Options  )--------------------------------------------- */
+
+
+  /**
+   * Convert a simple option list into a dict. For example:
+   *
+   *    legs=4, eyes=2
+   *
+   * ...becomes:
+   *
+   *    array(
+   *      'legs' => '4',
+   *      'eyes' => '2',
+   *    );
+   *
+   * @param   string  Input option list.
+   * @return  dict    Parsed dictionary.
+   * @task parse
+   */
+  public static function parse($input) {
+    $result = array();
+
+    $vars = explode(',', $input);
+    foreach ($vars as $var) {
+      if (strpos($var, '=') !== false) {
+        list($key, $value) = explode('=', $var, 2);
+        $value = trim($value);
+      } else {
+        list($key, $value) = array($var, true);
+      }
+      $key = trim($key);
+      $key = strtolower($key);
+      if (!self::isValidKey($key)) {
+        continue;
+      }
+      if (!strlen($value)) {
+        unset($result[$key]);
+        continue;
+      }
+      $result[$key] = $value;
+    }
+
+    return $result;
+  }
+
+
+/* -(  Unparsing Simple Options  )------------------------------------------- */
+
+
+  /**
+   * Convert a dictionary into a simple option list. For example:
+   *
+   *    array(
+   *      'legs' => '4',
+   *      'eyes' => '2',
+   *    );
+   *
+   * ...becomes:
+   *
+   *    legs=4, eyes=2
+   *
+   * @param   dict    Input dictionary.
+   * @return  string  Unparsed option list.
+   */
+  public static function unparse(array $options) {
+    $result = array();
+    foreach ($options as $name => $value) {
+      if (!self::isValidKey($name)) {
+        throw new Exception(
+          "SimpleOptions: keys must contain only lowercase letters.");
+      }
+      if (!strlen($value)) {
+        continue;
+      }
+      if ($value === true) {
+        $result[] = $name;
+      } else {
+        $result[] = $name.'='.$value;
+      }
+    }
+    return implode(', ', $result);
+  }
+
+
+/* -(  Internals  )---------------------------------------------------------- */
+
+
+  private static function isValidKey($key) {
+    return (bool)preg_match('/^[a-z]+$/', $key);
+  }
+
+}

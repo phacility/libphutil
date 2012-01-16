@@ -3,7 +3,7 @@ here is a diff
   @@ derp derp @@
   x
   y
-  
+
   - x
   - y
   + z
@@ -12,12 +12,12 @@ derp derp
 ~~~~~~~~~~
 <p>here is a diff</p>
 
-<code class="remarkup-code">@@ derp derp @@
+<div class="remarkup-code-block"><code class="remarkup-code">@@ derp derp @@
 x
 y
 
 - x
 - y
-+ z</code>
++ z</code></div>
 
 <p>derp derp</p>

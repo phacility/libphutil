@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,24 +76,33 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
       $this->getEngine()->getConfig('phutil.codeblock.language-default'),
       'php');
 
-    $aux_class = '';
-    do {
-      $first_line = reset($lines);
+    $options = array(
+      'counterexample'  => false,
+      'lang'            => $lang,
+      'name'            => null,
+      'lines'           => null,
+    );
 
-      $matches = null;
-      if (preg_match('/^\s{2,}lang\s*=\s*(.*)$/i', $first_line, $matches)) {
-        $lang = $matches[1];
-        array_shift($lines);
-        continue;
+    $custom = PhutilSimpleOptions::parse(head($lines));
+    if ($custom) {
+      $valid = true;
+      foreach ($custom as $key => $value) {
+        if (!array_key_exists($key, $options)) {
+          $valid = false;
+          break;
+        }
       }
-
-      if (preg_match('/^\s{2,}COUNTEREXAMPLE$/i', $first_line, $matches)) {
-        $aux_class = ' remarkup-counterexample';
+      if ($valid) {
         array_shift($lines);
-        continue;
+        $options = $custom + $options;
       }
+    }
 
-    } while (false);
+    if ($options['counterexample']) {
+      $aux_class = ' remarkup-counterexample';
+    } else {
+      $aux_class = null;
+    }
 
     // Normalize the text back to a 0-level indent.
     $min_indent = 80;
@@ -105,21 +114,53 @@ class PhutilRemarkupEngineRemarkupCodeBlockRule
         }
       }
     }
+
     if ($min_indent) {
       $indent_string = str_repeat(' ', $min_indent);
       $text = preg_replace(
         '/^'.$indent_string.'/m',
         '',
         implode("\n", $lines));
+    } else {
+      $text = implode("\n", $lines);
+    }
+
+    $name_header = null;
+    if ($options['name']) {
+      $name_header = phutil_render_tag(
+        'div',
+        array(
+          'class' => 'remarkup-code-header',
+        ),
+        phutil_escape_html($options['name']));
+    }
+
+    $aux_style = null;
+    if ($options['lines']) {
+      // Put a minimum size on this because the scrollbar is otherwise
+      // unusable.
+      $height = max(6, (int)$options['lines']);
+      $aux_style = 'max-height: '.(2 * $height).'em;';
     }
 
     $engine = new PhutilDefaultSyntaxHighlighterEngine();
     $engine->setConfig(
       'pygments.enabled',
       $this->getEngine()->getConfig('pygments.enabled'));
-    return
-      '<code class="remarkup-code'.$aux_class.'">'.
-        $engine->highlightSource($lang, $text).
-      '</code>';
+    $code_body = phutil_render_tag(
+      'code',
+      array(
+        'class' => 'remarkup-code'.$aux_class,
+        'style' => $aux_style,
+      ),
+      $engine->highlightSource($options['lang'], $text));
+
+    return phutil_render_tag(
+      'div',
+      array(
+        'class' => 'remarkup-code-block',
+      ),
+      $name_header.$code_body);
+
   }
 }
