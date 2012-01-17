@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group testcase
+ */
 final class PhutilSimpleOptionsTestCase extends ArcanistPhutilTestCase {
 
   public function testSimpleOptionsParse() {

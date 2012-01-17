@@ -19,11 +19,14 @@
 /**
  * Utilities for parsing simple option lists used in Remarkup, like codeblocks:
  *
+ *   lang=text
  *   lang=php, name=example.php, lines=30, counterexample
  *
  * @task parse Parsing Simple Options
  * @task unparse Unparsing Simple Options
- * @task internal Interanls
+ * @task internal Internals
+ *
+ * @group util
  */
 final class PhutilSimpleOptions {
 

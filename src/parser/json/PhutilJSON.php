@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,20 @@
 /**
  * Utilities for wrangling JSON.
  *
+ * @task pretty Formatting JSON Objects
+ * @task internal Internals
+ *
+ * @group util
  */
 final class PhutilJSON {
 
+
+/* -(  Formatting JSON Objects  )-------------------------------------------- */
+
+
   /**
-   * Encode an object in JSON and pretty-print it.
+   * Encode an object in JSON and pretty-print it. This generates a valid JSON
+   * object with human-readable whitespace and indentation.
    *
    * @param   dict    An object to encode in JSON.
    * @return  string  Pretty-printed object representation.
@@ -32,6 +41,18 @@ final class PhutilJSON {
     return $this->encodeFormattedObject($object, 0)."\n";
   }
 
+
+/* -(  Internals  )---------------------------------------------------------- */
+
+
+  /**
+   * Pretty-print a JSON object.
+   *
+   * @param   dict    Object to format.
+   * @param   int     Current depth, for indentation.
+   * @return  string  Pretty-printed value.
+   * @task internal
+   */
   private function encodeFormattedObject($object, $depth) {
     if (empty($object)) {
       return '{}';
@@ -62,6 +83,15 @@ final class PhutilJSON {
     return $out;
   }
 
+
+  /**
+   * Pretty-print a JSON list.
+   *
+   * @param   list    List to format.
+   * @param   int     Current depth, for indentation.
+   * @return  string  Pretty-printed value.
+   * @task internal
+   */
   private function encodeFormattedArray($array, $depth) {
     if (empty($array)) {
       return '[]';
@@ -84,6 +114,15 @@ final class PhutilJSON {
     return $out;
   }
 
+
+  /**
+   * Pretty-print a JSON value.
+   *
+   * @param   dict    Value to format.
+   * @param   int     Current depth, for indentation.
+   * @return  string  Pretty-printed value.
+   * @task internal
+   */
   private function encodeFormattedValue($value, $depth) {
     if (is_array($value)) {
       if (empty($value) || array_keys($value) === range(0, count($value) - 1)) {
@@ -96,6 +135,14 @@ final class PhutilJSON {
     }
   }
 
+
+  /**
+   * Render a string corresponding to the current indent depth.
+   *
+   * @param   int     Current depth.
+   * @return  string  Indentation.
+   * @task internal
+   */
   private function getIndent($depth) {
     if (!$depth) {
       return '';
@@ -103,4 +150,5 @@ final class PhutilJSON {
       return str_repeat('  ', $depth);
     }
   }
+
 }

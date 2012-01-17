@@ -11,4 +11,4 @@ phutil_require_module('arcanist', 'unit/engine/phutil/testcase');
 phutil_require_module('phutil', 'parser/json');
 
 
-phutil_require_source('JSONReadableSerializerTestCase.php');
+phutil_require_source('PhutilJSONTestCase.php');

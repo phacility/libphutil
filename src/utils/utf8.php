@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,6 +167,8 @@ function phutil_utf8v($string) {
  * @param   string  If the string is shortened, add this at the end. Defaults to
  *                  horizontal ellipsis.
  * @return  string  A string with no more than the specified character length.
+ *
+ * @group utf8
  */
 function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
   $terminal_len = count(phutil_utf8v($terminal));

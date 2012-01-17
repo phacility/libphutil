@@ -14,8 +14,10 @@
     "error" : "Error Handling",
     "markup" : "Markup",
     "console" : "Console Utilities",
+    "aast" : "Abstract Abstract Syntax Tree",
     "xhpast" : "XHPAST (PHP/XHP Parser)",
     "conduit" : "Conduit (Service API)",
+    "event" : "Events",
     "daemon" : "Daemons",
     "parser" : "Other Parsers",
     "testcase" : "Test Cases"
