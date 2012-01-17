@@ -255,3 +255,61 @@ function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
   $string_part = implode('', $string_part);
   return $string_part.$terminal;
 }
+
+
+/**
+ * Hard-wrap a block of UTF-8 text with embedded HTML tags and entities.
+ *
+ * @param   string An HTML string with tags and entities.
+ * @return  list   List of hard-wrapped lines.
+ * @group utf8
+ */
+function phutil_utf8_hard_wrap_html($string, $width) {
+  $break_here = array();
+
+  // Convert the UTF-8 string into a list of UTF-8 characters.
+  $vector = phutil_utf8v($string);
+  $len = count($vector);
+  $byte_pos = 0;
+  $char_pos = 0;
+  for ($ii = 0; $ii < $len; ++$ii) {
+    // An ampersand indicates an HTML entity; consume the whole thing (until
+    // ";") but treat it all as one character.
+    if ($vector[$ii] == '&') {
+      do {
+        ++$ii;
+      } while ($vector[$ii] != ';');
+      ++$char_pos;
+    // An "<" indicates an HTML tag, consume the whole thing but don't treat
+    // it as a character.
+    } else if ($vector[$ii] == '<') {
+      do {
+        ++$ii;
+      } while ($vector[$ii] != '>');
+    } else {
+      ++$char_pos;
+    }
+
+    // Keep track of where we need to break the string later.
+    if ($char_pos == $width) {
+      $break_here[$ii] = true;
+      $char_pos = 0;
+    }
+  }
+
+  $result = array();
+  $string = '';
+  foreach ($vector as $ii => $char) {
+    $string .= $char;
+    if (isset($break_here[$ii])) {
+      $result[] = $string;
+      $string = '';
+    }
+  }
+
+  if (strlen($string)) {
+    $result[] = $string;
+  }
+
+  return $result;
+}

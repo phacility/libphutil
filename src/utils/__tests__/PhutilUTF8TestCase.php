@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,6 +132,62 @@ class PhutilUTF8TestCase extends ArcanistPhutilTestCase {
     }
 
     $this->assertEqual(true, $caught, 'Expect exception for terminal.');
+  }
+
+  public function testUTF8Wrap() {
+    $inputs = array(
+      array(
+        'aaaaaaa',
+        3,
+        array(
+          'aaa',
+          'aaa',
+          'a',
+        )),
+      array(
+        'aa<b>aaaaa',
+        3,
+        array(
+          'aa<b>a',
+          'aaa',
+          'a',
+        )),
+      array(
+        'aa&amp;aaaa',
+        3,
+        array(
+          'aa&amp;',
+          'aaa',
+          'a',
+        )),
+      array(
+        "aa\xe6\x9d\xb1aaaa",
+        3,
+        array(
+          "aa\xe6\x9d\xb1",
+          'aaa',
+          'a',
+        )),
+      array(
+        '',
+        80,
+        array(
+        )),
+      array(
+        'a',
+        80,
+        array(
+          'a',
+        )),
+    );
+
+    foreach ($inputs as $input) {
+      list($string, $width, $expect) = $input;
+      $this->assertEqual(
+        $expect,
+        phutil_utf8_hard_wrap_html($string, $width),
+        "Wrapping of '".$string."'");
+    }
   }
 
 }
