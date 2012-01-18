@@ -11,6 +11,7 @@
     "filesystem" : "Filesystem",
     "exec" : "Command Execution",
     "futures" : "Futures",
+    "aws" : "Amazon Web Services",
     "error" : "Error Handling",
     "markup" : "Markup",
     "console" : "Console Utilities",

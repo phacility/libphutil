@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,39 +26,53 @@ abstract class FutureProxy extends Future {
 
   private $proxied;
 
-  public function __construct(Future $proxied) {
+  public function __construct(Future $proxied = null) {
+    if ($proxied) {
+      $this->setProxiedFuture($proxied);
+    }
+  }
+
+  public function setProxiedFuture(Future $proxied) {
     $this->proxied = $proxied;
+    return $this;
+  }
+
+  protected function getProxiedFuture() {
+    if (!$this->proxied) {
+      throw new Exception("The proxied future has not been provided yet.");
+    }
+    return $this->proxied;
   }
 
   public function isReady() {
-    return $this->proxied->isReady();
+    return $this->getProxiedFuture()->isReady();
   }
 
   public function resolve($timeout = null) {
-    $this->proxied->resolve($timeout);
+    $this->getProxiedFuture()->resolve($timeout);
     return $this->getResult();
   }
 
   public function setException(Exception $ex) {
-    $this->proxied->setException($ex);
+    $this->getProxiedFuture()->setException($ex);
     return $this;
   }
 
   public function getException() {
-    return $this->proxied->getException();
+    return $this->getProxiedFuture()->getException();
   }
 
   public function getReadSockets() {
-    return $this->proxied->getReadSockets();
+    return $this->getProxiedFuture()->getReadSockets();
   }
 
   public function getWriteSockets() {
-    return $this->proxied->getWriteSockets();
+    return $this->getProxiedFuture()->getWriteSockets();
   }
 
   protected function getResult() {
     if ($this->result === null) {
-      $result = $this->proxied->resolve();
+      $result = $this->getProxiedFuture()->resolve();
       $result = $this->didReceiveResult($result);
       $this->result = $result;
     }
@@ -66,7 +80,7 @@ abstract class FutureProxy extends Future {
   }
 
   public function start() {
-    $this->proxied->start();
+    $this->getProxiedFuture()->start();
     return $this;
   }
 
