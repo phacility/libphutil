@@ -42,8 +42,8 @@ class PhutilConsoleFormatter {
   public static function formatString($format /* ... */) {
     $colors = implode('|', array_keys(self::$colorCodes));
 
-    // Sequence should be preceeded by start-of-string or non-backslash
-    // escaping
+    // Sequence should be preceded by start-of-string or non-backslash
+    // escaping.
     $bold_re      = '/(?<=^|[^\\\\])\*\*(.*)\*\*/sU';
     $underline_re = '/(?<=^|[^\\\\])__(.*)__/sU';
     $invert_re    = '/(?<=^|[^\\\\])##(.*)##/sU';
