@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,7 @@ final class PhutilSymbolLoader {
   private $base;
   private $module;
   private $name;
+  private $concrete;
 
   private $suppressLoad;
 
@@ -131,6 +132,24 @@ final class PhutilSymbolLoader {
     $this->base = $base;
     return $this;
   }
+
+
+  /**
+   * Restrict the symbol query to only concrete symbols; this will filter out
+   * abstract classes.
+   *
+   * NOTE: This currently causes class symbols to load, even if you run
+   * @{method:selectSymbolsWithoutLoading}.
+   *
+   * @param bool True if the query should load only concrete symbols.
+   * @return this
+   * @task config
+   */
+  public function setConcreteOnly($concrete) {
+    $this->concrete = $concrete;
+    return $this;
+  }
+
 
 /* -(  Load  )--------------------------------------------------------------- */
 
@@ -254,6 +273,18 @@ final class PhutilSymbolLoader {
     if (!$this->suppressLoad) {
       foreach ($symbols as $symbol) {
         $this->loadSymbol($symbol);
+      }
+    }
+
+    if ($this->concrete) {
+      // Remove 'abstract' classes.
+      foreach ($symbols as $key => $symbol) {
+        if ($symbol['type'] == 'class') {
+          $reflection = new ReflectionClass($symbol['name']);
+          if ($reflection->isAbstract()) {
+            unset($symbols[$key]);
+          }
+        }
       }
     }
 
