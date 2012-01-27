@@ -114,6 +114,19 @@ class PhutilDocblockParserTestCase extends ArcanistPhutilTestCase {
           ),
           $specials);
         break;
+      case 'flag-specials.docblock':
+        $this->assertEqual(
+          "stuff above\n\nstuff in the middle\n\nstuff below",
+          $docblock);
+        $this->assertEqual(
+          array(
+            'flag' => true,
+            'stuff' => true,
+            'zebra' => true,
+            'apple' => true,
+          ),
+          $specials);
+        break;
       default:
         throw new Exception("No test case to handle file '{$file}'!");
     }

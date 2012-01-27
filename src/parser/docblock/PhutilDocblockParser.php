@@ -86,12 +86,16 @@ class PhutilDocblockParser {
     // Parse @specials.
     $matches = null;
     $have_specials = preg_match_all(
-      '/^\s?@([\w-]+)\s*([^\n]*)/m',
+      '/^\s?@([\w-]+)[ \t]*([^\n]*)/m',
       $docblock,
       $matches,
       PREG_SET_ORDER);
+
     if ($have_specials) {
-      $docblock = preg_replace('/^\s?@([\w-]+)\s*([^\n]*)/m', '', $docblock);
+      $docblock = preg_replace(
+        '/^\s?@([\w-]+)[ \t]*([^\n]*)?\n*/m',
+        '',
+        $docblock);
       foreach ($matches as $match) {
         list($_, $type, $data) = $match;
         $data = trim($data);
@@ -100,6 +104,14 @@ class PhutilDocblockParser {
         } else {
           $special[$type] = $data;
         }
+      }
+    }
+
+    // For flags like "@stable" which don't have any string data, set the value
+    // to true.
+    foreach ($special as $type => $data) {
+      if (!strlen(trim($data))) {
+        $special[$type] = true;
       }
     }
 
