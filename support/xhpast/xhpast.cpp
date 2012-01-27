@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
 
   if (argc != 1) {
     //coupling: modify also libphutil/src/parser/xhpast/bin/xhpast_parse.php
-    cout << "xhpast version 0.60\n";
+    cout << "xhpast version 0.61\n";
     return 0;
   }
 

@@ -299,16 +299,6 @@ void xhpastfree (void * ,yyscan_t yyscanner );
 #define PHP_NO_RESERVED_WORDS 9
 #define PHP_NO_RESERVED_WORDS_PERSIST 10
 #define PHP_ 11
-#define XHP_LABEL 12
-#define XHP_LABEL_WHITESPACE 13
-#define XHP_ATTRS 14
-#define XHP_ATTR_VAL 15
-#define XHP_AFTER_ENT 16
-#define XHP_CHILD 17
-#define XHP_CHILD_START 18
-#define XHP_INVALID_ENTITY 19
-#define XHP_ATTR_TYPE_DECL 20
-#define XHP_CHILDREN_DECL 21
 
 #endif
 
@@ -473,10 +463,10 @@ extern int xhpastlex \
 #undef YY_DECL
 #endif
 
-#line 942 "scanner.l"
+#line 402 "scanner.l"
 
 
-#line 480 "scanner.lex.hpp"
+#line 470 "scanner.lex.hpp"
 #undef xhpastIN_HEADER
 #endif /* xhpastHEADER_H */
 /* @generated */

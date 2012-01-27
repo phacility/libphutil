@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,21 +121,8 @@ n_FUNCTION_CALL
 n_INDEX_ACCESS
 n_ASSIGNMENT_LIST
 n_METHOD_CALL
-n_XHP_TAG
-n_XHP_TAG_OPEN
-n_XHP_TAG_CLOSE
-n_XHP_TEXT
-n_XHP_EXPRESSION
-n_XHP_ATTRIBUTE_LIST
-n_XHP_ATTRIBUTE
-n_XHP_LITERAL
-n_XHP_ATTRIBUTE_LITERAL
-n_XHP_ATTRIBUTE_EXPRESSION
-n_XHP_NODE_LIST
 n_CONCATENATION_LIST
 n_PARENTHETICAL_EXPRESSION
-n_YIELD
-n_YIELD_EXPRESSION
 EONODES;
 
 $seq = 9000;
