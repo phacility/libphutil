@@ -18,6 +18,7 @@
 
 /**
  * @group event
+ * @stable
  */
 abstract class PhutilEventListener {
 

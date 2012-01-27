@@ -21,6 +21,7 @@
  * resolves.
  *
  * @group futures
+ * @stable
  */
 abstract class FutureProxy extends Future {
 
