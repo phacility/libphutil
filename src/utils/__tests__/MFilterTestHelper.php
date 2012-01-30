@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-class MFilterTestHelper {
+final class MFilterTestHelper {
 
   private $h;
   private $i;

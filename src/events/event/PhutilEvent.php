@@ -18,6 +18,7 @@
 
 /**
  * @group event
+ * @concrete-extensible
  */
 class PhutilEvent {
 

@@ -19,7 +19,7 @@
 /**
  * @group conduit
  */
-class ConduitClient {
+final class ConduitClient {
 
   protected $protocol;
   protected $host;

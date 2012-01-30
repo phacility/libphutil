@@ -19,7 +19,7 @@
 /**
  * @group event
  */
-class PhutilEventEngine {
+final class PhutilEventEngine {
 
   private static $instance;
 

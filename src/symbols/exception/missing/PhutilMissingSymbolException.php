@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 /**
  * @group library
  */
-class PhutilMissingSymbolException extends Exception {
+final class PhutilMissingSymbolException extends Exception {
   public function __construct($symbol) {
     parent::__construct(
       "Failed to load symbol '{$symbol}'. ".

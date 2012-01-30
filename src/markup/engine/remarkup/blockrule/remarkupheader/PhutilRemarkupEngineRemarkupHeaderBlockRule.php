@@ -19,7 +19,7 @@
 /**
  * @group markup
  */
-class PhutilRemarkupEngineRemarkupHeaderBlockRule
+final class PhutilRemarkupEngineRemarkupHeaderBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
   const KEY_HEADER_TOC = 'headers.toc';

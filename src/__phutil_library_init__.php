@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ function phutil_load_library($path) {
 /**
  * @group library
  */
-class PhutilBootloader {
+final class PhutilBootloader {
 
   private static $instance;
 
@@ -193,7 +193,7 @@ class PhutilBootloader {
 /**
  * @group library
  */
-class PhutilBootloaderException extends Exception { }
+final class PhutilBootloaderException extends Exception { }
 
 
 /**
@@ -218,7 +218,7 @@ class PhutilBootloaderException extends Exception { }
  * @task construct Creating Library Conflict Exceptions
  * @group library
  */
-class PhutilLibraryConflictException extends Exception {
+final class PhutilLibraryConflictException extends Exception {
 
   private $library;
   private $oldPath;

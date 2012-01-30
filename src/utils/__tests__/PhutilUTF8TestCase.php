@@ -21,7 +21,7 @@
  *
  * @group testcase
  */
-class PhutilUTF8TestCase extends ArcanistPhutilTestCase {
+final class PhutilUTF8TestCase extends ArcanistPhutilTestCase {
 
   public function testUTF8ize_ASCII_ignored() {
     $input = "this\x01 is a \x7f test string";

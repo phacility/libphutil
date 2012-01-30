@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 /**
  * Convenience function for instantiating a new @{class:FutureIterator}.
@@ -59,7 +58,7 @@ function Futures($futures) {
  *
  * @group futures
  */
-class FutureIterator implements Iterator {
+final class FutureIterator implements Iterator {
 
   protected $wait     = array();
   protected $work     = array();

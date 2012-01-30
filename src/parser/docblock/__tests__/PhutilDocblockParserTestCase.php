@@ -21,7 +21,7 @@
  *
  * @group testcase
  */
-class PhutilDocblockParserTestCase extends ArcanistPhutilTestCase {
+final class PhutilDocblockParserTestCase extends ArcanistPhutilTestCase {
 
   public function testParser() {
     $root = dirname(__FILE__).'/data/';

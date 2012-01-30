@@ -19,7 +19,7 @@
 /**
  * @group markup
  */
-class PhutilRemarkupRuleHyperlink
+final class PhutilRemarkupRuleHyperlink
   extends PhutilRemarkupRule {
 
   public function apply($text) {

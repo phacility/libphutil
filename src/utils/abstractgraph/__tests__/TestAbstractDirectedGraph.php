@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-class TestAbstractDirectedGraph extends AbstractDirectedGraph {
+final class TestAbstractDirectedGraph extends AbstractDirectedGraph {
 
   private $nodes;
 

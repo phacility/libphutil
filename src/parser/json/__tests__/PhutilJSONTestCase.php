@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-class PhutilJSONTestCase extends ArcanistPhutilTestCase {
+final class PhutilJSONTestCase extends ArcanistPhutilTestCase {
 
   public function testEmptyArrayEncoding() {
     $serializer = new PhutilJSON();

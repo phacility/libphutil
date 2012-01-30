@@ -19,7 +19,7 @@
 /**
  * @group markup
  */
-class PhutilRemarkupEngineRemarkupCodeBlockRule
+final class PhutilRemarkupEngineRemarkupCodeBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
   public function getBlockPattern() {

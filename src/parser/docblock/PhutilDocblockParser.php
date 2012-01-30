@@ -22,7 +22,7 @@
  *
  * @group parser
  */
-class PhutilDocblockParser {
+final class PhutilDocblockParser {
 
   public function extractDocblocks($text) {
     $blocks = array();

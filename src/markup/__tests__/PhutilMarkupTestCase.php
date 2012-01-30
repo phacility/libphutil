@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-class PhutilMarkupTestCase extends ArcanistPhutilTestCase {
+final class PhutilMarkupTestCase extends ArcanistPhutilTestCase {
 
   public function testTagDefaults() {
     $this->assertEqual(
