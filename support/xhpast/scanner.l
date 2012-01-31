@@ -190,7 +190,15 @@ NEWLINE ("\r\n"|"\n"|"\r")
   ptok(T_DOC_COMMENT);
   pop_state();
 }
+<PHP_DOC_COMMENT><<EOF>> {
+  ptok(T_DOC_COMMENT);
+  pop_state();
+}
 <PHP_COMMENT>"*/" {
+  ptok(T_COMMENT);
+  pop_state();
+}
+<PHP_COMMENT><<EOF>> {
   ptok(T_COMMENT);
   pop_state();
 }
