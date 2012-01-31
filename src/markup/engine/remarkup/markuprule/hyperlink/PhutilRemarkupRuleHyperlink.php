@@ -18,8 +18,9 @@
 
 /**
  * @group markup
+ * @concrete-extensible (TODO only needed by Facebook at the moment)
  */
-final class PhutilRemarkupRuleHyperlink
+class PhutilRemarkupRuleHyperlink
   extends PhutilRemarkupRule {
 
   public function apply($text) {
