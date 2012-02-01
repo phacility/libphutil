@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,61 +20,60 @@
 require_once dirname(dirname(__FILE__)).'/__init_script__.php';
 phutil_require_module('phutil', 'console');
 
-function usage() {
-  echo <<<EOUSAGE
-utf8.php [-C n] file ...
-  Show regions in files which are not valid UTF-8. With "-C n", show n lines
-  of context instead of the default of 3. Use "-" to read stdin.
+$args = new PhutilArgumentParser($argv);
+$args->setTagline('utf8 charset test script');
+$args->setSynopsis(<<<EOHELP
+**utf8.php** [-C n] __file__ ...
+    Show regions in files which are not valid UTF-8. With "-C n",
+    show __n__ lines of context instead of the default of 3. Use
+    "-" to read stdin.
 
-utf8.php -t file ...
-  Test for files which are not valid UTF-8. For example, this will find
-  all ".php" files under the working directory which aren't valid UTF-8:
+**utf8.php** --test __file__ ...
+    Test for files which are not valid UTF-8. For example, this
+    will find all ".php" files under the working directory which
+    aren't valid UTF-8:
 
-    find . -type f -name '*.php' -print0 | xargs -0 -n256 ./utf8.php -t
+        find . -type f -name '*.php' | xargs -n256 ./utf8.php -t
 
-  If the script exits with no output, all input files were valid UTF-8.
+    If the script exits with no output, all input files were
+    valid UTF-8.
+EOHELP
+);
+
+$args->parse(array(
+  array(
+    'name'      => 'context',
+    'short'     => 'C',
+    'param'     => 'lines',
+    'default'   => 3,
+    'help'      => 'Show __lines__ lines of context instead of the default 3.',
+    'conflicts' => array(
+      'test' => 'with --test, context is not shown.',
+    ),
+  ),
+  array(
+    'name'      => 'test',
+    'short'     => 't',
+    'help'      => 'Print file names containing invalid UTF-8 to stdout.',
+  ),
+  array(
+    'name'      => 'help',
+    'short'     => 'h',
+    'help'      => 'Show this help.',
+  ),
+  array(
+    'name'      => 'files',
+    'wildcard'  => true,
+  ),
+));
 
 
-EOUSAGE;
-}
-
-$is_test = false;
-$context = 3;
-
-$args = array_slice($argv, 1);
-$len = count($args);
-for ($ii = 0; $ii < $len; $ii++) {
-  if ($args[$ii] === '--') {
-    break;
-  } else if ($args[$ii][0] === '-') {
-    switch ($args[$ii]) {
-      case '-':
-        continue;
-      case '-h':
-        usage();
-        exit(0);
-      case '-t':
-        $is_test = true;
-        unset($args[$ii]);
-        break;
-      case '-C':
-        if ($ii < ($len - 1)) {
-          $context = max(0, $args[$ii + 1]);
-        } else {
-          usage();
-          exit(1);
-        }
-        unset($args[$ii]);
-        unset($args[$ii + 1]);
-        ++$ii;
-        break;
-    }
-  }
-}
-$files = array_values($args);
+$is_test = $args->getArg('test');
+$context = $args->getArg('context');
+$files   = $args->getArg('files');
 
 if (empty($files)) {
-  usage();
+  echo $args->printHelp();
   exit(1);
 }
 

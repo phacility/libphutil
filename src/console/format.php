@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 /**
  * @group console
@@ -75,6 +74,7 @@ function phutil_console_wrap($text, $indent = 0) {
   $indent_string = '';
   if ($indent) {
     $indent_string = str_repeat(' ', $indent);
+    $text = str_replace("\n", "\n".$indent_string, $text);
   }
   return wordwrap($text, 78 - $indent, "\n".$indent_string);
 }
