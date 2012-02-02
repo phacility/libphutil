@@ -7,7 +7,6 @@
 
 
 phutil_require_module('phutil', 'parser/argument/exception/specification');
-phutil_require_module('phutil', 'utils');
 
 
 phutil_require_source('PhutilArgumentSpecification.php');

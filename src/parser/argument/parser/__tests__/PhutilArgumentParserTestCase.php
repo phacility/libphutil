@@ -26,7 +26,7 @@ final class PhutilArgumentParserTestCase extends ArcanistPhutilTestCase {
 
     $args = new PhutilArgumentParser(array('bin'));
     $args->parseFull($specs);
-    $this->assertEqual(null, $args->getArg('flag'));
+    $this->assertEqual(false, $args->getArg('flag'));
 
     $args = new PhutilArgumentParser(array('bin', '--flag'));
     $args->parseFull($specs);
@@ -383,6 +383,40 @@ final class PhutilArgumentParserTestCase extends ArcanistPhutilTestCase {
     $args->parsePartial($specs);
 
     $this->assertEqual('-', $args->getArg('file'));
+  }
+
+  public function testRepeatableFlag() {
+    $specs = array(
+      array(
+        'name' => 'verbose',
+        'short' => 'v',
+        'repeat' => true,
+      ),
+    );
+
+    $args = new PhutilArgumentParser(array('bin', '-v', '-v', '-v'));
+    $args->parseFull($specs);
+
+    $this->assertEqual(3, $args->getArg('verbose'));
+  }
+
+  public function testRepeatableParam() {
+    $specs = array(
+      array(
+        'name' => 'eat',
+        'param' => 'fruit',
+        'repeat' => true,
+      ),
+    );
+
+    $args = new PhutilArgumentParser(array(
+      'bin', '--eat', 'apple', '--eat', 'pear', '--eat=orange',
+    ));
+    $args->parseFull($specs);
+
+    $this->assertEqual(
+      array('apple', 'pear', 'orange'),
+      $args->getArg('eat'));
   }
 
 }

@@ -88,7 +88,7 @@ final class PhutilArgumentSpecificationTestCase extends ArcanistPhutilTestCase {
         'short' => 'v',
         'help' => 'Derp.',
         'param' => 'level',
-        'default' => 0,
+        'default' => 'y',
         'conflicts' => array(
           'quiet' => true,
         ),
@@ -107,8 +107,30 @@ final class PhutilArgumentSpecificationTestCase extends ArcanistPhutilTestCase {
         'alias' => 'v',
       ),
       array(
+        'name'  => 'derp',
         'fruit' => 'apple',
       ),
+      array(
+        'name' => 'x',
+        'default' => 'y',
+      ),
+      array(
+        'name' => 'x',
+        'param' => 'y',
+        'default' => 'z',
+        'repeat' => true,
+      ),
+      array(
+        'name' => 'x',
+        'wildcard' => true,
+        'repeat' => true,
+      ),
+      array(
+        'name' => 'x',
+        'param' => 'y',
+        'wildcard' => true,
+      ),
+
     );
 
     $cases = array(

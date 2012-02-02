@@ -99,9 +99,11 @@ final class PhutilArgumentParser {
             }
           }
 
-          if (array_key_exists($spec->getName(), $this->results)) {
-            throw new PhutilArgumentUsageException(
-              "Argument '{$pre}{$arg}' was provided twice.");
+          if (!$spec->getRepeatable()) {
+            if (array_key_exists($spec->getName(), $this->results)) {
+              throw new PhutilArgumentUsageException(
+                "Argument '{$pre}{$arg}' was provided twice.");
+            }
           }
 
           $conflicts = $spec->getConflicts();
@@ -120,7 +122,18 @@ final class PhutilArgumentParser {
             }
           }
 
-          $this->results[$spec->getName()] = $val;
+          if ($spec->getRepeatable()) {
+            if ($spec->getParamName() === null) {
+              if (empty($this->results[$spec->getName()])) {
+                $this->results[$spec->getName()] = 0;
+              }
+              $this->results[$spec->getName()]++;
+            } else {
+              $this->results[$spec->getName()][] = $val;
+            }
+          } else {
+            $this->results[$spec->getName()] = $val;
+          }
         }
       }
     }
@@ -205,6 +218,7 @@ final class PhutilArgumentParser {
     }
 
     foreach ($specs as $spec) {
+      $spec->validate();
       $name = $spec->getName();
 
       if (isset($this->specs[$name])) {
@@ -261,7 +275,7 @@ final class PhutilArgumentParser {
     return $this;
   }
 
-  public function printHelp() {
+  public function renderHelp() {
     $out = array();
 
     if ($this->bin) {
@@ -297,7 +311,9 @@ final class PhutilArgumentParser {
         if ($spec->getParamName()) {
           $param = $this->format(' __%s__', $spec->getParamName());
           $name .= $param;
-          $short .= $param;
+          if ($short) {
+            $short .= $param;
+          }
         }
         $out[] = $name.$short;
         $out[] = $this->indent(10, $spec->getHelp());
@@ -308,6 +324,11 @@ final class PhutilArgumentParser {
     $out[] = null;
 
     return implode("\n", $out);
+  }
+
+  public function printHelpAndExit() {
+    echo $this->renderHelp();
+    exit(77);
   }
 
   private function format($str /*, ... */) {

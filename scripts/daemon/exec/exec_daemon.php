@@ -27,35 +27,53 @@ if (!posix_isatty(STDOUT)) {
   }
 }
 
+$args = new PhutilArgumentParser($argv);
+$args->setTagline('daemon executor');
+$args->setSynopsis(<<<EOHELP
+**exec_daemon.php** [__options__] __daemon__ ...
+    Run an instanceof __daemon__.
+EOHELP
+  );
+$args->parse(
+  array(
+    array(
+      'name' => 'trace',
+      'help' => 'Enable debug tracing.',
+    ),
+    array(
+      'name' => 'trace-memory',
+      'help' => 'Enable debug memory tracing.',
+    ),
+    array(
+      'name' => 'log',
+      'param' => 'file',
+      'help'  => 'Send output to __file__.',
+    ),
+    array(
+      'name' => 'load-phutil-library',
+      'param' => 'library',
+      'repeat' => true,
+      'help' => 'Load __library__.',
+    ),
+    array(
+      'name' => 'more',
+      'wildcard' => true,
+    ),
+  ));
 
-$trace_mode = false;
-$trace_memory = false;
-$echo_to_stderr = false;
-$load = array();
-$len = count($argv);
-for ($ii = 2; $ii < $len; $ii++) {
-  $value = $argv[$ii];
-  $matches = null;
-  if ($value == '--') {
-    break;
-  } else if ($value == '--trace') {
-    $trace_mode = true;
-    unset($argv[$ii]);
-  } else if ($value == '--trace-memory') {
-    $trace_mode = true;
-    $trace_memory = true;
-    unset($argv[$ii]);
-  } else if (preg_match('/^--log=(.*)$/', $value, $matches)) {
-    ini_set('error_log', $matches[1]);
-    unset($argv[$ii]);
-    $echo_to_stderr = true;
-  } else if (preg_match('/^--load-phutil-library=(.*)$/', $value, $matches)) {
-    $load[] = $matches[1];
-    unset($argv[$ii]);
-  }
+$trace_memory = $args->getArg('trace-memory');
+$trace_mode = $args->getArg('trace') || $trace_memory;
+
+$log = $args->getArg('log');
+if ($log) {
+  ini_set('error_log', $log);
+  $echo_to_stderr = true;
+} else {
+  $echo_to_stderr = false;
 }
 
-$argv = array_values($argv);
+$load = $args->getArg('load-phutil-library');
+$argv = $args->getArg('more');
 
 if ($load) {
   phutil_require_module('phutil', 'filesystem');
@@ -84,11 +102,11 @@ if ($echo_to_stderr) {
   PhutilErrorHandler::setErrorListener('phutil_daemon_error_listener');
 }
 
-$daemon = $argv[1];
+$daemon = array_shift($argv);
+if (!$daemon) {
+  $args->printHelpAndExit();
+}
 
-$argv = array_slice($argv, 2);
-
-PhutilSymbolLoader::loadClass($daemon);
 $daemon = newv($daemon, array($argv));
 if ($trace_mode) {
   $daemon->setTraceMode();

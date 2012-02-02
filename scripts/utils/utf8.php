@@ -73,8 +73,7 @@ $context = $args->getArg('context');
 $files   = $args->getArg('files');
 
 if (empty($files)) {
-  echo $args->printHelp();
-  exit(1);
+  $args->printHelpAndExit();
 }
 
 if ($is_test) {

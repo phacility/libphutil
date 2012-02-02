@@ -43,37 +43,75 @@ final class PhutilDaemonOverseer {
   private $conduit;
   private $conduitURI;
 
-  public function __construct($daemon, array $argv) {
-    $this->daemon = $daemon;
-
+  public function __construct(array $argv) {
     $original_argv = $argv;
+    $args = new PhutilArgumentParser($argv);
+    $args->setTagline('daemon overseer');
+    $args->setSynopsis(<<<EOHELP
+**launch_daemon.php** [__options__] __daemon__
+    Launch and oversee an instance of __daemon__.
+EOHELP
+      );
+    $args->parsePartial(
+      array(
+        array(
+          'name' => 'trace',
+          'help' => 'Enable debug tracing.',
+        ),
+        array(
+          'name' => 'trace-memory',
+          'help' => 'Enable debug memory tracing.',
+        ),
+        array(
+          'name'  => 'log',
+          'param' => 'file',
+          'help'  => 'Send output to __file__.',
+        ),
+        array(
+          'name'  => 'daemonize',
+          'help'  => 'Run in the background.',
+        ),
+        array(
+          'name'  => 'phd',
+          'param' => 'dir',
+          'help'  => 'Write PID information to __dir__.',
+        ),
+        array(
+          'name'  => 'conduit-uri',
+          'param' => 'uri',
+          'help'  => 'Send logs to Conduit on __uri__.'
+        ),
+      ));
+    $argv = $args->getUnconsumedArgumentVector();
 
-    $len = count($argv);
-    for ($ii = 1; $ii < $len; $ii++) {
-      $matches = null;
-      if ($argv[$ii] == '--') {
-        break;
-      } else if ($argv[$ii] == '--trace') {
-        $this->traceMode = true;
-      } else if ($argv[$ii] == '--trace-memory') {
-        $this->traceMode = true;
-        $this->traceMemory = true;
-      } else if (preg_match('/^--log=(.*)$/', $argv[$ii], $matches)) {
-        ini_set('error_log', $matches[1]);
-        error_log("Bringing '{$daemon}' online...");
-      } else if ($argv[$ii] == '--daemonize') {
-        $this->daemonize = true;
-        unset($argv[$ii]);
-      } else if (preg_match('/^--phd=(.*)$/', $argv[$ii], $matches)) {
-        $this->phddir = $matches[1];
-        unset($argv[$ii]);
-      } else if (preg_match('/^--conduit-uri=(.*)$/', $argv[$ii], $matches)) {
-        $this->conduitURI = $matches[1];
-        unset($argv[$ii]);
-      }
+    $this->daemon = array_shift($argv);
+    if (!$this->daemon) {
+      $args->printHelpAndExit();
     }
 
-    $this->argv = array_slice($argv, 1);
+    if ($args->getArg('trace')) {
+      $this->traceMode = true;
+      array_unshift($argv, '--trace');
+    }
+
+    if ($args->getArg('trace-memory')) {
+      $this->traceMode = true;
+      $this->traceMemory = true;
+      array_unshift($argv, '--trace-memory');
+    }
+
+    $log = $args->getArg('log');
+    if ($log) {
+      ini_set('error_log', $log);
+      array_unshift($argv, '--log='.$log);
+    }
+
+    $this->daemonize  = $args->getArg('daemonize');
+    $this->phddir     = $args->getArg('phd');
+    $this->conduitURI = $args->getArg('conduit-uri');
+    $this->argv       = $argv;
+
+    error_log("Bringing daemon '{$this->daemon}' online...");
 
     if (self::$instance) {
       throw new Exception(

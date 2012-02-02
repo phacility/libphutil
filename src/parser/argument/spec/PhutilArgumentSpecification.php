@@ -25,6 +25,7 @@ final class PhutilArgumentSpecification {
   private $default;
   private $conflicts  = array();
   private $wildcard;
+  private $repeatable;
 
   /**
    * Convenience constructor for building an argument specification from a
@@ -46,6 +47,7 @@ final class PhutilArgumentSpecification {
    *    default     setDefault()
    *    conflicts   setConflicts()
    *    wildcard    setWildcard()
+   *    repeat      setRepeatable()
    *
    * @param dict Dictionary of quick parameter definitions.
    * @return PhutilArgumentSpecification Constructed argument specification.
@@ -59,21 +61,17 @@ final class PhutilArgumentSpecification {
       'default',
       'conflicts',
       'wildcard',
+      'repeat',
     );
 
     $unrecognized = array_diff_key(
       $spec,
       array_fill_keys($recognized_keys, true));
 
-    foreach ($unrecognized as $key) {
+    foreach ($unrecognized as $key => $ignored) {
       throw new PhutilArgumentSpecificationException(
         "Unrecognized key '{$key}' in argument specification. Recognized keys ".
         "are: ".implode(', ', $recognized_keys).'.');
-    }
-
-    if (!idx($spec, 'name')) {
-      throw new PhutilArgumentSpecificationException(
-        "Argument specification MUST have key 'name'.");
     }
 
     $obj = new PhutilArgumentSpecification();
@@ -101,8 +99,13 @@ final class PhutilArgumentSpecification {
         case 'wildcard':
           $obj->setWildcard($value);
           break;
+        case 'repeat':
+          $obj->setRepeatable($value);
+          break;
       }
     }
+
+    $obj->validate();
 
     return $obj;
   }
@@ -172,7 +175,19 @@ final class PhutilArgumentSpecification {
   }
 
   public function getDefault() {
-    return $this->default;
+    if ($this->getParamName() === null) {
+      if ($this->getRepeatable()) {
+        return 0;
+      } else {
+        return false;
+      }
+    } else {
+      if ($this->getRepeatable()) {
+        return array();
+      } else {
+        return $this->default;
+      }
+    }
   }
 
   public function setConflicts(array $conflicts) {
@@ -191,6 +206,45 @@ final class PhutilArgumentSpecification {
 
   public function getWildcard() {
     return $this->wildcard;
+  }
+
+  public function setRepeatable($repeatable) {
+    $this->repeatable = $repeatable;
+    return $this;
+  }
+
+  public function getRepeatable() {
+    return $this->repeatable;
+  }
+
+  public function validate() {
+    if ($this->name === null) {
+      throw new PhutilArgumentSpecificationException(
+        "Argument specification MUST have a 'name'.");
+    }
+
+    if ($this->getWildcard()) {
+      if ($this->getParamName()) {
+        throw new PhutilArgumentSpecificationException(
+          "Wildcard arguments may not specify a parameter.");
+      }
+      if ($this->getRepeatable()) {
+        throw new PhutilArgumentSpecificationException(
+          "Wildcard arguments may not be repeatable.");
+      }
+    }
+
+    if ($this->default !== null) {
+      if ($this->getRepeatable()) {
+        throw new PhutilArgumentSpecificationException(
+          "Repeatable arguments may not have a default (always array() for ".
+          "arguments which accept a parameter, or 0 for arguments which do ".
+          "not).");
+      } else if ($this->getParamName() === null) {
+        throw new PhutilArgumentSpecificationException(
+          "Flag arguments may not have a default (always false).");
+      }
+    }
   }
 
 }

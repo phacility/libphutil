@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,5 @@
 
 $root = dirname(dirname(dirname(__FILE__)));
 require_once $root.'/scripts/__init_script__.php';
-
-phutil_require_module('phutil', 'daemon/overseer');
-
-if ($argc < 2) {
-  echo "usage: launch_daemon.php <daemon>\n";
-  exit(1);
-}
-
-$daemon = $argv[1];
-unset($argv[1]);
-$argv = array_values($argv);
-
-echo "Running daemon ".$daemon."...\n";
-
-$overseer = new PhutilDaemonOverseer($daemon, $argv);
+$overseer = new PhutilDaemonOverseer($argv);
 $overseer->run();
