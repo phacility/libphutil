@@ -294,15 +294,18 @@ final class PhutilArgumentParser {
       $out[] = null;
     }
 
-    if ($this->specs) {
+    $specs = $this->specs;
+    foreach ($specs as $key => $spec) {
+      if ($spec->getWildcard()) {
+        unset($specs[$key]);
+      }
+    }
+
+    if ($specs) {
       $out[] = $this->format('**OPTION REFERENCE**');
       $out[] = null;
-      $specs = msort($this->specs, 'getName');
+      $specs = msort($specs, 'getName');
       foreach ($specs as $spec) {
-        if ($spec->getWildcard()) {
-          continue;
-        }
-
         $name = $this->indent(6, '__--%s__', $spec->getName());
         $short = null;
         if ($spec->getShortAlias()) {
