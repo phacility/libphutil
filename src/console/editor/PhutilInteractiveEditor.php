@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -213,9 +213,10 @@ final class PhutilInteractiveEditor {
     return $this->content;
   }
 
+
   /**
    * Set the fallback editor program to be used if the env variable $EDITOR
-   * is not available.
+   * is not available and there is no `editor` binary in PATH.
    *
    * @param  string  Command-line editing program (e.g. 'emacs', 'vi')
    * @return $this
@@ -227,10 +228,11 @@ final class PhutilInteractiveEditor {
     return $this;
   }
 
+
   /**
    * Get the name of the editor program to use. The value of the environmental
-   * variable $EDITOR will be used if available; otherwise, the best editor
-   * will be selected.
+   * variable $EDITOR will be used if available; otherwise, the `editor` binary
+   * if present; otherwise the best editor will be selected.
    *
    * @return string  Command-line editing program.
    *
@@ -238,10 +240,17 @@ final class PhutilInteractiveEditor {
    */
   public function getEditor() {
     $editor = getenv('EDITOR');
-    if (!$editor) {
-      $editor = $this->fallback;
+    if ($editor) {
+      return $editor;
     }
 
-    return $editor;
+    // Look for `editor` in PATH, some systems provide an editor which is
+    // linked to something sensible.
+    list($err) = exec_manual('which editor');
+    if (!$err) {
+      return 'editor';
+    }
+
+    return $this->fallback;
   }
 }
