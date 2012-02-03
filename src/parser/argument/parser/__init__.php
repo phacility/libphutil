@@ -10,6 +10,7 @@ phutil_require_module('phutil', 'console');
 phutil_require_module('phutil', 'parser/argument/exception/specification');
 phutil_require_module('phutil', 'parser/argument/exception/usage');
 phutil_require_module('phutil', 'parser/argument/spec');
+phutil_require_module('phutil', 'serviceprofiler');
 phutil_require_module('phutil', 'utils');
 
 

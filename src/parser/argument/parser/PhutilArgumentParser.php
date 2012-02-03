@@ -166,9 +166,7 @@ final class PhutilArgumentParser {
     try {
       $this->parseFull($specs);
     } catch (PhutilArgumentUsageException $ex) {
-      file_put_contents(
-        'php://stderr',
-        $this->format('**Usage Exception:** '.$ex->getMessage()."\n"));
+      $this->printUsageException($ex);
       exit(77);
     }
   }
@@ -346,6 +344,54 @@ final class PhutilArgumentParser {
     $args = array_slice($args, 1);
     $text = call_user_func_array(array($this, 'format'), $args);
     return str_repeat(' ', $level).phutil_console_wrap($text, $level);
+  }
+
+  /**
+   * Parse "standard" arguments and apply their effects:
+   *
+   *    --trace     Enable service call tracing.
+   *    --no-ansi   Disable ANSI color/style sequences.
+   *
+   * @return this
+   */
+  public function parseStandardArguments() {
+    try {
+      $this->parsePartial(
+        array(
+          array(
+            'name'  => 'trace',
+            'help'  => 'Trace command execution and show service calls.',
+          ),
+          array(
+            'name'  => 'no-ansi',
+            'help'  => 'Disable ANSI terminal codes, printing plain text with '.
+                       'no color or style.',
+          ),
+        ));
+    } catch (PhutilArgumentUsageException $ex) {
+      $this->printUsageException($ex);
+      exit(77);
+    }
+
+    if ($this->getArg('trace')) {
+      PhutilServiceProfiler::installEchoListener();
+    }
+
+    if ($this->getArg('no-ansi')) {
+      PhutilConsoleFormatter::disableANSI(true);
+    }
+
+    if (function_exists('posix_isatty') && !posix_isatty(STDOUT)) {
+      PhutilConsoleFormatter::disableANSI(true);
+    }
+
+    return $this;
+  }
+
+  public function printUsageException(PhutilArgumentUsageException $ex) {
+    file_put_contents(
+      'php://stderr',
+      $this->format('**Usage Exception:** '.$ex->getMessage()."\n"));
   }
 
 }
