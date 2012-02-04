@@ -136,6 +136,7 @@ final class PhutilPygmentsSyntaxHighlighter {
       'GNUmakefile' => 'make',
       'mao' => 'mako',
       'm' => 'objective-c',
+      'mm' => 'objective-c',
       'mhtml' => 'mason',
       'mc' => 'mason',
       'mi' => 'mason',
