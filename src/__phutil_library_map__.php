@@ -132,6 +132,7 @@ phutil_register_library_map(array(
     'exec_manual' => 'future/exec',
     'execx' => 'future/exec',
     'head' => 'utils',
+    'hsprintf' => 'markup',
     'id' => 'utils',
     'idx' => 'utils',
     'ifilter' => 'utils',

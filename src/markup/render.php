@@ -66,6 +66,18 @@ function phutil_escape_html($string) {
 }
 
 /**
+ * Format a HTML code. This function behaves like sprintf(), except that all
+ * the normal conversions (like %s) will be properly escaped.
+ *
+ * @group markup
+ */
+function hsprintf($html/*, ... */) {
+  $args = func_get_args();
+  array_shift($args);
+  return vsprintf($html, array_map('phutil_escape_html', $args));
+}
+
+/**
  * @group markup
  */
 function phutil_escape_uri($string) {
