@@ -41,7 +41,7 @@ To include libphutil in another project, include the
 
 Now you can load libphutil modules with ##phutil_require_module()##:
 
-  phutil_require_module('libphutil', 'future/exec');
+  phutil_require_module('phutil', 'future/exec');
 
 This loads the ##future/exec## module, defined in ##libphutil/src/future/exec##.
 Module names and paths on disk are always identical.
