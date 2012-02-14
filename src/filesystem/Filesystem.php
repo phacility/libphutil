@@ -341,6 +341,82 @@ final class Filesystem {
   }
 
 
+  /**
+   * Identify the MIME type of a file. This returns only the MIME type (like
+   * text/plain), not the encoding (like charset=utf-8).
+   *
+   * @param string Path to the file to examine.
+   * @param string Optional default mime type to return if the file's mime
+   *               type can not be identified.
+   * @return string File mime type.
+   *
+   * @task file
+   */
+  public static function getMimeType(
+    $path,
+    $default = 'application/octet-stream') {
+
+    $path = self::resolvePath($path);
+
+    self::assertExists($path);
+    self::assertIsFile($path);
+    self::assertReadable($path);
+
+    $mime_type = null;
+
+    // Fileinfo is the best approach since it doesn't rely on `file`, but
+    // it isn't builtin for older versions of PHP.
+
+    if (class_exists('finfo')) {
+      // NOTE: Unlike normal constructors, this can return null according to
+      // the documentation. Thanks, PHP.
+      $finfo = new finfo(FILEINFO_MIME);
+      if ($finfo) {
+        $result = $finfo->file($path);
+        if ($result !== false) {
+          $mime_type = $result;
+        }
+      }
+    }
+
+    // If we failed Fileinfo, try `file`. This works well but not all systems
+    // have the binary.
+
+    if ($mime_type === null) {
+      list($err, $stdout) = exec_manual(
+        'file -b --mine %s',
+        $path);
+      if (!$err) {
+        $mime_type = trim($stdout);
+      }
+    }
+
+    // If we didn't get anywhere, try the deprecated mime_content_type()
+    // function.
+
+    if ($mime_type === null) {
+      if (function_exists('mime_content_type')) {
+        $result = mime_content_type($path);
+        if ($result !== false) {
+          $mime_type = $result;
+        }
+      }
+    }
+
+    // If we come back with an encoding, strip it off.
+    if (strpos($mime_type, ';') !== false) {
+      list($type, $encoding) = explode(';', $mime_type, 2);
+      $mime_type = $type;
+    }
+
+    if ($mime_type === null) {
+      $mime_type = $default;
+    }
+
+    return $mime_type;
+  }
+
+
 /* -(  Directories  )-------------------------------------------------------- */
 
 
