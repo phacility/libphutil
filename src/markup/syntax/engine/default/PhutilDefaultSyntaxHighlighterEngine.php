@@ -61,6 +61,10 @@ final class PhutilDefaultSyntaxHighlighterEngine
 
   public function getHighlightFuture($language, $source) {
 
+    if ($language === null) {
+      $language = PhutilLanguageGuesser::guessLanguage($source);
+    }
+
     $have_pygments = !empty($this->config['pygments.enabled']);
 
     if ($language == 'php' && xhpast_is_available()) {
