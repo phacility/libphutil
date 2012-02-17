@@ -351,6 +351,9 @@ final class Filesystem {
    * @return string File mime type.
    *
    * @task file
+   *
+   * @phutil-external-symbol function mime_content_type
+   * @phutil-external-symbol class finfo
    */
   public static function getMimeType(
     $path,
@@ -367,7 +370,7 @@ final class Filesystem {
     // Fileinfo is the best approach since it doesn't rely on `file`, but
     // it isn't builtin for older versions of PHP.
 
-    if (class_exists('finfo')) {
+    if (class_exists('finfo', $autoload = false)) {
       // NOTE: Unlike normal constructors, this can return null according to
       // the documentation. Thanks, PHP.
       $finfo = new finfo(FILEINFO_MIME);
