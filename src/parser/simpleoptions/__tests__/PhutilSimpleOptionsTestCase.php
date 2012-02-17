@@ -48,6 +48,9 @@ final class PhutilSimpleOptionsTestCase extends ArcanistPhutilTestCase {
       // Empty values should be absent.
       'legs=' => array(),
       'legs=4,legs=,eyes=2' => array('eyes' => '2'),
+
+      // Strings like this should not parse as simpleoptions.
+      'SELECT id, name, size FROM table' => array(),
     );
 
     foreach ($map as $string => $expect) {

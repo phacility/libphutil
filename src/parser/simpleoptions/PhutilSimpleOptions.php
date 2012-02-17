@@ -64,7 +64,9 @@ final class PhutilSimpleOptions {
       $key = trim($key);
       $key = strtolower($key);
       if (!self::isValidKey($key)) {
-        continue;
+        // If there are bad keys, just bail, so we don't get silly results for
+        // parsing inputs like "SELECT id, name, size FROM table".
+        return array();
       }
       if (!strlen($value)) {
         unset($result[$key]);
