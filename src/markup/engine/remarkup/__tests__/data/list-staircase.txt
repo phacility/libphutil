@@ -1,0 +1,17 @@
+    - top
+  - mid
+# bot
+
+derp
+~~~~~~~~~~
+<ol>
+<li class="phantom-item"><ul>
+<li class="phantom-item"><ul>
+<li>top</li>
+</ul></li>
+<li>mid</li>
+</ul></li>
+<li>bot</li>
+</ol>
+
+<p>derp</p>

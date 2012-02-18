@@ -7,6 +7,7 @@
 
 
 phutil_require_module('phutil', 'markup/engine/remarkup/blockrule/base');
+phutil_require_module('phutil', 'utils');
 
 
 phutil_require_source('PhutilRemarkupEngineRemarkupListBlockRule.php');
