@@ -50,12 +50,20 @@ final class HTTPFutureResponseStatusCURL extends HTTPFutureResponseStatus {
       }
     }
 
+
     $map = array(
+      // Apparently there's no error constant for this? In cURL it's
+      // CURLE_SSL_CACERT_BADFILE but there's no corresponding constant in
+      // PHP.
+      77 =>
+        'The SSL CA Bundle "libphutil/resources/ssl/custom.pem" could not '.
+        'be read or is not formatted correctly.',
       CURLE_SSL_CONNECT_ERROR =>
         'There was an error negotiating the SSL connection. This usually '.
         'indicates that the remote host has a bad SSL certificate, or your '.
         'local host has some sort of SSL misconfiguration which prevents it '.
-        'from accepting the CA.',
+        'from accepting the CA. If you are using a self-signed certificate, '.
+        'see instructions in "libphutil/resources/ssl/README".',
       CURLE_OPERATION_TIMEOUTED =>
         'The request took too long to complete.',
 

@@ -1,0 +1,12 @@
+If "curl.cainfo" is not set (or you are using PHP older than 5.3.7, where the
+option was introduced), libphutil uses the "default.pem" certificate authority
+bundle when making HTTPS requests with cURL. This bundle is extracted from
+Mozilla's certificates by cURL:
+
+  http://curl.haxx.se/docs/caextract.html
+
+If you want to use a different CA bundle (for example, because you use
+self-signed certificates), set "curl.cainfo" if you're using PHP 5.3.7 or newer,
+or create a file (or symlink) in this directory named "custom.pem".
+
+If "custom.pem" is present, that file will be used instead of "default.pem".

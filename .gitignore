@@ -23,3 +23,5 @@ parser.yacc.output
 
 /src/.phutil_module_cache
 
+# This file overrides "default.pem" if present.
+/resources/ssl/custom.pem

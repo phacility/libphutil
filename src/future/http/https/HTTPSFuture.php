@@ -83,6 +83,18 @@ final class HTTPSFuture extends BaseHTTPFuture {
       curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
     }
 
+    $ini_val = ini_get('curl.cainfo');
+    if (!$ini_val) {
+      $caroot = dirname(phutil_get_library_root('phutil')).'/resources/ssl/';
+      if (Filesystem::pathExists($caroot.'custom.pem')) {
+        $cabundle = $caroot.'custom.pem';
+      } else {
+        $cabundle = $caroot.'default.pem';
+      }
+      curl_setopt($curl, CURLOPT_CAINFO, $cabundle);
+    }
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+
     $result = curl_exec($curl);
     $err_code = curl_errno($curl);
 
