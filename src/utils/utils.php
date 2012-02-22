@@ -590,5 +590,9 @@ function last($arr) {
  * @group util
  */
 function array_mergev(array $arrayv) {
+  if (!$arrayv) {
+    return array();
+  }
+
   return call_user_func_array('array_merge', $arrayv);
 }

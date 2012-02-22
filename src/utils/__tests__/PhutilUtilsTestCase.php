@@ -166,6 +166,22 @@ final class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
 
   public function testmergev_merging_basicallyWorksCorrectly() {
     $this->assertEqual(
+      array(),
+      array_mergev(
+        array(
+          // <empty>
+        )));
+
+    $this->assertEqual(
+      array(),
+      array_mergev(
+        array(
+          array(),
+          array(),
+          array(),
+        )));
+
+    $this->assertEqual(
       array(1, 2, 3, 4, 5),
       array_mergev(
         array(
