@@ -30,7 +30,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
   public function getBlockPattern() {
     // Support either "-" or "*" or "#" lists.
-    return '/^\s*[-*#]\s+/';
+    return '/^\s*[-*#]+\s+/';
   }
 
   public function shouldMergeBlocks() {
@@ -38,6 +38,46 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
   }
 
   public function markupText($text) {
+
+    $items = array();
+    $lines = explode("\n", $text);
+
+    // We allow users to delimit lists using either differing indentation
+    // levels:
+    //
+    //   - a
+    //     - b
+    //
+    // ...or differing numbers of item-delimiter characters:
+    //
+    //   - a
+    //   -- b
+    //
+    // If they use the second style but block-indent the whole list, we'll
+    // get the depth counts wrong for the first item. To prevent this,
+    // un-indent every item by the minimum indentation level for the whole
+    // block before we begin parsing.
+
+    $min_space = PHP_INT_MAX;
+    foreach ($lines as $line) {
+      $matches = null;
+      if (preg_match($this->getBlockPattern(), $line)) {
+        if (preg_match('/^(\s+)/', $line, $matches)) {
+          $space = strlen($matches[1]);
+        } else {
+          $space = 0;
+        }
+        $min_space = min($min_space, $space);
+      }
+    }
+    if ($min_space) {
+      foreach ($lines as $key => $line) {
+        if (preg_match($this->getBlockPattern(), $line)) {
+          $lines[$key] = substr($line, $min_space);
+        }
+      }
+    }
+
 
     // The input text may have linewraps in it, like this:
     //
@@ -58,8 +98,6 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
     //     ),
     //   );
 
-    $items = array();
-    $lines = explode("\n", $text);
     $item = array();
     foreach ($lines as $line) {
       if (preg_match($this->getBlockPattern(), $line)) {
@@ -67,8 +105,8 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
           $items[] = $item;
           $item = array();
         }
-        $item[] = $line;
       }
+      $item[] = $line;
     }
     if ($item) {
       $items[] = $item;
@@ -103,7 +141,11 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
       }
 
       $matches = null;
-      if (preg_match('/^(\s+)/', $item, $matches)) {
+      if (preg_match('/^\s*([-*#]{2,})/', $item, $matches)) {
+        // Alternate-style indents; use number of list item symbols.
+        $depth = strlen($matches[1]) - 1;
+      } else if (preg_match('/^(\s+)/', $item, $matches)) {
+        // Markdown-style indents; use indent depth.
         $depth = strlen($matches[1]);
       } else {
         $depth = 0;
