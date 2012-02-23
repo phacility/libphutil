@@ -163,6 +163,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
         'style' => $style,
       );
     }
+    $items = array_values($items);
 
 
     // Users can create a sub-list by indenting any deeper amount than the
