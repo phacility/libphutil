@@ -386,7 +386,7 @@ final class Filesystem {
 
     if ($mime_type === null) {
       list($err, $stdout) = exec_manual(
-        'file -b --mine %s',
+        'file --brief --mime %s',
         $path);
       if (!$err) {
         $mime_type = trim($stdout);
