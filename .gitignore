@@ -25,3 +25,6 @@ parser.yacc.output
 
 # This file overrides "default.pem" if present.
 /resources/ssl/custom.pem
+
+# arc sratch directory.
+/.arc/

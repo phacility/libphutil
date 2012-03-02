@@ -289,7 +289,18 @@ phutil_require_module('phutil', 'symbols');
  * @group library
  */
 function __phutil_autoload($class) {
-  PhutilSymbolLoader::loadClass($class);
+  try {
+    PhutilSymbolLoader::loadClass($class);
+  } catch (PhutilMissingSymbolException $ex) {
+    // If there are other SPL autoloaders installed, we need to give them a
+    // chance to load the class. Throw the exception if we're the last
+    // autoloader; if not, swallow it and let them take a shot.
+    $autoloaders = spl_autoload_functions();
+    $last = end($autoloaders);
+    if ($last == '__phutil_autoload') {
+      throw $ex;
+    }
+  }
 }
 
 spl_autoload_register('__phutil_autoload', $throw = true);
