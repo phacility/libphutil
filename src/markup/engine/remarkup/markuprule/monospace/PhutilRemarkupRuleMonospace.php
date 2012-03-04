@@ -24,7 +24,7 @@ final class PhutilRemarkupRuleMonospace
 
   public function apply($text) {
     return preg_replace(
-      '@##(.+?)##@s',
+      array('@##(.+?)##@s', '@\B`(.+?)`\B@'),
       '<tt>\1</tt>',
       $text);
   }
