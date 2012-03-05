@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
  * This method allows you to build a function with sprintf() semantics but
  * custom conversions for different datatypes. Three examples are
  * @{function:jsprintf} (which builds Javascript strings),
- * @{function:qsprintf} (which builds MySQL strings), and
+ * @{function@phabricator:qsprintf} (which builds MySQL strings), and
  * @{function:csprintf} (which builds command line strings).
  *
  * To build a new xsprintf-family function, provide a callback which conforms
@@ -44,7 +44,8 @@
  *
  * @param   string  The name of a callback to pass conversions to.
  * @param   wild    Optional userdata to pass to the callback. For
- *                  @{function:qsprintf}, this is the database connection.
+ *                  @{function@phabricator:qsprintf}, this is the database
+ *                  connection.
  * @param   list    List of arguments, with the sprintf() pattern in position 0.
  * @return  string  Formatted string.
  *
