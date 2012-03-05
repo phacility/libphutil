@@ -115,7 +115,13 @@ final class ConduitClient {
       '__conduit__' => true,
     );
 
-    if ($this->protocol == 'https') {
+    // NOTE: If we're on Windows, the socket-based HTTPFuture won't work
+    // properly. In theory it may be fixable, but the easier fix is just to use
+    // the cURL-based HTTPSFuture for HTTP. We'll lose the ability to
+    // parallelize requests but things will work correctly.
+    $use_https_future = ($this->protocol == 'https') || phutil_is_windows();
+
+    if ($use_https_future) {
       $core_future = new HTTPSFuture($uri, $data);
     } else {
       $core_future = new HTTPFuture($uri, $data);
