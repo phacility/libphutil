@@ -48,7 +48,7 @@ final class PhutilConsoleFormatter {
     $underline_re = '/(?<=^|[^\\\\])__(.*)__/sU';
     $invert_re    = '/(?<=^|[^\\\\])##(.*)##/sU';
 
-    if (self::$disableANSI) {
+    if (self::$disableANSI || phutil_is_windows()) {
       $format = preg_replace($bold_re,      '\1',   $format);
       $format = preg_replace($underline_re, '\1',   $format);
       $format = preg_replace($invert_re,    '\1',   $format);

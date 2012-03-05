@@ -575,14 +575,18 @@ final class Filesystem {
     }
 
     $walk = array();
-    $parts = explode('/', $path);
+    $parts = explode(DIRECTORY_SEPARATOR, $path);
     foreach ($parts as $k => $part) {
       if (!strlen($part)) {
         unset($parts[$k]);
       }
     }
     do {
-      $walk[] = '/'.implode('/', $parts);
+      if (phutil_is_windows()) {
+        $walk[] = implode(DIRECTORY_SEPARATOR, $parts);
+      } else {
+        $walk[] = DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $parts);
+      }
       if (empty($parts)) {
         break;
       }
@@ -607,17 +611,23 @@ final class Filesystem {
    * @task   path
    */
   public static function resolvePath($path, $relative_to = null) {
-    if (strncmp($path, '/', 1)) {
+    if (phutil_is_windows()) {
+      $is_absolute = preg_match('/^[A-Z]+:/', $path);
+    } else {
+      $is_absolute = !strncmp($path, DIRECTORY_SEPARATOR, 1);
+    }
+
+    if (!$is_absolute) {
       if (!$relative_to) {
-        $relative_to = $_SERVER['PWD'];
+        $relative_to = getcwd();
       }
-      $path = $relative_to.'/'.$path;
+      $path = $relative_to.DIRECTORY_SEPARATOR.$path;
     }
 
     if (is_link($path)) {
       $parent_realpath = realpath(dirname($path));
       if ($parent_realpath !== false) {
-        return $parent_realpath.'/'.basename($path);
+        return $parent_realpath.DIRECTORY_SEPARATOR.basename($path);
       }
     }
 
@@ -626,13 +636,18 @@ final class Filesystem {
       return $realpath;
     }
 
+
     // This won't work if the file doesn't exist or is on an unreadable mount
     // or something crazy like that. Try to resolve a parent so we at least
     // cover the nonexistent file case.
-    $parts = explode('/', trim($path, '/'));
+    $parts = explode(DIRECTORY_SEPARATOR, trim($path, DIRECTORY_SEPARATOR));
     while (end($parts) !== false) {
       array_pop($parts);
-      $attempt = '/'.implode('/', $parts);
+      if (phutil_is_windows()) {
+        $attempt = implode(DIRECTORY_SEPARATOR, $parts);
+      } else {
+        $attempt = DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $parts);
+      }
       $realpath = realpath($attempt);
       if ($realpath !== false) {
         $path = $realpath.substr($path, strlen($attempt));
@@ -680,11 +695,11 @@ final class Filesystem {
    */
   public static function readablePath($path, $pwd = null) {
     if ($pwd === null) {
-      $pwd = $_SERVER['PWD'];
+      $pwd = getcwd();
     }
 
     foreach (array($pwd, self::resolvePath($pwd)) as $parent) {
-      $parent = rtrim($parent, '/').'/';
+      $parent = rtrim($parent, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
       $len = strlen($parent);
       if (!strncmp($parent, $path, $len)) {
         $path = substr($path, $len);
@@ -740,22 +755,6 @@ final class Filesystem {
 
 /* -(  Assert  )------------------------------------------------------------- */
 
-  /**
-   * Assert that something (e.g., a file, directory, or symlink) is an
-   * absolute path to the specified location.
-   *
-   * @param  string    Assert that this path is absolute.
-   * @return void
-   *
-   * @task   assert
-   */
-  public static function assertAbsolute($path) {
-    if (empty($path) || $path[0] != '/') {
-      throw new FilesystemException(
-        $path,
-        "Filesystem entity `{$path}' is not absolute.");
-    }
-  }
 
   /**
    * Assert that something (e.g., a file, directory, or symlink) exists at a

@@ -501,11 +501,18 @@ final class ExecFuture extends Future {
 
       list($stdin, $stdout, $stderr) = $pipes;
 
-      if ((!stream_set_blocking($stdout, false)) ||
-          (!stream_set_blocking($stderr, false)) ||
-          (!stream_set_blocking($stdin,  false))) {
-        $this->__destruct();
-        throw new Exception('Failed to set streams nonblocking.');
+      if (!phutil_is_windows()) {
+
+        // On Windows, there's no such thing as nonblocking interprocess I/O.
+        // Just leave the sockets blocking and hope for the best. Some features
+        // will not work.
+
+        if ((!stream_set_blocking($stdout, false)) ||
+            (!stream_set_blocking($stderr, false)) ||
+            (!stream_set_blocking($stdin,  false))) {
+          $this->__destruct();
+          throw new Exception('Failed to set streams nonblocking.');
+        }
       }
 
       return false;
