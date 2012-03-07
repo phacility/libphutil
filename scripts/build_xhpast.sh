@@ -8,7 +8,19 @@ echo
 echo "Building XHPAST..."
 echo
 
-(cd $ROOT && make clean all install)
+cd $ROOT
+make clean all install
+
+echo
+echo "Testing xhpast works"
+echo
+if ! ./xhpast --version
+then
+  echo
+  echo >&2 "xhpast is broken :("
+  echo
+  exit 2
+fi
 
 echo
 echo "Build successful!"

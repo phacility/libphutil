@@ -8,6 +8,9 @@ ifdef PROFILE
 CPPFLAGS += -pg
 endif
 
+# See T953
+CPPFLAGS += -static
+
 ROOT = ../../src/parser/xhpast
 
 all: xhpast
@@ -24,13 +27,13 @@ install: xhpast
 scanner: scanner.l
 	./find_flex.sh >/dev/null && \
 		`./find_flex.sh` -C --header-file=scanner.lex.hpp -o scanner.lex.cpp -d $<
-	echo '/* @generated */' >> scanner.lex.cpp
-	echo '/* @generated */' >> scanner.lex.hpp
+	echo '/* @gen''er''ated */' >> scanner.lex.cpp
+	echo '/* @gen''er''ated */' >> scanner.lex.hpp
 
 parser: parser.y
 	bison --debug --verbose -d -o parser.yacc.cpp $<
-	echo '/* @generated */' >> parser.yacc.cpp
-	echo '/* @generated */' >> parser.yacc.hpp
+	echo '/* @gen''er''ated */' >> parser.yacc.cpp
+	echo '/* @gen''er''ated */' >> parser.yacc.hpp
 
 node_names.hpp: generate_nodes.php
 	php -f generate_nodes.php
