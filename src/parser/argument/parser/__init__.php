@@ -7,6 +7,7 @@
 
 
 phutil_require_module('phutil', 'console');
+phutil_require_module('phutil', 'filesystem');
 phutil_require_module('phutil', 'parser/argument/exception/specification');
 phutil_require_module('phutil', 'parser/argument/exception/usage');
 phutil_require_module('phutil', 'parser/argument/spec');

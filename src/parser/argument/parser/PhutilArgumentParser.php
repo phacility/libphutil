@@ -349,10 +349,13 @@ final class PhutilArgumentParser {
   /**
    * Parse "standard" arguments and apply their effects:
    *
-   *    --trace     Enable service call tracing.
-   *    --no-ansi   Disable ANSI color/style sequences.
+   *    --trace             Enable service call tracing.
+   *    --no-ansi           Disable ANSI color/style sequences.
+   *    --xprofile <file>   Write out an XHProf profile.
    *
    * @return this
+   *
+   * @phutil-external-symbol function xhprof_enable
    */
   public function parseStandardArguments() {
     try {
@@ -366,6 +369,11 @@ final class PhutilArgumentParser {
             'name'  => 'no-ansi',
             'help'  => 'Disable ANSI terminal codes, printing plain text with '.
                        'no color or style.',
+          ),
+          array(
+            'name'  => 'xprofile',
+            'param' => 'profile',
+            'help'  => 'Profile script execution and write results to a file.',
           ),
         ));
     } catch (PhutilArgumentUsageException $ex) {
@@ -385,7 +393,26 @@ final class PhutilArgumentParser {
       PhutilConsoleFormatter::disableANSI(true);
     }
 
+    $xprofile = $this->getArg('xprofile');
+    if ($xprofile) {
+      if (!function_exists('xhprof_enable')) {
+        throw new Exception("To use '--xprofile', you must install XHProf.");
+      }
+
+      xhprof_enable(0);
+      register_shutdown_function(array($this, 'shutdownProfiler'));
+    }
+
     return $this;
+  }
+
+  /**
+   * @phutil-external-symbol function xhprof_disable
+   */
+  public function shutdownProfiler() {
+    $data = xhprof_disable();
+    $data = serialize($data);
+    Filesystem::writeFile($this->getArg('xprofile'), $data);
   }
 
   public function printUsageException(PhutilArgumentUsageException $ex) {

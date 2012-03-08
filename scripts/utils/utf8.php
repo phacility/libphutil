@@ -39,7 +39,7 @@ $args->setSynopsis(<<<EOHELP
     valid UTF-8.
 EOHELP
 );
-
+$args->parseStandardArguments();
 $args->parse(array(
   array(
     'name'      => 'context',
