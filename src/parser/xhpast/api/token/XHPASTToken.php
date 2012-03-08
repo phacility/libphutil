@@ -22,23 +22,37 @@
 final class XHPASTToken extends AASTToken {
 
   public function getTypeName() {
-    $type_id = $this->getTypeID();
-
-    if ($type_id <= 255) {
-      return chr($type_id);
+    if (empty($this->typeName)) {
+      $type_id = $this->typeID;
+      if ($type_id <= 255) {
+        $this->typeName = chr($type_id);
+      }
+      $this->typeName = parent::getTypeName($type_id);
     }
-
-    return parent::getTypeName($type_id);
+    return $this->typeName;
   }
 
   public function isComment() {
-    return ($this->getTypeName() == 'T_COMMENT' ||
-            $this->getTypeName() == 'T_DOC_COMMENT');
+    static $type_ids = null;
+    if ($type_ids === null) {
+      $type_ids = array(
+        $this->tree->getTokenTypeIDFromTypeName('T_COMMENT')      => true,
+        $this->tree->getTokenTypeIDFromTypeName('T_DOC_COMMENT')  => true,
+      );
+    }
+
+    return isset($type_ids[$this->typeID]);
   }
 
   public function isAnyWhitespace() {
-    return ($this->getTypeName() == 'T_WHITESPACE' ||
-            $this->getTypeName() == 'T_XHP_WHITESPACE');
+    static $type_ids = null;
+    if ($type_ids === null) {
+      $type_ids = array(
+        $this->tree->getTokenTypeIDFromTypeName('T_WHITESPACE') => true,
+      );
+    }
+
+    return isset($type_ids[$this->typeID]);
   }
 
 }

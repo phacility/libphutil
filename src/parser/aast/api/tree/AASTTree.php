@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 /**
  * An abstract abstract syntax tree. YESSSSSSS.
@@ -31,6 +30,7 @@ abstract class AASTTree {
 
   private $treeType = 'Abstract';
   private $tokenConstants;
+  private $tokenReverseMap;
   private $nodeConstants;
   private $nodeReverseMap;
 
@@ -72,6 +72,7 @@ abstract class AASTTree {
 
   public function setTokenConstants(array $token_map) {
     $this->tokenConstants = $token_map;
+    $this->tokenReverseMap = array_flip($token_map);
     return $this;
   }
 
@@ -104,11 +105,23 @@ abstract class AASTTree {
   public function getTokenTypeNameFromTypeID($type_id) {
     if (empty($this->tokenConstants[$type_id])) {
       $tree_type = $this->getTreeType();
-      throw new Exception("No type name for token type ID '{$type_id}'.");
+      throw new Exception(
+        "No type name for token type ID '{$type_id}' ".
+        "in '{$tree_type}' AAST.");
     }
-
     return $this->tokenConstants[$type_id];
   }
+
+  public function getTokenTypeIDFromTypeName($type_name) {
+    if (empty($this->tokenReverseMap[$type_name])) {
+      $tree_type = $this->getTreeType();
+      throw new Exception(
+        "No type ID for token type name '{$type_name}' ".
+        "in '{$tree_type}' AAST.");
+    }
+    return $this->tokenReverseMap[$type_name];
+  }
+
 
   /**
    * Unlink internal datastructures so that PHP's will garbage collect the tree.
@@ -117,6 +130,7 @@ abstract class AASTTree {
    * @return void
    */
   public function dispose() {
+    $this->getRootNode()->dipsose();
     unset($this->tree);
     unset($this->stream);
   }

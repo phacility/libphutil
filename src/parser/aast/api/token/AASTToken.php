@@ -40,7 +40,10 @@ abstract class AASTToken {
   }
 
   public function getTypeName() {
-    return $this->tree->getTokenTypeNameFromTypeID($this->getTypeID());
+    if (empty($this->typeName)) {
+      $this->typeName = $this->tree->getTokenTypeNameFromTypeID($this->typeID);
+    }
+    return $this->typeName;
   }
 
   public function getValue() {
