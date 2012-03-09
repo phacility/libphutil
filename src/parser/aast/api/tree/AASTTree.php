@@ -130,7 +130,7 @@ abstract class AASTTree {
    * @return void
    */
   public function dispose() {
-    $this->getRootNode()->dipsose();
+    $this->getRootNode()->dispose();
     unset($this->tree);
     unset($this->stream);
   }
