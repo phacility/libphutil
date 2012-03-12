@@ -74,6 +74,12 @@ final class HTTPFutureResponseStatusCURL extends HTTPFutureResponseStatus {
       CURLE_OPERATION_TIMEOUTED =>
         'The request took too long to complete.',
 
+      CURLE_SSL_PEER_CERTIFICATE =>
+        'There was an error verifying the SSL connection. This usually '.
+        'indicates that the remote host has an SSL certificate for a '.
+        'different domain name than you are connecting with. Make sure the '.
+        'certificate you have installed is signed for the correct domain.',
+
     );
 
     $default_message =
