@@ -8,8 +8,9 @@ ifdef PROFILE
 CPPFLAGS += -pg
 endif
 
-# See T953
+ifdef STATIC
 CPPFLAGS += -static
+endif
 
 ROOT = ../../src/parser/xhpast
 
