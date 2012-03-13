@@ -49,7 +49,7 @@ final class ExecFuture extends Future {
   protected $stdout       = null;
   protected $stderr       = null;
   protected $stdin        = null;
-  protected $closePipe    = false;
+  protected $closePipe    = true;
 
   protected $stdoutPos    = 0;
   protected $stderrPos    = 0;
@@ -154,7 +154,9 @@ final class ExecFuture extends Future {
    */
   public function setStdoutSizeLimit($limit) {
     $this->stdoutSizeLimit = $limit;
+    return $this;
   }
+
 
   /**
    * Set a maximum size for the stderr read buffer.
@@ -168,6 +170,7 @@ final class ExecFuture extends Future {
     $this->stderrSizeLimit = $limit;
     return $this;
   }
+
 
   /**
    * Set the current working directory to use when executing the command.
@@ -233,21 +236,16 @@ final class ExecFuture extends Future {
    *
    * @param string Data to write.
    * @param bool If true, keep the pipe open for writing. By default, the pipe
-   *             will be closed after the write completes so that commands which
-   *             listen for EOF will execute.
+   *             will be closed as soon as possible so that commands which
+   *             listen for EOF will execute. If you want to keep the pipe open
+   *             past the start of command execution, do an empty write with
+   *             `$keep_pipe = true` first.
    * @return this
    * @task interact
    */
   public function write($data, $keep_pipe = false) {
     $this->stdin .= $data;
-
-    if (!$keep_pipe) {
-      $this->closePipe = true;
-    }
-
-    if ($this->start) {
-      $this->isReady(); // Sync
-    }
+    $this->closePipe = !$keep_pipe;
 
     return $this;
   }
@@ -495,7 +493,7 @@ final class ExecFuture extends Future {
         throw new Exception('Failed to open process.');
       }
 
-      $this->start = time();
+      $this->start = microtime(true);
       $this->pipes = $pipes;
       $this->proc  = $proc;
 
@@ -515,6 +513,8 @@ final class ExecFuture extends Future {
         }
       }
 
+      $this->tryToCloseStdin();
+
       return false;
     }
 
@@ -532,18 +532,9 @@ final class ExecFuture extends Future {
       } else if ($bytes) {
         $this->stdin = substr($this->stdin, $bytes);
       }
-
-      if (!strlen($this->stdin) && $this->closePipe) {
-        $close_stdin = true;
-      }
-    } else if ($this->closePipe && $stdin) {
-      $close_stdin = true;
     }
 
-    if ($close_stdin) {
-      @fclose($stdin);
-      $this->pipes[0] = null;
-    }
+    $this->tryToCloseStdin();
 
     //  Read status before reading pipes so that we can never miss data that
     //  arrives between our last read and the process exiting.
@@ -569,7 +560,8 @@ final class ExecFuture extends Future {
       return true;
     }
 
-    if ($this->timeout && ((time() - $this->start) >= $this->timeout)) {
+    $elapsed = (microtime(true) - $this->start);
+    if ($this->timeout && ($elapsed >= $this->timeout)) {
       if (defined('SIGKILL')) {
         $signal = SIGKILL;
       } else {
@@ -643,6 +635,36 @@ final class ExecFuture extends Future {
     }
     $this->procStatus = proc_get_status($this->proc);
     return $this->procStatus;
+  }
+
+  /**
+   * Try to close stdin, if we're done using it. This keeps us from hanging if
+   * the process on the other end of the pipe is waiting for EOF.
+   *
+   * @return void
+   * @task internal
+   */
+  private function tryToCloseStdin() {
+    if (!$this->closePipe) {
+      // We've been told to keep the pipe open by a call to write(..., true).
+      return;
+    }
+
+    if (strlen($this->stdin)) {
+      // We still have bytes to write.
+      return;
+    }
+
+    list($stdin) = $this->pipes;
+    if (!$stdin) {
+      // We've already closed stdin.
+      return;
+    }
+
+    // There's nothing stopping us from closing stdin, so close it.
+
+    @fclose($stdin);
+    $this->pipes[0] = null;
   }
 
 }

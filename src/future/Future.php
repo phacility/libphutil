@@ -62,6 +62,7 @@ abstract class Future {
 
       if ($timeout !== null) {
         $elapsed = microtime(true) - $start;
+
         if ($elapsed > $timeout) {
           $this->checkException();
           return null;
@@ -191,5 +192,7 @@ abstract class Future {
 
   public function start() {
     $this->isReady();
+    return $this;
   }
+
 }
