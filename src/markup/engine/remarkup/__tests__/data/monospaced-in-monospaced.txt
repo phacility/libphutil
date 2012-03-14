@@ -1,0 +1,12 @@
+##SELECT * FROM `table`##
+
+`SELECT * FROM ##table##`
+
+`**x**`
+
+~~~~~~~~~~
+<p><tt>SELECT * FROM `table`</tt></p>
+
+<p><tt>SELECT * FROM ##table##</tt></p>
+
+<p><tt>**x**</tt></p>
