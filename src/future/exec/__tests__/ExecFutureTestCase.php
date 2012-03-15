@@ -64,12 +64,50 @@ final class ExecFutureTestCase extends ArcanistPhutilTestCase {
     $this->assertEqual(substr($data, 0, 1024), $stdout);
   }
 
-  public function testTimeout() {
+  public function testResolveTimeoutTestShouldRunLessThan1Sec() {
+
+    // NOTE: This tests interactions between the resolve() timeout and the
+    // ExecFuture timeout, which are similar but not identical.
+
+    $future = id(new ExecFuture('sleep 32000'))->start();
+    $future->setTimeout(32000);
+
+    // We expect this to return in 0.01s.
+    $result = $future->resolve(0.01);
+    $this->assertEqual($result, null);
+
+    // We expect this to now force the time out / kill immediately. If we don't
+    // do this, we'll hang when exiting until our subprocess exits (32000
+    // seconds!)
+    $future->setTimeout(0.01);
+    $future->resolve();
+  }
+
+
+  public function testTimeoutTestShouldRunLessThan1Sec() {
+
+    // NOTE: This is partly testing that we choose appropriate select wait
+    // times; this test should run for significantly less than 1 second.
+
     list($err) = id(new ExecFuture('sleep 32000'))->setTimeout(0.01)->resolve();
 
     $this->assertEqual(
       ExecFuture::TIMED_OUT_EXIT_CODE,
       $err);
+  }
+
+  public function testMultipleTimeoutsTestShouldRunLessThan1Sec() {
+    $futures = array();
+    for ($ii = 0; $ii < 4; $ii++) {
+      $futures[] = id(new ExecFuture('sleep 32000'))->setTimeout(0.01);
+    }
+
+    foreach (Futures($futures) as $future) {
+      list ($err) = $future->resolve();
+      $this->assertEqual(
+        ExecFuture::TIMED_OUT_EXIT_CODE,
+        $err);
+    }
   }
 
 }

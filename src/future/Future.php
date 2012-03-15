@@ -50,7 +50,7 @@ abstract class Future {
    */
   public function resolve($timeout = null) {
     $start = microtime(true);
-    $wait  = 1;
+    $wait  = $this->getDefaultWait();
     do {
       $this->checkException();
       if ($this->isReady()) {
@@ -188,6 +188,15 @@ abstract class Future {
    */
   protected function getResult() {
     return $this->result;
+  }
+
+  /**
+   * Default amount of time to wait on stream select for this future. Normally
+   * 1 second is fine, but if the future has a timeout sooner than that it
+   * should return the amount of time left before the timeout.
+   */
+  public function getDefaultWait() {
+    return 1;
   }
 
   public function start() {

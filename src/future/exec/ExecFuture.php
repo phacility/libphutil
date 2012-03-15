@@ -306,26 +306,6 @@ final class ExecFuture extends Future {
 
 
   /**
-   * Resolve a command, returning its exit code, stdout, and stderr. See also
-   * @{function:exec_manual}. For stronger error-checking behavior, see
-   * @{method:resolvex} and @{method:resolveJSON}.
-   *
-   *   list($err, $stdout, $stderr) = $future->resolve();
-   *
-   * @param  float Optional timeout after which resolution will pause and
-   *               execution will return to the caller.
-   * @return list  <$err, $stdout, $stderr> list.
-   * @task resolve
-   */
-  public function resolve($timeout = null) {
-    if (null === $timeout) {
-      $timeout = $this->timeout;
-    }
-    return parent::resolve($timeout);
-  }
-
-
-  /**
    * Resolve a command you expect to exit with return code 0. Works like
    * @{method:resolve}, but throws if $err is nonempty. Returns only
    * $stdout and $stderr. See also @{function:execx}.
@@ -483,6 +463,11 @@ final class ExecFuture extends Future {
           'command' => $this->command,
         ));
 
+      if (!$this->start) {
+        // We might already have started the timer via initating resolution.
+        $this->start = microtime(true);
+      }
+
       $pipes = array();
       $proc = proc_open(
         $this->command,
@@ -493,7 +478,6 @@ final class ExecFuture extends Future {
         throw new Exception('Failed to open process.');
       }
 
-      $this->start = microtime(true);
       $this->pipes = $pipes;
       $this->proc  = $proc;
 
@@ -666,5 +650,20 @@ final class ExecFuture extends Future {
     @fclose($stdin);
     $this->pipes[0] = null;
   }
+
+  public function getDefaultWait() {
+    $wait = parent::getDefaultWait();
+
+    if ($this->timeout) {
+      if (!$this->start) {
+        $this->start = microtime(true);
+      }
+      $elapsed = (microtime(true) - $this->start);
+      $wait = max(0, min($this->timeout - $elapsed, $wait));
+    }
+
+    return $wait;
+  }
+
 
 }

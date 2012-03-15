@@ -181,7 +181,6 @@ final class FutureIterator implements Iterator {
     $write_sockets = array();
 
     $start = microtime(true);
-    $wait_time = 1;
     $timeout = $this->timeout;
     $this->isTimeout = false;
 
@@ -191,6 +190,7 @@ final class FutureIterator implements Iterator {
       $read_sockets    = array();
       $write_sockets   = array();
       $can_use_sockets = true;
+      $wait_time       = 1;
       foreach ($check as $wait => $key) {
         $future = $this->futures[$key];
         try {
@@ -226,6 +226,8 @@ final class FutureIterator implements Iterator {
           // we can't wait for the current batch of items using sockets.
           if (!$got_sockets) {
             $can_use_sockets = false;
+          } else {
+            $wait_time = min($wait_time, $future->getDefaultWait());
           }
         } catch (Exception $ex) {
           $this->futures[$key]->setException($ex);
@@ -235,7 +237,6 @@ final class FutureIterator implements Iterator {
       }
       if ($resolve === null) {
         if ($can_use_sockets) {
-
           if ($timeout !== null) {
             $elapsed = microtime(true) - $start;
             if ($elapsed > $timeout) {
