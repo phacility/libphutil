@@ -32,7 +32,7 @@ final class PhutilRemarkupRuleMonospace
   private function markupMonospacedText($matches) {
     $match = isset($matches[2]) ? $matches[2] : $matches[1];
 
-    $result = '<tt>'.$match.'</tt>';
+    $result = '<tt>'.phutil_escape_html($match).'</tt>';
 
     return $this->getEngine()->storeText($result);
   }
