@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 /**
  * Improve PHP error logs and optionally route errors, exceptions and debugging
@@ -291,7 +290,7 @@ final class PhutilErrorHandler {
  *
  * @param wild Any value you want printed to the error log or other registered
  *             logs/consoles.
- * @return void
+ * @return wild Passed $value.
  * @group error
  */
 function phlog($value) {
@@ -314,6 +313,7 @@ function phlog($value) {
     array('file'  => $file,
           'line'  => $line,
           'trace' => $trace));
+  return $value;
 }
 
 
