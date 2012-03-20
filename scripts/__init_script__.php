@@ -34,6 +34,17 @@ function __phutil_adjust_php_ini() {
   foreach ($config_map as $config_key => $config_value) {
     ini_set($config_key, $config_value);
   }
+
+  // There may be some kind of auto-prepend script configured which starts an
+  // output buffer. Discard any such output buffers so messages can be sent to
+  // stdout (if a user wants to capture output from a script, there are a large
+  // number of ways they can accomplish it legitimately; historically, we ran
+  // into this on only one install which had some bizarre configuration, but it
+  // was difficult to diagnose because the symptom is "no messages of any
+  // kind").
+  while (ob_get_level() > 0) {
+    ob_end_clean();
+  }
 }
 
 __phutil_adjust_php_ini();
