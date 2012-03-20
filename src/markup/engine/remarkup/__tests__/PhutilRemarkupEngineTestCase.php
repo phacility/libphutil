@@ -39,6 +39,19 @@ final class PhutilRemarkupEngineTestCase extends ArcanistPhutilTestCase {
 
     list($input_remarkup, $expected_output) = $parts;
 
+    switch ($file) {
+      case 'raw-escape.txt':
+
+        // NOTE: Here, we want to test PhutilRemarkupRuleEscapeRemarkup and
+        // PhutilRemarkupBlockStorage, which are triggered by "\1". In the
+        // test, "~" is used as a placeholder for "\1" since it's hard to type
+        // "\1".
+
+        $input_remarkup = str_replace("~", "\1", $input_remarkup);
+        $expected_output = str_replace("~", "\1", $expected_output);
+        break;
+    }
+
     $engine = $this->buildNewTestEngine();
 
     $actual_output = $engine->markupText($input_remarkup);

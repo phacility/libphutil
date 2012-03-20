@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 /**
  * Remarkup prevents several classes of text-processing problems by replacing
  * tokens in the text as they are marked up. For example, if you write something
@@ -26,16 +25,16 @@
  *
  * It is processed in several stages. First the "D12" matches and is replaced:
  *
- *   //~1Z//
+ *   //\11Z//
  *
  * Now the italics match and are replaced:
  *
- *   ~2Z
+ *   \12Z
  *
  * When processing completes, all the tokens are replaced again in reverse
  * order:
  *
- *   <em>~1Z</em>
+ *   <em>\11Z</em>
  *
  * Then:
  *
@@ -55,7 +54,7 @@ final class PhutilRemarkupBlockStorage {
   private $index;
 
   public function store($text) {
-    $key = "~".(++$this->index)."Z";
+    $key = "\1".(++$this->index)."Z";
     $this->map[$key] = $text;
     return $key;
   }

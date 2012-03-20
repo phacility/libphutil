@@ -23,13 +23,13 @@ final class PhutilRemarkupRuleEscapeRemarkup
   extends PhutilRemarkupRule {
 
   public function apply($text) {
-    if (strpos($text, '~') === false) {
+    if (strpos($text, "\1") === false) {
       return $text;
     }
 
-    $replace = $this->getEngine()->storeText('~');
+    $replace = $this->getEngine()->storeText("\1");
 
-    return str_replace('~', $replace, $text);
+    return str_replace("\1", $replace, $text);
   }
 
 }
