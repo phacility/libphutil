@@ -16,6 +16,7 @@ phutil_require_module('phutil', 'markup/engine/remarkup/blockrule/remarkupheader
 phutil_require_module('phutil', 'markup/engine/remarkup/blockrule/remarkuplist');
 phutil_require_module('phutil', 'markup/engine/remarkup/blockrule/remarkupnote');
 phutil_require_module('phutil', 'markup/engine/remarkup/markuprule/bold');
+phutil_require_module('phutil', 'markup/engine/remarkup/markuprule/del');
 phutil_require_module('phutil', 'markup/engine/remarkup/markuprule/escapehtml');
 phutil_require_module('phutil', 'markup/engine/remarkup/markuprule/escaperemarkup');
 phutil_require_module('phutil', 'markup/engine/remarkup/markuprule/hyperlink');

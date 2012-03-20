@@ -78,6 +78,7 @@ final class PhutilRemarkupEngineTestCase extends ArcanistPhutilTestCase {
     $rules[] = new PhutilRemarkupRuleEscapeHTML();
     $rules[] = new PhutilRemarkupRuleBold();
     $rules[] = new PhutilRemarkupRuleItalic();
+    $rules[] = new PhutilRemarkupRuleDel();
 
     $blocks = array();
     $blocks[] = new PhutilRemarkupEngineRemarkupHeaderBlockRule();
