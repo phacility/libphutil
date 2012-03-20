@@ -216,13 +216,37 @@ final class Filesystem {
       return;
     }
 
-    //  PHP's builtin functions for this are such a mess that it's much easier
-    //  to exec out. :/
-    list($err, $stdout, $stderr) = exec_manual('rm -rf %s', $path);
-    if ($err) {
-      throw new FilesystemException(
-        $path,
-        "Unable to remove `{$path}'.");
+    self::executeRemovePath($path);
+  }
+
+
+  /**
+   * Internal. Recursively remove a file or an entire directory. Implements
+   * the core function of @{method:remove} in a way that works on Windows.
+   *
+   * @param  string    File to a path or directory to remove.
+   * @return void
+   *
+   * @task file
+   */
+  private static function executeRemovePath($path) {
+    if (is_dir($path)) {
+      foreach (Filesystem::listDirectory($path, true) as $child) {
+        self::executeRemovePath($path.DIRECTORY_SEPARATOR.$child);
+      }
+      $ok = rmdir($path);
+      if (!$ok) {
+         throw new FilesystemException(
+          $path,
+          "Failed to remove directory '{$path}'!");
+      }
+    } else {
+      $ok = unlink($path);
+      if (!$ok) {
+        throw new FilesystemException(
+          $path,
+          "Failed to remove file '{$path}'!");
+      }
     }
   }
 

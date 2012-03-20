@@ -37,7 +37,7 @@ final class PhutilInteractiveEditor {
   private $name     = '';
   private $content  = '';
   private $offset   = 0;
-  private $fallback = 'nano';
+  private $fallback;
 
 
 /* -(  Creating a New Editor  )---------------------------------------------- */
@@ -107,22 +107,23 @@ final class PhutilInteractiveEditor {
   }
 
   private function invokeEditor($editor, $path, $offset) {
-    $arg_offset = escapeshellarg($offset);
-    $arg_path   = escapeshellarg($path);
-
-    $invocation_command = "{$editor} +{$arg_offset} {$arg_path}";
 
     // Special cases for known editors that don't obey the usual convention.
     if (preg_match('/^mate/', $editor)) {
-      $invocation_command = "{$editor} -l {$arg_offset} {$arg_path}";
+      $cmd = csprintf(
+        '%s -l %s %s',
+        $editor,
+        $offset,
+        $path);
+    } else {
+      $cmd = csprintf(
+        '%s %s %s',
+        $editor,
+        '+'.$offset,
+        $path);
     }
 
-    // Ensure the child process shares the real STD[IN|OUT] and not a
-    // pipe.  This is necessary for emacsclient to work properly.
-    $pipes = array();
-    return proc_close(proc_open($invocation_command,
-                                array(STDIN, STDOUT, STDERR), $pipes));
-
+    return phutil_passthru('%C', $cmd);
   }
 
 
@@ -251,6 +252,17 @@ final class PhutilInteractiveEditor {
       return 'editor';
     }
 
-    return $this->fallback;
+    if ($this->fallback) {
+      return $this->fallback;
+    }
+
+    list($err) = exec_manual('which nano');
+    if (!$err) {
+      return 'nano';
+    }
+
+    throw new Exception(
+      "Unable to launch an interactive text editor. Set the EDITOR ".
+      "environment variable to an appropriate editor.");
   }
 }

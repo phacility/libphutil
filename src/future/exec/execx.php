@@ -78,8 +78,21 @@ function phutil_passthru($cmd /*, ... */) {
       'command' => $command,
     ));
 
+  $spec  = array(STDIN, STDOUT, STDERR);
   $pipes = array();
-  $proc = proc_open($command, array(STDIN, STDOUT, STDERR), $pipes);
+
+  if (phutil_is_windows()) {
+    // Without 'bypass_shell', things like launching vim don't work properly,
+    // and we can't execute commands with spaces in them, and all commands
+    // invoked from git bash fail horridly, and everything is a mess in general.
+    $options = array(
+      'bypass_shell' => true,
+    );
+    $proc = proc_open($command, $spec, $pipes, null, null, $options);
+  } else {
+    $proc = proc_open($command, $spec, $pipes);
+  }
+
   $err = proc_close($proc);
 
   $profiler->endServiceCall(
