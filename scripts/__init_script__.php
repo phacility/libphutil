@@ -16,14 +16,13 @@
  * limitations under the License.
  */
 
-$root = dirname(dirname(__FILE__));
-require_once $root.'/src/__phutil_library_init__.php';
+function __phutil_init_script__() {
+  $root = dirname(dirname(__FILE__));
+  require_once $root.'/src/__phutil_library_init__.php';
 
-/**
- * Adjust the runtime language configuration to be reasonable and inline with
- * expectations.
- */
-function __phutil_adjust_php_ini() {
+  // Adjust the runtime language configuration to be reasonable and inline with
+  // expectations.
+
   error_reporting(E_ALL | E_STRICT);
 
   $config_map = array(
@@ -47,4 +46,4 @@ function __phutil_adjust_php_ini() {
   }
 }
 
-__phutil_adjust_php_ini();
+__phutil_init_script__();
