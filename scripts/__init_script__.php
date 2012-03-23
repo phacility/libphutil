@@ -34,6 +34,17 @@ function __phutil_init_script__() {
     ini_set($config_key, $config_value);
   }
 
+  if (!ini_get('date.timezone')) {
+    // If the timezone isn't set, PHP issues a warning whenever you try to parse
+    // a date (like those from Git or Mercurial logs), even if the date contains
+    // timezone information (like "PST" or "-0700") which makes the
+    // environmental timezone setting is completely irrelevant. We never rely on
+    // the system timezone setting in any capacity, so prevent PHP from flipping
+    // out by setting it to a safe default (UTC) if it isn't set to some other
+    // value.
+    date_default_timezone_set('UTC');
+  }
+
   // There may be some kind of auto-prepend script configured which starts an
   // output buffer. Discard any such output buffers so messages can be sent to
   // stdout (if a user wants to capture output from a script, there are a large
