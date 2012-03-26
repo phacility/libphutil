@@ -270,7 +270,6 @@ function phutil_utf8_hard_wrap_html($string, $width) {
   // Convert the UTF-8 string into a list of UTF-8 characters.
   $vector = phutil_utf8v($string);
   $len = count($vector);
-  $byte_pos = 0;
   $char_pos = 0;
   for ($ii = 0; $ii < $len; ++$ii) {
     // An ampersand indicates an HTML entity; consume the whole thing (until

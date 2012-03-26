@@ -68,15 +68,98 @@ function phutil_console_prompt($prompt) {
 
 
 /**
+ * Soft wrap text for display on a console, respecting UTF8 character boundaries
+ * and ANSI color escape sequences.
+ *
+ * @param   string  Text to wrap.
+ * @param   int     Optional indent level.
+ * @return  string  Wrapped text.
+ *
  * @group console
  */
 function phutil_console_wrap($text, $indent = 0) {
-  $indent_string = '';
-  if ($indent) {
-    $indent_string = str_repeat(' ', $indent);
-    $text = str_replace("\n", "\n".$indent_string, $text);
+  $lines = array();
+
+  $width = (78 - $indent);
+  $esc = chr(27);
+
+  $break_pos = null;
+  $len_after_break = 0;
+  $line_len = 0;
+
+  $line = array();
+  $lines = array();
+
+  $vector = phutil_utf8v($text);
+  $vector_len = count($vector);
+  for ($ii = 0; $ii < $vector_len; $ii++) {
+    $chr = $vector[$ii];
+
+    // If this is an ANSI escape sequence for a color code, just consume it
+    // without counting it toward the character limit. This prevents lines
+    // with bold/color on them from wrapping too early.
+    if ($chr == $esc) {
+      for ($ii; $ii < $vector_len; $ii++) {
+        $line[] = $vector[$ii];
+        if ($vector[$ii] == 'm') {
+          break;
+        }
+      }
+      continue;
+    }
+
+    $line[] = $chr;
+
+    ++$line_len;
+    ++$len_after_break;
+
+    if ($line_len > $width) {
+      if ($break_pos !== null) {
+        $slice = array_slice($line, 0, $break_pos);
+        while (count($slice) && end($slice) == ' ') {
+          array_pop($slice);
+        }
+        $slice[] = "\n";
+        $lines[] = $slice;
+        $line = array_slice($line, $break_pos);
+
+        $line_len = $len_after_break;
+        $len_after_break = 0;
+        $break_pos = 0;
+      }
+    }
+
+    if ($chr == " ") {
+      $break_pos = count($line);
+      $len_after_break = 0;
+    }
+
+    if ($chr == "\n") {
+      $lines[] = $line;
+      $line = array();
+
+      $len_after_break = 0;
+      $line_len = 0;
+      $break_pos = null;
+    }
   }
-  return wordwrap($text, 78 - $indent, "\n".$indent_string);
+
+  if ($line) {
+    if ($line) {
+      $lines[] = $line;
+    }
+  }
+
+  $pre = null;
+  if ($indent) {
+    $pre = str_repeat(' ', $indent);
+  }
+
+  foreach ($lines as $idx => $line) {
+    $lines[$idx] = $pre.implode('', $line);
+  }
+
+  return implode('', $lines);
 }
 
 

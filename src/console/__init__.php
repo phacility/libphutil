@@ -7,6 +7,7 @@
 
 
 phutil_require_module('phutil', 'console/exception');
+phutil_require_module('phutil', 'utils');
 
 
 phutil_require_source('PhutilConsoleFormatter.php');
