@@ -51,6 +51,7 @@ abstract class PhutilRemarkupEngineBlockRule {
   }
 
   public function setMarkupRules(array $rules) {
+    assert_instances_of($rules, 'PhutilRemarkupRule');
     $this->rules = $rules;
     return $this;
   }

@@ -132,6 +132,7 @@ phutil_register_library_map(array(
     'Futures' => 'future',
     'array_mergev' => 'utils',
     'array_select_keys' => 'utils',
+    'assert_instances_of' => 'utils',
     'coalesce' => 'utils',
     'csprintf' => 'xsprintf/csprintf',
     'exec_manual' => 'future/exec',

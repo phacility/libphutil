@@ -51,6 +51,7 @@ final class AASTNodeList implements Iterator, Countable {
   }
 
   public static function newFromTreeAndNodes(AASTTree $tree, array $nodes) {
+    assert_instances_of($nodes, 'AASTNode');
     $obj = new AASTNodeList();
     $obj->tree = $tree;
     $obj->list = $nodes;

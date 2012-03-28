@@ -35,6 +35,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   }
 
   public function setBlockRules(array $rules) {
+    assert_instances_of($rules, 'PhutilRemarkupEngineBlockRule');
     $this->blockRules = $rules;
     return $this;
   }

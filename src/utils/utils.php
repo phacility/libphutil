@@ -460,6 +460,26 @@ function array_select_keys(array $dict, array $keys) {
 
 
 /**
+ * Checks if all values of array are instances of the passed class.
+ * Throws InvalidArgumentException if it isn't true for any value.
+ *
+ * @param  array
+ * @param  string
+ * @return array   Returns passed array.
+ * @group   util
+ */
+function assert_instances_of(array $arr, $class) {
+  foreach ($arr as $key => $object) {
+    if (!($object instanceof $class)) {
+      throw new InvalidArgumentException(
+        "Array item with key '{$key}' must be an instance of '{$class}'.");
+    }
+  }
+  return $arr;
+}
+
+
+/**
  * Returns the first argument which is not strictly null, or ##null## if there
  * are no such arguments. Identical to the MySQL function of the same name.
  *
