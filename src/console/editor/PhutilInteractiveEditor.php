@@ -116,8 +116,14 @@ final class PhutilInteractiveEditor {
         $offset,
         $path);
     } else {
+      if (phutil_is_windows()) {
+        $command_format = '%s';
+      } else {
+        $command_format = '%C';
+      }
+
       $cmd = csprintf(
-        '%s %s %s',
+        $command_format.' %s %s',
         $editor,
         '+'.$offset,
         $path);
