@@ -343,7 +343,7 @@ final class PhutilArgumentParser {
     $args = func_get_args();
     $args = array_slice($args, 1);
     $text = call_user_func_array(array($this, 'format'), $args);
-    return str_repeat(' ', $level).phutil_console_wrap($text, $level);
+    return phutil_console_wrap($text, $level);
   }
 
   /**

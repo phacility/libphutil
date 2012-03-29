@@ -52,7 +52,7 @@ function phutil_console_confirm($prompt, $default_no = true) {
  */
 function phutil_console_prompt($prompt) {
 
-  $prompt = "\n\n    ".$prompt." ";
+  $prompt = "\n\n".$prompt." ";
   $prompt = phutil_console_wrap($prompt, 4);
 
   echo $prompt;
