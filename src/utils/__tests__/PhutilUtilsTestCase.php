@@ -24,17 +24,16 @@
 final class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
 
   public function testMFilter_nullMethod_throwException() {
-    $list = array();
-
+    $caught = null;
     try {
-      $actual = mfilter($list, null);
-      $this->assertFailure('Method call should have thrown an '.
-        'InvalidArgumentException.');
+      mfilter(array(), null);
     } catch (InvalidArgumentException $ex) {
-      if ($ex->getMessage() != 'Argument method is not a string.') {
-        throw $ex;
-      }
+      $caught = $ex;
     }
+
+    $this->assertEqual(
+      true,
+      ($caught instanceof InvalidArgumentException));
   }
 
 
@@ -80,17 +79,16 @@ final class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
 
 
   public function testIFilter_invalidIndex_throwException() {
-    $list = array();
-
+    $caught = null;
     try {
-      $actual = ifilter($list, null);
-      $this->assertFailure('Method call should have thrown an '.
-        'InvalidArgumentException.');
+      ifilter(array(), null);
     } catch (InvalidArgumentException $ex) {
-      if ($ex->getMessage() != 'Argument index is not a scalar.') {
-        throw $ex;
-      }
+      $caught = $ex;
     }
+
+    $this->assertEqual(
+      true,
+      ($caught instanceof InvalidArgumentException));
   }
 
 
@@ -190,6 +188,56 @@ final class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
           array(),
           array(4, 5),
         )));
+  }
+
+  public function testNonempty() {
+    $this->assertEqual(
+      'zebra',
+      nonempty(false, null, 0, '', array(), 'zebra'));
+
+    $this->assertEqual(
+      null,
+      nonempty());
+
+    $this->assertEqual(
+      false,
+      nonempty(null, false));
+
+    $this->assertEqual(
+      null,
+      nonempty(false, null));
+  }
+
+  public function testCoalesce() {
+    $this->assertEqual(
+      'zebra',
+      coalesce(null, 'zebra'));
+
+    $this->assertEqual(
+      null,
+      coalesce());
+
+    $this->assertEqual(
+      false,
+      coalesce(false, null));
+
+    $this->assertEqual(
+      false,
+      coalesce(null, false));
+  }
+
+  public function testHeadLast() {
+    $this->assertEqual(
+      'a',
+      head(explode('.', 'a.b')));
+    $this->assertEqual(
+      'b',
+      last(explode('.', 'a.b')));
+  }
+
+  public function testID() {
+    $this->assertEqual(true, id(true));
+    $this->assertEqual(false, id(false));
   }
 
 }

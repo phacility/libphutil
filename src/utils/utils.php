@@ -513,13 +513,14 @@ function coalesce(/* ... */) {
  */
 function nonempty(/* ... */) {
   $args = func_get_args();
-  $arg = null;
+  $result = null;
   foreach ($args as $arg) {
+    $result = $arg;
     if ($arg) {
       break;
     }
   }
-  return $arg;
+  return $result;
 }
 
 
