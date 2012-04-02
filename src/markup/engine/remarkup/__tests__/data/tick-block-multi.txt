@@ -5,8 +5,8 @@ more code
 more code```
 
 ~~~~~~~~~~
-<div class="remarkup-code-block"><code class="remarkup-code">code
+<div class="remarkup-code-block"><pre class="remarkup-code">code
 
 more code
 
-more code</code></div>
+more code</pre></div>

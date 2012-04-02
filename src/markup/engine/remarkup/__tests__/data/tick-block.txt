@@ -1,3 +1,3 @@
 ```code```
 ~~~~~~~~~~
-<div class="remarkup-code-block"><code class="remarkup-code">code</code></div>
+<div class="remarkup-code-block"><pre class="remarkup-code">code</pre></div>

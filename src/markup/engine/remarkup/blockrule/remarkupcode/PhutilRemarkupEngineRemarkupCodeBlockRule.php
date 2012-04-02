@@ -148,7 +148,7 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
       'pygments.enabled',
       $this->getEngine()->getConfig('pygments.enabled'));
     $code_body = phutil_render_tag(
-      'code',
+      'pre',
       array(
         'class' => 'remarkup-code'.$aux_class,
         'style' => $aux_style,

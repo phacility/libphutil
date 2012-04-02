@@ -2,6 +2,6 @@
 
   - still a code block
 ~~~~~~~~~~
-<div class="remarkup-code-block"><code class="remarkup-code">code block
+<div class="remarkup-code-block"><pre class="remarkup-code">code block
 
-- still a code block</code></div>
+- still a code block</pre></div>
