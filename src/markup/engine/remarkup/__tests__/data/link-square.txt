@@ -1,0 +1,8 @@
+[[http://www.example.com/]]
+
+[[http://www.example.com/ | example.com]]
+
+~~~~~~~~~~
+<p><a href="http://www.example.com/" target="_blank">http://www.example.com/</a></p>
+
+<p><a href="http://www.example.com/" target="_blank">example.com</a></p>
