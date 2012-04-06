@@ -63,7 +63,7 @@ function phutil_console_prompt($prompt) {
 
   $response = fgets(STDIN);
 
-  return rtrim($response, "\n");
+  return rtrim($response, "\r\n");
 }
 
 
