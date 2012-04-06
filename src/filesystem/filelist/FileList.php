@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ final class FileList {
     foreach ($paths as $path) {
       $path = Filesystem::resolvePath($path);
       if (is_dir($path)) {
-        $path = rtrim($path, '/').'/';
+        $path = rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         $this->dirs[$path] = true;
       }
       $this->files[] = $path;
@@ -78,7 +78,7 @@ final class FileList {
 
     $path = Filesystem::resolvePath($path);
     if (is_dir($path)) {
-      $path .= '/';
+      $path .= DIRECTORY_SEPARATOR;
     }
 
     foreach ($this->files as $file) {
