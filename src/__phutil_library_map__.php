@@ -41,6 +41,7 @@ phutil_register_library_map(array(
     'PhutilAWSEC2Future' => 'future/aws/ec2',
     'PhutilAWSException' => 'future/aws/exception',
     'PhutilAWSFuture' => 'future/aws/base',
+    'PhutilAggregateException' => 'error/aggregate',
     'PhutilArgumentParser' => 'parser/argument/parser',
     'PhutilArgumentParserException' => 'parser/argument/exception/base',
     'PhutilArgumentParserTestCase' => 'parser/argument/parser/__tests__',
