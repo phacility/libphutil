@@ -25,6 +25,11 @@ class PhutilRemarkupRuleHyperlink
 
   public function apply($text) {
 
+    $text = preg_replace_callback(
+      '@\B\\[\\[([^|\\]]+)(?:\\|([^\\]]+))?\\]\\]\B@U',
+      array($this, 'markupDocumentLink'),
+      $text);
+
     // Hyperlinks with explicit "<>" around them get linked exactly, without
     // the "<>". Angle brackets are basically special and mean "this is a URL
     // with weird characters". This is assumed to be reasonable because they
@@ -49,11 +54,6 @@ class PhutilRemarkupRuleHyperlink
     $text = preg_replace_callback(
       '@(?<=^|\s)(\w{3,}://\S+)(?=\s|$)@',
       array($this, 'markupHyperlinkUngreedy'),
-      $text);
-
-    $text = preg_replace_callback(
-      '@\B\\[\\[([^|\\]]+)(?:\\|([^\\]]+))?\\]\\]\B@U',
-      array($this, 'markupDocumentLink'),
       $text);
 
     return $text;
