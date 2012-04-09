@@ -235,6 +235,19 @@ final class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
       last(explode('.', 'a.b')));
   }
 
+  public function testHeadKeyLastKey() {
+    $this->assertEqual(
+      'a',
+      head_key(array('a' => 0, 'b' => 1))
+      );
+    $this->assertEqual(
+      'b',
+      last_key(array('a' => 0, 'b' => 1))
+      );
+    $this->assertEqual(NULL, head_key(array()));
+    $this->assertEqual(NULL, last_key(array()));
+  }
+
   public function testID() {
     $this->assertEqual(true, id(true));
     $this->assertEqual(false, id(false));

@@ -591,8 +591,32 @@ function head(array $arr) {
  * @return   wild  The last value of the array.
  * @group util
  */
-function last($arr) {
+function last(array $arr) {
   return end($arr);
+}
+
+/**
+ * Returns the first key of an array.
+ *
+ * @param    array       Array to retrieve the first key from.
+ * @return   int|string  The first key of the array.
+ * @group util
+ */
+function head_key(array $arr) {
+  reset($arr);
+  return key($arr);
+}
+
+/**
+ * Returns the last key of an array.
+ *
+ * @param    array       Array to retrieve the last key from.
+ * @return   int|string  The last key of the array.
+ * @group util
+ */
+function last_key(array $arr) {
+  end($arr);
+  return key($arr);
 }
 
 /**
