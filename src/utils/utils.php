@@ -392,13 +392,13 @@ function mfilter(array $list, $method, $negate = false) {
  *
  * For example, to remove all arrays without value for key 'username', do this:
  *
- *   mfilter($list, 'username');
+ *   ifilter($list, 'username');
  *
  * The optional third parameter allows you to negate the operation and filter
  * out nonempty arrays. To remove all arrays that DO have value for key
  * 'username', do this:
  *
- *   mfilter($list, 'username', true);
+ *   ifilter($list, 'username', true);
  *
  * @param  array        List of arrays to filter.
  * @param  scalar       The index.
