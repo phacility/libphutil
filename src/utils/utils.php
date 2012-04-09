@@ -591,7 +591,7 @@ function head(array $arr) {
  * @return   wild  The last value of the array.
  * @group util
  */
-function last($arr) {
+function last(array $arr) {
   return end($arr);
 }
 
@@ -614,7 +614,7 @@ function head_key(array $arr) {
  * @return   int|string  The last key of the array.
  * @group util
  */
-function last_key($arr) {
+function last_key(array $arr) {
   end($arr);
   return key($arr);
 }
