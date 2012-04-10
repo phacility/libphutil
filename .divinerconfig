@@ -1,6 +1,7 @@
 {
   "name" : "libphutil",
-  "src_base" : "https://github.com/facebook/libphutil/blob/master",
+  "src_link" :
+    "https://secure.phabricator.com/diffusion/PHU/browse/master/%f$%l",
   "groups" : {
     "overview" : "Overview",
     "contrib" : "Contributing to libphutil",
