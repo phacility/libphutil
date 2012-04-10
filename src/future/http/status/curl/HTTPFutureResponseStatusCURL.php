@@ -51,6 +51,12 @@ final class HTTPFutureResponseStatusCURL extends HTTPFutureResponseStatus {
     }
 
     $map = array(
+      CURLE_COULDNT_RESOLVE_HOST =>
+        'There was an error resolving the server hostname. Check that you are '.
+        'connected to the internet and that DNS is correctly configured. (Did '.
+        'you add the domain to `/etc/hosts` on some other machine, but not '.
+        'this one?)',
+
       CURLE_SSL_CACERT =>
         'There was an error verifying the SSL Certificate Authority while '.
         'negotiating the SSL connection. This usually indicates that you are '.
