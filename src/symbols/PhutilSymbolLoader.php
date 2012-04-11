@@ -227,10 +227,11 @@ final class PhutilSymbolLoader {
 
         foreach ($filtered_map as $name => $module) {
           $symbol = array(
-            'type'    => $type,
-            'name'    => $name,
-            'library' => $library,
-            'module'  => $module,
+            'type'       => $type,
+            'name'       => $name,
+            'library'    => $library,
+            'module'     => $module,
+            'standalone' => !empty($map['standalone']),
           );
           if (!empty($map['requires_class'][$name])) {
             $symbol['requires_class'] = $map['requires_class'][$name];
@@ -384,7 +385,14 @@ final class PhutilSymbolLoader {
       return;
     }
     $bootloader = PhutilBootloader::getInstance();
-    $bootloader->loadModule($symbol_spec['library'], $symbol_spec['module']);
+    if (empty($symbol_spec['standalone'])) {
+      $bootloader->loadModule($symbol_spec['library'], $symbol_spec['module']);
+    } else {
+      $bootloader->loadClass(
+        $name,
+        $symbol_spec['library'],
+        $symbol_spec['module']);
+    }
     if (!class_exists($name, false) && !interface_exists($name, false)) {
       throw new PhutilMissingSymbolException($name);
     }

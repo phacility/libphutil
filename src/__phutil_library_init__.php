@@ -174,6 +174,12 @@ final class PhutilBootloader {
     $this->popModuleStack();
   }
 
+  public function loadClass($name, $library, $module) {
+    $this->pushModuleStack($library, $module);
+    phutil_require_source($name.'.php');
+    $this->popModuleStack();
+  }
+
   public function loadSource($source) {
     $base = $this->peekModuleStack();
     $okay = $this->executeInclude($base.'/'.$source);
