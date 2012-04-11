@@ -25,6 +25,8 @@
  */
 final class HTTPSFuture extends BaseHTTPFuture {
 
+  private static $handle;
+
   public function isReady() {
     if (isset($this->result)) {
       return true;
@@ -33,7 +35,15 @@ final class HTTPSFuture extends BaseHTTPFuture {
     $uri = $this->getURI();
     $data = $this->getData();
 
-    $curl = curl_init();
+    // NOTE: If possible, we reuse the handle so we can take advantage of
+    // keepalives. This means every option has to be set every time, because
+    // cURL will not clear the settings between requests.
+
+    if (!self::$handle) {
+      self::$handle = curl_init();
+    }
+    $curl = self::$handle;
+
     curl_setopt($curl, CURLOPT_URL, $uri);
     if ($data) {
 
@@ -64,6 +74,8 @@ final class HTTPSFuture extends BaseHTTPFuture {
           "Upgrade PHP or avoid making cURL requests which begin with '@'.");
       }
       curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+    } else {
+      curl_setopt($curl, CURLOPT_POSTFIELDS, null);
     }
 
     $headers = $this->getHeaders();
@@ -73,6 +85,8 @@ final class HTTPSFuture extends BaseHTTPFuture {
         $headers[$ii] = $name.': '.$value;
       }
       curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    } else {
+      curl_setopt($curl, CURLOPT_HTTPHEADER, array());
     }
 
     // Set the requested HTTP method, e.g. GET / POST / PUT.
@@ -116,7 +130,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
       $this->result = $this->parseRawHTTPResponse($result);
     }
 
-    curl_close($curl);
+    // NOTE: Don't call curl_close(), we want to use keepalive if possible.
 
     return true;
   }
