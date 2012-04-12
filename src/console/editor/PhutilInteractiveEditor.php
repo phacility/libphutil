@@ -107,20 +107,20 @@ final class PhutilInteractiveEditor {
   }
 
   private function invokeEditor($editor, $path, $offset) {
+    if (phutil_is_windows()) {
+      $command_format = '%s';
+    } else {
+      $command_format = '%C';
+    }
 
     // Special cases for known editors that don't obey the usual convention.
     if (preg_match('/^mate/', $editor)) {
       $cmd = csprintf(
-        '%s -l %s %s',
+        $command_format.' -l %s %s',
         $editor,
         $offset,
         $path);
     } else {
-      if (phutil_is_windows()) {
-        $command_format = '%s';
-      } else {
-        $command_format = '%C';
-      }
 
       $cmd = csprintf(
         $command_format.' %s %s',
