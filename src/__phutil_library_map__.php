@@ -113,6 +113,7 @@ phutil_register_library_map(array(
     'PhutilSymbolLoader' => 'symbols',
     'PhutilSyntaxHighlighter' => 'markup/syntax/highlighter/base',
     'PhutilSyntaxHighlighterEngine' => 'markup/syntax/engine/base',
+    'PhutilSyntaxHighlighterException' => 'markup/syntax/highlighter/exception',
     'PhutilTortureTestDaemon' => 'daemon/torture/base',
     'PhutilURI' => 'parser/uri',
     'PhutilURITestCase' => 'parser/uri/__tests__',

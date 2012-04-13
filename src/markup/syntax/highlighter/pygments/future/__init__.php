@@ -7,8 +7,7 @@
 
 
 phutil_require_module('phutil', 'future/proxy');
-phutil_require_module('phutil', 'markup/syntax/highlighter/default');
-phutil_require_module('phutil', 'utils');
+phutil_require_module('phutil', 'markup/syntax/highlighter/exception');
 
 
 phutil_require_source('PhutilDefaultSyntaxHighlighterEnginePygmentsFuture.php');

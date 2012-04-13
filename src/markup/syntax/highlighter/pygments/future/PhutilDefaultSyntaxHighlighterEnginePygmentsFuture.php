@@ -41,9 +41,7 @@ final class PhutilDefaultSyntaxHighlighterEnginePygmentsFuture
       return $stdout;
     }
 
-    return id(new PhutilDefaultSyntaxHighlighter())
-      ->getHighlightFuture($this->source)
-      ->resolve();
+    throw new PhutilSyntaxHighlighterException($stderr, $err);
   }
 
 }
