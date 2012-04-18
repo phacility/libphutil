@@ -48,7 +48,10 @@ final class PhutilDivinerSyntaxHighlighter {
     // Highlight bold, italic and monospace.
     $source = $this->highlightPattern('@\\*\\*(.+?)\\*\\*@s', $source, 's');
     $source = $this->highlightPattern('@(?<!:)//(.+?)//@s', $source, 's');
-    $source = $this->highlightPattern('@##(.+?)##@s', $source, 's');
+    $source = $this->highlightPattern(
+      '@##([\s\S]+?)##|\B`(.+?)`\B@',
+      $source,
+      's');
 
     // Highlight stuff that looks like headers.
     $source = $this->highlightPattern('/^=(.*)$/m', $source, 'nv');
