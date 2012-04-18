@@ -31,6 +31,10 @@ final class PhutilRemarkupEngineRemarkupQuotesBlockRule
   }
 
   public function markupText($text) {
-    return '<blockquote>'.$this->applyRules(substr($text, 1)).'</blockquote>';
+    $lines = array();
+    foreach (explode("\n", $text) as $line) {
+      $lines[] = $this->applyRules(preg_replace('/^>/', '', $line));
+    }
+    return '<blockquote>'.implode('<br />', $lines).'</blockquote>';
   }
 }
