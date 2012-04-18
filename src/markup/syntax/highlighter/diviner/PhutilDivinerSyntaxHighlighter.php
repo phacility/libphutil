@@ -25,6 +25,7 @@
 final class PhutilDivinerSyntaxHighlighter {
 
   private $config = array();
+  private $replaceClass;
 
   public function setConfig($key, $value) {
     $this->config[$key] = $value;
@@ -56,11 +57,28 @@ final class PhutilDivinerSyntaxHighlighter {
   }
 
   private function highlightPattern($regexp, $source, $class) {
-    $source = preg_replace(
+    $this->replaceClass = $class;
+    $source = preg_replace_callback(
       $regexp,
-      '<span class="'.$class.'">\\0</span>',
+      array($this, 'replacePattern'),
       $source);
 
     return $source;
   }
+
+  public function replacePattern($matches) {
+
+    // NOTE: The goal here is to make sure a <span> never crosses a newline.
+
+    $content = $matches[0];
+    $content = explode("\n", $content);
+    foreach ($content as $key => $line) {
+      $content[$key] =
+        '<span class="'.$this->replaceClass.'">'.
+          $line.
+        '</span>';
+    }
+    return implode("\n", $content);
+  }
+
 }
