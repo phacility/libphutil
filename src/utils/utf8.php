@@ -96,12 +96,7 @@ function phutil_is_utf8($string) {
  * @group utf8
  */
 function phutil_utf8_strlen($string) {
-  if (function_exists('mb_strlen')) {
-    return mb_strlen($string, 'UTF-8');
-  }
-
-  // TODO: This is terrifically slow.
-  return count(phutil_utf8v($string));
+  return strlen(utf8_decode($string));
 }
 
 
@@ -171,7 +166,7 @@ function phutil_utf8v($string) {
  * @group utf8
  */
 function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
-  $terminal_len = count(phutil_utf8v($terminal));
+  $terminal_len = phutil_utf8_strlen($terminal);
   if ($terminal_len >= $length) {
     // If you provide a terminal we still enforce that the result (including
     // the terminal) is no longer than $length, but we can't do that if the
