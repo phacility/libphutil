@@ -63,7 +63,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
       if (is_array($data)) {
         // Explicitly build a query string to prevent "@" security problems.
-        $data = http_build_query($data);
+        $data = http_build_query($data, '', '&');
       }
 
       if ($data[0] == '@' && version_compare(phpversion(), '5.2.0', '<')) {

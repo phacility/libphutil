@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -233,7 +233,7 @@ final class HTTPFuture extends BaseHTTPFuture {
 
     if ($this->getMethod() == 'GET') {
       if (is_array($data)) {
-        $data = http_build_query($data);
+        $data = http_build_query($data, '', '&');
         if (strpos($uri, '?') !== false) {
           $uri .= '&'.$data;
         } else {
@@ -243,7 +243,7 @@ final class HTTPFuture extends BaseHTTPFuture {
       }
     } else {
       if (is_array($data)) {
-        $data = http_build_query($data)."\r\n";
+        $data = http_build_query($data, '', '&')."\r\n";
         $add_headers[] = array(
           'Content-Type',
           'application/x-www-form-urlencoded');
