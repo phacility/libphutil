@@ -16,6 +16,70 @@
  * limitations under the License.
  */
 
+/**
+ * Parser for command-line arguments for scripts. Like similar parsers, this
+ * class allows you to specify, validate, and render help for command-line
+ * arguments. For example:
+ *
+ *   name=create_dog.php
+ *   $args = new PhutilArgumentParser($argv);
+ *   $args->setTagline('make an new dog')
+ *   $args->setSynopsis(<<<EOHELP
+ *   **dog** [--big] [--name __name__]
+ *   Create a new dog. How does it work? Who knows.
+ *   EOHELP
+ *   );
+ *   $args->parse(
+ *     array(
+ *       'name'     => 'name',
+ *       'param'    => 'dogname',
+ *       'default'  => 'Rover',
+ *       'help'     => 'Set the dog's name. By default, the dog will be '.
+ *                     'named "Rover".',
+ *     ),
+ *     array(
+ *       'name'     => 'big',
+ *       'short'    => 'b',
+ *       'help'     => 'If set, create a large dog.',
+ *     ));
+ *
+ *   $dog_name = $args->getArg('name');
+ *   $dog_size = $args->getArg('big') ? 'big' : 'small';
+ *
+ *   // ... etc ...
+ *
+ * (For detailed documentation on supported keys in argument specifications,
+ * see @{class:PhutilArgumentSpecification}.)
+ *
+ * This will handle argument parsing, and generate appropriate usage help if
+ * the user provides an unsupported flag. @{class:PhutilArgumentParser} also
+ * supports some builtin "standard" arguments:
+ *
+ *   $args->parseStandardArguments();
+ *
+ * See @{method:parseStandardArguments} for details. Notably, this includes
+ * a "--help" flag, and an "--xprofile" flag for profiling command-line scripts.
+ *
+ * Normally, when the parser encounters an unknown flag, it will exit with
+ * an error. However, you can use @{method:parsePartial} to consume only a
+ * set of flags:
+ *
+ *   $args->parsePartial($spec_list);
+ *
+ * This allows you to parse some flags before making decisions about other
+ * parsing, or share some flags across scripts. The builtin standard arguments
+ * are implemented in this way.
+ *
+ * There is also builtin support for "workflows", which allow you to build a
+ * script that operates in several modes (e.g., by accepting commands like
+ * `install`, `upgrade`, etc), like `arc` does. For detailed documentation on
+ * workflows, see @{class:PhutilArgumentWorkflow}.
+ *
+ * @task parse    Parsing Arguments
+ * @task read     Reading Arguments
+ * @task help     Command Help
+ * @task internal Internals
+ */
 final class PhutilArgumentParser {
 
   private $bin;
@@ -26,20 +90,41 @@ final class PhutilArgumentParser {
 
   private $tagline;
   private $synopsis;
+  private $workflows;
+  private $showHelp;
 
+
+/* -(  Parsing Arguments  )-------------------------------------------------- */
+
+
+  /**
+   * Build a new parser. Generally, you start a script with:
+   *
+   *   $args = new PhutilArgumentParser($argv);
+   *
+   * @param list  Argument vector to parse, generally the $argv global.
+   * @task parse
+   */
   public function __construct(array $argv) {
     $this->bin = $argv[0];
     $this->argv = array_slice($argv, 1);
   }
 
-  public function parsePartial(array $specs) {
-    foreach ($specs as $key => $spec) {
-      if (is_array($spec)) {
-        $specs[$key] = PhutilArgumentSpecification::newQuickSpec(
-          $spec);
-      }
-    }
 
+  /**
+   * Parse and consume a list of arguments, removing them from the argument
+   * vector but leaving unparsed arguments for later consumption. You can
+   * retreive unconsumed arguments directly with
+   * @{method:getUnconsumedArgumentVector}. Doing a partial parse can make it
+   * easier to share common flags across scripts or workflows.
+   *
+   * @param   list  List of argument specs, see
+   *                @{class:PhutilArgumentSpecification}.
+   * @return  this
+   * @task parse
+   */
+  public function parsePartial(array $specs) {
+    $specs = PhutilArgumentSpecification::newSpecsFromList($specs);
     $this->mergeSpecs($specs);
 
     $specs_by_name  = mpull($specs, null, 'getName');
@@ -150,6 +235,21 @@ final class PhutilArgumentParser {
     return $this;
   }
 
+
+  /**
+   * Parse and consume a list of arguments, throwing an exception if there is
+   * anything left unconsumed. This is like @{method:parsePartial}, but raises
+   * a {class:PhutilArgumentUsageException} if there are leftovers.
+   *
+   * Normally, you would call @{method:parse} instead, which emits a
+   * user-friendly error. You can also use @{method:printUsageException} to
+   * render the exception in a user-friendly way.
+   *
+   * @param   list  List of argument specs, see
+   *                @{class:PhutilArgumentSpecification}.
+   * @return  this
+   * @task parse
+   */
   public function parseFull(array $specs) {
     $this->parsePartial($specs);
 
@@ -159,17 +259,198 @@ final class PhutilArgumentParser {
         "Unrecognized argument '{$arg}'.");
     }
 
+    if ($this->showHelp) {
+      $this->printHelpAndExit();
+    }
+
     return $this;
   }
 
+
+  /**
+   * Parse and consume a list of arguments, raising a user-friendly error if
+   * anything remains. See also @{method:parseFull} and @{method:parsePartial}.
+   *
+   * @param   list  List of argument specs, see
+   *                @{class:PhutilArgumentSpecification}.
+   * @return  this
+   * @task parse
+   */
   public function parse(array $specs) {
     try {
-      $this->parseFull($specs);
+      return $this->parseFull($specs);
     } catch (PhutilArgumentUsageException $ex) {
       $this->printUsageException($ex);
       exit(77);
     }
   }
+
+
+  /**
+   * Parse and execute workflows, raising a user-friendly error if anything
+   * remains. See also @{method:parseWorkflowsFull}.
+   *
+   * See @{class:PhutilArgumentWorkflow} for details on using workflows.
+   *
+   * @param   list  List of argument specs, see
+   *                @{class:PhutilArgumentSpecification}.
+   * @return  this
+   * @task parse
+   */
+  public function parseWorkflows(array $workflows) {
+    try {
+      return $this->parseWorkflowsFull($workflows);
+    } catch (PhutilArgumentUsageException $ex) {
+      $this->printUsageException($ex);
+      exit(77);
+    }
+  }
+
+
+  /**
+   * Select a workflow. For commands that may operate in several modes, like
+   * `arc`, the modes can be split into "workflows". Each workflow specifies
+   * the arguments it accepts. This method takes a list of workflows, selects
+   * the chosen workflow, parses its arguments, and either executes it (if it
+   * is executable) or returns it for handling.
+   *
+   * See @{class:PhutilArgumentWorkflow} for details on using workflows.
+   *
+   * @param list List of @{class:PhutilArgumentWorkflow}s.
+   * @return PhutilArgumentWorkflow|no  Returns the chosen workflow if it is
+   *                                    not executable, or executes it and
+   *                                    exits with a return code if it is.
+   * @task parse
+   */
+  public function parseWorkflowsFull(array $workflows) {
+    assert_instances_of($workflows, 'PhutilArgumentWorkflow');
+
+    foreach ($workflows as $workflow) {
+      $name = $workflow->getName();
+
+      if ($name === null) {
+        throw new PhutilArgumentSpecificationException(
+          "Workflow has no name!");
+      }
+
+      if (isset($this->workflows[$name])) {
+        throw new PhutilArgumentSpecificationException(
+          "Two workflows with name '{$name}!");
+      }
+
+      $this->workflows[$name] = $workflow;
+    }
+
+    $argv = $this->argv;
+    if (empty($argv)) {
+      // TODO: this is kind of hacky / magical.
+      if (isset($this->workflows['help'])) {
+        $argv = array('help');
+      } else {
+        throw new PhutilArgumentUsageException(
+          "No workflow selected.");
+      }
+    }
+
+    $flow = array_shift($argv);
+    $flow = strtolower($flow);
+
+    if (empty($this->workflows[$flow])) {
+      throw new PhutilArgumentUsageException(
+        "Invalid workflow '{$flow}'.");
+    }
+
+    $workflow = $this->workflows[$flow];
+
+    if ($this->showHelp) {
+      $this->printHelpAndExit();
+    }
+
+    $this->argv = array_values($argv);
+    $this->parse($workflow->getArguments());
+
+    if ($workflow->isExecutable()) {
+      $err = $workflow->execute($this);
+      exit($err);
+    } else {
+      return $workflow;
+    }
+  }
+
+
+  /**
+   * Parse "standard" arguments and apply their effects:
+   *
+   *    --trace             Enable service call tracing.
+   *    --no-ansi           Disable ANSI color/style sequences.
+   *    --xprofile <file>   Write out an XHProf profile.
+   *    --help              Show help.
+   *
+   * @return this
+   *
+   * @phutil-external-symbol function xhprof_enable
+   */
+  public function parseStandardArguments() {
+    try {
+      $this->parsePartial(
+        array(
+          array(
+            'name'  => 'trace',
+            'help'  => 'Trace command execution and show service calls.',
+          ),
+          array(
+            'name'  => 'no-ansi',
+            'help'  => 'Disable ANSI terminal codes, printing plain text with '.
+                       'no color or style.',
+          ),
+          array(
+            'name'  => 'xprofile',
+            'param' => 'profile',
+            'help'  => 'Profile script execution and write results to a file.',
+          ),
+          array(
+            'name'  => 'help',
+            'short' => 'h',
+            'help'  => 'Show this help.',
+          ),
+        ));
+    } catch (PhutilArgumentUsageException $ex) {
+      $this->printUsageException($ex);
+      exit(77);
+    }
+
+    if ($this->getArg('trace')) {
+      PhutilServiceProfiler::installEchoListener();
+    }
+
+    if ($this->getArg('no-ansi')) {
+      PhutilConsoleFormatter::disableANSI(true);
+    }
+
+    if (function_exists('posix_isatty') && !posix_isatty(STDOUT)) {
+      PhutilConsoleFormatter::disableANSI(true);
+    }
+
+    if ($this->getArg('help')) {
+      $this->showHelp = true;
+    }
+
+    $xprofile = $this->getArg('xprofile');
+    if ($xprofile) {
+      if (!function_exists('xhprof_enable')) {
+        throw new Exception("To use '--xprofile', you must install XHProf.");
+      }
+
+      xhprof_enable(0);
+      register_shutdown_function(array($this, 'shutdownProfiler'));
+    }
+
+    return $this;
+  }
+
+
+/* -(  Reading Arguments  )-------------------------------------------------- */
+
 
   public function getArg($name) {
     if (empty($this->specs[$name])) {
@@ -187,6 +468,115 @@ final class PhutilArgumentParser {
   public function getUnconsumedArgumentVector() {
     return $this->argv;
   }
+
+
+/* -(  Command Help  )------------------------------------------------------- */
+
+
+  public function setSynopsis($synopsis) {
+    $this->synopsis = $synopsis;
+    return $this;
+  }
+
+  public function setTagline($tagline) {
+    $this->tagline = $tagline;
+    return $this;
+  }
+
+  public function printHelpAndExit() {
+    echo $this->renderHelp();
+    exit(77);
+  }
+
+  public function renderHelp() {
+    $out = array();
+
+    if ($this->bin) {
+      $out[] = $this->format('**NAME**');
+      $name = $this->indent(6, '**%s**', basename($this->bin));
+      if ($this->tagline) {
+        $name .= $this->format(' - '.$this->tagline);
+      }
+      $out[] = $name;
+      $out[] = null;
+    }
+
+    if ($this->synopsis) {
+      $out[] = $this->format('**SYNOPSIS**');
+      $out[] = $this->indent(6, $this->synopsis);
+      $out[] = null;
+    }
+
+    if ($this->workflows) {
+      $has_help = false;
+      $out[] = $this->format('**WORKFLOWS**');
+      $out[] = null;
+      $flows = $this->workflows;
+      ksort($flows);
+      foreach ($flows as $workflow) {
+        if ($workflow->getName() == 'help') {
+          $has_help = true;
+        }
+        $out[] = $this->renderWorkflowHelp(
+          $workflow->getName(),
+          $show_flags = false);
+      }
+      if ($has_help) {
+        $out[] = $this->indent(
+          6,
+          "Use **help** __command__ for a detailed command reference.\n");
+      }
+    }
+
+    $specs = $this->renderArgumentSpecs($this->specs);
+    if ($specs) {
+      $out[] = $this->format('**OPTION REFERENCE**');
+      $out[] = null;
+      $out[] = $specs;
+    }
+
+    $out[] = null;
+
+    return implode("\n", $out);
+  }
+
+  public function renderWorkflowHelp(
+    $workflow_name,
+    $show_flags = false) {
+
+    $out = array();
+
+    $workflow = idx($this->workflows, strtolower($workflow_name));
+    if (!$workflow) {
+      $out[] = $this->indent(
+        6,
+        "There is no **{$workflow_name}** workflow.");
+    } else {
+      $out[] = $this->indent(6, $workflow->getExamples());
+      $out[] = $this->indent(6, $workflow->getSynopsis());
+      if ($show_flags) {
+        $specs = $this->renderArgumentSpecs($workflow->getArguments());
+        if ($specs) {
+          $out[] = null;
+          $out[] = $specs;
+        }
+      }
+    }
+
+    $out[] = null;
+
+    return implode("\n", $out);
+  }
+
+  public function printUsageException(PhutilArgumentUsageException $ex) {
+    file_put_contents(
+      'php://stderr',
+      $this->format('**Usage Exception:** '.$ex->getMessage()."\n"));
+  }
+
+
+/* -(  Internals  )---------------------------------------------------------- */
+
 
   private function filterWildcardArgv(array $argv) {
     foreach ($argv as $key => $value) {
@@ -263,73 +653,34 @@ final class PhutilArgumentParser {
 
   }
 
-  public function setSynopsis($synopsis) {
-    $this->synopsis = $synopsis;
-    return $this;
-  }
-
-  public function setTagline($tagline) {
-    $this->tagline = $tagline;
-    return $this;
-  }
-
-  public function renderHelp() {
-    $out = array();
-
-    if ($this->bin) {
-      $out[] = $this->format('**NAME**');
-      $name = $this->indent(6, '**%s**', basename($this->bin));
-      if ($this->tagline) {
-        $name .= $this->format(' - '.$this->tagline);
-      }
-      $out[] = $name;
-      $out[] = null;
-    }
-
-    if ($this->synopsis) {
-      $out[] = $this->format('**SYNOPSIS**');
-      $out[] = $this->indent(6, $this->synopsis);
-      $out[] = null;
-    }
-
-    $specs = $this->specs;
+  private function renderArgumentSpecs(array $specs) {
     foreach ($specs as $key => $spec) {
       if ($spec->getWildcard()) {
         unset($specs[$key]);
       }
     }
 
-    if ($specs) {
-      $out[] = $this->format('**OPTION REFERENCE**');
-      $out[] = null;
-      $specs = msort($specs, 'getName');
-      foreach ($specs as $spec) {
-        $name = $this->indent(6, '__--%s__', $spec->getName());
-        $short = null;
-        if ($spec->getShortAlias()) {
-          $short = $this->format(', __-%s__', $spec->getShortAlias());
-        }
-        if ($spec->getParamName()) {
-          $param = $this->format(' __%s__', $spec->getParamName());
-          $name .= $param;
-          if ($short) {
-            $short .= $param;
-          }
-        }
-        $out[] = $name.$short;
-        $out[] = $this->indent(10, $spec->getHelp());
-        $out[] = null;
+    $out = array();
+
+    $specs = msort($specs, 'getName');
+    foreach ($specs as $spec) {
+      $name = $this->indent(6, '__--%s__', $spec->getName());
+      $short = null;
+      if ($spec->getShortAlias()) {
+        $short = $this->format(', __-%s__', $spec->getShortAlias());
       }
+      if ($spec->getParamName()) {
+        $param = $this->format(' __%s__', $spec->getParamName());
+        $name .= $param;
+        if ($short) {
+          $short .= $param;
+        }
+      }
+      $out[] = $name.$short;
+      $out[] = $this->indent(10, $spec->getHelp());
+      $out[] = null;
     }
-
-    $out[] = null;
-
     return implode("\n", $out);
-  }
-
-  public function printHelpAndExit() {
-    echo $this->renderHelp();
-    exit(77);
   }
 
   private function format($str /*, ... */) {
@@ -347,78 +698,12 @@ final class PhutilArgumentParser {
   }
 
   /**
-   * Parse "standard" arguments and apply their effects:
-   *
-   *    --trace             Enable service call tracing.
-   *    --no-ansi           Disable ANSI color/style sequences.
-   *    --xprofile <file>   Write out an XHProf profile.
-   *
-   * @return this
-   *
-   * @phutil-external-symbol function xhprof_enable
-   */
-  public function parseStandardArguments() {
-    try {
-      $this->parsePartial(
-        array(
-          array(
-            'name'  => 'trace',
-            'help'  => 'Trace command execution and show service calls.',
-          ),
-          array(
-            'name'  => 'no-ansi',
-            'help'  => 'Disable ANSI terminal codes, printing plain text with '.
-                       'no color or style.',
-          ),
-          array(
-            'name'  => 'xprofile',
-            'param' => 'profile',
-            'help'  => 'Profile script execution and write results to a file.',
-          ),
-        ));
-    } catch (PhutilArgumentUsageException $ex) {
-      $this->printUsageException($ex);
-      exit(77);
-    }
-
-    if ($this->getArg('trace')) {
-      PhutilServiceProfiler::installEchoListener();
-    }
-
-    if ($this->getArg('no-ansi')) {
-      PhutilConsoleFormatter::disableANSI(true);
-    }
-
-    if (function_exists('posix_isatty') && !posix_isatty(STDOUT)) {
-      PhutilConsoleFormatter::disableANSI(true);
-    }
-
-    $xprofile = $this->getArg('xprofile');
-    if ($xprofile) {
-      if (!function_exists('xhprof_enable')) {
-        throw new Exception("To use '--xprofile', you must install XHProf.");
-      }
-
-      xhprof_enable(0);
-      register_shutdown_function(array($this, 'shutdownProfiler'));
-    }
-
-    return $this;
-  }
-
-  /**
    * @phutil-external-symbol function xhprof_disable
    */
   public function shutdownProfiler() {
     $data = xhprof_disable();
     $data = serialize($data);
     Filesystem::writeFile($this->getArg('xprofile'), $data);
-  }
-
-  public function printUsageException(PhutilArgumentUsageException $ex) {
-    file_put_contents(
-      'php://stderr',
-      $this->format('**Usage Exception:** '.$ex->getMessage()."\n"));
   }
 
 }

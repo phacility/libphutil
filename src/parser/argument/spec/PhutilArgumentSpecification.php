@@ -110,6 +110,16 @@ final class PhutilArgumentSpecification {
     return $obj;
   }
 
+  public static function newSpecsFromList(array $specs) {
+    foreach ($specs as $key => $spec) {
+      if (is_array($spec)) {
+        $specs[$key] = PhutilArgumentSpecification::newQuickSpec(
+          $spec);
+      }
+    }
+    return $specs;
+  }
+
   public function setName($name) {
     self::validateName($name);
     $this->name = $name;
