@@ -40,8 +40,6 @@ final class PhutilLanguageGuesser {
       '@^\s*<[?](php)@',
       // Capture emacs "mode" header.
       '@^.*-[*]-.*mode\s*:\s*(\S+).*-[*]-.*$@m',
-      // Capture a magic word.
-      '@(rainbow)@',
     );
 
     foreach ($patterns as $pattern) {
