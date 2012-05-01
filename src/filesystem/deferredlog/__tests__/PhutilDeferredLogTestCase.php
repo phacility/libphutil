@@ -89,7 +89,12 @@ final class PhutilDeferredLogTestCase extends ArcanistPhutilTestCase {
   public function testLogWriteFailure() {
     $caught = null;
     try {
-      new PhutilDeferredLog('/derp/derp/derp/derp/derp/derp/derp', 'derp');
+      $log = new PhutilDeferredLog('/derp/derp/derp/derp/derp', 'derp');
+      if (phutil_is_hiphop_runtime()) {
+        // In HipHop exceptions thrown in destructors are not normally
+        // catchable, so call __destruct() explicitly.
+        $log->__destruct();
+      }
     } catch (Exception $ex) {
       $caught = $ex;
     }

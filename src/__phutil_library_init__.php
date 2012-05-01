@@ -66,6 +66,13 @@ function phutil_is_windows() {
 /**
  * @group library
  */
+function phutil_is_hiphop_runtime() {
+  return (array_key_exists('HPHP', $_ENV) && $_ENV['HPHP'] === 1);
+}
+
+/**
+ * @group library
+ */
 final class PhutilBootloader {
 
   private static $instance;
