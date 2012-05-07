@@ -53,7 +53,8 @@ final class HTTPFutureResponseStatusTransport extends HTTPFutureResponseStatus {
         'Connection could not be initiated. This usually indicates a DNS '.
         'problem: verify the domain name is correct, that you can '.
         'perform a DNS lookup for it from this machine. (Did you add the '.
-        'domain to `/etc/hosts` on some other machine, but not this one?)',
+        'domain to `/etc/hosts` on some other machine, but not this one?) '.
+        'This might also indicate that you specified the wrong port.',
     );
     return idx($map, $code);
   }
