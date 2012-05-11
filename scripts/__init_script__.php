@@ -51,6 +51,10 @@ function __phutil_init_script__() {
     // applied to 100+ levels of directory nesting). Stop it from triggering:
     // we explicitly limit recursive algorithms which should be limited.
     'xdebug.max_nesting_level'    => null,
+
+    // Don't limit memory, doing so just generally just prevents us from
+    // processing large inputs without many tangible benefits.
+    'memory_limit'                => -1,
   );
 
   foreach ($config_map as $config_key => $config_value) {

@@ -89,11 +89,11 @@ final class ExecFutureTestCase extends ArcanistPhutilTestCase {
     // NOTE: This is partly testing that we choose appropriate select wait
     // times; this test should run for significantly less than 1 second.
 
-    list($err) = id(new ExecFuture('sleep 32000'))->setTimeout(0.01)->resolve();
+    $future = new ExecFuture('sleep 32000');
+    list($err) = $future->setTimeout(0.01)->resolve();
 
-    $this->assertEqual(
-      ExecFuture::TIMED_OUT_EXIT_CODE,
-      $err);
+    $this->assertEqual(true, $err > 0);
+    $this->assertEqual(true, $future->getWasKilledByTimeout());
   }
 
   public function testMultipleTimeoutsTestShouldRunLessThan1Sec() {
@@ -104,9 +104,9 @@ final class ExecFutureTestCase extends ArcanistPhutilTestCase {
 
     foreach (Futures($futures) as $future) {
       list ($err) = $future->resolve();
-      $this->assertEqual(
-        ExecFuture::TIMED_OUT_EXIT_CODE,
-        $err);
+
+      $this->assertEqual(true, $err > 0);
+      $this->assertEqual(true, $future->getWasKilledByTimeout());
     }
   }
 

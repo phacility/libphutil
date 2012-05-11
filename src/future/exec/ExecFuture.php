@@ -38,8 +38,6 @@
  */
 final class ExecFuture extends Future {
 
-  const TIMED_OUT_EXIT_CODE = 142;
-
   protected $pipes        = array();
   protected $proc         = null;
   protected $start        = null;
@@ -60,6 +58,7 @@ final class ExecFuture extends Future {
   protected $stderrSizeLimit = PHP_INT_MAX;
 
   private $profilerCallID;
+  private $killedByTimeout;
 
   protected static $descriptorSpec = array(
     0 => array('pipe', 'r'),  // stdin
@@ -88,7 +87,7 @@ final class ExecFuture extends Future {
   }
 
 
-/* -(  Configuring Execution  )---------------------------------------------- */
+/* -(  Command Information  )------------------------------------------------ */
 
 
   /**
@@ -284,13 +283,24 @@ final class ExecFuture extends Future {
   }
 
 
+  /**
+   * Returns true if this future was killed by a timeout configured with
+   * @{method:setTimeout}.
+   *
+   * @return bool True if the future was killed for exceeding its time limit.
+   */
+  public function getWasKilledByTimeout() {
+    return $this->killedByTimeout;
+  }
+
+
 /* -(  Configuring Execution  )---------------------------------------------- */
 
 
   /**
    * Set a hard limit on execution time. If the command runs longer, it will
-   * be killed and the future will resolve with error code
-   * ##ExecFuture::TIMED_OUT_EXIT_CODE##.
+   * be killed and the future will resolve with an error code. You can test
+   * if a future was killed by a timeout with @{method:getWasKilledByTimeout}.
    *
    * @param int Maximum number of seconds this command may execute for.
    * @return this
@@ -368,6 +378,30 @@ final class ExecFuture extends Future {
         $stderr);
     }
     return $object;
+  }
+
+  /**
+   * Resolve the process by abruptly terminating it.
+   *
+   * @return list List of <err, stdout, stderr> results.
+   * @task resolve
+   */
+  public function resolveKill() {
+    if (defined('SIGKILL')) {
+      $signal = SIGKILL;
+    } else {
+      $signal = 9;
+    }
+
+    proc_terminate($this->proc, $signal);
+    $this->result = array(
+      128 + $signal,
+      $this->stdout,
+      $this->stderr);
+    $this->__destruct();
+    $this->endProfile();
+
+    return $this->result;
   }
 
 
@@ -546,19 +580,8 @@ final class ExecFuture extends Future {
 
     $elapsed = (microtime(true) - $this->start);
     if ($this->timeout && ($elapsed >= $this->timeout)) {
-      if (defined('SIGKILL')) {
-        $signal = SIGKILL;
-      } else {
-        $signal = 9;
-      }
-      proc_terminate($this->proc, $signal);
-      $this->result = array(
-        self::TIMED_OUT_EXIT_CODE,
-        $this->stdout,
-        $this->stderr."\n".
-        "(This process was prematurely terminated by timeout.)");
-      $this->__destruct();
-      $this->endProfile();
+      $this->killedByTimeout = true;
+      $this->resolveKill();
       return true;
     }
 
@@ -584,6 +607,7 @@ final class ExecFuture extends Future {
     }
     $this->stdin  = null;
   }
+
 
   /**
    * End the service call profiler for this command.
