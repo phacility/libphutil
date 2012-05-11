@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group console
+ */
 final class PhutilHelpArgumentWorkflow extends PhutilArgumentWorkflow {
 
   protected function didConstruct() {

@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group console
+ */
 final class PhutilArgumentUsageException
   extends PhutilArgumentParserException {
 

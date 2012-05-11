@@ -16,5 +16,8 @@
  * limitations under the License.
  */
 
+/**
+ * @group markup
+ */
 final class PhutilSyntaxHighlighterException extends Exception {
 }

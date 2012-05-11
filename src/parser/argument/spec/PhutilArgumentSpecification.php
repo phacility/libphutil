@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group console
+ */
 final class PhutilArgumentSpecification {
 
   private $name;

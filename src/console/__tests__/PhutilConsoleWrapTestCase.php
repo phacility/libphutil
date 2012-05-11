@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group testcase
+ */
 final class PhutilConsoleWrapTestCase extends ArcanistPhutilTestCase {
 
   public function testWrap() {

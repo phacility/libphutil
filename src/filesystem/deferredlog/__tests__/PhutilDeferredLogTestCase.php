@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group testcase
+ */
 final class PhutilDeferredLogTestCase extends ArcanistPhutilTestCase {
 
   public function testLogging() {
@@ -89,11 +92,13 @@ final class PhutilDeferredLogTestCase extends ArcanistPhutilTestCase {
   public function testLogWriteFailure() {
     $caught = null;
     try {
-      $log = new PhutilDeferredLog('/derp/derp/derp/derp/derp', 'derp');
       if (phutil_is_hiphop_runtime()) {
         // In HipHop exceptions thrown in destructors are not normally
         // catchable, so call __destruct() explicitly.
+        $log = new PhutilDeferredLog('/derp/derp/derp/derp/derp', 'derp');
         $log->__destruct();
+      } else {
+        new PhutilDeferredLog('/derp/derp/derp/derp/derp', 'derp');
       }
     } catch (Exception $ex) {
       $caught = $ex;

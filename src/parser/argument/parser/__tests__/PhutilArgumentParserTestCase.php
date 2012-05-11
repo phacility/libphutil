@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group testcase
+ */
 final class PhutilArgumentParserTestCase extends ArcanistPhutilTestCase {
 
   public function testBasics() {

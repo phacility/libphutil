@@ -79,6 +79,8 @@
  * @task read     Reading Arguments
  * @task help     Command Help
  * @task internal Internals
+ *
+ * @group console
  */
 final class PhutilArgumentParser {
 

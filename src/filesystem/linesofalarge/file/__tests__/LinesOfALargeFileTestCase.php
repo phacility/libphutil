@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group testcase
+ */
 final class LinesOfALargeFileTestCase extends ArcanistPhutilTestCase {
 
   public function testBasics() {

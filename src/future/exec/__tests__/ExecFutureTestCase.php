@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group testcase
+ */
 final class ExecFutureTestCase extends ArcanistPhutilTestCase {
 
   public function testEmptyWrite() {

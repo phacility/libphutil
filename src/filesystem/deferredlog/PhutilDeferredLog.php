@@ -50,6 +50,7 @@
  *
  * @task log        Logging
  * @task internal   Internals
+ * @group filesystem
  */
 final class PhutilDeferredLog {
 

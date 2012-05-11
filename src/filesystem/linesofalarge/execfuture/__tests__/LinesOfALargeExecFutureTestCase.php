@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group testcase
+ */
 final class LinesOfALargeExecFutureTestCase extends ArcanistPhutilTestCase {
 
   // Most of the core functionality of LinesOfALarge is covered by the
