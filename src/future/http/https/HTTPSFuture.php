@@ -27,6 +27,8 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
   private static $handle;
 
+  private $profilerCallID;
+
   public function isReady() {
     if (isset($this->result)) {
       return true;
@@ -34,6 +36,13 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
     $uri = $this->getURI();
     $data = $this->getData();
+
+    $profiler = PhutilServiceProfiler::getInstance();
+    $this->profilerCallID = $profiler->beginServiceCall(
+      array(
+        'type' => 'http',
+        'uri' => $uri,
+      ));
 
     // NOTE: If possible, we reuse the handle so we can take advantage of
     // keepalives. This means every option has to be set every time, because
@@ -131,6 +140,9 @@ final class HTTPSFuture extends BaseHTTPFuture {
     }
 
     // NOTE: Don't call curl_close(), we want to use keepalive if possible.
+
+    $profiler = PhutilServiceProfiler::getInstance();
+    $profiler->endServiceCall($this->profilerCallID, array());
 
     return true;
   }

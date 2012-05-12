@@ -45,6 +45,8 @@ final class HTTPFuture extends BaseHTTPFuture {
   private $stateReady         = false;
   private $stateStartTime;
 
+  private $profilerCallID;
+
   public function setURI($uri) {
     $parts = parse_url($uri);
     if (!$parts) {
@@ -121,6 +123,13 @@ final class HTTPFuture extends BaseHTTPFuture {
       if (!$this->socket) {
         return $this->stateReady;
       }
+
+      $profiler = PhutilServiceProfiler::getInstance();
+      $this->profilerCallID = $profiler->beginServiceCall(
+        array(
+          'type' => 'http',
+          'uri' => $this->getURI(),
+        ));
     }
 
     if (!$this->stateConnected) {
@@ -213,6 +222,9 @@ final class HTTPFuture extends BaseHTTPFuture {
     } else {
       $this->result = $this->parseRawHTTPResponse($this->response);
     }
+
+    $profiler = PhutilServiceProfiler::getInstance();
+    $profiler->endServiceCall($this->profilerCallID, array());
 
     return true;
   }
