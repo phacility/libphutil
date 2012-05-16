@@ -45,7 +45,7 @@ function Futures($futures) {
  *     // fastest future is the one you'll get first. This allows you to start
  *     // doing followup processing as soon as possible.
  *
- *     list($stdout) = $future->resolvex();
+ *     list($err, $stdout) = $future->resolve();
  *     do_some_processing($stdout);
  *   }
  *
@@ -99,8 +99,8 @@ final class FutureIterator implements Iterator {
    * @task basics
    */
   public function resolveAll() {
-    foreach ($this as $_) {
-      // This implicitly forces all the futures to resolve.
+    foreach ($this as $future) {
+      $future->resolve();
     }
   }
 
