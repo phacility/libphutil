@@ -31,21 +31,29 @@ final class PhutilLanguageGuesser {
    * @return mixed Language string, or null if unable to guess.
    */
   public static function guessLanguage($source) {
+
     static $patterns = array(
       // Capture "#!/usr/bin/env php" sorts of things.
-      '@^#!.*bin/env\s+(\S+)@',
+      '@^#!.*bin/env\s+(\S+)@' => 1,
       // Capture "#!/usr/bin/php" sorts of things.
-      '@^#!.*bin/(\S+)@',
+      '@^#!.*bin/(\S+)@' => 1,
       // Capture initial "<?php", which means PHP.
-      '@^\s*<[?](php)@',
+      '@^\s*<[?](php)@' => 1,
       // Capture emacs "mode" header.
-      '@^.*-[*]-.*mode\s*:\s*(\S+).*-[*]-.*$@m',
+      '@^.*-[*]-.*mode\s*:\s*(\S+).*-[*]-.*$@m' => 1,
+      // Look for things that seem to be diffs.
+      '/^---.*$\n^[+]{3}.*$\n^@@/m' => 'diff',
+      '/^diff --git/' => 'diff',
     );
 
-    foreach ($patterns as $pattern) {
+    foreach ($patterns as $pattern => $language) {
       $matches = null;
       if (preg_match($pattern, $source, $matches)) {
-        return $matches[1];
+        if (is_numeric($language)) {
+          return $matches[$language];
+        } else {
+          return $language;
+        }
       }
     }
 

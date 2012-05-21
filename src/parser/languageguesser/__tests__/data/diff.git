@@ -1,0 +1,7 @@
+diff --git a/some_file b/some_file
+index 4c479de..637a09b 100644
+--- a/some_file
++++ b/some_file
+@@ -1 +1 @@
+-apple
++banana
