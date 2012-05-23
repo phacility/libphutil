@@ -4,12 +4,19 @@ set -e
 
 ROOT=`dirname $0`"/../support/xhpast"
 
+USE_GMAKE=1
+command -v gmake >/dev/null 2>&1 || USE_GMAKE=0
+
 echo
 echo "Building XHPAST..."
 echo
 
 cd $ROOT
-make clean all install
+if [ $USE_GMAKE -eq 1 ]; then
+	gmake clean all install
+else
+	make clean all install
+fi
 
 echo
 echo "Testing xhpast works"
