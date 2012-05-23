@@ -72,13 +72,9 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
 
     $lines = explode("\n", $text);
 
-    $lang = nonempty(
-      $this->getEngine()->getConfig('phutil.codeblock.language-default'),
-      'php');
-
     $options = array(
       'counterexample'  => false,
-      'lang'            => $lang,
+      'lang'            => null,
       'name'            => null,
       'lines'           => null,
     );
@@ -123,6 +119,18 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
         implode("\n", $lines));
     } else {
       $text = implode("\n", $lines);
+    }
+
+    if (empty($options['lang'])) {
+      // If the user hasn't specified "lang=..." explicitly, try to guess the
+      // language. If we fail, fall back to configured defaults.
+      $lang = PhutilLanguageGuesser::guessLanguage($text);
+      if (!$lang) {
+        $lang = nonempty(
+          $this->getEngine()->getConfig('phutil.codeblock.language-default'),
+          'php');
+      }
+      $options['lang'] = $lang;
     }
 
     $name_header = null;

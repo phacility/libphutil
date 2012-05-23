@@ -73,6 +73,11 @@ final class PhutilDefaultSyntaxHighlighterEngine
         ->getHighlightFuture($source);
     }
 
+    if ($language == 'console') {
+      return id(new PhutilConsoleSyntaxHighlighter())
+        ->getHighlightFuture($source);
+    }
+
     if ($language == 'diviner' || $language == 'remarkup') {
       return id(new PhutilDivinerSyntaxHighlighter())
         ->getHighlightFuture($source);

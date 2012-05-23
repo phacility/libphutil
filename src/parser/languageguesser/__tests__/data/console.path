@@ -1,0 +1,8 @@
+path/to/somewhere/ $ ls
+[		dd		kill		mv		sh		wait4path
+bash		df		ksh		pax		sleep		zsh
+cat		domainname	launchctl	ps		stty
+chmod		echo		link		pwd		sync
+cp		ed		ln		rcp		tcsh
+csh		expr		ls		rm		test
+date		hostname	mkdir		rmdir		unlink

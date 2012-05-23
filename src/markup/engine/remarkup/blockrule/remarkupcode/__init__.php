@@ -9,6 +9,7 @@
 phutil_require_module('phutil', 'markup');
 phutil_require_module('phutil', 'markup/engine/remarkup/blockrule/base');
 phutil_require_module('phutil', 'markup/syntax/engine/default');
+phutil_require_module('phutil', 'parser/languageguesser');
 phutil_require_module('phutil', 'parser/simpleoptions');
 phutil_require_module('phutil', 'utils');
 

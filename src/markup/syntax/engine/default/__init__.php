@@ -7,6 +7,7 @@
 
 
 phutil_require_module('phutil', 'markup/syntax/engine/base');
+phutil_require_module('phutil', 'markup/syntax/highlighter/console');
 phutil_require_module('phutil', 'markup/syntax/highlighter/default');
 phutil_require_module('phutil', 'markup/syntax/highlighter/diviner');
 phutil_require_module('phutil', 'markup/syntax/highlighter/pygments');

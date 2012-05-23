@@ -44,6 +44,8 @@ final class PhutilLanguageGuesser {
       // Look for things that seem to be diffs.
       '/^---.*$\n^[+]{3}.*$\n^@@/m' => 'diff',
       '/^diff --git/' => 'diff',
+      // Look for plausible console output.
+      '@^(?:\S+/ )?[$] @' => 'console',
     );
 
     foreach ($patterns as $pattern => $language) {

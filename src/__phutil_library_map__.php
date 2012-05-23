@@ -56,6 +56,7 @@ phutil_register_library_map(array(
     'PhutilArgumentWorkflow' => 'parser/argument/workflow/base',
     'PhutilConsoleFormatter' => 'console',
     'PhutilConsoleStdinNotInteractiveException' => 'console/exception',
+    'PhutilConsoleSyntaxHighlighter' => 'markup/syntax/highlighter/console',
     'PhutilConsoleWrapTestCase' => 'console/__tests__',
     'PhutilDaemon' => 'daemon/base',
     'PhutilDaemonOverseer' => 'daemon/overseer',
