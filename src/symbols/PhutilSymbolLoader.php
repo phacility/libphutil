@@ -43,6 +43,9 @@
  * The **library** and **module** keys show where the symbol is defined. The
  * **type** and **name** keys identify the symbol itself.
  *
+ * NOTE: You can not use libphutil functions in this file, it must be loaded
+ * before they are. This includes id() and idx()!
+ *
  * @task config   Configuring the Query
  * @task load     Loading Symbols
  * @task internal Internals
@@ -321,7 +324,8 @@ final class PhutilSymbolLoader {
    * @task load
    */
   public static function loadClass($class_name) {
-    $symbols = id(new PhutilSymbolLoader())
+    $loader = new PhutilSymbolLoader();
+    $symbols = $loader
       ->setType('class')
       ->setName($class_name)
       ->selectAndLoadSymbols();
