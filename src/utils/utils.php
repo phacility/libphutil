@@ -471,8 +471,14 @@ function array_select_keys(array $dict, array $keys) {
 function assert_instances_of(array $arr, $class) {
   foreach ($arr as $key => $object) {
     if (!($object instanceof $class)) {
+      $given = gettype($object);
+      if (is_object($object)) {
+        $given = 'instance of '.get_class($object);
+      }
       throw new InvalidArgumentException(
-        "Array item with key '{$key}' must be an instance of '{$class}'.");
+        "Array item with key '{$key}' must be an instance of {$class}, ".
+        "{$given} given."
+        );
     }
   }
   return $arr;
