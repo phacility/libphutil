@@ -34,8 +34,6 @@ final class PhutilConsoleSyntaxHighlighter {
 
   public function getHighlightFuture($source) {
 
-    $source = phutil_escape_html($source);
-
     $lines = explode("\n", $source);
     foreach ($lines as $key => $line) {
       $matches = null;
@@ -49,15 +47,15 @@ final class PhutilConsoleSyntaxHighlighter {
       if (preg_match('@^(\S+/ )?([$] .*?)(#.*)?$@', $line, $matches)) {
         $line = '';
         if ($matches[1]) {
-          $line .= $matches[1];
+          $line .= phutil_escape_html($matches[1]);
         }
-        $line .= '<span class="gp">'.$matches[2].'</span>';
+        $line .= '<span class="gp">'.phutil_escape_html($matches[2]).'</span>';
         if ($matches[3]) {
-          $line .= '<span class="k">'.$matches[3].'</span>';
+          $line .= '<span class="k">'.phutil_escape_html($matches[3]).'</span>';
         }
         $lines[$key] = $line;
       } else {
-        $lines[$key] = '<span class="go">'.$line.'</span>';
+        $lines[$key] = '<span class="go">'.phutil_escape_html($line).'</span>';
       }
     }
     $lines = implode("\n", $lines);
