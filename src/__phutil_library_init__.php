@@ -115,25 +115,6 @@ final class PhutilBootloader {
     }
 
     $this->registeredLibraries[$name] = $path;
-
-    if (!class_exists('PhutilSymbolLoader', false)) {
-      if ($name !== 'phutil') {
-        throw new Exception(
-          "libphutil must be loaded before other phutil libraries.");
-      }
-      require_once $path.'/symbols/PhutilSymbolLoader.php';
-    }
-
-    // We can't autoload functions, so just load them all when we include
-    // a library. This has a small performance cost when running without warmup,
-    // but most code is in classes and autoloadable. (Note that we can't use
-    // id() here because it may not be loaded yet.)
-    $loader = new PhutilSymbolLoader();
-    $loader
-      ->setType('function')
-      ->setLibrary($name)
-      ->selectAndLoadSymbols();
-
     return $this;
   }
 
@@ -323,6 +304,10 @@ final class PhutilLibraryConflictException extends Exception {
   }
 }
 
+phutil_register_library('phutil', __FILE__);
+
+phutil_require_module('phutil', 'symbols');
+
 /**
  * @group library
  */
@@ -342,5 +327,3 @@ function __phutil_autoload($class) {
 }
 
 spl_autoload_register('__phutil_autoload', $throw = true);
-phutil_register_library('phutil', __FILE__);
-
