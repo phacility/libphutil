@@ -50,7 +50,7 @@ final class PhutilConsoleSyntaxHighlighter {
           $line .= phutil_escape_html($matches[1]);
         }
         $line .= '<span class="gp">'.phutil_escape_html($matches[2]).'</span>';
-        if ($matches[3]) {
+        if (!empty($matches[3])) {
           $line .= '<span class="k">'.phutil_escape_html($matches[3]).'</span>';
         }
         $lines[$key] = $line;
