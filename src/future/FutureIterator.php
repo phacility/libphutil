@@ -17,18 +17,6 @@
  */
 
 /**
- * Convenience function for instantiating a new @{class:FutureIterator}.
- *
- * @param list              List of @{class:Future}s.
- * @return FutureIterator   New @{class:FutureIterator} over those futures.
- * @group futures
- */
-function Futures($futures) {
-  return new FutureIterator($futures);
-}
-
-
-/**
  * FutureIterator aggregates @{class:Future}s and allows you to respond to them
  * in the order they resolve. This is useful because it minimizes the amount of
  * time your program spends waiting on parallel processes.
@@ -83,11 +71,7 @@ final class FutureIterator implements Iterator {
    * @task basics
    */
   public function __construct(array $futures) {
-    foreach ($futures as $future) {
-      if (!$future instanceof Future) {
-        throw new Exception('Futures must all be objects implementing Future.');
-      }
-    }
+    assert_instances_of($futures, 'Future');
     $this->futures = $futures;
   }
 
