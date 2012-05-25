@@ -50,18 +50,36 @@ function phutil_console_confirm($prompt, $default_no = true) {
 /**
  * @group console
  */
-function phutil_console_prompt($prompt) {
+function phutil_console_prompt($prompt, $history = '') {
 
-  $prompt = "\n\n".$prompt." ";
-  $prompt = phutil_console_wrap($prompt, 4);
+  echo "\n\n";
+  $prompt = phutil_console_wrap($prompt.' ', 4);
 
-  echo $prompt;
+  try {
+    phutil_console_require_tty();
+  } catch (PhutilConsoleStdinNotInteractiveException $ex) {
+    // Throw after echoing the prompt so the user has some idea what happened.
+    echo $prompt;
+    throw $ex;
+  }
 
-  // Require after echoing the prompt so the user has some idea what happened
-  // if this throws.
-  phutil_console_require_tty();
+  if ($history == '' || phutil_is_windows()) {
+    echo $prompt;
+    $response = fgets(STDIN);
 
-  $response = fgets(STDIN);
+  } else {
+    // There's around 0% chance that readline() is available directly in PHP.
+    // execx() doesn't work with input, phutil_passthru() doesn't return output.
+    $response = shell_exec(csprintf(
+      'history -r %s;'.
+      ' read -e -p %s;'.
+      ' echo "$REPLY";'.
+      ' history -s "$REPLY";'.
+      ' history -w %s',
+      $history,
+      $prompt,
+      $history));
+  }
 
   return rtrim($response, "\r\n");
 }
