@@ -57,11 +57,6 @@ $args->parse(array(
     'help'      => 'Print file names containing invalid UTF-8 to stdout.',
   ),
   array(
-    'name'      => 'help',
-    'short'     => 'h',
-    'help'      => 'Show this help.',
-  ),
-  array(
     'name'      => 'files',
     'wildcard'  => true,
   ),
