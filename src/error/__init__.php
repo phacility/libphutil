@@ -11,3 +11,4 @@ phutil_require_module('phutil', 'utils');
 
 
 phutil_require_source('PhutilErrorHandler.php');
+phutil_require_source('phlog.php');
