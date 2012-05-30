@@ -29,7 +29,7 @@ final class ConduitClient {
   protected $profilerCallID;
 
   protected $sessionKey;
-  private $timeout = 30;
+  private $timeout = 300.0;
 
   public function getConnectionID() {
     return $this->connectionID;
