@@ -7,7 +7,6 @@
 
 
 phutil_require_module('phutil', 'symbols/exception/missing');
-phutil_require_module('phutil', 'utils');
 
 
 phutil_require_source('PhutilSymbolLoader.php');

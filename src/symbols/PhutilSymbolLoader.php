@@ -24,7 +24,6 @@
  *    $symbols = id(new PhutilSymbolLoader())
  *      ->setType('class')
  *      ->setLibrary('example')
- *      ->setModule('some/module')
  *      ->selectAndLoadSymbols();
  *
  * When you execute the loading query, it returns a dictionary of matching
@@ -35,13 +34,19 @@
  *        'type'    => 'class',
  *        'name'    => 'Example',
  *        'library' => 'libexample',
- *        'module'  => 'examples/example',
+ *        'module'  => 'examples/example',     // Deprecated.
+ *        'where'   => 'examples/example.php',
  *      ),
  *      // ... more ...
  *    );
  *
- * The **library** and **module** keys show where the symbol is defined. The
+ * The **library** and **where** keys show where the symbol is defined. The
  * **type** and **name** keys identify the symbol itself.
+ *
+ * TODO: Modules will not be supported soon, as they are dropped from
+ * libphutil v2.
+ *
+ * NOTE: This class must not use libphutil funtions, including id() and idx().
  *
  * @task config   Configuring the Query
  * @task load     Loading Symbols
@@ -93,13 +98,15 @@ final class PhutilSymbolLoader {
 
 
   /**
-   * Restrict the symbol query to a single module.
+   * Restrict the symbol query to a single module. Deprecated.
    *
+   * @deprecated
    * @param string Module name.
    * @return this
    * @task config
    */
   public function setModule($module) {
+    // TODO: Remove when we drop v1 support.
     $this->module = $module;
     return $this;
   }
@@ -226,40 +233,24 @@ final class PhutilSymbolLoader {
         }
 
         foreach ($filtered_map as $name => $module) {
-          $symbol = array(
-            'type'       => $type,
-            'name'       => $name,
-            'library'    => $library,
-            'module'     => $module,
-            'standalone' => !empty($map['standalone']),
+          $symbols[$type.'$'.$name] = array(
+            'type'        => $type,
+            'name'        => $name,
+            'library'     => $library,
+            // libphutil v1
+            'module'      => $module,
+            // libphutil v2
+            'where'       => $module,
           );
-          if (!empty($map['requires_class'][$name])) {
-            $symbol['requires_class'] = $map['requires_class'][$name];
-          }
-          if (!empty($map['requires_interface'][$name])) {
-            $symbol['requires_interface'] = $map['requires_interface'][$name];
-          }
-          $symbols[$type.'$'.$name] = $symbol;
         }
       }
     }
 
     if ($this->base) {
-      $tree = array();
-      $libraries = $bootloader->getAllLibraries();
-      foreach ($libraries as $library) {
-        $map = $bootloader->getLibraryMap($library);
-        foreach ($map['requires_class'] as $child => $parent) {
-          $tree[$parent][] = $child;
-        }
-        foreach ($map['requires_interface'] as $child => $parents) {
-          foreach ($parents as $parent) {
-            $tree[$parent][] = $child;
-          }
-        }
-      }
+      $names = $this->selectDescendantsOf(
+        $bootloader->getClassTree(),
+        $this->base);
 
-      $names = $this->selectDescendantsOf($tree, $this->base);
       foreach ($symbols as $symbol_key => $symbol) {
         $type = $symbol['type'];
         if ($type == 'class' || $type == 'interface') {
@@ -321,7 +312,8 @@ final class PhutilSymbolLoader {
    * @task load
    */
   public static function loadClass($class_name) {
-    $symbols = id(new PhutilSymbolLoader())
+    $loader = new PhutilSymbolLoader();
+    $symbols = $loader
       ->setType('class')
       ->setName($class_name)
       ->selectAndLoadSymbols();
@@ -337,7 +329,7 @@ final class PhutilSymbolLoader {
   /**
    * @task internal
    */
-  private function selectDescendantsOf($tree, $root) {
+  private function selectDescendantsOf(array $tree, $root) {
     $result = array();
     foreach ($tree[$root] as $child) {
       $result[$child] = true;
@@ -353,48 +345,50 @@ final class PhutilSymbolLoader {
    * @task internal
    */
   private function loadSymbol(array $symbol_spec) {
-    if ($symbol_spec['type'] == 'function') {
-      $this->loadFunctionSymbol($symbol_spec);
-    } else {
-      $this->loadClassOrInterfaceSymbol($symbol_spec);
-    }
-  }
 
-
-  /**
-   * @task internal
-   */
-  private function loadFunctionSymbol(array $symbol_spec) {
+    // Check if we've already loaded the symbol; bail if we have.
     $name = $symbol_spec['name'];
-    if (function_exists($name)) {
-      return;
-    }
-    $bootloader = PhutilBootloader::getInstance();
-    $bootloader->loadModule($symbol_spec['library'], $symbol_spec['module']);
-    if (!function_exists($name)) {
-      throw new PhutilMissingSymbolException($name);
-    }
-  }
+    $is_function = ($symbol_spec['type'] == 'function');
 
-  /**
-   * @task internal
-   */
-  private function loadClassOrInterfaceSymbol(array $symbol_spec) {
-    $name = $symbol_spec['name'];
-    if (class_exists($name, false) || interface_exists($name, false)) {
-      return;
-    }
-    $bootloader = PhutilBootloader::getInstance();
-    if (empty($symbol_spec['standalone'])) {
-      $bootloader->loadModule($symbol_spec['library'], $symbol_spec['module']);
+    if ($is_function) {
+      if (function_exists($name)) {
+        return;
+      }
     } else {
-      $bootloader->loadClass(
-        $name,
-        $symbol_spec['library'],
-        $symbol_spec['module']);
+      if (class_exists($name, false) || interface_exists($name, false)) {
+        return;
+      }
     }
-    if (!class_exists($name, false) && !interface_exists($name, false)) {
-      throw new PhutilMissingSymbolException($name);
+
+    $lib_name = $symbol_spec['library'];
+    $bootloader = PhutilBootloader::getInstance();
+    $version  = $bootloader->getLibraryFormatVersion($lib_name);
+
+    switch ($version) {
+      case 1:
+        // TODO: Remove this once we drop libphutil v1 support.
+        $bootloader->loadModule(
+          $symbol_spec['library'],
+          $symbol_spec['module']);
+        break;
+      case 2:
+        $bootloader->loadLibrarySource(
+          $symbol_spec['library'],
+          $symbol_spec['where']);
+        break;
+    }
+
+    // Check that we successfully loaded the symbol from wherever it was
+    // supposed to be defined.
+
+    if ($is_function) {
+      if (!function_exists($name)) {
+        throw new PhutilMissingSymbolException($name);
+      }
+    } else {
+      if (!class_exists($name, false) && !interface_exists($name, false)) {
+        throw new PhutilMissingSymbolException($name);
+      }
     }
   }
 
