@@ -76,14 +76,11 @@ $load = $args->getArg('load-phutil-library');
 $argv = $args->getArg('more');
 
 if ($load) {
-  phutil_require_module('phutil', 'filesystem');
   foreach ($load as $library) {
     $library = Filesystem::resolvePath($library);
     phutil_load_library($library);
   }
 }
-
-phutil_require_module('phutil', 'symbols');
 
 PhutilErrorHandler::initialize();
 function phutil_daemon_error_listener($event, $value, array $metadata) {

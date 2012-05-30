@@ -18,20 +18,6 @@ inclusion in other projects. In particular, some of the classes provided in this
 library vastly improve the state of common operations in PHP, like executing
 system commands.
 
-= Module System =
-
-libphutil defines a vaguely Python-inspired module system, which divides code
-into small directories of related functions and classes called "modules" which
-declare their dependencies on other modules explicitly in ##__init__.php##
-files. Dependencies are generated through static analysis.
-
-Organizing code in this way has the principle advantage that it avoids creating
-a big ball of dependencies, where the whole world must be loaded to do anything,
-and some secondary benefits like making the layout of code easier to understand.
-
-This system is based on the "flib" ("Facebook Library") system originally
-developed by Mark Slee and others at Facebook.
-
 = Loading libphutil =
 
 To include libphutil in another project, include the
@@ -39,15 +25,8 @@ To include libphutil in another project, include the
 
   require_once 'path/to/libphutil/src/__phutil_library_init__.php';
 
-Now you can load libphutil modules with ##phutil_require_module()##:
-
-  phutil_require_module('phutil', 'future/exec');
-
-This loads the ##future/exec## module, defined in ##libphutil/src/future/exec##.
-Module names and paths on disk are always identical.
-
-NOTE: libphutil registers an autoload function with ##spl_autoload_register()##,
-so you can also just use classes directly after including libphutil.
+This loads global functions and registers an autoload function with
+##spl_autoload_register()##, so you can also use classes.
 
 = Major Components =
 

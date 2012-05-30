@@ -18,7 +18,6 @@
  */
 
 require_once dirname(dirname(__FILE__)).'/__init_script__.php';
-phutil_require_module('phutil', 'console');
 
 $args = new PhutilArgumentParser($argv);
 $args->setTagline('utf8 charset test script');

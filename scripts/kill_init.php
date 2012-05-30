@@ -18,7 +18,6 @@
  */
 
 require_once dirname(__FILE__).'/__init_script__.php';
-phutil_require_module('phutil', 'filesystem/filefinder');
 
 $root = idx($argv, 1);
 
