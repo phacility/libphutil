@@ -390,9 +390,6 @@ final class PhutilLibraryConflictException extends Exception {
   }
 }
 
-phutil_register_library('phutil', __FILE__);
-
-phutil_require_module('phutil', 'symbols');
 
 /**
  * @group library
@@ -413,3 +410,5 @@ function __phutil_autoload($class) {
 }
 
 spl_autoload_register('__phutil_autoload', $throw = true);
+
+phutil_register_library('phutil', __FILE__);
