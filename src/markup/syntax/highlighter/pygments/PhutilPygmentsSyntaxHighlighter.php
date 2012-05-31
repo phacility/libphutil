@@ -34,7 +34,8 @@ final class PhutilPygmentsSyntaxHighlighter {
     if ($language) {
       $language = $this->getPygmentsLexerNameFromLanguageName($language);
       $future = new ExecFuture(
-        'pygmentize -O stripnl=False -f html -l %s', $language);
+        'pygmentize -O encoding=utf-8 -O stripnl=False -f html -l %s',
+        $language);
       $future->write($source);
       return new PhutilDefaultSyntaxHighlighterEnginePygmentsFuture(
         $future,
