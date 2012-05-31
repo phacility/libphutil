@@ -62,6 +62,7 @@ final class PhutilSymbolLoader {
   private $module;
   private $name;
   private $concrete;
+  private $pathPrefix;
 
   private $suppressLoad;
 
@@ -93,6 +94,20 @@ final class PhutilSymbolLoader {
     $bootloader->getLibraryRoot($library);
 
     $this->library = $library;
+    return $this;
+  }
+
+
+  /**
+   * Restrict the symbol query to a specific path prefix; only symbols defined
+   * in files below that path will be selected.
+   *
+   * @param string Path relative to library root, like "apps/cheese/".
+   * @return this
+   * @task config
+   */
+  public function setPathPrefix($path) {
+    $this->pathPrefix = $path;
     return $this;
   }
 
@@ -225,8 +240,17 @@ final class PhutilSymbolLoader {
         }
 
         if ($this->module) {
-          foreach ($lookup_map as $name => $module) {
+          foreach ($filtered_map as $name => $module) {
             if ($module != $this->module) {
+              unset($filtered_map[$name]);
+            }
+          }
+        }
+
+        if ($this->pathPrefix) {
+          $len = strlen($this->pathPrefix);
+          foreach ($filtered_map as $name => $where) {
+            if (strncmp($where, $this->pathPrefix, $len) !== 0) {
               unset($filtered_map[$name]);
             }
           }
@@ -299,27 +323,6 @@ final class PhutilSymbolLoader {
     $result = $this->selectAndLoadSymbols();
     $this->suppressLoad = false;
     return $result;
-  }
-
-
-  /**
-   * Load one class by name from any available library. Useful for autoload,
-   * etc. Throws @{class:PhutilMissingSymbolException} if the class can not
-   * be loaded.
-   *
-   * @param string Class name to load.
-   * @return void
-   * @task load
-   */
-  public static function loadClass($class_name) {
-    $loader = new PhutilSymbolLoader();
-    $symbols = $loader
-      ->setType('class')
-      ->setName($class_name)
-      ->selectAndLoadSymbols();
-    if (!$symbols) {
-      throw new PhutilMissingSymbolException($class_name);
-    }
   }
 
 

@@ -394,9 +394,16 @@ final class PhutilLibraryConflictException extends Exception {
 /**
  * @group library
  */
-function __phutil_autoload($class) {
+function __phutil_autoload($class_name) {
   try {
-    PhutilSymbolLoader::loadClass($class);
+    $loader = new PhutilSymbolLoader();
+    $symbols = $loader
+      ->setType('class')
+      ->setName($class_name)
+      ->selectAndLoadSymbols();
+    if (!$symbols) {
+      throw new PhutilMissingSymbolException($class_name);
+    }
   } catch (PhutilMissingSymbolException $ex) {
     // If there are other SPL autoloaders installed, we need to give them a
     // chance to load the class. Throw the exception if we're the last
