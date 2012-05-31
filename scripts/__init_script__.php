@@ -40,6 +40,9 @@ function __phutil_init_script__() {
     // script context we always want to show errors.
     'display_errors'              => true,
 
+    // Send script error messages to the server's error_log setting.
+    'log_errors'                  => true,
+
     // Set the error log to the default, so errors go to stderr. Without this
     // errors may end up in some log, and users may not know where the log is
     // or check it.
