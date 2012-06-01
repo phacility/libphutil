@@ -24,7 +24,7 @@
 final class PhutilRemarkupEngineTestCase extends ArcanistPhutilTestCase {
 
   public function testEngine() {
-    $root = dirname(__FILE__).'/data/';
+    $root = dirname(__FILE__).'/remarkup/';
     foreach (Filesystem::listDirectory($root, $hidden = false) as $file) {
       $this->markupText($root.$file);
     }

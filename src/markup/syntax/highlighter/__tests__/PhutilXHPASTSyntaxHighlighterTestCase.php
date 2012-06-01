@@ -29,7 +29,7 @@ final class PhutilXHPASTSyntaxHighlighterTestCase
   }
 
   private function read($file) {
-    $path = dirname(__FILE__).'/data/'.$file;
+    $path = dirname(__FILE__).'/xhpast/'.$file;
     return Filesystem::readFile($path);
   }
 

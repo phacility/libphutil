@@ -22,7 +22,7 @@
 final class PhutilLanguageGuesserTestCase extends ArcanistPhutilTestCase {
 
   public function testGuessing() {
-    $dir = dirname(__FILE__).'/data/';
+    $dir = dirname(__FILE__).'/languageguesser/';
     foreach (Filesystem::listDirectory($dir, $hidden = false) as $test) {
       $source = Filesystem::readFile($dir.$test);
 

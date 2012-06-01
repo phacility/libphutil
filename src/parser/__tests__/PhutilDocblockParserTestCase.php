@@ -24,7 +24,7 @@
 final class PhutilDocblockParserTestCase extends ArcanistPhutilTestCase {
 
   public function testParser() {
-    $root = dirname(__FILE__).'/data/';
+    $root = dirname(__FILE__).'/docblock/';
     foreach (Filesystem::listDirectory($root, $hidden = false) as $file) {
       $this->parseDocblock($root.$file);
     }
