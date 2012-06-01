@@ -24,7 +24,7 @@ $root = idx($argv, 1);
 if (!is_dir($root)) {
   echo "Usage: ".basename(__FILE__)." <dir>\n";
   echo "Purpose: Delete __init__.php files and move source files a level up.\n";
-  echo "Warning: This will git-reset and git-clean the repository.";
+  echo "Warning: This will git-reset and git-clean the repository.\n";
   exit(1);
 }
 
@@ -46,7 +46,7 @@ $phps = id(new FileFinder($root))
   ->withType('f')
   ->withPath('./*/*/*')
   ->find();
-echo "\nMoving ".count($phps)." PHP files...\n";
+echo "\nMoving ".count($phps)." files...\n";
 foreach ($phps as $file) {
   echo $file."\n";
   $target = dirname(dirname($file));
