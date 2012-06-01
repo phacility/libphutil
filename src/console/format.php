@@ -63,7 +63,7 @@ function phutil_console_prompt($prompt, $history = '') {
     throw $ex;
   }
 
-  if ($history == '' || phutil_is_windows()) {
+  if ($history == '' || !shell_exec('echo $BASH 2> /dev/null')) {
     echo $prompt;
     $response = fgets(STDIN);
 
@@ -71,11 +71,11 @@ function phutil_console_prompt($prompt, $history = '') {
     // There's around 0% chance that readline() is available directly in PHP.
     // execx() doesn't work with input, phutil_passthru() doesn't return output.
     $response = shell_exec(csprintf(
-      'history -r %s;'.
+      'history -r %s 2> /dev/null;'.
       ' read -e -p %s;'.
       ' echo "$REPLY";'.
-      ' history -s "$REPLY";'.
-      ' history -w %s',
+      ' history -s "$REPLY" 2> /dev/null;'.
+      ' history -w %s 2> /dev/null',
       $history,
       $prompt,
       $history));
