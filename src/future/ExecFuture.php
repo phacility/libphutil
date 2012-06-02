@@ -542,7 +542,6 @@ final class ExecFuture extends Future {
 
     list($stdin, $stdout, $stderr) = $this->pipes;
 
-    $close_stdin = false;
     if (isset($this->stdin) && strlen($this->stdin)) {
       $bytes = fwrite($stdin, $this->stdin);
       if ($bytes === false) {
