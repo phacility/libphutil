@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,12 @@ final class PhutilEmailAddress {
     $matches = null;
     if (preg_match('/^(.*)<(.*?)>$/', $email_address, $matches)) {
       $display_name = trim($matches[1], '\'" ');
-      list($local_part, $domain_name) = explode('@', $matches[2], 2);
+      if (strpos($matches[2], '@') !== false) {
+        list($local_part, $domain_name) = explode('@', $matches[2], 2);
+      } else {
+        $local_part = $matches[2];
+        $domain_name = null;
+      }
     } else if (preg_match('/^(.*)@(.*)$/', $email_address, $matches)) {
       $display_name = null;
       $local_part = $matches[1];

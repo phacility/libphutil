@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,6 +92,20 @@ final class PhutilEmailAddressTestCase extends ArcanistPhutilTestCase {
       $email->getDomainName());
     $this->assertEqual(
       'alincoln',
+      $email->getAddress());
+
+    $email = new PhutilEmailAddress('alincoln <alincoln at logcabin dot com>');
+    $this->assertEqual(
+      'alincoln',
+      $email->getDisplayName());
+    $this->assertEqual(
+      'alincoln at logcabin dot com',
+      $email->getLocalPart());
+    $this->assertEqual(
+      null,
+      $email->getDomainName());
+    $this->assertEqual(
+      'alincoln at logcabin dot com',
       $email->getAddress());
 
   }
