@@ -34,7 +34,7 @@
  *       'name'     => 'name',
  *       'param'    => 'dogname',
  *       'default'  => 'Rover',
- *       'help'     => 'Set the dog's name. By default, the dog will be '.
+ *       'help'     => 'Set the dog\'s name. By default, the dog will be '.
  *                     'named "Rover".',
  *     ),
  *     array(
