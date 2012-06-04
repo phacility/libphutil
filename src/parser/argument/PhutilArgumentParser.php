@@ -31,16 +31,18 @@
  *   );
  *   $args->parse(
  *     array(
- *       'name'     => 'name',
- *       'param'    => 'dogname',
- *       'default'  => 'Rover',
- *       'help'     => 'Set the dog\'s name. By default, the dog will be '.
- *                     'named "Rover".',
- *     ),
- *     array(
- *       'name'     => 'big',
- *       'short'    => 'b',
- *       'help'     => 'If set, create a large dog.',
+ *       array(
+ *         'name'     => 'name',
+ *         'param'    => 'dogname',
+ *         'default'  => 'Rover',
+ *         'help'     => 'Set the dog\'s name. By default, the dog will be '.
+ *                       'named "Rover".',
+ *       ),
+ *       array(
+ *         'name'     => 'big',
+ *         'short'    => 'b',
+ *         'help'     => 'If set, create a large dog.',
+ *       ),
  *     ));
  *
  *   $dog_name = $args->getArg('name');
