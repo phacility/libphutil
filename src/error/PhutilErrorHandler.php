@@ -110,6 +110,15 @@ final class PhutilErrorHandler {
    * @{function:phlog} to print debugging messages or ##trigger_error()## to
    * trigger PHP errors.
    *
+   * This handler converts E_RECOVERABLE_ERROR messages from violated typehints
+   * into @{class:InvalidArgumentException}s.
+   *
+   * This handler converts other E_RECOVERABLE_ERRORs into
+   * @{class:RuntimeException}s.
+   *
+   * This handler converts E_NOTICE messages from uses of undefined variables
+   * into @{class:RuntimeException}s.
+   *
    * @param int Error code.
    * @param string Error message.
    * @param string File where the error occurred.
@@ -119,6 +128,22 @@ final class PhutilErrorHandler {
    * @task internal
    */
   public static function handleError($num, $str, $file, $line, $ctx) {
+
+    // Convert typehint failures into exceptions.
+    if (preg_match('/^Argument (\d+) passed to (\S+) must be/', $str)) {
+      throw new InvalidArgumentException($str);
+    }
+
+    // Convert other E_RECOVERABLE_ERRORs into generic runtime exceptions.
+    if ($num == E_RECOVERABLE_ERROR) {
+      throw new RuntimeException($str);
+    }
+
+    // Convert uses of undefined variables into exceptions.
+    if (preg_match('/^Undefined variable: /', $str)) {
+      throw new RuntimeException($str);
+    }
+
     $trace = debug_backtrace();
     array_shift($trace);
     self::dispatchErrorMessage(
