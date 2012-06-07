@@ -326,6 +326,11 @@ final class PhutilSymbolLoader {
   }
 
 
+  public static function loadClass($class_name) {
+    // TODO: Remove this method once we drop libphutil v1 support.
+  }
+
+
 /* -(  Internals  )---------------------------------------------------------- */
 
 
