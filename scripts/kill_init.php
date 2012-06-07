@@ -21,15 +21,11 @@ require_once dirname(__FILE__).'/__init_script__.php';
 
 $root = idx($argv, 1);
 
-if (!is_dir($root)) {
+if ($root === null || !is_dir($root)) {
   echo "Usage: ".basename(__FILE__)." <dir>\n";
   echo "Purpose: Delete __init__.php files and move source files a level up.\n";
-  echo "Warning: This will git-reset and git-clean the repository.\n";
   exit(1);
 }
-
-echo "Resetting repository...\n";
-phutil_passthru('(cd %s; git reset --hard HEAD)', $root);
 
 $inits = id(new FileFinder($root))
   ->withType('f')
@@ -79,10 +75,8 @@ foreach ($data as $dir) {
   phutil_passthru('(cd %s; git mv %s %s)', $root, $dir, $target);
 }
 
-echo "\nDeleting empty directories...\n";
-phutil_passthru('(cd %s; git clean -df)', $root);
-
 echo "\nDone.\n";
+echo "Consider running `git clean -df`.\n";
 if ($data) {
   echo "You must manually change the path to test data dirs in test files!\n";
 }
