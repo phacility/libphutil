@@ -253,4 +253,17 @@ final class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
     $this->assertEqual(false, id(false));
   }
 
+  public function testIdx() {
+    $array = array(
+      'present' => true,
+      'null' => null,
+    );
+    $this->assertEqual(true, idx($array, 'present'));
+    $this->assertEqual(true, idx($array, 'present', false));
+    $this->assertEqual(null, idx($array, 'null'));
+    $this->assertEqual(null, idx($array, 'null', false));
+    $this->assertEqual(null, idx($array, 'missing'));
+    $this->assertEqual(false, idx($array, 'missing', false));
+  }
+
 }
