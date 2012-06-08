@@ -12,6 +12,7 @@
     "filesystem" : "Filesystem",
     "exec" : "Command Execution",
     "futures" : "Futures",
+    "channel" : "Channels (I/O Wrappers)",
     "aws" : "Amazon Web Services",
     "error" : "Error Handling",
     "markup" : "Markup",
