@@ -27,7 +27,7 @@ final class XHPASTToken extends AASTToken {
       if ($type_id <= 255) {
         $this->typeName = chr($type_id);
       }
-      $this->typeName = parent::getTypeName($type_id);
+      $this->typeName = parent::getTypeName();
     }
     return $this->typeName;
   }

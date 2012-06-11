@@ -103,7 +103,7 @@ final class PhutilSocketChannel extends PhutilChannel {
   private function closeSocket() {
     if ($this->socket) {
       @stream_socket_shutdown($this->socket);
-      @fclose($this->socket);
+      @fclose($this->socket, STREAM_SHUT_RDWR);
       $this->socket = null;
     }
   }

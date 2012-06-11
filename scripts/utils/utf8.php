@@ -155,6 +155,8 @@ function show(array $files, $context) {
     }
 
   }
+
+  return 0;
 }
 
 function show_problems($line) {
