@@ -90,6 +90,14 @@ final class PhutilTranslator {
         return $plural;
 
       case 'cs':
+        if ($variant instanceof PhutilPerson) {
+          list($male, $female) = $translations;
+          if ($variant->getSex() == PhutilPerson::SEX_FEMALE) {
+            return $female;
+          }
+          return $male;
+        }
+
         list($singular, $paucal, $plural) = $translations;
         if ($variant == 1) {
           return $singular;

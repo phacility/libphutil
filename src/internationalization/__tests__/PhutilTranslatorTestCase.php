@@ -62,4 +62,28 @@ final class PhutilTranslatorTestCase extends ArcanistPhutilTestCase {
     $this->assertEqual('1 line(s)', $translator->translate('%d line(s)', 1));
   }
 
+  public function testPerson() {
+    $translator = new PhutilTranslator();
+    $translator->setLanguage('cs');
+    $translator->addTranslations(
+      array(
+        '%s wrote.' => array('%s napsal.', '%s napsala.'),
+      ));
+
+    $person = new PhutilPersonTest();
+    $this->assertEqual(
+      'Test () napsal.',
+      $translator->translate('%s wrote.', $person));
+
+    $person->setSex(PhutilPerson::SEX_MALE);
+    $this->assertEqual(
+      'Test (m) napsal.',
+      $translator->translate('%s wrote.', $person));
+
+    $person->setSex(PhutilPerson::SEX_FEMALE);
+    $this->assertEqual(
+      'Test (f) napsala.',
+      $translator->translate('%s wrote.', $person));
+  }
+
 }
