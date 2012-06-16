@@ -86,4 +86,20 @@ final class PhutilTranslatorTestCase extends ArcanistPhutilTestCase {
       $translator->translate('%s wrote.', $person));
   }
 
+  public function testSetInstance() {
+    $original = PhutilTranslator::getInstance();
+    $this->assertEqual('color', pht('color'));
+
+    $british = new PhutilTranslator();
+    $british->addTranslations(
+      array(
+        'color' => 'colour',
+      ));
+    PhutilTranslator::setInstance($british);
+    $this->assertEqual('colour', pht('color'));
+
+    PhutilTranslator::setInstance($original);
+    $this->assertEqual('color', pht('color'));
+  }
+
 }

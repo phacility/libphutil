@@ -29,6 +29,10 @@ final class PhutilTranslator {
     return self::$instance;
   }
 
+  public static function setInstance(PhutilTranslator $instance) {
+    self::$instance = $instance;
+  }
+
   public function setLanguage($language) {
     $this->language = $language;
     return $this;

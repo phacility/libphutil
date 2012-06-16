@@ -17,7 +17,8 @@
  */
 
 /**
- * Translate a string. It uses translations specified by
+ * Translate a string. It uses a translator set by
+ * `PhutilTranslator::setInstance()` or translations specified by
  * `PhutilTranslator::getInstance()->addTranslations()` and language rules set
  * by `PhutilTranslator::getInstance()->setLanguage()`.
  *
