@@ -29,6 +29,27 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
   private $profilerCallID;
 
+  /**
+   * Load contents of remote URI. Behaves pretty much like
+   *  `@file_get_contents($uri)` but doesn't require `allow_url_fopen`.
+   *
+   * @param string
+   * @param float
+   * @return string|false
+   */
+  public static function loadContent($uri, $timeout = null) {
+    $future = new HTTPSFuture($uri);
+    if ($timeout !== null) {
+      $future->setTimeout($timeout);
+    }
+    try {
+      list($body) = $future->resolvex();
+      return $body;
+    } catch (HTTPFutureResponseStatus $ex) {
+      return false;
+    }
+  }
+
   public function isReady() {
     if (isset($this->result)) {
       return true;
@@ -105,6 +126,9 @@ final class HTTPSFuture extends BaseHTTPFuture {
     curl_setopt($curl, CURLOPT_HEADER, true);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($curl, CURLOPT_MAXREDIRS, 20);
+
     if (defined('CURLOPT_TIMEOUT_MS')) {
       // If CURLOPT_TIMEOUT_MS is available, use the higher-precision timeout.
       $timeout = max(1, ceil(1000 * $this->getTimeout()));
@@ -136,6 +160,9 @@ final class HTTPSFuture extends BaseHTTPFuture {
       $headers = array();
       $this->result = array($status, $body, $headers);
     } else {
+      // cURL returns headers of all redirects, we strip all but the final one.
+      $redirects = curl_getinfo($curl, CURLINFO_REDIRECT_COUNT);
+      $result = preg_replace('/^(.*\r\n\r\n){'.$redirects.'}/sU', '', $result);
       $this->result = $this->parseRawHTTPResponse($result);
     }
 
