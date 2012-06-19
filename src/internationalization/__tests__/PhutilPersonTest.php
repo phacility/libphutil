@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group testcase
+ */
 final class PhutilPersonTest implements PhutilPerson {
   private $sex = PhutilPerson::SEX_UNKNOWN;
 

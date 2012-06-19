@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group internationalization
+ */
 interface PhutilPerson {
   const SEX_MALE = 'm';
   const SEX_FEMALE = 'f';

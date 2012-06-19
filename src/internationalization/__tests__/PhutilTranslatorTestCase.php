@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group testcase
+ */
 final class PhutilTranslatorTestCase extends ArcanistPhutilTestCase {
 
   public function testEnglish() {

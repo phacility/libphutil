@@ -9,6 +9,7 @@
     "util" : "Core Utilities",
     "library" : "Phutil Module System",
     "utf8" : "UTF-8",
+    "internationalization" : "Internationalization",
     "filesystem" : "Filesystem",
     "exec" : "Command Execution",
     "futures" : "Futures",

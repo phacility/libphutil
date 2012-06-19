@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+/**
+ * @group internationalization
+ */
 final class PhutilTranslator {
   static private $instance;
 
