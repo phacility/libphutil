@@ -27,6 +27,16 @@ abstract class PhutilDaemon {
   private $argv;
   private $traceMode;
   private $traceMemory;
+  private $verbose;
+
+  final public function setVerbose($verbose) {
+    $this->verbose = $verbose;
+    return $this;
+  }
+
+  final public function getVerbose() {
+    return $this->verbose;
+  }
 
   private static $sighandlerInstalled;
 
@@ -110,6 +120,13 @@ abstract class PhutilDaemon {
 
   protected function didSetTraceMode() {
     // This is a hook for subclasses.
+  }
+
+  final protected function log($message) {
+    if ($this->verbose) {
+      $daemon = get_class($this);
+      fprintf(STDERR, "<VERB> {$daemon} {$message}\n");
+    }
   }
 
 }

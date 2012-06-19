@@ -42,6 +42,7 @@ final class PhutilDaemonOverseer {
   private $phddir;
   private $conduit;
   private $conduitURI;
+  private $verbose;
 
   public function __construct(array $argv) {
     $original_argv = $argv;
@@ -81,6 +82,10 @@ EOHELP
           'param' => 'uri',
           'help'  => 'Send logs to Conduit on __uri__.'
         ),
+        array(
+          'name'  => 'verbose',
+          'help'  => 'Enable verbose activity logging.',
+        ),
       ));
     $argv = $args->getUnconsumedArgumentVector();
 
@@ -104,6 +109,12 @@ EOHELP
     if ($log) {
       ini_set('error_log', $log);
       array_unshift($argv, '--log='.$log);
+    }
+
+    $verbose = $args->getArg('verbose');
+    if ($verbose) {
+      $this->verbose = true;
+      array_unshift($argv, '--verbose');
     }
 
     $this->daemonize  = $args->getArg('daemonize');
@@ -167,9 +178,9 @@ EOHELP
   }
 
   public function run() {
-    if (!$this->traceMode) {
-      echo "Running daemon '{$this->daemon}' silently. Use '--trace' to ".
-           "produce debugging output.\n";
+    if ($this->shouldRunSilently()) {
+      echo "Running daemon '{$this->daemon}' silently. Use '--trace' or ".
+           "'--verbose' to produce debugging output.\n";
     }
 
     $root = phutil_get_library_root('phutil');
@@ -223,18 +234,16 @@ EOHELP
           // frequently in order to process signals.
           $result = $future->resolve(1);
 
-          if ($this->traceMode || $this->conduit) {
-            list($stdout, $stderr) = $future->read();
-            $stdout = trim($stdout);
-            $stderr = trim($stderr);
-            if (strlen($stdout)) {
-              $this->logMessage('STDO', $stdout, $stdout);
-            }
-            if (strlen($stderr)) {
-              $this->logMessage('STDE', $stderr, $stderr);
-            }
-            $future->discardBuffers();
+          list($stdout, $stderr) = $future->read();
+          $stdout = trim($stdout);
+          $stderr = trim($stderr);
+          if (strlen($stdout)) {
+            $this->logMessage('STDO', $stdout, $stdout);
           }
+          if (strlen($stderr)) {
+            $this->logMessage('STDE', $stderr, $stderr);
+          }
+          $future->discardBuffers();
 
           if ($result !== null) {
             list($err) = $result;
@@ -279,7 +288,7 @@ EOHELP
   }
 
   private function logMessage($type, $message, $remote = null) {
-    if ($this->traceMode) {
+    if (!$this->shouldRunSilently()) {
       echo date('Y-m-d g:i:s A').' ['.$type.'] '.$message."\n";
     }
     if ($this->conduit) {
@@ -296,6 +305,14 @@ EOHELP
       } catch (Exception $ex) {
         // TOOD: Send this somewhere useful instead of eating it.
       }
+    }
+  }
+
+  private function shouldRunSilently() {
+    if ($this->traceMode || $this->verbose) {
+      return false;
+    } else {
+      return true;
     }
   }
 

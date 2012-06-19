@@ -56,6 +56,10 @@ $args->parse(
       'help' => 'Load __library__.',
     ),
     array(
+      'name'  => 'verbose',
+      'help'  => 'Enable verbose activity logging.',
+    ),
+    array(
       'name' => 'more',
       'wildcard' => true,
     ),
@@ -63,6 +67,7 @@ $args->parse(
 
 $trace_memory = $args->getArg('trace-memory');
 $trace_mode = $args->getArg('trace') || $trace_memory;
+$verbose = $args->getArg('verbose');
 
 $log = $args->getArg('log');
 if ($log) {
@@ -110,5 +115,8 @@ if ($trace_mode) {
 }
 if ($trace_memory) {
   $daemon->setTraceMemory();
+}
+if ($verbose) {
+  $daemon->setVerbose(true);
 }
 $daemon->execute();
