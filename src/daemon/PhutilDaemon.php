@@ -63,7 +63,7 @@ abstract class PhutilDaemon {
     if ($this->traceMemory) {
       $memuse = number_format(memory_get_usage() / 1024, 1);
       $daemon = get_class($this);
-      fprintf(STDERR, "<RAMS> {$daemon} Memory Usage: {$memuse} KB\n");
+      fprintf(STDERR, '%s', "<RAMS> {$daemon} Memory Usage: {$memuse} KB\n");
     }
   }
 
@@ -125,7 +125,7 @@ abstract class PhutilDaemon {
   final protected function log($message) {
     if ($this->verbose) {
       $daemon = get_class($this);
-      fprintf(STDERR, "<VERB> {$daemon} {$message}\n");
+      fprintf(STDERR, '%s', "<VERB> {$daemon} {$message}\n");
     }
   }
 
