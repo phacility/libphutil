@@ -23,10 +23,12 @@ final class PhutilDefaultSyntaxHighlighterEnginePygmentsFuture
   extends FutureProxy {
 
   private $source;
+  private $scrub;
 
-  public function __construct(Future $proxied, $source) {
+  public function __construct(Future $proxied, $source, $scrub = false) {
     parent::__construct($proxied);
     $this->source = $source;
+    $this->scrub = $scrub;
   }
 
   protected function didReceiveResult($result) {
@@ -38,6 +40,9 @@ final class PhutilDefaultSyntaxHighlighterEnginePygmentsFuture
         '@^<div class="highlight"><pre>(.*)</pre></div>\s*$@s',
         '\1',
         $stdout);
+      if ($this->scrub) {
+        $stdout = preg_replace('/^.*\n/', '', $stdout);
+      }
       return $stdout;
     }
 

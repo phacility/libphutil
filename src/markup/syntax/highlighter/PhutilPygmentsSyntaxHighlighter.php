@@ -36,10 +36,16 @@ final class PhutilPygmentsSyntaxHighlighter {
       $future = new ExecFuture(
         'pygmentize -O encoding=utf-8 -O stripnl=False -f html -l %s',
         $language);
+      $scrub = false;
+      if ($language == 'php' && strpos($source, '<?') === false) {
+        $source = "<?php\n".$source;
+        $scrub = true;
+      }
       $future->write($source);
       return new PhutilDefaultSyntaxHighlighterEnginePygmentsFuture(
         $future,
-        $source);
+        $source,
+        $scrub);
     }
 
     return id(new PhutilDefaultSyntaxHighlighter())
