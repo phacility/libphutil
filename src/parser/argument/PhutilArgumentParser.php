@@ -406,6 +406,14 @@ final class PhutilArgumentParser {
             'name'  => 'no-ansi',
             'help'  => 'Disable ANSI terminal codes, printing plain text with '.
                        'no color or style.',
+            'conflicts' => array(
+              'ansi' => null,
+            ),
+          ),
+          array(
+            'name'  => 'ansi',
+            'help'  => "Use formatting even in environments which probably ".
+                       "don't support it.",
           ),
           array(
             'name'  => 'xprofile',
@@ -431,8 +439,8 @@ final class PhutilArgumentParser {
       PhutilConsoleFormatter::disableANSI(true);
     }
 
-    if (function_exists('posix_isatty') && !posix_isatty(STDOUT)) {
-      PhutilConsoleFormatter::disableANSI(true);
+    if ($this->getArg('ansi')) {
+      PhutilConsoleFormatter::disableANSI(false);
     }
 
     if ($this->getArg('help')) {
