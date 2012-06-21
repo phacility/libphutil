@@ -89,7 +89,27 @@ final class PhutilTranslatorTestCase extends ArcanistPhutilTestCase {
       $translator->translate('%s wrote.', $person));
   }
 
+  public function testTranslateDate() {
+    $date = new DateTime('2012-06-21');
+
+    $translator = new PhutilTranslator();
+    $this->assertEqual('June', $translator->translateDate('F', $date));
+    $this->assertEqual('June 21', $translator->translateDate('F d', $date));
+    $this->assertEqual('F', $translator->translateDate('\F', $date));
+
+    $translator->addTranslations(
+      array(
+        'June' => 'correct',
+        '21' => 'wrong',
+        'F' => 'wrong'
+      ));
+    $this->assertEqual('correct', $translator->translateDate('F', $date));
+    $this->assertEqual('correct 21', $translator->translateDate('F d', $date));
+    $this->assertEqual('F', $translator->translateDate('\F', $date));
+  }
+
   public function testSetInstance() {
+    PhutilTranslator::setInstance(new PhutilTranslator());
     $original = PhutilTranslator::getInstance();
     $this->assertEqual('color', pht('color'));
 

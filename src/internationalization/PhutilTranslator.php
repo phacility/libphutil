@@ -119,4 +119,33 @@ final class PhutilTranslator {
     }
   }
 
+  /**
+   * Translate date formatted by `$date->format()`.
+   *
+   * @param string Format accepted by `DateTime::format()`.
+   * @param DateTime
+   * @return string Formatted and translated date.
+   */
+  public function translateDate($format, DateTime $date) {
+    static $format_cache = array();
+    if (!isset($format_cache[$format])) {
+      $translatable = 'DlSFMaA';
+      preg_match_all(
+        '/['.$translatable.']|(\\\\.|[^'.$translatable.'])+/',
+        $format,
+        $format_cache[$format],
+        PREG_SET_ORDER);
+    }
+
+    $parts = array();
+    foreach ($format_cache[$format] as $match) {
+      $part = $date->format($match[0]);
+      if (!isset($match[1])) {
+        $part = $this->translate($part);
+      }
+      $parts[] = $part;
+    }
+    return implode('', $parts);
+  }
+
 }
