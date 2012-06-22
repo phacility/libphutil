@@ -94,16 +94,12 @@ abstract class AASTNode {
     $idx = 0;
     foreach ($this->children as $child) {
       if ($idx == $index) {
-        break;
+        return $child;
       }
       ++$idx;
     }
 
-    if ($idx != $index) {
-      throw new Exception("No child with index '{$index}'.");
-    }
-
-    return $child;
+    throw new Exception("No child with index '{$index}'.");
   }
 
   /**
