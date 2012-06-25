@@ -108,7 +108,8 @@ final class PhutilExecChannel extends PhutilChannel {
     $this->future->discardBuffers();
 
     if (strlen($stderr)) {
-      throw new Exception("Unexpected output to stderr on Exec channel.");
+      throw new Exception(
+        "Unexpected output to stderr on exec channel: {$stderr}");
     }
 
     return $stdout;

@@ -314,4 +314,21 @@ abstract class PhutilChannel {
     return (strlen($this->obuf) == 0);
   }
 
+
+  /**
+   * Wait for any buffered writes to complete. This is a blocking call. When
+   * the call returns, the write buffer will be empty.
+   *
+   * @task impl
+   */
+  public function flush() {
+    while (!$this->isWriteBufferEmpty()) {
+      self::waitForAny(array($this));
+      if (!$this->update()) {
+        throw new Exception("Channel closed while flushing output!");
+      }
+    }
+    return $this;
+  }
+
 }
