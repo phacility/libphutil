@@ -425,6 +425,10 @@ final class PhutilArgumentParser {
             'short' => 'h',
             'help'  => 'Show this help.',
           ),
+          array(
+            'name'  => 'recon',
+            'help'  => 'Start in remote console mode.',
+          ),
         ));
     } catch (PhutilArgumentUsageException $ex) {
       $this->printUsageException($ex);
@@ -455,6 +459,11 @@ final class PhutilArgumentParser {
 
       xhprof_enable(0);
       register_shutdown_function(array($this, 'shutdownProfiler'));
+    }
+
+    $recon = $this->getArg('recon');
+    if ($recon) {
+      PhutilConsole::setConsole(PhutilConsole::newRemoteConsole());
     }
 
     return $this;
