@@ -112,6 +112,9 @@ final class PhutilServiceProfiler {
         case 'conduit':
           echo $data['method'].'()';
           break;
+        case 'flock':
+          echo $data['file'];
+          break;
       }
     }
 
