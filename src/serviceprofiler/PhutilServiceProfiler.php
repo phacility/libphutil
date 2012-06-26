@@ -113,7 +113,7 @@ final class PhutilServiceProfiler {
           echo $data['method'].'()';
           break;
         case 'flock':
-          echo $data['file'];
+          echo $data['name'];
           break;
       }
     }

@@ -86,13 +86,13 @@ final class PhutilFileLockTestCase extends ArcanistPhutilTestCase {
     $caught = null;
     try {
       $lock->lock();
-    } catch (PhutilFileLockException $ex) {
+    } catch (PhutilLockException $ex) {
       $caught = $ex;
     }
 
     $this->assertEqual(
       true,
-      ($caught instanceof PhutilFileLockException));
+      ($caught instanceof PhutilLockException));
 
     $hold->resolveKill();
 

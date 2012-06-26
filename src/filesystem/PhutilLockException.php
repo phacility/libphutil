@@ -16,4 +16,4 @@
  * limitations under the License.
  */
 
-final class PhutilFileLockException extends Exception {}
+final class PhutilLockException extends Exception {}

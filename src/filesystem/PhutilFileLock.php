@@ -28,26 +28,17 @@
  *
  *   $lock->unlock();
  *
- * If the lock can't be acquired because it is already held,
- * @{class:PhutilFileLockException} is thrown. Other exceptions indicate
- * permanent failure unrelated to locking.
+ * For more information on locks, see @{class:PhutilLock}.
  *
  * @task  construct   Constructing Locks
- * @task  status      Determining Lock Status
- * @task  lock        Locking
- * @task  internal    Internals
+ * @task  impl        Implementation
  *
  * @group filesystem
  */
-final class PhutilFileLock {
+final class PhutilFileLock extends PhutilLock {
 
   private $lockfile;
-  private $locked = false;
   private $handle;
-  private $profilerID;
-
-  private static $registeredShutdownFunction = false;
-  private static $locks = array();
 
 
 /* -(  Constructing Locks  )------------------------------------------------- */
@@ -64,52 +55,23 @@ final class PhutilFileLock {
   public static function newForPath($lockfile) {
     $lockfile = Filesystem::resolvePath($lockfile);
 
-    if (!self::$registeredShutdownFunction) {
-      register_shutdown_function(array('PhutilFileLock', 'unlockAll'));
-      self::$registeredShutdownFunction = true;
-    }
-
-    if (empty(self::$locks[$lockfile])) {
-      $lock = new PhutilFileLock();
+    $name = 'file:'.$lockfile;
+    $lock = self::getLock($name);
+    if (!$lock) {
+      $lock = new PhutilFileLock($name);
       $lock->lockfile = $lockfile;
-      self::$locks[$lockfile] = $lock;
+      self::registerLock($lock);
     }
 
-    return self::$locks[$lockfile];
+    return $lock;
   }
-
-
-  /**
-   * Private constructor, build new locks with @{method:newForPath}.
-   *
-   * @task construct
-   */
-  private function __construct() {
-    // <private>
-  }
-
-
-/* -(  Determining Lock Status  )-------------------------------------------- */
-
-
-  /**
-   * Determine if the lock is currently held.
-   *
-   * @return bool True if the lock is held.
-   *
-   * @task status
-   */
-  public function isLocked() {
-    return $this->locked;
-  }
-
 
 /* -(  Locking  )------------------------------------------------------------ */
 
 
   /**
    * Acquire the lock. If lock acquisition fails because the lock is held by
-   * another process, throws @{class:PhutilFileLockException}. Other exceptions
+   * another process, throws @{class:PhutilLockException}. Other exceptions
    * indicate that lock acquisition has failed for reasons unrelated to locking.
    *
    * If the lock is already held, this method throws. You can test the lock
@@ -119,20 +81,8 @@ final class PhutilFileLock {
    *
    * @task lock
    */
-  public function lock() {
-    if ($this->locked) {
-      throw new Exception(
-        "Lockfile '{$this->lockfile}' is already locked by this process!");
-    }
-
+  protected function doLock() {
     $path = $this->lockfile;
-
-    $profiler = PhutilServiceProfiler::getInstance();
-    $profiler_id = $profiler->beginServiceCall(
-      array(
-        'type'  => 'flock',
-        'file'  => $this->lockfile,
-      ));
 
     $handle = @fopen($path, 'a+');
     if (!$handle) {
@@ -145,19 +95,11 @@ final class PhutilFileLock {
     $ok = flock($handle, LOCK_EX | LOCK_NB, $would_block);
 
     if (!$ok) {
-      $profiler->endServiceCall(
-        $profiler_id,
-        array(
-          'lock'  => false,
-        ));
-
       fclose($handle);
-      throw new PhutilFileLockException($path);
+      throw new PhutilLockException($this->getName());
     }
 
-    $this->profilerID = $profiler_id;
     $this->handle = $handle;
-    $this->locked = true;
   }
 
 
@@ -169,11 +111,7 @@ final class PhutilFileLock {
    *
    * @task lock
    */
-  public function unlock() {
-    if (!$this->locked) {
-      throw new Exception("Lock is not locked!");
-    }
-
+  protected function doUnlock() {
     $ok = flock($this->handle, LOCK_UN | LOCK_NB);
     if (!$ok) {
       throw new Exception("Unable to unlock file!");
@@ -184,35 +122,6 @@ final class PhutilFileLock {
       throw new Exception("Unable to close file!");
     }
 
-    PhutilServiceProfiler::getInstance()->endServiceCall(
-      $this->profilerID,
-      array(
-        'lock'  => true,
-      ));
-
-    $this->profilerID = null;
     $this->handle = null;
-    $this->locked = false;
   }
-
-
-/* -(  Internals  )---------------------------------------------------------- */
-
-
-  /**
-   * On shutdown, we release all the locks. You should not call this method
-   * directly. Use @{method:unlock} to release individual locks.
-   *
-   * @return void
-   *
-   * @task internal
-   */
-  public static function unlockAll() {
-    foreach (self::$locks as $key => $lock) {
-      if ($lock->locked) {
-        $lock->unlock();
-      }
-    }
-  }
-
 }
