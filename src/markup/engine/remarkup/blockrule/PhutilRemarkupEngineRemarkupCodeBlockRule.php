@@ -151,7 +151,11 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
       $aux_style = 'max-height: '.(2 * $height).'em;';
     }
 
-    $engine = new PhutilDefaultSyntaxHighlighterEngine();
+    $engine = $this->getEngine()->getConfig('syntax-highlighter.engine');
+    if (!$engine) {
+      $engine = 'PhutilDefaultSyntaxHighlighterEngine';
+    }
+    $engine = newv($engine, array());
     $engine->setConfig(
       'pygments.enabled',
       $this->getEngine()->getConfig('pygments.enabled'));
