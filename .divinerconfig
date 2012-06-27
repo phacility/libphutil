@@ -7,7 +7,7 @@
     "contrib" : "Contributing to libphutil",
     "working" : "Working with libphutil",
     "util" : "Core Utilities",
-    "library" : "Phutil Module System",
+    "library" : "Phutil Library System",
     "utf8" : "UTF-8",
     "internationalization" : "Internationalization",
     "filesystem" : "Filesystem",

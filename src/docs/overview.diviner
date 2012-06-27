@@ -43,7 +43,7 @@ The major components of libphutil are:
   (see @{article:Command Execution});
   - **@{function:xsprintf}**: allows you to define ##sprintf()##-style functions
   which use custom conversions; and
-  - **Module System**: an introspectable, inventoried system for organizing PHP
+  - **Library System**: an introspectable, inventoried system for organizing PHP
   code and managing dependencies, supported by static analysis.
 
 = Extending and Contributing =
