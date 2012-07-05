@@ -77,11 +77,12 @@ final class PhutilFileLock extends PhutilLock {
    * If the lock is already held, this method throws. You can test the lock
    * status with @{method:isLocked}.
    *
+   * @param  float  Seconds to block waiting for the lock.
    * @return void
    *
    * @task lock
    */
-  protected function doLock() {
+  protected function doLock($wait) {
     $path = $this->lockfile;
 
     $handle = @fopen($path, 'a+');
@@ -91,8 +92,16 @@ final class PhutilFileLock extends PhutilLock {
         "Unable to open lock '{$path}' for writing!");
     }
 
-    $would_block = null;
-    $ok = flock($handle, LOCK_EX | LOCK_NB, $would_block);
+    $start_time = microtime(true);
+    do {
+      $would_block = null;
+      $ok = flock($handle, LOCK_EX | LOCK_NB, $would_block);
+      if ($ok) {
+        break;
+      } else {
+        usleep(10000);
+      }
+    } while ($wait && $wait > (microtime(true) - $start_time));
 
     if (!$ok) {
       fclose($handle);

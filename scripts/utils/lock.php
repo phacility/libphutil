@@ -38,6 +38,12 @@ $args->parse(array(
     'help'      => 'Hold indefinitely without prompting.',
   ),
   array(
+    'name'      => 'wait',
+    'param'     => 'n',
+    'help'      => 'Block for up to __n__ seconds waiting for the lock.',
+    'default'   => 0,
+  ),
+  array(
     'name'      => 'file',
     'wildcard'  => true,
   ),
@@ -56,7 +62,7 @@ $console->writeOut("This process has PID %d. Acquiring lock...\n", getmypid());
 $lock = PhutilFileLock::newForPath($file);
 
 try {
-  $lock->lock();
+  $lock->lock($args->getArg('wait'));
 } catch (PhutilFileLockException $ex) {
   $console->writeOut("**UNABLE TO ACQUIRE LOCK:** Lock is already held.\n");
   exit(1);

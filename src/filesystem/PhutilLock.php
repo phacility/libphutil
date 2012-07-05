@@ -73,10 +73,11 @@ abstract class PhutilLock {
   /**
    * Acquires the lock, or throws @{class:PhutilLockException} if it fails.
    *
+   * @param  float  Seconds to block waiting for the lock.
    * @return void
    * @task impl
    */
-  abstract protected function doLock();
+  abstract protected function doLock($wait);
 
 
   /**
@@ -157,14 +158,16 @@ abstract class PhutilLock {
    * another process, throws @{class:PhutilLockException}. Other exceptions
    * indicate that lock acquisition has failed for reasons unrelated to locking.
    *
-   * If the lock is already held, this method throws. You can test the lock
-   * status with @{method:isLocked}.
+   * If the lock is already held by this process, this method throws. You can
+   * test the lock status with @{method:isLocked}.
    *
+   * @param  float  Seconds to block waiting for the lock. By default, do not
+   *                block.
    * @return void
    *
    * @task lock
    */
-  final public function lock() {
+  final public function lock($wait = 0) {
     if ($this->locked) {
       $name = $this->getName();
       throw new Exception(
@@ -179,7 +182,7 @@ abstract class PhutilLock {
       ));
 
     try {
-      $this->doLock();
+      $this->doLock((float)$wait);
     } catch (Exception $ex) {
       $profiler->endServiceCall(
         $profiler_id,
