@@ -16,31 +16,28 @@
  * limitations under the License.
  */
 
-final class PhutilPHPObjectProtocolChannelTestCase
+final class PhutilJSONProtocolChannelTestCase
   extends ArcanistPhutilTestCase {
 
-  public function testPHPObjectChannelBasics() {
+  public function testJSONChannelBasics() {
     list($x, $y) = PhutilSocketChannel::newChannelPair();
-    $xp = new PhutilPHPObjectProtocolChannel($x);
-    $yp = new PhutilPHPObjectProtocolChannel($y);
+    $xp = new PhutilJSONProtocolChannel($x);
+    $yp = new PhutilJSONProtocolChannel($y);
 
-    $object = (object)array(
-      'key' => mt_rand(),
+    $dict = array(
+      'rand' => mt_rand(),
+      'list' => array(1, 2, 3),
+      'null' => null,
     );
 
-    $xp->write($object);
+    $xp->write($dict);
     $xp->flush();
     $result = $yp->waitForMessage();
 
     $this->assertEqual(
-      true,
-      (array)$object === (array)$result,
+      $dict,
+      $result,
       "Values are identical.");
-
-    $this->assertEqual(
-      false,
-      $object === $result,
-      "Objects are not the same.");
   }
 
 }

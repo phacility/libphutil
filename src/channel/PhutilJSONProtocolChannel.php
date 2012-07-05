@@ -17,12 +17,15 @@
  */
 
 /**
- * Channel that transmits PHP objects using PHP serialization. This channel
- * is binary safe.
+ * Channel that transmits dictionaries of primitives using JSON serialization.
+ * This channel is not binary safe.
+ *
+ * This protocol is implemented by the Phabricator Aphlict realtime notification
+ * server.
  *
  * @task protocol Protocol Implementation
  */
-final class PhutilPHPObjectProtocolChannel extends PhutilProtocolChannel {
+final class PhutilJSONProtocolChannel extends PhutilProtocolChannel {
 
   const MODE_LENGTH = 'length';
   const MODE_OBJECT = 'object';
@@ -30,7 +33,7 @@ final class PhutilPHPObjectProtocolChannel extends PhutilProtocolChannel {
   /**
    * Size of the "length" frame of the protocol in bytes.
    */
-  const SIZE_LENGTH = 4;
+  const SIZE_LENGTH = 8;
 
   private $mode                   = self::MODE_LENGTH;
   private $byteLengthOfNextChunk  = self::SIZE_LENGTH;
@@ -42,31 +45,31 @@ final class PhutilPHPObjectProtocolChannel extends PhutilProtocolChannel {
 
   /**
    * Encode a message for transmission over the channel. The message should
-   * be any serializable PHP object. The entire object will be serialized, so
-   * avoid transmitting objects which connect to large graphs of other objects,
-   * etc.
-   *
-   * This channel can transmit class instances, but the receiving end must be
-   * running the same version of the code. There are no builtin safeguards
-   * to protect against versioning problems in object serialization.
+   * be any serializable as JSON.
    *
    * Objects are transmitted as:
    *
-   *   <len><serialized PHP object>
+   *   <len><json>
    *
-   * ...where <len> is a 4-byte unsigned big-endian integer.
+   * ...where <len> is an 8-character, zero-padded integer written as a string.
+   * For example, this is a valid message:
+   *
+   *   00000015{"key":"value"}
    *
    * @task protocol
    */
   protected function encodeMessage($message) {
-    $message = serialize($message);
-    $len = pack('N', strlen($message));
+    $message = json_encode($message);
+    $len = sprintf(
+      '%0'.self::SIZE_LENGTH.'.'.self::SIZE_LENGTH.'d',
+      strlen($message));
     return "{$len}{$message}";
   }
 
 
   /**
-   * Decode a message received from the other end of the channel.
+   * Decode a message received from the other end of the channel. Messages are
+   * decoded as associative arrays.
    *
    * @task protocol
    */
@@ -81,15 +84,15 @@ final class PhutilPHPObjectProtocolChannel extends PhutilProtocolChannel {
           $this->buf = substr($this->buf, self::SIZE_LENGTH);
 
           $this->mode = self::MODE_OBJECT;
-          $this->byteLengthOfNextChunk = head(unpack('N', $len));
+          $this->byteLengthOfNextChunk = (int)$len;
           break;
         case self::MODE_OBJECT:
           $data = substr($this->buf, 0, $this->byteLengthOfNextChunk);
           $this->buf = substr($this->buf, $this->byteLengthOfNextChunk);
 
-          $obj = @unserialize($data);
-          if ($obj === false) {
-            throw new Exception("Failed to unserialize object: {$data}");
+          $obj = json_decode($data, true);
+          if (!is_array($obj)) {
+            throw new Exception("Failed to decode JSON object: {$data}");
           } else {
             $objects[] = $obj;
           }
