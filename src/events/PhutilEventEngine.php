@@ -65,14 +65,30 @@ final class PhutilEventEngine {
     $listeners = array_merge($listeners, $global_listeners);
     $listeners = mpull($listeners, null, 'getListenerID');
 
-    foreach ($listeners as $listener) {
-      if ($event->isStopped()) {
-        // Do this first so if someone tries to dispatch a stopped event it
-        // doesn't go anywhere. Silly but less surprising.
-        break;
+    $profiler = PhutilServiceProfiler::getInstance();
+    $profiler_id = $profiler->beginServiceCall(
+      array(
+        'type'  => 'event',
+        'kind'  => $event->getType(),
+        'count' => count($listeners),
+      ));
+
+    $caught = null;
+    try {
+      foreach ($listeners as $listener) {
+        if ($event->isStopped()) {
+          // Do this first so if someone tries to dispatch a stopped event it
+          // doesn't go anywhere. Silly but less surprising.
+          break;
+        }
+        $listener->handleEvent($event);
       }
-      $listener->handleEvent($event);
+    } catch (Exception $ex) {
+      $profiler->endServiceCall($profiler_id, array());
+      throw $ex;
     }
+
+    $profiler->endServiceCall($profiler_id, array());
   }
 
 }

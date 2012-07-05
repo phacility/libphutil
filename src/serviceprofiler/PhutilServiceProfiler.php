@@ -112,8 +112,11 @@ final class PhutilServiceProfiler {
         case 'conduit':
           echo $data['method'].'()';
           break;
-        case 'flock':
+        case 'lock':
           echo $data['name'];
+          break;
+        case 'event':
+          echo $data['kind'].' <listeners = '.$data['count'].'>';
           break;
       }
     }
