@@ -163,7 +163,7 @@ abstract class PhutilLock {
    *
    * @param  float  Seconds to block waiting for the lock. By default, do not
    *                block.
-   * @return void
+   * @return this
    *
    * @task lock
    */
@@ -194,6 +194,8 @@ abstract class PhutilLock {
 
     $this->profilerID = $profiler_id;
     $this->locked = true;
+
+    return $this;
   }
 
 
@@ -201,7 +203,7 @@ abstract class PhutilLock {
    * Release the lock. Throws an exception on failure, e.g. if the lock is not
    * currently held.
    *
-   * @return void
+   * @return this
    *
    * @task lock
    */
@@ -223,6 +225,8 @@ abstract class PhutilLock {
 
     $this->profilerID = null;
     $this->locked = false;
+
+    return $this;
   }
 
 
