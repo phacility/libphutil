@@ -37,6 +37,7 @@ final class PhutilInteractiveEditor {
   private $name     = '';
   private $content  = '';
   private $offset   = 0;
+  private $preferred;
   private $fallback;
 
 
@@ -237,6 +238,21 @@ final class PhutilInteractiveEditor {
 
 
   /**
+   * Set the preferred editor program. If set, this will override all other
+   * sources of editor configuration, like $EDITOR.
+   *
+   * @param  string  Command-line editing program (e.g. 'emacs', 'vi')
+   * @return $this
+   *
+   * @task config
+   */
+  public function setPreferredEditor($editor) {
+    $this->preferred = $editor;
+    return $this;
+  }
+
+
+  /**
    * Get the name of the editor program to use. The value of the environmental
    * variable $EDITOR will be used if available; otherwise, the `editor` binary
    * if present; otherwise the best editor will be selected.
@@ -246,6 +262,10 @@ final class PhutilInteractiveEditor {
    * @task config
    */
   public function getEditor() {
+    if ($this->preferred) {
+      return $this->preferred;
+    }
+
     $editor = getenv('EDITOR');
     if ($editor) {
       return $editor;
