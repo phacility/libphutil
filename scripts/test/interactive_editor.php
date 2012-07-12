@@ -48,11 +48,6 @@ $args->parse(
       'param' => 'filename',
       'help'  => 'Set edited file name.',
     ),
-    array(
-      'name'  => 'help',
-      'short' => 'h',
-      'help'  => 'Show this help.',
-    ),
   ));
 
 if ($args->getArg('help')) {
