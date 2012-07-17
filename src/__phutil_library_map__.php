@@ -187,6 +187,7 @@ phutil_register_library_map(array(
     'jsprintf' => 'xsprintf/jsprintf.php',
     'last' => 'utils/utils.php',
     'last_key' => 'utils/utils.php',
+    'ldap_sprintf' => 'xsprintf/ldapsprintf.php',
     'mfilter' => 'utils/utils.php',
     'mgroup' => 'utils/utils.php',
     'mpull' => 'utils/utils.php',
@@ -229,6 +230,7 @@ phutil_register_library_map(array(
     'xsprintf_callback_example' => 'xsprintf/xsprintf.php',
     'xsprintf_command' => 'xsprintf/csprintf.php',
     'xsprintf_javascript' => 'xsprintf/jsprintf.php',
+    'xsprintf_ldap' => 'xsprintf/ldapsprintf.php',
   ),
   'xmap' =>
   array(
