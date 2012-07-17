@@ -19,6 +19,12 @@
 final class PhutilOpaqueEnvelopeTestCase extends ArcanistPhutilTestCase {
 
   public function testOpaqueEnvelope() {
+
+    // NOTE: When run via "arc diff", this test's trace may include portions of
+    // the diff itself, and thus this source code. Since we look for the secret
+    // in traces later on, split it apart here so that invocation via
+    // "arc diff" doesn't create a false test failure.
+
     $secret = 'hunter'.'2';
 
     $envelope = new PhutilOpaqueEnvelope($secret);
