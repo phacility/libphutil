@@ -95,7 +95,7 @@ final class PhutilSimpleOptionsTestCase extends ArcanistPhutilTestCase {
       $this->assertEqual(
         true,
         $caught instanceof Exception,
-        "Correct throw on unparse of '{$bad_input}'");
+        "Correct throw on unparse of bad input.");
     }
   }
 
