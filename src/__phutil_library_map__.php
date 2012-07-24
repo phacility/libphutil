@@ -16,6 +16,8 @@ phutil_register_library_map(array(
     'AASTTree' => 'parser/aast/api/AASTTree.php',
     'AbstractDirectedGraph' => 'utils/AbstractDirectedGraph.php',
     'AbstractDirectedGraphTestCase' => 'utils/__tests__/AbstractDirectedGraphTestCase.php',
+    'AphrontScopedUnguardedWriteCapability' => 'aphront/writeguard/AphrontScopedUnguardedWriteCapability.php',
+    'AphrontWriteGuard' => 'aphront/writeguard/AphrontWriteGuard.php',
     'BaseHTTPFuture' => 'future/http/BaseHTTPFuture.php',
     'CommandException' => 'future/CommandException.php',
     'ConduitClient' => 'conduit/ConduitClient.php',
