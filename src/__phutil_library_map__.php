@@ -179,6 +179,7 @@ phutil_register_library_map(array(
     'PhutilUtilsTestCase' => 'utils/__tests__/PhutilUtilsTestCase.php',
     'PhutilXHPASTSyntaxHighlighter' => 'markup/syntax/highlighter/PhutilXHPASTSyntaxHighlighter.php',
     'PhutilXHPASTSyntaxHighlighterTestCase' => 'markup/syntax/highlighter/__tests__/PhutilXHPASTSyntaxHighlighterTestCase.php',
+    'QueryFormattingTestCase' => 'xsprintf/__tests__/QueryFormattingTestCase.php',
     'TempFile' => 'filesystem/TempFile.php',
     'TestAbstractDirectedGraph' => 'utils/__tests__/TestAbstractDirectedGraph.php',
     'XHPASTNode' => 'parser/xhpast/api/XHPASTNode.php',
@@ -190,6 +191,8 @@ phutil_register_library_map(array(
   'function' =>
   array(
     'Futures' => 'future/functions.php',
+    '_qsprintf_check_scalar_type' => 'xsprintf/qsprintf.php',
+    '_qsprintf_check_type' => 'xsprintf/qsprintf.php',
     'array_mergev' => 'utils/utils.php',
     'array_select_keys' => 'utils/utils.php',
     'assert_instances_of' => 'utils/utils.php',
@@ -240,8 +243,15 @@ phutil_register_library_map(array(
     'phutil_utf8_strlen' => 'utils/utf8.php',
     'phutil_utf8ize' => 'utils/utf8.php',
     'phutil_utf8v' => 'utils/utf8.php',
+    'qsprintf' => 'xsprintf/qsprintf.php',
+    'queryfx' => 'xsprintf/queryfx.php',
+    'queryfx_all' => 'xsprintf/queryfx.php',
+    'queryfx_one' => 'xsprintf/queryfx.php',
     'vcsprintf' => 'xsprintf/csprintf.php',
     'vjsprintf' => 'xsprintf/jsprintf.php',
+    'vqsprintf' => 'xsprintf/qsprintf.php',
+    'vqueryfx' => 'xsprintf/queryfx.php',
+    'vqueryfx_all' => 'xsprintf/queryfx.php',
     'xhp_parser_node_constants' => 'parser/xhpast/parser_nodes.php',
     'xhpast_get_binary_path' => 'parser/xhpast/bin/xhpast_parse.php',
     'xhpast_get_build_instructions' => 'parser/xhpast/bin/xhpast_parse.php',
@@ -253,6 +263,7 @@ phutil_register_library_map(array(
     'xsprintf_command' => 'xsprintf/csprintf.php',
     'xsprintf_javascript' => 'xsprintf/jsprintf.php',
     'xsprintf_ldap' => 'xsprintf/ldapsprintf.php',
+    'xsprintf_query' => 'xsprintf/qsprintf.php',
   ),
   'xmap' =>
   array(
@@ -371,6 +382,7 @@ phutil_register_library_map(array(
     'PhutilUTF8TestCase' => 'ArcanistPhutilTestCase',
     'PhutilUtilsTestCase' => 'ArcanistPhutilTestCase',
     'PhutilXHPASTSyntaxHighlighterTestCase' => 'ArcanistPhutilTestCase',
+    'QueryFormattingTestCase' => 'PhabricatorTestCase',
     'TestAbstractDirectedGraph' => 'AbstractDirectedGraph',
     'XHPASTNode' => 'AASTNode',
     'XHPASTSyntaxErrorException' => 'Exception',
