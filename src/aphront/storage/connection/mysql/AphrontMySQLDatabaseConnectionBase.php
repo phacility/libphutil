@@ -24,6 +24,7 @@ abstract class AphrontMySQLDatabaseConnectionBase
 
   private $configuration;
   private $connection;
+  private $lastResult;
 
   private $nextError;
 
@@ -39,6 +40,9 @@ abstract class AphrontMySQLDatabaseConnectionBase
   }
 
   public function close() {
+    if ($this->lastResult) {
+      $this->lastResult = null;
+    }
     if ($this->connection) {
       $this->closeConnection();
       $this->connection = null;
