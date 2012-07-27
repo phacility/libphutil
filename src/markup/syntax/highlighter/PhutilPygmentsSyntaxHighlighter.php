@@ -97,6 +97,8 @@ final class PhutilPygmentsSyntaxHighlighter {
       'c++-objdump' => 'cpp-objdump',
       'cxx-objdump' => 'cpp-objdump',
       'cs' => 'csharp',
+      'less' => 'css',
+      'scss' => 'css',
       'pyx' => 'cython',
       'pxd' => 'cython',
       'pxi' => 'cython',
