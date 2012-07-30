@@ -339,6 +339,12 @@ final class PhutilSymbolLoader {
    */
   private function selectDescendantsOf(array $tree, $root) {
     $result = array();
+
+    if (empty($tree[$root])) {
+      // No known descendants.
+      return array();
+    }
+
     foreach ($tree[$root] as $child) {
       $result[$child] = true;
       if (!empty($tree[$child])) {
