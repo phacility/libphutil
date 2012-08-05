@@ -69,7 +69,7 @@ class PhutilRemarkupRuleHyperlink
     if (!idx($protocols, $protocol)) {
       // If this URI doesn't use a whitelisted protocol, don't link it. This
       // is primarily intended to prevent javascript:// silliness.
-      return $this->getEngine()->storeText($matches[1]);
+      return $this->getEngine()->storeText(phutil_escape_html($matches[1]));
     }
 
     return $this->storeRenderedHyperlink($matches[1]);
