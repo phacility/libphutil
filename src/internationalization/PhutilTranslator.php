@@ -76,7 +76,7 @@ final class PhutilTranslator {
     return $this;
   }
 
-  public function translate($text /*, ... */) {
+  public function translate($text /* , ... */) {
     $translation = idx($this->translations, $text, $text);
     $args = func_get_args();
     while (is_array($translation)) {
@@ -146,6 +146,23 @@ final class PhutilTranslator {
       $parts[] = $part;
     }
     return implode('', $parts);
+  }
+
+  public function validateTranslation($original, $translation) {
+    $pattern = '/<(\S[^>]*>?)?|&(\S[^;]*;?)?/i';
+    $original_matches = null;
+    $translation_matches = null;
+
+    preg_match_all($pattern, $original, $original_matches);
+    preg_match_all($pattern, $translation, $translation_matches);
+
+    sort($original_matches[0]);
+    sort($translation_matches[0]);
+
+    if ($original_matches[0] !== $translation_matches[0]) {
+      return false;
+    }
+    return true;
   }
 
 }

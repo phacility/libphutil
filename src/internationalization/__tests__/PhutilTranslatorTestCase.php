@@ -125,4 +125,41 @@ final class PhutilTranslatorTestCase extends ArcanistPhutilTestCase {
     $this->assertEqual('color', pht('color'));
   }
 
+  public function testValidateTranslation() {
+    $tests = array(
+      'a < 2' => array(
+        'a < 2' => true,
+        'b < 3' => true,
+        '2 > a' => false,
+        'a<2' => false,
+      ),
+      'We <em>win</em>' => array(
+        'We <em>win</em>' => true,
+        'We </em>win<em>' => true, // false positive
+        'We win' => false,
+        'We <em onmouseover="">win</em>' => false,
+      ),
+      'We <em title="%s">win</em> &amp; triumph' => array(
+        'We <em title="%s">triumph</em> &amp; win' => true,
+        'We <em title="%s">win</em> and triumph' => false,
+      ),
+      'beer' => array(
+        'pivo' => true,
+        'b<>r' => false,
+        'b&&r' => false,
+      ),
+    );
+
+    $translator = new PhutilTranslator();
+    foreach ($tests as $original => $translations) {
+      foreach ($translations as $translation => $expect) {
+        $valid = ($expect ? "valid" : "invalid");
+        $this->assertEqual(
+          $expect,
+          $translator->validateTranslation($original, $translation),
+          "'{$original}' should be {$valid} with '{$translation}'.");
+      }
+    }
+  }
+
 }
