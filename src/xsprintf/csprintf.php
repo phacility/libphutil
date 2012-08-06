@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@
  * that all the normal conversions (like %s) will be properly escaped, and
  * additional conversions are supported:
  *
+ *   %Ls
+ *     List of strings that will be escaped. They will be space separated.
+ *
  *   %C (Raw Command)
  *     Passes the argument through without escaping. Dangerous!
  *
@@ -32,7 +35,7 @@
  * @return string  Formatted string, escaped appropriately for shell contexts.
  * @group exec
  */
-function csprintf($pattern/*, ... */) {
+function csprintf($pattern/* , ... */) {
   $args = func_get_args();
   return xsprintf('xsprintf_command', null, $args);
 }
