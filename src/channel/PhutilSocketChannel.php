@@ -157,7 +157,9 @@ final class PhutilSocketChannel extends PhutilChannel {
         continue;
       }
 
-      @stream_socket_shutdown($socket, STREAM_SHUT_RDWR);
+      // We should also stream_socket_shutdown() here but HHVM throws errors
+      // with it (for example 'Unexpected object type PlainFile'). We depend
+      // just on fclose() until it is fixed.
       @fclose($socket);
     }
     $this->readSocket = null;
