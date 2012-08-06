@@ -72,14 +72,16 @@ final class PhutilConsoleServer {
     while ($this->clients) {
       PhutilChannel::waitForAny($this->clients);
       foreach ($this->clients as $key => $client) {
+        if (!$client->update()) {
+          // If the client has exited, remove it from the list of clients.
+          // We still need to process any remaining buffered I/O.
+          unset($this->clients[$key]);
+        }
         while ($message = $client->read()) {
           $response = $this->handleMessage($message);
           if ($response) {
             $client->write($response);
           }
-        }
-        if (!$client->update()) {
-          unset($this->clients[$key]);
         }
       }
     }

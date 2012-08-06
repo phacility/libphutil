@@ -75,6 +75,11 @@ abstract class PhutilChannelChannel extends PhutilChannel {
     return $this->channel->isWriteBufferEmpty();
   }
 
+  public function flush() {
+    $this->channel->flush();
+    return $this;
+  }
+
   private function throwOnRawByteOperations() {
 
     // NOTE: You should only be able to end up here if you subclass this class
