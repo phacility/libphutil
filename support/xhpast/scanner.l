@@ -165,6 +165,10 @@ NEWLINE ("\r\n"|"\n"|"\r")
     ptok(T_WHITESPACE);
   }
 }
+<PHP_EOL_COMMENT><<EOF>> {
+  ptok(T_COMMENT);
+  pop_state();
+}
 <PHP_EOL_COMMENT>{
   {NEWLINE} {
     ++yyextra->lineno;

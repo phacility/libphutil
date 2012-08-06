@@ -38,6 +38,10 @@ final class PhutilXHPASTSyntaxHighlighterTestCase
       $this->read('builtin-classname.expect'),
       $this->highlight($this->read('builtin-classname.source')),
       'Builtin classnames should not be marked as linkable symbols.');
+    $this->assertEqual(
+      $this->read('trailing-comment.expect'),
+      $this->highlight($this->read('trailing-comment.source')),
+      'Trailing comments should not be dropped.');
   }
 
 }

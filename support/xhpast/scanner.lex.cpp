@@ -3613,20 +3613,20 @@ static yyconst yy_state_type yy_NUL_trans[595] =
 static yyconst flex_int16_t yy_rule_linenum[140] =
     {   0,
        95,  100,  107,  114,  121,  128,  134,  138,  150,  154,
-      159,  163,  169,  174,  175,  180,  183,  187,  189,  197,
-      208,  209,  210,  211,  212,  213,  214,  215,  216,  217,
-      218,  219,  220,  221,  222,  223,  224,  225,  226,  227,
-      228,  229,  230,  231,  232,  233,  234,  235,  236,  237,
-      238,  239,  240,  241,  242,  243,  244,  245,  246,  247,
-      248,  249,  250,  251,  252,  253,  254,  255,  256,  257,
-      258,  259,  260,  261,  262,  263,  264,  265,  266,  267,
-      268,  269,  270,  271,  272,  273,  274,  275,  280,  281,
-      282,  283,  284,  285,  286,  287,  288,  289,  290,  291,
+      159,  163,  173,  178,  179,  184,  187,  191,  193,  201,
+      212,  213,  214,  215,  216,  217,  218,  219,  220,  221,
+      222,  223,  224,  225,  226,  227,  228,  229,  230,  231,
+      232,  233,  234,  235,  236,  237,  238,  239,  240,  241,
+      242,  243,  244,  245,  246,  247,  248,  249,  250,  251,
+      252,  253,  254,  255,  256,  257,  258,  259,  260,  261,
+      262,  263,  264,  265,  266,  267,  268,  269,  270,  271,
+      272,  273,  274,  275,  276,  277,  278,  279,  284,  285,
+      286,  287,  288,  289,  290,  291,  292,  293,  294,  295,
 
-      292,  293,  294,  295,  296,  297,  298,  299,  300,  301,
-      302,  303,  304,  305,  306,  311,  312,  313,  314,  315,
-      316,  317,  318,  319,  324,  325,  326,  327,  328,  332,
-      339,  345,  355,  362,  369,  377,  390,  395,  403
+      296,  297,  298,  299,  300,  301,  302,  303,  304,  305,
+      306,  307,  308,  309,  310,  315,  316,  317,  318,  319,
+      320,  321,  322,  323,  328,  329,  330,  331,  332,  336,
+      343,  349,  359,  366,  373,  381,  394,  399,  407
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -4265,11 +4265,18 @@ YY_RULE_SETUP
   }
 	YY_BREAK
 
+case YY_STATE_EOF(PHP_EOL_COMMENT):
+#line 168 "scanner.l"
+{
+  ptok(T_COMMENT);
+  pop_state();
+}
+	YY_BREAK
 
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 169 "scanner.l"
+#line 173 "scanner.l"
 {
     ++yyextra->lineno;
     ptok(T_COMMENT);
@@ -4278,12 +4285,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 174 "scanner.l"
+#line 178 "scanner.l"
 yymore();
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 175 "scanner.l"
+#line 179 "scanner.l"
 {
     yyless(yyleng - 2);
     ptok(T_COMMENT);
@@ -4292,7 +4299,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 180 "scanner.l"
+#line 184 "scanner.l"
 yymore();
 	YY_BREAK
 
@@ -4300,7 +4307,7 @@ yymore();
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 183 "scanner.l"
+#line 187 "scanner.l"
 {
     ++yyextra->lineno;
     yymore();
@@ -4308,20 +4315,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 187 "scanner.l"
+#line 191 "scanner.l"
 yymore();
 	YY_BREAK
 
 case 19:
 YY_RULE_SETUP
-#line 189 "scanner.l"
+#line 193 "scanner.l"
 {
   ptok(T_DOC_COMMENT);
   pop_state();
 }
 	YY_BREAK
 case YY_STATE_EOF(PHP_DOC_COMMENT):
-#line 193 "scanner.l"
+#line 197 "scanner.l"
 {
   ptok(T_DOC_COMMENT);
   pop_state();
@@ -4329,14 +4336,14 @@ case YY_STATE_EOF(PHP_DOC_COMMENT):
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 197 "scanner.l"
+#line 201 "scanner.l"
 {
   ptok(T_COMMENT);
   pop_state();
 }
 	YY_BREAK
 case YY_STATE_EOF(PHP_COMMENT):
-#line 201 "scanner.l"
+#line 205 "scanner.l"
 {
   ptok(T_COMMENT);
   pop_state();
@@ -4346,342 +4353,342 @@ case YY_STATE_EOF(PHP_COMMENT):
 
 case 21:
 YY_RULE_SETUP
-#line 208 "scanner.l"
+#line 212 "scanner.l"
 tok(T_INCLUDE);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 209 "scanner.l"
+#line 213 "scanner.l"
 tok(T_INCLUDE_ONCE);
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 210 "scanner.l"
+#line 214 "scanner.l"
 tok(T_EVAL);
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 211 "scanner.l"
+#line 215 "scanner.l"
 tok(T_REQUIRE);
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 212 "scanner.l"
+#line 216 "scanner.l"
 tok(T_REQUIRE_ONCE);
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 213 "scanner.l"
+#line 217 "scanner.l"
 tok(T_LOGICAL_OR);
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 214 "scanner.l"
+#line 218 "scanner.l"
 tok(T_LOGICAL_XOR);
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 215 "scanner.l"
+#line 219 "scanner.l"
 tok(T_LOGICAL_AND);
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 216 "scanner.l"
+#line 220 "scanner.l"
 tok(T_PRINT);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 217 "scanner.l"
+#line 221 "scanner.l"
 tok(T_INSTANCEOF);
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 218 "scanner.l"
+#line 222 "scanner.l"
 tok(T_NEW);
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 219 "scanner.l"
+#line 223 "scanner.l"
 tok(T_CLONE);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 220 "scanner.l"
+#line 224 "scanner.l"
 tok(T_EXIT);
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 221 "scanner.l"
+#line 225 "scanner.l"
 tok(T_IF);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 222 "scanner.l"
+#line 226 "scanner.l"
 tok(T_ELSEIF);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 223 "scanner.l"
+#line 227 "scanner.l"
 tok(T_ELSE);
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 224 "scanner.l"
+#line 228 "scanner.l"
 tok(T_ENDIF);
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 225 "scanner.l"
+#line 229 "scanner.l"
 tok(T_ECHO);
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 226 "scanner.l"
+#line 230 "scanner.l"
 tok(T_DO);
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 227 "scanner.l"
+#line 231 "scanner.l"
 tok(T_WHILE);
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 228 "scanner.l"
+#line 232 "scanner.l"
 tok(T_ENDWHILE);
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 229 "scanner.l"
+#line 233 "scanner.l"
 tok(T_FOR);
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 230 "scanner.l"
+#line 234 "scanner.l"
 tok(T_ENDFOR);
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 231 "scanner.l"
+#line 235 "scanner.l"
 tok(T_FOREACH);
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 232 "scanner.l"
+#line 236 "scanner.l"
 tok(T_ENDFOREACH);
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 233 "scanner.l"
+#line 237 "scanner.l"
 tok(T_DECLARE);
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 234 "scanner.l"
+#line 238 "scanner.l"
 tok(T_ENDDECLARE);
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 235 "scanner.l"
+#line 239 "scanner.l"
 tok(T_AS);
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 236 "scanner.l"
+#line 240 "scanner.l"
 tok(T_SWITCH);
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 237 "scanner.l"
+#line 241 "scanner.l"
 tok(T_ENDSWITCH);
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 238 "scanner.l"
+#line 242 "scanner.l"
 tok(T_CASE);
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 239 "scanner.l"
+#line 243 "scanner.l"
 tok(T_DEFAULT);
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 240 "scanner.l"
+#line 244 "scanner.l"
 tok(T_BREAK);
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 241 "scanner.l"
+#line 245 "scanner.l"
 tok(T_CONTINUE);
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 242 "scanner.l"
+#line 246 "scanner.l"
 tok(T_GOTO);
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 243 "scanner.l"
+#line 247 "scanner.l"
 tok(T_FUNCTION);
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 244 "scanner.l"
+#line 248 "scanner.l"
 tok(T_CONST);
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 245 "scanner.l"
+#line 249 "scanner.l"
 tok(T_RETURN);
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 246 "scanner.l"
+#line 250 "scanner.l"
 tok(T_TRY);
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 247 "scanner.l"
+#line 251 "scanner.l"
 tok(T_CATCH);
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 248 "scanner.l"
+#line 252 "scanner.l"
 tok(T_THROW);
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 249 "scanner.l"
+#line 253 "scanner.l"
 tok(T_USE);
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 250 "scanner.l"
+#line 254 "scanner.l"
 tok(T_GLOBAL);
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 251 "scanner.l"
+#line 255 "scanner.l"
 tok(T_STATIC);
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 252 "scanner.l"
+#line 256 "scanner.l"
 tok(T_ABSTRACT);
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 253 "scanner.l"
+#line 257 "scanner.l"
 tok(T_FINAL);
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 254 "scanner.l"
+#line 258 "scanner.l"
 tok(T_PRIVATE);
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 255 "scanner.l"
+#line 259 "scanner.l"
 tok(T_PROTECTED);
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 256 "scanner.l"
+#line 260 "scanner.l"
 tok(T_PUBLIC);
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 257 "scanner.l"
+#line 261 "scanner.l"
 tok(T_VAR);
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 258 "scanner.l"
+#line 262 "scanner.l"
 tok(T_UNSET);
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 259 "scanner.l"
+#line 263 "scanner.l"
 tok(T_ISSET);
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 260 "scanner.l"
+#line 264 "scanner.l"
 tok(T_EMPTY);
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 261 "scanner.l"
+#line 265 "scanner.l"
 tok(T_HALT_COMPILER);
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 262 "scanner.l"
+#line 266 "scanner.l"
 tok(T_CLASS);
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 263 "scanner.l"
+#line 267 "scanner.l"
 tok(T_INTERFACE);
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 264 "scanner.l"
+#line 268 "scanner.l"
 tok(T_EXTENDS);
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 265 "scanner.l"
+#line 269 "scanner.l"
 tok(T_IMPLEMENTS);
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 266 "scanner.l"
+#line 270 "scanner.l"
 tok(T_LIST);
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 267 "scanner.l"
+#line 271 "scanner.l"
 tok(T_ARRAY);
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 268 "scanner.l"
+#line 272 "scanner.l"
 tok(T_CLASS_C);
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 269 "scanner.l"
+#line 273 "scanner.l"
 tok(T_METHOD_C);
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 270 "scanner.l"
+#line 274 "scanner.l"
 tok(T_FUNC_C);
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 271 "scanner.l"
+#line 275 "scanner.l"
 tok(T_LINE);
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 272 "scanner.l"
+#line 276 "scanner.l"
 tok(T_FILE);
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 273 "scanner.l"
+#line 277 "scanner.l"
 tok(T_NAMESPACE);
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 274 "scanner.l"
+#line 278 "scanner.l"
 tok(T_NS_C);
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 275 "scanner.l"
+#line 279 "scanner.l"
 tok(T_DIR);
 	YY_BREAK
 
@@ -4689,137 +4696,137 @@ tok(T_DIR);
 
 case 89:
 YY_RULE_SETUP
-#line 280 "scanner.l"
+#line 284 "scanner.l"
 tok(T_PLUS_EQUAL);
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 281 "scanner.l"
+#line 285 "scanner.l"
 tok(T_MINUS_EQUAL);
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 282 "scanner.l"
+#line 286 "scanner.l"
 tok(T_MUL_EQUAL);
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 283 "scanner.l"
+#line 287 "scanner.l"
 tok(T_DIV_EQUAL);
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 284 "scanner.l"
+#line 288 "scanner.l"
 tok(T_CONCAT_EQUAL);
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 285 "scanner.l"
+#line 289 "scanner.l"
 tok(T_MOD_EQUAL);
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 286 "scanner.l"
+#line 290 "scanner.l"
 tok(T_AND_EQUAL);
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 287 "scanner.l"
+#line 291 "scanner.l"
 tok(T_OR_EQUAL);
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 288 "scanner.l"
+#line 292 "scanner.l"
 tok(T_XOR_EQUAL);
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 289 "scanner.l"
+#line 293 "scanner.l"
 tok(T_SL_EQUAL);
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 290 "scanner.l"
+#line 294 "scanner.l"
 tok(T_SR_EQUAL);
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 291 "scanner.l"
+#line 295 "scanner.l"
 tok(T_BOOLEAN_OR);
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 292 "scanner.l"
+#line 296 "scanner.l"
 tok(T_BOOLEAN_AND);
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 293 "scanner.l"
+#line 297 "scanner.l"
 tok(T_IS_EQUAL);
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 294 "scanner.l"
+#line 298 "scanner.l"
 tok(T_IS_NOT_EQUAL);
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 295 "scanner.l"
+#line 299 "scanner.l"
 tok(T_IS_IDENTICAL);
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 296 "scanner.l"
+#line 300 "scanner.l"
 tok(T_IS_NOT_IDENTICAL);
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 297 "scanner.l"
+#line 301 "scanner.l"
 tok(T_IS_SMALLER_OR_EQUAL);
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 298 "scanner.l"
+#line 302 "scanner.l"
 tok(T_IS_GREATER_OR_EQUAL);
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 299 "scanner.l"
+#line 303 "scanner.l"
 tok(T_SL);
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 300 "scanner.l"
+#line 304 "scanner.l"
 tok(T_SR);
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 301 "scanner.l"
+#line 305 "scanner.l"
 tok(T_INC);
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 302 "scanner.l"
+#line 306 "scanner.l"
 tok(T_DEC);
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 303 "scanner.l"
+#line 307 "scanner.l"
 tok(T_OBJECT_OPERATOR);
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 304 "scanner.l"
+#line 308 "scanner.l"
 tok(T_DOUBLE_ARROW);
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 305 "scanner.l"
+#line 309 "scanner.l"
 tok(T_PAAMAYIM_NEKUDOTAYIM);
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 306 "scanner.l"
+#line 310 "scanner.l"
 tok(T_NS_SEPARATOR);
 	YY_BREAK
 
@@ -4827,47 +4834,47 @@ tok(T_NS_SEPARATOR);
 
 case 116:
 YY_RULE_SETUP
-#line 311 "scanner.l"
+#line 315 "scanner.l"
 tok(T_INT_CAST);
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 312 "scanner.l"
+#line 316 "scanner.l"
 tok(T_DOUBLE_CAST);
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 313 "scanner.l"
+#line 317 "scanner.l"
 tok(T_STRING_CAST);
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 314 "scanner.l"
+#line 318 "scanner.l"
 tok(T_UNICODE_CAST);
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 315 "scanner.l"
+#line 319 "scanner.l"
 tok(T_BINARY_CAST);
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 316 "scanner.l"
+#line 320 "scanner.l"
 tok(T_ARRAY_CAST);
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 317 "scanner.l"
+#line 321 "scanner.l"
 tok(T_OBJECT_CAST);
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 318 "scanner.l"
+#line 322 "scanner.l"
 tok(T_BOOL_CAST);
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 319 "scanner.l"
+#line 323 "scanner.l"
 tok(T_UNSET_CAST);
 	YY_BREAK
 
@@ -4875,28 +4882,28 @@ tok(T_UNSET_CAST);
 
 case 125:
 YY_RULE_SETUP
-#line 324 "scanner.l"
+#line 328 "scanner.l"
 tok(T_LNUMBER);
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 325 "scanner.l"
+#line 329 "scanner.l"
 tok(T_DNUMBER);
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 326 "scanner.l"
+#line 330 "scanner.l"
 tok(T_STRING);
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 327 "scanner.l"
+#line 331 "scanner.l"
 tok(T_VARIABLE);
 	YY_BREAK
 case 129:
 /* rule 129 can match eol */
 YY_RULE_SETUP
-#line 328 "scanner.l"
+#line 332 "scanner.l"
 {
     yy_scan_newlines(yytext, yyg);
     tok(T_CONSTANT_ENCAPSED_STRING);
@@ -4905,7 +4912,7 @@ YY_RULE_SETUP
 case 130:
 /* rule 130 can match eol */
 YY_RULE_SETUP
-#line 332 "scanner.l"
+#line 336 "scanner.l"
 {
     yy_scan_newlines(yytext, yyg);
     tok(T_BACKTICKS_EXPR);
@@ -4915,7 +4922,7 @@ YY_RULE_SETUP
 /* (HERE|NOW)DOC's */
 case 131:
 YY_RULE_SETUP
-#line 339 "scanner.l"
+#line 343 "scanner.l"
 {
   push_state(PHP_HEREDOC_START);
   yyextra->heredoc_yyleng = yyleng;
@@ -4925,7 +4932,7 @@ YY_RULE_SETUP
 
 case 132:
 YY_RULE_SETUP
-#line 345 "scanner.l"
+#line 349 "scanner.l"
 {
     // Create a new string for the heredoc label. Since we're using yymore above
     // yytext will actually start at the "<<<" and not the label. Use of
@@ -4939,7 +4946,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 355 "scanner.l"
+#line 359 "scanner.l"
 {
     yyextra->heredoc_label = string(yytext + yyextra->heredoc_yyleng);
     set_state(PHP_HEREDOC_NSTART);
@@ -4951,7 +4958,7 @@ YY_RULE_SETUP
 case 134:
 /* rule 134 can match eol */
 YY_RULE_SETUP
-#line 362 "scanner.l"
+#line 366 "scanner.l"
 {
   ++yyextra->lineno;
   yyextra->heredoc_data = yytext + yyleng;
@@ -4963,7 +4970,7 @@ YY_RULE_SETUP
 case 135:
 /* rule 135 can match eol */
 YY_RULE_SETUP
-#line 369 "scanner.l"
+#line 373 "scanner.l"
 {
     ++yyextra->lineno;
     set_state(PHP_HEREDOC_NEWLINE);
@@ -4976,7 +4983,7 @@ YY_RULE_SETUP
 case 136:
 /* rule 136 can match eol */
 YY_RULE_SETUP
-#line 377 "scanner.l"
+#line 381 "scanner.l"
 {
     if (strncmp(yyextra->heredoc_label.c_str(), yytext + yyextra->heredoc_yyleng, yyextra->heredoc_label.size()) == 0) {
       switch (yytext[yyextra->heredoc_yyleng + yyextra->heredoc_label.size()]) {
@@ -4993,7 +5000,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 390 "scanner.l"
+#line 394 "scanner.l"
 {
     set_state(PHP_HEREDOC_DATA);
     yyextra->heredoc_yyleng = yyleng;
@@ -5003,7 +5010,7 @@ YY_RULE_SETUP
 case 138:
 /* rule 138 can match eol */
 YY_RULE_SETUP
-#line 395 "scanner.l"
+#line 399 "scanner.l"
 {
     ++yyextra->lineno;
     yyextra->heredoc_yyleng = yyleng;
@@ -5015,7 +5022,7 @@ YY_RULE_SETUP
 case 139:
 /* rule 139 can match eol */
 YY_RULE_SETUP
-#line 403 "scanner.l"
+#line 407 "scanner.l"
 {
   tok(yytext[0]);
   // fix unused function warnings
@@ -5025,13 +5032,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 410 "scanner.l"
+#line 414 "scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 5032 "scanner.lex.cpp"
+#line 5039 "scanner.lex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(PHP):
-case YY_STATE_EOF(PHP_EOL_COMMENT):
 case YY_STATE_EOF(PHP_HEREDOC_START):
 case YY_STATE_EOF(PHP_HEREDOC_NSTART):
 case YY_STATE_EOF(PHP_HEREDOC_NEWLINE):
@@ -6391,7 +6397,7 @@ void xhpastfree (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 410 "scanner.l"
+#line 414 "scanner.l"
 
 
 
