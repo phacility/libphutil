@@ -29,17 +29,29 @@ final class PhutilConsoleServer {
     $type = $message->getType();
 
     switch ($type) {
+
       case PhutilConsoleMessage::TYPE_CONFIRM:
         $ok = phutil_console_confirm($data['prompt'], !$data['default']);
         return $this->buildMessage(
           PhutilConsoleMessage::TYPE_INPUT,
           $ok);
+
+      case PhutilConsoleMessage::TYPE_PROMPT:
+        $response = phutil_console_prompt(
+          $data['prompt'],
+          idx($data, 'history'));
+        return $this->buildMessage(
+          PhutilConsoleMessage::TYPE_INPUT,
+          $response);
+
       case PhutilConsoleMessage::TYPE_OUT:
         $this->writeText(STDOUT, $data);
         return null;
+
       case PhutilConsoleMessage::TYPE_ERR:
         $this->writeText(STDERR, $data);
         return null;
+
       default:
         if ($this->handler) {
           return call_user_func($this->handler, $message);
@@ -47,6 +59,7 @@ final class PhutilConsoleServer {
           throw new Exception(
             "Received unknown console message of type '{$type}'.");
         }
+
     }
   }
 

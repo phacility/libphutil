@@ -128,12 +128,27 @@ final class PhutilConsole {
     return $response->getData();
   }
 
-  public function writeOut($pattern /*, ... */) {
+  public function prompt($prompt, $history = '') {
+    $message = id(new PhutilConsoleMessage())
+      ->setType(PhutilConsoleMessage::TYPE_PROMPT)
+      ->setData(
+        array(
+          'prompt'  => $prompt,
+          'history' => $history,
+        ));
+
+    $this->writeMessage($message);
+    $response = $this->waitForMessage();
+
+    return $response->getData();
+  }
+
+  public function writeOut($pattern /* , ... */) {
     $args = func_get_args();
     return $this->writeTextMessage(PhutilConsoleMessage::TYPE_OUT, $args);
   }
 
-  public function writeErr($pattern /*, ... */) {
+  public function writeErr($pattern /* , ... */) {
     $args = func_get_args();
     return $this->writeTextMessage(PhutilConsoleMessage::TYPE_ERR, $args);
   }
