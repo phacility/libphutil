@@ -39,9 +39,7 @@ final class PhutilConsoleFormatter {
     self::$disableANSI = $disable;
   }
 
-  public static function formatString($format /* ... */) {
-    $colors = implode('|', array_keys(self::$colorCodes));
-
+  public static function getDisableANSI() {
     if (self::$disableANSI === null) {
       if (phutil_is_windows()) {
         self::$disableANSI = true;
@@ -51,6 +49,11 @@ final class PhutilConsoleFormatter {
         self::$disableANSI = false;
       }
     }
+    return self::$disableANSI;
+  }
+
+  public static function formatString($format /* ... */) {
+    $colors = implode('|', array_keys(self::$colorCodes));
 
     // Sequence should be preceded by start-of-string or non-backslash
     // escaping.
@@ -58,7 +61,7 @@ final class PhutilConsoleFormatter {
     $underline_re = '/(?<=^|[^\\\\])__(.*)__/sU';
     $invert_re    = '/(?<=^|[^\\\\])##(.*)##/sU';
 
-    if (self::$disableANSI) {
+    if (self::getDisableANSI()) {
       $format = preg_replace($bold_re,      '\1',   $format);
       $format = preg_replace($underline_re, '\1',   $format);
       $format = preg_replace($invert_re,    '\1',   $format);
