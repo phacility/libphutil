@@ -25,11 +25,6 @@ class PhutilRemarkupRuleHyperlink
 
   public function apply($text) {
 
-    $text = preg_replace_callback(
-      '@\B\\[\\[([^|\\]]+)(?:\\|([^\\]]+))?\\]\\]\B@U',
-      array($this, 'markupDocumentLink'),
-      $text);
-
     // Hyperlinks with explicit "<>" around them get linked exactly, without
     // the "<>". Angle brackets are basically special and mean "this is a URL
     // with weird characters". This is assumed to be reasonable because they
@@ -79,14 +74,14 @@ class PhutilRemarkupRuleHyperlink
     return $this->getEngine()->storeText($this->renderHyperlink($link));
   }
 
-  protected function renderHyperlink($link, $name = null) {
+  protected function renderHyperlink($link) {
     return phutil_render_tag(
       'a',
       array(
         'href'    => $link,
         'target'  => '_blank',
       ),
-      phutil_escape_html($name === null ? $link : $name));
+      phutil_escape_html($link));
   }
 
   private function markupHyperlinkUngreedy($matches) {
@@ -114,32 +109,6 @@ class PhutilRemarkupRuleHyperlink
     }
 
     return $this->markupHyperlink(array(null, $match)).$tail;
-  }
-
-  public function markupDocumentLink($matches) {
-    $uri = trim($matches[1]);
-    $name = trim(idx($matches, 2, $uri));
-
-    // If whatever is being linked to begins with "/" or has "://", treat it
-    // as a URI instead of a wiki page.
-    $is_uri = preg_match('@(^/)|(://)@', $uri);
-
-    if ($is_uri) {
-      $protocols = $this->getEngine()->getConfig(
-        'uri.allowed-protocols',
-        array());
-      $protocol = id(new PhutilURI($uri))->getProtocol();
-      if (!idx($protocols, $protocol)) {
-        // Don't treat this as a URI if it's not an allowed protocol.
-        $is_uri = false;
-      }
-    }
-
-    if (!$is_uri) {
-      return $matches[0];
-    }
-
-    return $this->getEngine()->storeText($this->renderHyperlink($uri, $name));
   }
 
 }
