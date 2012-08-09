@@ -72,62 +72,65 @@ final class PhutilXHPASTSyntaxHighlighter {
       $value = phutil_escape_html($token->getValue());
       $class = null;
       $multi = false;
-      $context = '';
-      switch ($token->getTypeName()) {
-        case 'T_WHITESPACE':
-          break;
-        case 'T_DOC_COMMENT':
-          $class = 'dc';
-          $multi = true;
-          break;
-        case 'T_COMMENT':
-          $class = 'c';
-          $multi = true;
-          break;
-        case 'T_CONSTANT_ENCAPSED_STRING':
-        case 'T_ENCAPSED_AND_WHITESPACE':
-        case 'T_INLINE_HTML':
-          $class = 's';
-          $multi = true;
-          break;
-        case 'T_VARIABLE':
-          $class = 'nv';
-          break;
-        case 'T_OPEN_TAG':
-        case 'T_OPEN_TAG_WITH_ECHO':
-        case 'T_CLOSE_TAG':
-          $class = 'o';
-          break;
-        case 'T_LNUMBER':
-        case 'T_DNUMBER':
-          $class = 'm';
-          break;
-        case 'T_STRING':
-          static $magic = array(
-            'true' => true,
-            'false' => true,
-            'null' => true,
-          );
-          if (isset($magic[$value])) {
+      $attrs = '';
+      if (isset($interesting_symbols[$key])) {
+        $sym = $interesting_symbols[$key];
+        $class = $sym[0];
+        if (isset($sym['context'])) {
+          $attrs = $attrs.' data-symbol-context="'.$sym['context'].'"';
+        }
+        if (isset($sym['symbol'])) {
+          $attrs = $attrs.' data-symbol-name="'.$sym['symbol'].'"';
+        }
+      } else {
+        switch ($token->getTypeName()) {
+          case 'T_WHITESPACE':
+            break;
+          case 'T_DOC_COMMENT':
+            $class = 'dc';
+            $multi = true;
+            break;
+          case 'T_COMMENT':
+            $class = 'c';
+            $multi = true;
+            break;
+          case 'T_CONSTANT_ENCAPSED_STRING':
+          case 'T_ENCAPSED_AND_WHITESPACE':
+          case 'T_INLINE_HTML':
+            $class = 's';
+            $multi = true;
+            break;
+          case 'T_VARIABLE':
+            $class = 'nv';
+            break;
+          case 'T_OPEN_TAG':
+          case 'T_OPEN_TAG_WITH_ECHO':
+          case 'T_CLOSE_TAG':
+            $class = 'o';
+            break;
+          case 'T_LNUMBER':
+          case 'T_DNUMBER':
+            $class = 'm';
+            break;
+          case 'T_STRING':
+            static $magic = array(
+              'true' => true,
+              'false' => true,
+              'null' => true,
+            );
+            if (isset($magic[$value])) {
+              $class = 'k';
+              break;
+            }
+            $class = 'nx';
+            break;
+          default:
             $class = 'k';
             break;
-          }
-          if (isset($interesting_symbols[$key])) {
-            $sym = $interesting_symbols[$key];
-            $class = $sym[0];
-            if (isset($sym['context'])) {
-              $context = ' data-symbol-context="'.$sym['context'].'"';
-            }
-            break;
-          }
-          $class = 'nx';
-          break;
-        default:
-          $class = 'k';
-          break;
+        }
       }
       if ($class) {
-        $l = '<span class="'.$class.'"'.$context.'>';
+        $l = '<span class="'.$class.'"'.$attrs.'>';
         $r = '</span>';
 
         $value = $l.$value.$r;
@@ -182,7 +185,10 @@ final class PhutilXHPASTSyntaxHighlighter {
           // This is something like "self::method()".
           continue;
         }
-        $result_map[$key] = array('nc'); // "Name, Class"
+        $result_map[$key] = array(
+          'nc', // "Name, Class"
+          'symbol' => $class_name->getConcreteString(),
+        );
       }
     }
 
@@ -195,7 +201,10 @@ final class PhutilXHPASTSyntaxHighlighter {
       if ($call->getTypeName() == 'n_SYMBOL_NAME') {
         // This is a normal function call, not some $f() shenanigans.
         foreach ($call->getTokens() as $key => $token) {
-          $result_map[$key] = array('nf'); // "Name, Function"
+          $result_map[$key] = array(
+            'nf', // "Name, Function"
+            'symbol' => $call->getConcreteString(),
+          );
         }
       }
     }
@@ -211,7 +220,10 @@ final class PhutilXHPASTSyntaxHighlighter {
       }
       if ($right->getTypeName() == 'n_STRING') {
         foreach ($right->getTokens() as $key => $token) {
-          $result_map[$key] = array('na'); // "Name, Attribute"
+          $result_map[$key] = array(
+            'na', // "Name, Attribute"
+            'symbol' => $right->getConcreteString(),
+          );
         }
       }
     }
@@ -225,7 +237,10 @@ final class PhutilXHPASTSyntaxHighlighter {
       if ($class->getTypeName() == 'n_CLASS_NAME' &&
           $right->getTypeName() == 'n_STRING') {
         $classname = head($class->getTokens())->getValue();
-        $result = array('na');
+        $result = array(
+          'na',
+          'symbol' => $right->getConcreteString()
+        );
         if (!isset($builtin_class_tokens[$classname])) {
           $result['context'] = $classname;
         }
