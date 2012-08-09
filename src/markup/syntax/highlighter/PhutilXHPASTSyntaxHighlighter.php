@@ -72,6 +72,7 @@ final class PhutilXHPASTSyntaxHighlighter {
       $value = phutil_escape_html($token->getValue());
       $class = null;
       $multi = false;
+      $context = '';
       switch ($token->getTypeName()) {
         case 'T_WHITESPACE':
           break;
@@ -112,7 +113,11 @@ final class PhutilXHPASTSyntaxHighlighter {
             break;
           }
           if (isset($interesting_symbols[$key])) {
-            $class = $interesting_symbols[$key];
+            $sym = $interesting_symbols[$key];
+            $class = $sym[0];
+            if (isset($sym['context'])) {
+              $context = ' data-symbol-context="'.$sym['context'].'"';
+            }
             break;
           }
           $class = 'nx';
@@ -122,7 +127,7 @@ final class PhutilXHPASTSyntaxHighlighter {
           break;
       }
       if ($class) {
-        $l = '<span class="'.$class.'">';
+        $l = '<span class="'.$class.'"'.$context.'>';
         $r = '</span>';
 
         $value = $l.$value.$r;
@@ -177,7 +182,7 @@ final class PhutilXHPASTSyntaxHighlighter {
           // This is something like "self::method()".
           continue;
         }
-        $result_map[$key] = 'nc'; // "Name, Class"
+        $result_map[$key] = array('nc'); // "Name, Class"
       }
     }
 
@@ -190,19 +195,42 @@ final class PhutilXHPASTSyntaxHighlighter {
       if ($call->getTypeName() == 'n_SYMBOL_NAME') {
         // This is a normal function call, not some $f() shenanigans.
         foreach ($call->getTokens() as $key => $token) {
-          $result_map[$key] = 'nf'; // "Name, Function"
+          $result_map[$key] = array('nf'); // "Name, Function"
         }
       }
     }
 
-    // This is just about making "$x->y" prettier.
+    // Upon encountering $x->y, link y without context, since $x is unknown.
 
     $prop_access = $root->selectDescendantsOfType('n_OBJECT_PROPERTY_ACCESS');
     foreach ($prop_access as $access) {
       $right = $access->getChildByIndex(1);
+      if ($right->getTypeName() == 'n_INDEX_ACCESS') {
+        // otherwise $x->y[0] doesn't get highlighted
+        $right = $right->getChildByIndex(0);
+      }
       if ($right->getTypeName() == 'n_STRING') {
         foreach ($right->getTokens() as $key => $token) {
-          $result_map[$key] = 'na'; // "Name, Attribute"
+          $result_map[$key] = array('na'); // "Name, Attribute"
+        }
+      }
+    }
+
+    // Upon encountering x::y, try to link y with context x.
+
+    $static_access = $root->selectDescendantsOfType('n_CLASS_STATIC_ACCESS');
+    foreach ($static_access as $access) {
+      $class = $access->getChildByIndex(0);
+      $right = $access->getChildByIndex(1);
+      if ($class->getTypeName() == 'n_CLASS_NAME' &&
+          $right->getTypeName() == 'n_STRING') {
+        $classname = head($class->getTokens())->getValue();
+        $result = array('na');
+        if (!isset($builtin_class_tokens[$classname])) {
+          $result['context'] = $classname;
+        }
+        foreach ($right->getTokens() as $key => $token) {
+          $result_map[$key] = $result;
         }
       }
     }
