@@ -153,8 +153,24 @@ final class PhutilConsole {
     return $this->writeTextMessage(PhutilConsoleMessage::TYPE_ERR, $args);
   }
 
+  public function beginRedirectOut() {
+    // We need as small buffer as possible. 0 means infinite, 1 means 4096 in
+    // PHP < 5.4.0.
+    ob_start(array($this, 'redirectOutCallback'), 2);
+  }
+
+  public function endRedirectOut() {
+    ob_end_flush();
+  }
+
 
 /* -(  Internals  )---------------------------------------------------------- */
+
+  // Must be public because it is called from output buffering.
+  public function redirectOutCallback($string) {
+    $this->writeOut('%s', $string);
+    return '';
+  }
 
   private function writeTextMessage($type, array $argv) {
 
