@@ -235,11 +235,12 @@ final class PhutilXHPASTSyntaxHighlighter {
       $class = $access->getChildByIndex(0);
       $right = $access->getChildByIndex(1);
       if ($class->getTypeName() == 'n_CLASS_NAME' &&
-          $right->getTypeName() == 'n_STRING') {
+          ($right->getTypeName() == 'n_STRING' ||
+           $right->getTypeName() == 'n_VARIABLE')) {
         $classname = head($class->getTokens())->getValue();
         $result = array(
           'na',
-          'symbol' => $right->getConcreteString()
+          'symbol' => ltrim($right->getConcreteString(), '$'),
         );
         if (!isset($builtin_class_tokens[$classname])) {
           $result['context'] = $classname;
