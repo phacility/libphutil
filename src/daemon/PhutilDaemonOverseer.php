@@ -48,6 +48,8 @@ final class PhutilDaemonOverseer {
   private $verbose;
 
   public function __construct(array $argv) {
+    PhutilServiceProfiler::getInstance()->enableDiscardMode();
+
     $original_argv = $argv;
     $args = new PhutilArgumentParser($argv);
     $args->setTagline('daemon overseer');
