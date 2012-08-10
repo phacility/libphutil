@@ -80,6 +80,10 @@ abstract class PhutilChannelChannel extends PhutilChannel {
     return $this;
   }
 
+  protected function getUnderlyingChannel() {
+    return $this->channel;
+  }
+
   private function throwOnRawByteOperations() {
 
     // NOTE: You should only be able to end up here if you subclass this class

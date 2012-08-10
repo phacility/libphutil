@@ -463,7 +463,9 @@ final class PhutilArgumentParser {
 
     $recon = $this->getArg('recon');
     if ($recon) {
-      PhutilConsole::setConsole(PhutilConsole::newRemoteConsole());
+      $remote_console = PhutilConsole::newRemoteConsole();
+      $remote_console->beginRedirectOut();
+      PhutilConsole::setConsole($remote_console);
     }
 
     return $this;
@@ -704,14 +706,14 @@ final class PhutilArgumentParser {
     return implode("\n", $out);
   }
 
-  private function format($str /*, ... */) {
+  private function format($str /* , ... */) {
     $args = func_get_args();
     return call_user_func_array(
       'phutil_console_format',
       $args);
   }
 
-  private function indent($level, $str /*, ... */) {
+  private function indent($level, $str /* , ... */) {
     $args = func_get_args();
     $args = array_slice($args, 1);
     $text = call_user_func_array(array($this, 'format'), $args);

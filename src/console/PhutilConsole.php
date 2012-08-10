@@ -168,7 +168,9 @@ final class PhutilConsole {
 
   // Must be public because it is called from output buffering.
   public function redirectOutCallback($string) {
-    $this->writeOut('%s', $string);
+    if (strlen($string)) {
+      $this->writeOut('%s', $string);
+    }
     return '';
   }
 

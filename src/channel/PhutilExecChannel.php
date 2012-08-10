@@ -63,6 +63,7 @@
 final class PhutilExecChannel extends PhutilChannel {
 
   private $future;
+  private $stderrHandler;
 
 
 /* -(  Construction  )------------------------------------------------------- */
@@ -108,8 +109,12 @@ final class PhutilExecChannel extends PhutilChannel {
     $this->future->discardBuffers();
 
     if (strlen($stderr)) {
-      throw new Exception(
-        "Unexpected output to stderr on exec channel: {$stderr}");
+      if ($this->stderrHandler) {
+        call_user_func($this->stderrHandler, $this, $stderr);
+      } else {
+        throw new Exception(
+          "Unexpected output to stderr on exec channel: {$stderr}");
+      }
     }
 
     return $stdout;
@@ -129,6 +134,30 @@ final class PhutilExecChannel extends PhutilChannel {
 
   protected function getWriteSockets() {
     return $this->future->getWriteSockets();
+  }
+
+
+  /**
+   * If the wrapped @{class:ExecFuture} outputs data to stderr, we normally
+   * throw an exception. Instead, you can provide a callback handler that will
+   * be invoked and passed the data. It should have this signature:
+   *
+   *   function f(PhutilExecChannel $channel, $stderr) {
+   *     // ...
+   *   }
+   *
+   * The `$channel` will be this channel object, and `$stderr` will be a string
+   * with bytes received over stderr.
+   *
+   * You can set a handler which does nothing to effectively ignore and discard
+   * any output on stderr.
+   *
+   * @param callable Handler to invoke when stderr data is received.
+   * @return this
+   */
+  public function setStderrHandler($handler) {
+    $this->stderrHandler = $handler;
+    return $this;
   }
 
 }

@@ -49,7 +49,7 @@ abstract class PhutilProtocolChannel extends PhutilChannelChannel {
     if (strlen($data)) {
       $messages = $this->decodeStream($data);
       foreach ($messages as $message) {
-        $this->messages[] = $message;
+        $this->addMessage($message);
       }
     }
 
@@ -72,6 +72,21 @@ abstract class PhutilProtocolChannel extends PhutilChannelChannel {
   public function write($message) {
     $bytes = $this->encodeMessage($message);
     return parent::write($bytes);
+  }
+
+
+  /**
+   * Add a message to the queue. While you normally do not need to do this,
+   * you can use it to inject out-of-band messages.
+   *
+   * @param wild    Some message.
+   * @return this
+   *
+   * @task io
+   */
+  public function addMessage($message) {
+    $this->messages[] = $message;
+    return $this;
   }
 
 

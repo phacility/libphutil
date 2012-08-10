@@ -73,10 +73,12 @@ final class PhutilConsoleServer {
   public function addExecFutureClient(ExecFuture $future) {
     $io_channel = new PhutilExecChannel($future);
     $protocol_channel = new PhutilPHPObjectProtocolChannel($io_channel);
-    return $this->addClient($protocol_channel);
+    $server_channel = new PhutilConsoleServerChannel($protocol_channel);
+    $io_channel->setStderrHandler(array($server_channel, 'didReceiveStderr'));
+    return $this->addClient($server_channel);
   }
 
-  public function addClient(PhutilPHPObjectProtocolChannel $channel) {
+  public function addClient(PhutilConsoleServerChannel $channel) {
     $this->clients[] = $channel;
     return $this;
   }
