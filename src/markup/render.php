@@ -118,7 +118,7 @@ function phutil_escape_uri($string) {
  * embedded as a URI infix component.
  *
  * However, you MUST decode the string with
- * @{function:phutil_decode_uri_path_component} before it can be used in the
+ * @{function:phutil_unescape_uri_path_component} before it can be used in the
  * application.
  *
  * @param   string  Some string.

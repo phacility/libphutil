@@ -43,7 +43,7 @@
  * Log variables will be written with bytes 0x00-0x1F, 0x7F-0xFF, and backslash
  * escaped using C-style escaping. Since this range includes tab, you can use
  * tabs as field separators to ensure the file format is easily parsable. In
- * PHP, you can decode this encoding with @{function:stripcslashes}.
+ * PHP, you can decode this encoding with `stripcslashes`.
  *
  * If a variable is included in the log format but a value is never provided
  * with @{method:setData}, it will be written as "-".

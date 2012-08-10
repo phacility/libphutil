@@ -22,7 +22,7 @@
  * memory. If you know your inputs fit in memory, it is generally more efficient
  * (and certainly simpler) to read the entire input and `explode()` it. For
  * more information, see @{class:LinesOfALarge}. See also
- * @{class:LineOfALargeFile} for a similar abstraction that works on files.
+ * @{class:LinesOfALargeFile} for a similar abstraction that works on files.
  *
  *   $future = new ExecFuture('hg log ...');
  *   foreach (new LinesOfALargeExecFuture($future) as $line) {

@@ -22,7 +22,7 @@
  * This method allows you to build a function with sprintf() semantics but
  * custom conversions for different datatypes. Three examples are
  * @{function:jsprintf} (which builds Javascript strings),
- * @{function@phabricator:qsprintf} (which builds MySQL strings), and
+ * @{function:qsprintf} (which builds MySQL strings), and
  * @{function:csprintf} (which builds command line strings).
  *
  * To build a new xsprintf-family function, provide a callback which conforms
@@ -44,8 +44,7 @@
  *
  * @param   string  The name of a callback to pass conversions to.
  * @param   wild    Optional userdata to pass to the callback. For
- *                  @{function@phabricator:qsprintf}, this is the database
- *                  connection.
+ *                  @{function:qsprintf}, this is the database connection.
  * @param   list    List of arguments, with the sprintf() pattern in position 0.
  * @return  string  Formatted string.
  *
