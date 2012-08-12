@@ -190,4 +190,45 @@ final class PhutilUTF8TestCase extends ArcanistPhutilTestCase {
     }
   }
 
+  public function testUTF8ConvertParams() {
+    $caught = null;
+    try {
+      phutil_utf8_convert('', 'utf8', '');
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+    $this->assertEqual(true, (bool)$caught, 'Requires source encoding.');
+
+    $caught = null;
+    try {
+      phutil_utf8_convert('', '', 'utf8');
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+    $this->assertEqual(true, (bool)$caught, 'Requires target encoding.');
+  }
+
+  public function testUTF8Convert() {
+    if (!function_exists('mb_convert_encoding')) {
+      $this->assertSkipped("Requires mbstring extension.");
+    }
+
+    // "[ae]gis se[n]or [(c)] 1970 [+/-] 1 [degree]"
+    $input = "\xE6gis SE\xD1OR \xA9 1970 \xB11\xB0";
+    $expect = "\xC3\xA6gis SE\xC3\x91OR \xC2\xA9 1970 \xC2\xB11\xC2\xB0";
+    $output = phutil_utf8_convert($input, 'UTF-8', 'ISO-8859-1');
+
+    $this->assertEqual($expect, $output, 'Conversion from ISO-8859-1.');
+
+
+    $caught = null;
+    try {
+      phutil_utf8_convert('xyz', 'moon language', 'UTF-8');
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertEqual(true, (bool)$caught, 'Conversion with bogus encoding.');
+  }
+
 }

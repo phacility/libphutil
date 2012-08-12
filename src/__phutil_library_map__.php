@@ -242,6 +242,7 @@ phutil_register_library_map(array(
     'phutil_passthru' => 'future/execx.php',
     'phutil_render_tag' => 'markup/render.php',
     'phutil_unescape_uri_path_component' => 'markup/render.php',
+    'phutil_utf8_convert' => 'utils/utf8.php',
     'phutil_utf8_hard_wrap_html' => 'utils/utf8.php',
     'phutil_utf8_shorten' => 'utils/utf8.php',
     'phutil_utf8_strlen' => 'utils/utf8.php',

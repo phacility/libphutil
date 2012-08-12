@@ -307,3 +307,73 @@ function phutil_utf8_hard_wrap_html($string, $width) {
 
   return $result;
 }
+
+
+/**
+ * Convert a string from one encoding (like ISO-8859-1) to another encoding
+ * (like UTF-8).
+ *
+ * This is primarily a thin wrapper around `mb_convert_encoding()` which checks
+ * you have the extension installed, since we try to require the extension
+ * only if you actually need it (i.e., you want to work with encodings other
+ * than UTF-8).
+ *
+ * NOTE: This function assumes that the input is in the given source encoding.
+ * If it is not, it may not output in the specified target encoding. If you
+ * need to perform a hard conversion to UTF-8, use this function in conjunction
+ * with @{function:phutil_utf8ize}. We can detect failures caused by invalid
+ * encoding names, but `mb_convert_encoding()` fails silently if the
+ * encoding name identifies a real encoding but the string is not actually
+ * encoded with that encoding.
+ *
+ * @param string String to re-encode.
+ * @param string Target encoding name, like "UTF-8".
+ * @param string Source endocing name, like "ISO-8859-1".
+ * @return string Input string, with converted character encoding.
+ *
+ * @group utf8
+ *
+ * @phutil-external-symbol function mb_convert_encoding
+ */
+function phutil_utf8_convert($string, $to_encoding, $from_encoding) {
+  if (!$from_encoding) {
+    throw new InvalidArgumentException(
+      "Attempting to convert a string encoding, but no source encoding ".
+      "was provided. Explicitly provide the source encoding.");
+  }
+  if (!$to_encoding) {
+    throw new InvalidArgumentException(
+      "Attempting to convert a string encoding, but no target encoding ".
+      "was provided. Explicitly provide the target encoding.");
+  }
+
+  // Normalize encoding names so we can no-op the very common case of UTF8
+  // to UTF8 (or any other conversion where both encodings are identical).
+  $to_upper = strtoupper(str_replace('-', '', $to_encoding));
+  $from_upper = strtoupper(str_replace('-', '', $from_encoding));
+  if ($from_upper == $to_upper) {
+    return $string;
+  }
+
+  if (!function_exists('mb_convert_encoding')) {
+    throw new Exception(
+      "Attempting to convert a string encoding from '{$from_encoding}' ".
+      "to '{$to_encoding}', but the 'mbstring' PHP extension is not ".
+      "available. Install mbstring to work with encodings other than ".
+      "UTF-8.");
+  }
+
+  $result = @mb_convert_encoding($string, $to_encoding, $from_encoding);
+
+  if ($result === false) {
+    $message = error_get_last();
+    if ($message) {
+      $message = idx($message, 'message', 'Unknown error.');
+    }
+    throw new Exception(
+      "String conversion from encoding '{$from_encoding}' to encoding ".
+      "'{$to_encoding}' failed: {$message}");
+  }
+
+  return $result;
+}
