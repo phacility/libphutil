@@ -17,7 +17,7 @@
  */
 
 /**
- * Channel that wraps some other channel. This class is not interesting on is
+ * Channel that wraps some other channel. This class is not interesting on its
  * own and just serves as a no-op proxy, but extending it allows you to compose
  * channels to mutate their characteristics (for instance, to add protocol
  * semantics with @{class:PhutilProtocolChannel}).
