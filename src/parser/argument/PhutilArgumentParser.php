@@ -97,6 +97,8 @@ final class PhutilArgumentParser {
   private $workflows;
   private $showHelp;
 
+  const PARSE_ERROR_CODE = 77;
+
 
 /* -(  Parsing Arguments  )-------------------------------------------------- */
 
@@ -285,7 +287,7 @@ final class PhutilArgumentParser {
       return $this->parseFull($specs);
     } catch (PhutilArgumentUsageException $ex) {
       $this->printUsageException($ex);
-      exit(77);
+      exit(self::PARSE_ERROR_CODE);
     }
   }
 
@@ -306,7 +308,7 @@ final class PhutilArgumentParser {
       return $this->parseWorkflowsFull($workflows);
     } catch (PhutilArgumentUsageException $ex) {
       $this->printUsageException($ex);
-      exit(77);
+      exit(self::PARSE_ERROR_CODE);
     }
   }
 
@@ -432,7 +434,7 @@ final class PhutilArgumentParser {
         ));
     } catch (PhutilArgumentUsageException $ex) {
       $this->printUsageException($ex);
-      exit(77);
+      exit(self::PARSE_ERROR_CODE);
     }
 
     if ($this->getArg('trace')) {
@@ -508,7 +510,7 @@ final class PhutilArgumentParser {
 
   public function printHelpAndExit() {
     echo $this->renderHelp();
-    exit(77);
+    exit(self::PARSE_ERROR_CODE);
   }
 
   public function renderHelp() {

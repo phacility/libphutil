@@ -56,7 +56,7 @@ EOHELP
         echo $args->renderWorkflowHelp($thing, $show_flags = true);
         echo "\n";
       }
-      exit(77);
+      exit(PhutilArgumentParser::PARSE_ERROR_CODE);
     }
   }
 
