@@ -171,6 +171,7 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
       'div',
       array(
         'class' => 'remarkup-code-block',
+        'data-code-lang' => $options['lang'],
       ),
       $name_header.$code_body);
 
