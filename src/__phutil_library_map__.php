@@ -171,6 +171,8 @@ phutil_register_library_map(array(
     'PhutilSimpleOptions' => 'parser/PhutilSimpleOptions.php',
     'PhutilSimpleOptionsTestCase' => 'parser/__tests__/PhutilSimpleOptionsTestCase.php',
     'PhutilSocketChannel' => 'channel/PhutilSocketChannel.php',
+    'PhutilSprite' => 'sprites/PhutilSprite.php',
+    'PhutilSpriteSheet' => 'sprites/PhutilSpriteSheet.php',
     'PhutilSymbolLoader' => 'symbols/PhutilSymbolLoader.php',
     'PhutilSyntaxHighlighter' => 'markup/syntax/highlighter/PhutilSyntaxHighlighter.php',
     'PhutilSyntaxHighlighterEngine' => 'markup/syntax/engine/PhutilSyntaxHighlighterEngine.php',
