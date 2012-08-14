@@ -57,9 +57,9 @@ final class PhutilConsoleFormatter {
 
     // Sequence should be preceded by start-of-string or non-backslash
     // escaping.
-    $bold_re      = '/(?<=^|[^\\\\])\*\*(.*)\*\*/sU';
-    $underline_re = '/(?<=^|[^\\\\])__(.*)__/sU';
-    $invert_re    = '/(?<=^|[^\\\\])##(.*)##/sU';
+    $bold_re      = '/(?<![\\\\])\*\*(.*)\*\*/sU';
+    $underline_re = '/(?<![\\\\])__(.*)__/sU';
+    $invert_re    = '/(?<![\\\\])##(.*)##/sU';
 
     if (self::getDisableANSI()) {
       $format = preg_replace($bold_re,      '\1',   $format);
