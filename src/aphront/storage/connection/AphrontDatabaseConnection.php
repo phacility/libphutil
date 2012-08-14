@@ -61,14 +61,16 @@ abstract class AphrontDatabaseConnection {
   public function openTransaction() {
     $state = $this->getTransactionState();
     $point = $state->getSavepointName();
-    $depth = $state->increaseDepth();
+    $depth = $state->getDepth();
 
-    $new_transaction = ($depth == 1);
+    $new_transaction = ($depth == 0);
     if ($new_transaction) {
       $this->query('START TRANSACTION');
     } else {
       $this->query('SAVEPOINT '.$point);
     }
+
+    $state->increaseDepth();
 
     return $this;
   }
