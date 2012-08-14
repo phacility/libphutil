@@ -50,7 +50,7 @@ final class PhutilRemarkupRuleDocumentLink
     // as a URI instead of a wiki page.
     $is_uri = preg_match('@(^/)|(://)@', $uri);
 
-    if ($is_uri) {
+    if ($is_uri && strncmp('/', $uri, 1)) {
       $protocols = $this->getEngine()->getConfig(
         'uri.allowed-protocols',
         array());
