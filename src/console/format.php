@@ -158,7 +158,7 @@ function phutil_console_wrap($text, $indent = 0) {
 
         $line_len = $len_after_break;
         $len_after_break = 0;
-        $break_pos = 0;
+        $break_pos = null;
       }
     }
 
