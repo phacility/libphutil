@@ -88,6 +88,35 @@ final class FutureIterator implements Iterator {
     }
   }
 
+  /**
+   * Add another future to the set of futures. This is useful if you have a
+   * set of futures to run mostly in parallel, but some futures depend on
+   * others.
+   *
+   * @param Future  @{class:Future} to add to iterator
+   * @task basics
+   */
+  public function addFuture(Future $future, $key = null) {
+    if ($key === null) {
+      $this->futures[] = $future;
+      $this->wait[] = last_key($this->futures);
+    } else if (!isset($this->futures[$key])) {
+      $this->futures[$key] = $future;
+      $this->wait[] = $key;
+    } else {
+      throw new Exception("Invalid key {$key}");
+    }
+
+    // Start running the future if we don't have $this->limit futures running
+    // already. updateWorkingSet() won't start running the future if there's no
+    // limit, so we'll manually poke it here in that case.
+    $this->updateWorkingSet();
+    if (!$this->limit) {
+      $future->isReady();
+    }
+    return $this;
+  }
+
 
 /* -(  Configuring Iteration  )---------------------------------------------- */
 
@@ -161,7 +190,7 @@ final class FutureIterator implements Iterator {
       return;
     }
 
-    $read_sokcets = array();
+    $read_sockets = array();
     $write_sockets = array();
 
     $start = microtime(true);
