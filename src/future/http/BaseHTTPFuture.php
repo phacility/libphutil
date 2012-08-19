@@ -296,7 +296,7 @@ abstract class BaseHTTPFuture extends Future {
       }
     }
 
-    $status = new HTTPFutureResponseStatusHTTP($response_code);
+    $status = new HTTPFutureResponseStatusHTTP($response_code, $body);
     return array($status, $body, $headers);
   }
 
