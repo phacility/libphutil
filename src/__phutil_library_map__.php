@@ -114,6 +114,7 @@ phutil_register_library_map(array(
     'PhutilFatalDaemon' => 'daemon/torture/PhutilFatalDaemon.php',
     'PhutilFileLock' => 'filesystem/PhutilFileLock.php',
     'PhutilFileLockTestCase' => 'filesystem/__tests__/PhutilFileLockTestCase.php',
+    'PhutilFileTree' => 'filesystem/PhutilFileTree.php',
     'PhutilGitURI' => 'parser/PhutilGitURI.php',
     'PhutilGitURITestCase' => 'parser/__tests__/PhutilGitURITestCase.php',
     'PhutilHangForeverDaemon' => 'daemon/torture/PhutilHangForeverDaemon.php',
