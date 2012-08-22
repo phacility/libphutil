@@ -161,8 +161,6 @@ abstract class PhutilLexer {
 
         foreach ($rule[3] as $option => $value) {
           switch ($option) {
-            case 'case-insensitive':
-              break;
             case 'context':
               if ($value !== 'push' &&
                   $value !== 'pop' &&
@@ -181,10 +179,7 @@ abstract class PhutilLexer {
           }
         }
 
-        $flags = 's';
-        if (idx($rule[3], 'case-insensitive')) {
-          $flags .= 'i';
-        }
+        $flags = 'sS';
 
         // NOTE: The "\G" assertion is an offset-aware version of "^".
         $rule[0] = '(\\G'.$rule[0].')'.$flags;

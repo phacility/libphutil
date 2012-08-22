@@ -1,0 +1,16 @@
+<?php
+CLASS C EXTENDS stdClass IMPLEMENTS I {
+  FUNCTION f() {
+  }
+}
+$c = NEW C;
+TRY {
+  IF ($c instanceOf C) {
+    ECHO __line__;
+  }
+} CATCH (Exception $ex) {
+}
+
+echo <<<EOT
+eot;
+EOT;

@@ -124,7 +124,7 @@ final class PhutilPHPFragmentLexer extends PhutilLexer {
 
     return array(
       'start' => array(
-        array('<\\?(php)?', 'cp', 'php'),
+        array('<\\?(?i:php)?', 'cp', 'php'),
         array('[^<]+', null),
         array('<', null),
       ),
@@ -135,44 +135,22 @@ final class PhutilPHPFragmentLexer extends PhutilLexer {
           '<<<([\'"]?)('.$identifier_pattern.')\\1\\n.*?\\n\\2\\;?\\n',
           's'),
       ), $nonsemantic_rules, array(
-        array('__halt_compiler\\b', 'cp', 'halt_compiler'),
+        array('(?i:__halt_compiler)\\b', 'cp', 'halt_compiler'),
         array('(->|::)', 'o', 'attr'),
         array('[~!%^&*+=|:.<>/?@-]+', 'o'),
         array('[\\[\\]{}();,]', 'o'),
 
         // After 'new', try to match an unadorned symbol.
-        array('(new|instanceof)\\b', 'k', 'possible_classname',
-          array(
-            'case-insensitive' => true,
-          ),
-        ),
-        array('function\\b', 'k', 'function_definition',
-          array(
-            'case-insensitive' => true,
-          ),
-        ),
+        array('(?i:new|instanceof)\\b', 'k', 'possible_classname'),
+        array('(?i:function)\\b', 'k', 'function_definition'),
 
         // After 'extends' or 'implements', match a list of classes/interfaces.
-        array('(extends|implements)\\b', 'k', 'class_list',
-          array(
-            'case-insensitive' => true,
-          ),
-        ),
+        array('(?i:extends|implements)\\b', 'k', 'class_list'),
 
-        array('catch\\b', 'k', 'catch',
-          array(
-            'case-insensitive' => true,
-          ),
-        ),
+        array('(?i:catch)\\b', 'k', 'catch'),
 
-        array('('.implode('|', $keywords).')\\b', 'k', null,
-          array(
-            'case-insensitive' => true,
-          )),
-        array('('.implode('|', $constants).')\\b', 'kc', null,
-          array(
-            'case-insensitive' => true,
-          )),
+        array('(?i:'.implode('|', $keywords).')\\b', 'k'),
+        array('(?i:'.implode('|', $constants).')\\b', 'kc'),
 
         array('\\$+'.$identifier_pattern, 'nv'),
 
@@ -257,7 +235,7 @@ final class PhutilPHPFragmentLexer extends PhutilLexer {
       'function_definition' => array_merge($nonsemantic_rules, array(
         array('&', 'o'),
         array('\\(', 'o', '!pop'),
-        array('[a-zA-Z_][a-zA-Z0-9_]*', 'no', '!pop'),
+        array($identifier_pattern, 'no', '!pop'),
       )),
 
       // For "//" and "#" comments, we need to break out if we see "?" followed
@@ -288,7 +266,7 @@ final class PhutilPHPFragmentLexer extends PhutilLexer {
 
       'class_list' => array_merge($nonsemantic_rules, array(
         array(',', 'o'),
-        array('implements', 'k'),
+        array('(?i:implements)', 'k'),
         array($identifier_ns_pattern, 'nc'),
         array('', null, '!pop'),
       )),
