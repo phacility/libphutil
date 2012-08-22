@@ -108,6 +108,10 @@ final class HTTPFuture extends BaseHTTPFuture {
     return array();
   }
 
+  public function isWriteComplete() {
+	  return $this->stateWriteComplete;
+  }
+
   private function getDefaultUserAgent() {
     return 'HTTPFuture/1.0';
   }
