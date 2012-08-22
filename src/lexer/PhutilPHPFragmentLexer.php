@@ -266,7 +266,7 @@ final class PhutilPHPFragmentLexer extends PhutilLexer {
         array('[^?\\n]+', 'c'),
         array('\\n', null, '!pop'),
         array('(?=\\?>)', null, '!pop'),
-        array('\\?', 'c', '!pop'),
+        array('\\?', 'c'),
       ),
 
       // We've seen __halt_compiler. Grab the '();' afterward and then eat

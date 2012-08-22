@@ -69,7 +69,6 @@ final class PhutilDefaultSyntaxHighlighterEngine
 
     if ($language == 'php' && xhpast_is_available()) {
       return id(new PhutilXHPASTSyntaxHighlighter())
-        ->setConfig('pygments.enabled', $have_pygments)
         ->getHighlightFuture($source);
     }
 
@@ -85,6 +84,13 @@ final class PhutilDefaultSyntaxHighlighterEngine
 
     if ($language == 'rainbow') {
       return id(new PhutilRainbowSyntaxHighlighter())
+        ->getHighlightFuture($source);
+    }
+
+    if ($language == 'php') {
+      return id(new PhutilLexerSyntaxHighlighter())
+        ->setConfig('lexer', new PhutilPHPFragmentLexer())
+        ->setConfig('language', 'php')
         ->getHighlightFuture($source);
     }
 

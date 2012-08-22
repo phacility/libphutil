@@ -33,17 +33,12 @@ final class PhutilXHPASTSyntaxHighlighter {
       $result = $this->applyXHPHighlight($source);
       return new ImmediateFuture($result);
     } catch (Exception $ex) {
-      if (!empty($this->config['pygments.enabled'])) {
-        // Fall back to Pygments if we failed to highlight using XHP. The XHP
-        // highlighter currently uses a parser, not just a lexer, so it fails on
-        // snippets which aren't valid syntactically.
-        return id(new PhutilPygmentsSyntaxHighlighter())
-          ->setConfig('language', 'php')
-          ->getHighlightFuture($source);
-      } else {
-        return id(new PhutilDefaultSyntaxHighlighter())
-          ->getHighlightFuture($source);
-      }
+      // XHP can't highlight source that isn't syntactically valid. Fall back
+      // to the fragment lexer.
+      return id(new PhutilLexerSyntaxHighlighter())
+        ->setConfig('lexer', new PhutilPHPFragmentLexer())
+        ->setConfig('language', 'php')
+        ->getHighlightFuture($source);
     }
   }
 
