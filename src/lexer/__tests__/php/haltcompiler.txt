@@ -1,0 +1,5 @@
+<?php
+
+__halt_compiler();
+
+derp derp derp

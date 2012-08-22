@@ -1,0 +1,3 @@
+<?php
+
+class C extends A implements I, J {}

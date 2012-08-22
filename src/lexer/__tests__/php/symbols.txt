@@ -1,0 +1,8 @@
+<?php
+
+public function f() {
+  g();
+  H::i();
+  J::C;
+  new K();
+}
