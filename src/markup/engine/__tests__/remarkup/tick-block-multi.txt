@@ -5,8 +5,8 @@ more code
 more code```
 
 ~~~~~~~~~~
-<div class="remarkup-code-block" data-code-lang="php"><pre class="remarkup-code">code
+<div class="remarkup-code-block" data-code-lang="php"><pre class="remarkup-code"><span class="no">code</span>
 
-more code
+<span class="no">more</span> <span class="no">code</span>
 
-more code</pre></div>
+<span class="no">more</span> <span class="no">code</span></pre></div>

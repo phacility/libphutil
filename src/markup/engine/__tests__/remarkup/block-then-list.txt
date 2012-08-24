@@ -1,7 +1,8 @@
+  lang=txt
   code block
 
   - still a code block
 ~~~~~~~~~~
-<div class="remarkup-code-block" data-code-lang="php"><pre class="remarkup-code">code block
+<div class="remarkup-code-block" data-code-lang="txt"><pre class="remarkup-code">code block
 
 - still a code block</pre></div>

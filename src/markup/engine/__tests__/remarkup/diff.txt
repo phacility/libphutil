@@ -1,5 +1,6 @@
 here is a diff
 
+  lang=diff
   @@ derp derp @@
   x
   y
@@ -12,7 +13,7 @@ derp derp
 ~~~~~~~~~~
 <p>here is a diff</p>
 
-<div class="remarkup-code-block" data-code-lang="php"><pre class="remarkup-code">@@ derp derp @@
+<div class="remarkup-code-block" data-code-lang="diff"><pre class="remarkup-code">@@ derp derp @@
 x
 y
 
