@@ -38,7 +38,7 @@ parser: parser.y
 
 node_names.hpp: generate_nodes.php
 	php -f generate_nodes.php
-	cp parser_nodes.php $(ROOT)/constants/
+	cp parser_nodes.php $(ROOT)/
 
 %.o: %.cpp
 	$(CXX) -c $(CPPFLAGS) -o $@ $<
