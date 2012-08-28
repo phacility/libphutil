@@ -137,8 +137,16 @@ final class PhutilBootloader {
     $loader = new PhutilSymbolLoader();
     $loader
       ->setLibrary($name)
-      ->setType('function')
-      ->selectAndLoadSymbols();
+      ->setType('function');
+
+    try {
+      $loader->selectAndLoadSymbols();
+    } catch (PhutilMissingSymbolException $ex) {
+      // Ignore this, it happens if a global function is removed. Everything
+      // else loaded so proceed forward: worst case is a fatal when we
+      // hit a function call to a function which no longer exists, which is
+      // no worse than fataling here.
+    }
 
     return $this;
   }

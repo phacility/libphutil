@@ -287,10 +287,22 @@ final class PhutilSymbolLoader {
     }
 
     if (!$this->suppressLoad) {
+      $caught = null;
       foreach ($symbols as $symbol) {
-        $this->loadSymbol($symbol);
+        try {
+          $this->loadSymbol($symbol);
+        } catch (Exception $ex) {
+          $caught = $ex;
+        }
+      }
+      if ($caught) {
+        // NOTE: We try to load everything even if we fail to load something,
+        // primarily to make it possible to remove functions from a libphutil
+        // library without breaking library startup.
+        throw $caught;
       }
     }
+
 
     if ($this->concrete) {
       // Remove 'abstract' classes.
