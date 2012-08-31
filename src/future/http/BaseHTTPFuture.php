@@ -267,7 +267,8 @@ abstract class BaseHTTPFuture extends Future {
    */
   protected function parseRawHTTPResponse($raw_response) {
     $rex_base = "@^(?P<head>.*?)\r?\n\r?\n(?P<body>.*)$@s";
-    $rex_head = "@^HTTP/\S+ (?P<code>\d+) .*?(?:\r?\n(?P<headers>.*))?$@s";
+    $rex_head = "@^HTTP/\S+ (?P<code>\d+) (?P<status>.*?)".
+                "(?:\r?\n(?P<headers>.*))?$@s";
 
     // We need to parse one or more header blocks in case we got any
     // "HTTP/1.X 100 Continue" nonsense back as part of the response. This
@@ -287,8 +288,15 @@ abstract class BaseHTTPFuture extends Future {
       }
 
       $response_code = (int)$matches['code'];
+      $response_status = strtolower($matches['status']);
       if ($response_code == 100) {
         // This is HTTP/1.X 100 Continue, so this whole chunk is moot.
+        $response = $body;
+      } else if (($response_code == 200) &&
+                 ($response_status == 'connection established')) {
+        // When tunneling through an HTTPS proxy, we get an initial header
+        // block like "HTTP/1.X 200 Connection established", then newlines,
+        // then the normal response. Drop this chunk.
         $response = $body;
       } else {
         $headers = $this->parseHeaders(idx($matches, 'headers'));
