@@ -83,49 +83,53 @@ final class PhutilServiceProfiler {
   public static function echoListener($type, $id, $data) {
     $is_begin = false;
     $is_end   = false;
+
     switch ($type) {
       case 'begin':
         $is_begin = true;
-        echo '>>> ';
+        $mark = '>>>';
         break;
       case 'end':
         $is_end = true;
-        echo '<<< ';
+        $mark = '<<<';
         break;
       default:
-        echo '??? ';
+        $mark = null;
         break;
     }
-    echo '['.$id.'] ';
 
     $type = idx($data, 'type', 'mystery');
-    echo '<'.$type.'> ';
 
+    $desc = null;
     if ($is_begin) {
       switch ($type) {
         case 'query':
-          echo substr($data['query'], 0, 512);
+          $desc = substr($data['query'], 0, 512);
           break;
         case 'exec':
-          echo '$ '.$data['command'];
+          $desc = '$ '.$data['command'];
           break;
         case 'conduit':
-          echo $data['method'].'()';
+          $desc = $data['method'].'()';
           break;
         case 'lock':
-          echo $data['name'];
+          $desc = $data['name'];
           break;
         case 'event':
-          echo $data['kind'].' <listeners = '.$data['count'].'>';
+          $desc = $data['kind'].' <listeners = '.$data['count'].'>';
           break;
       }
+    } else if ($is_end) {
+      $desc = number_format((int)(1000000 * $data['duration'])).' us';
     }
 
-    if ($is_end) {
-      echo number_format((int)(1000000 * $data['duration'])).' us';
-    }
-
-    echo "\n";
+    $console = PhutilConsole::getConsole();
+    $console->writeLog(
+      "%s [%s] <%s> %s\n",
+      $mark,
+      $id,
+      $type,
+      $desc);
   }
 
 }

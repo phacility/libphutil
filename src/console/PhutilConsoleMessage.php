@@ -23,6 +23,7 @@ final class PhutilConsoleMessage {
   const TYPE_INPUT      = 'phutil:in';
   const TYPE_OUT        = 'phutil:out';
   const TYPE_ERR        = 'phutil:err';
+  const TYPE_LOG        = 'phutil:log';
 
   private $type;
   private $data;

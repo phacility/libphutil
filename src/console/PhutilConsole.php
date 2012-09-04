@@ -90,9 +90,13 @@ final class PhutilConsole {
    * @task construct
    */
   public static function newLocalConsole() {
-    $console = new PhutilConsole();
-    $console->server = new PhutilConsoleServer();
+    return self::newConsoleForServer(new PhutilConsoleServer());
+  }
 
+
+  public static function newConsoleForServer(PhutilConsoleServer $server) {
+    $console = new PhutilConsole();
+    $console->server = $server;
     return $console;
   }
 
@@ -151,6 +155,11 @@ final class PhutilConsole {
   public function writeErr($pattern /* , ... */) {
     $args = func_get_args();
     return $this->writeTextMessage(PhutilConsoleMessage::TYPE_ERR, $args);
+  }
+
+  public function writeLog($pattern /* , ... */) {
+    $args = func_get_args();
+    return $this->writeTextMessage(PhutilConsoleMessage::TYPE_LOG, $args);
   }
 
   public function beginRedirectOut() {

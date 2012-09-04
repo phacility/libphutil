@@ -23,6 +23,7 @@ final class PhutilConsoleServer {
 
   private $clients = array();
   private $handler;
+  private $enableLog;
 
   public function handleMessage(PhutilConsoleMessage $message) {
     $data = $message->getData();
@@ -50,6 +51,12 @@ final class PhutilConsoleServer {
 
       case PhutilConsoleMessage::TYPE_ERR:
         $this->writeText(STDERR, $data);
+        return null;
+
+      case PhutilConsoleMessage::TYPE_LOG:
+        if ($this->enableLog) {
+          $this->writeText(STDERR, $data);
+        }
         return null;
 
       default:
@@ -80,6 +87,11 @@ final class PhutilConsoleServer {
 
   public function addClient(PhutilConsoleServerChannel $channel) {
     $this->clients[] = $channel;
+    return $this;
+  }
+
+  public function setEnableLog($enable) {
+    $this->enableLog = $enable;
     return $this;
   }
 

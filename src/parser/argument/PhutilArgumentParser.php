@@ -468,6 +468,11 @@ final class PhutilArgumentParser {
       $remote_console = PhutilConsole::newRemoteConsole();
       $remote_console->beginRedirectOut();
       PhutilConsole::setConsole($remote_console);
+    } else if ($this->getArg('trace')) {
+      $server = new PhutilConsoleServer();
+      $server->setEnableLog(true);
+      $console = PhutilConsole::newConsoleForServer($server);
+      PhutilConsole::setConsole($console);
     }
 
     return $this;
