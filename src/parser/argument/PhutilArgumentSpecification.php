@@ -29,6 +29,7 @@ final class PhutilArgumentSpecification {
   private $conflicts  = array();
   private $wildcard;
   private $repeatable;
+  private $standard;
 
   /**
    * Convenience constructor for building an argument specification from a
@@ -65,6 +66,7 @@ final class PhutilArgumentSpecification {
       'conflicts',
       'wildcard',
       'repeat',
+      'standard',
     );
 
     $unrecognized = array_diff_key(
@@ -104,6 +106,9 @@ final class PhutilArgumentSpecification {
           break;
         case 'repeat':
           $obj->setRepeatable($value);
+          break;
+        case 'standard':
+          $obj->setStandard($value);
           break;
       }
     }
@@ -228,6 +233,15 @@ final class PhutilArgumentSpecification {
 
   public function getRepeatable() {
     return $this->repeatable;
+  }
+
+  public function setStandard($standard) {
+    $this->standard = $standard;
+    return $this;
+  }
+
+  public function getStandard() {
+    return $this->standard;
   }
 
   public function validate() {

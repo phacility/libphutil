@@ -403,6 +403,7 @@ final class PhutilArgumentParser {
           array(
             'name'  => 'trace',
             'help'  => 'Trace command execution and show service calls.',
+            'standard' => true,
           ),
           array(
             'name'  => 'no-ansi',
@@ -411,25 +412,36 @@ final class PhutilArgumentParser {
             'conflicts' => array(
               'ansi' => null,
             ),
+            'standard' => true,
           ),
           array(
             'name'  => 'ansi',
             'help'  => "Use formatting even in environments which probably ".
                        "don't support it.",
+            'standard' => true,
           ),
           array(
             'name'  => 'xprofile',
             'param' => 'profile',
             'help'  => 'Profile script execution and write results to a file.',
+            'standard' => true,
           ),
           array(
             'name'  => 'help',
             'short' => 'h',
             'help'  => 'Show this help.',
+            'standard' => true,
+          ),
+          array(
+            'name'  => 'show-standard-options',
+            'help'  => 'Show every option, including standard options '.
+                       'like this one.',
+            'standard' => true,
           ),
           array(
             'name'  => 'recon',
             'help'  => 'Start in remote console mode.',
+            'standard' => true,
           ),
         ));
     } catch (PhutilArgumentUsageException $ex) {
@@ -520,6 +532,7 @@ final class PhutilArgumentParser {
 
   public function renderHelp() {
     $out = array();
+    $more = array();
 
     if ($this->bin) {
       $out[] = $this->format('**NAME**');
@@ -552,9 +565,7 @@ final class PhutilArgumentParser {
           $show_flags = false);
       }
       if ($has_help) {
-        $out[] = $this->indent(
-          6,
-          "Use **help** __command__ for a detailed command reference.\n");
+        $more[] = "Use **help** __command__ for a detailed command reference.";
       }
     }
 
@@ -565,7 +576,21 @@ final class PhutilArgumentParser {
       $out[] = $specs;
     }
 
+    // If we have standard options but no --show-standard-options, print out
+    // a quick hint about it.
+    if (!empty($this->specs['show-standard-options']) &&
+        !$this->getArg('show-standard-options')) {
+      $more[] = "Use __--show-standard-options__ to show additional options.";
+    }
+
     $out[] = null;
+
+    if ($more) {
+      foreach ($more as $hint) {
+        $out[] = $this->indent(0, $hint);
+      }
+      $out[] = null;
+    }
 
     return implode("\n", $out);
   }
@@ -694,6 +719,11 @@ final class PhutilArgumentParser {
 
     $specs = msort($specs, 'getName');
     foreach ($specs as $spec) {
+      if ($spec->getStandard() && !$this->getArg('show-standard-options')) {
+        // If this is a standard argument and the user didn't pass
+        // --show-standard-options, skip it.
+        continue;
+      }
       $name = $this->indent(6, '__--%s__', $spec->getName());
       $short = null;
       if ($spec->getShortAlias()) {
@@ -710,6 +740,7 @@ final class PhutilArgumentParser {
       $out[] = $this->indent(10, $spec->getHelp());
       $out[] = null;
     }
+
     return implode("\n", $out);
   }
 
