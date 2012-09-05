@@ -221,7 +221,7 @@ function ipull(array $list, $index, $key_index = null) {
  *                  all objects which returned that value.
  * @group   util
  */
-function mgroup(array $list, $by /*, ... */) {
+function mgroup(array $list, $by /* , ... */) {
   $map = mpull($list, $by);
 
   $groups = array();
@@ -262,7 +262,7 @@ function mgroup(array $list, $by /*, ... */) {
  *                  all objects which had that value at the index.
  * @group   util
  */
-function igroup(array $list, $by /*, ... */) {
+function igroup(array $list, $by /* , ... */) {
   $map = ipull($list, $by);
 
   $groups = array();
@@ -655,4 +655,35 @@ function array_mergev(array $arrayv) {
   }
 
   return call_user_func_array('array_merge', $arrayv);
+}
+
+
+/**
+ * Split a corpus of text into lines. This function splits on "\r", "\n",
+ * "\r\n", or a mixture of any of them.
+ *
+ * @param string Block of text to be split into lines.
+ * @param bool If true, retain line endings in result strings.
+ * @return list List of lines.
+ * @group util
+ */
+function phutil_split_lines($corpus, $retain_endings = true) {
+  if (!strlen($corpus)) {
+    return array('');
+  }
+
+  // Split on "\r\n", "\r", or "\n", but don't split "\r\n" into two lines.
+  if ($retain_endings) {
+    $lines = preg_split('/(?<=\r)(?!\n)|(?<=\n)/', $corpus);
+  } else {
+    $lines = preg_split('/\r(?!\n)|\r?\n/', $corpus);
+  }
+
+  // If the text ends with "\n" or similar, we'll end up with an empty string
+  // at the end; discard it.
+  if (end($lines) == '') {
+    array_pop($lines);
+  }
+
+  return $lines;
 }

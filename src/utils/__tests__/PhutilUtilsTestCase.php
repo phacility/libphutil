@@ -266,4 +266,45 @@ final class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
     $this->assertEqual(false, idx($array, 'missing', false));
   }
 
+  public function testSplitLines() {
+    $retain_cases = array(
+      "" => array(""),
+      "x" => array("x"),
+      "x\n" => array("x\n"),
+      "\n" => array("\n"),
+      "\n\n\n" => array("\n", "\n", "\n"),
+      "\r\n" => array("\r\n"),
+      "x\r\ny\n" => array("x\r\n", "y\n"),
+      "x\ry\nz\r\n" => array("x\r", "y\n", "z\r\n"),
+      "x\ry\nz\r\n\n" => array("x\r", "y\n", "z\r\n", "\n"),
+    );
+
+    foreach ($retain_cases as $input => $expect) {
+      $this->assertEqual(
+        $expect,
+        phutil_split_lines($input, $retain_endings = true),
+        "(Retained) ".addcslashes($input, "\r\n\\"));
+    }
+
+    $discard_cases = array(
+      "" => array(""),
+      "x" => array("x"),
+      "x\n" => array("x"),
+      "\n" => array(""),
+      "\n\n\n" => array("", "", ""),
+      "\r\n" => array(""),
+      "x\r\ny\n" => array("x", "y"),
+      "x\ry\nz\r\n" => array("x", "y", "z"),
+      "x\ry\nz\r\n\n" => array("x", "y", "z", ""),
+    );
+
+    foreach ($discard_cases as $input => $expect) {
+      $this->assertEqual(
+        $expect,
+        phutil_split_lines($input, $retain_endings = false),
+        "(Discarded) ".addcslashes($input, "\r\n\\"));
+    }
+
+  }
+
 }
