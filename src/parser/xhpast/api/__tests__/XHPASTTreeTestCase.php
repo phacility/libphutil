@@ -17,6 +17,7 @@
  */
 
 /**
+ * @nolint We test crazy stuff here.
  * @group xhpast
  */
 final class XHPASTTreeTestCase extends ArcanistPhutilTestCase {
