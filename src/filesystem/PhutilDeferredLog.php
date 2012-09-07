@@ -108,6 +108,10 @@ final class PhutilDeferredLog {
     return $this;
   }
 
+  public function getData($key, $default = null) {
+    return idx($this->data, $key, $default);
+  }
+
 
   /**
    * When the log object is destroyed, it writes if it hasn't written yet.
