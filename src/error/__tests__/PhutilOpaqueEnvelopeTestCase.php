@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-final class PhutilOpaqueEnvelopeTestCase extends ArcanistPhutilTestCase {
+final class PhutilOpaqueEnvelopeTestCase extends PhutilTestCase {
 
   public function testOpaqueEnvelope() {
 

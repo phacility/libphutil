@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class PhutilDeferredLogTestCase extends ArcanistPhutilTestCase {
+final class PhutilDeferredLogTestCase extends PhutilTestCase {
 
   public function testLogging() {
     $this->checkLog(

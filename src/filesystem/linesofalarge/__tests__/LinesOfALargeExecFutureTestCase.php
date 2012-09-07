@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class LinesOfALargeExecFutureTestCase extends ArcanistPhutilTestCase {
+final class LinesOfALargeExecFutureTestCase extends PhutilTestCase {
 
   // Most of the core functionality of LinesOfALarge is covered by the
   // LinesOfALargeFile test case, try to just cover exec-specific stuff here.

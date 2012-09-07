@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class PhutilFileLockTestCase extends ArcanistPhutilTestCase {
+final class PhutilFileLockTestCase extends PhutilTestCase {
 
   public function testLockTesting() {
 

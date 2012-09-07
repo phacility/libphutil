@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class PhutilTranslatorTestCase extends ArcanistPhutilTestCase {
+final class PhutilTranslatorTestCase extends PhutilTestCase {
 
   public function testEnglish() {
     $translator = new PhutilTranslator();

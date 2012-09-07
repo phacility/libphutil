@@ -19,8 +19,7 @@
 /**
  * @group testcase
  */
-final class PhutilXHPASTSyntaxHighlighterTestCase
-  extends ArcanistPhutilTestCase {
+final class PhutilXHPASTSyntaxHighlighterTestCase extends PhutilTestCase {
 
   private function highlight($source) {
     $highlighter = new PhutilXHPASTSyntaxHighlighter();

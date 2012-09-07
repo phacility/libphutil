@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class ExecFutureTestCase extends ArcanistPhutilTestCase {
+final class ExecFutureTestCase extends PhutilTestCase {
 
   public function testEmptyWrite() {
 

@@ -21,7 +21,7 @@
  *
  * @group testcase
  */
-final class PhutilEmailAddressTestCase extends ArcanistPhutilTestCase {
+final class PhutilEmailAddressTestCase extends PhutilTestCase {
 
   public function testEmailParsing() {
     $email = new PhutilEmailAddress('Abraham Lincoln <alincoln@logcabin.com>');

@@ -22,7 +22,7 @@
  * @group testcase
  */
 final class PhutilDefaultSyntaxHighlighterEngineTestCase
-  extends ArcanistPhutilTestCase {
+  extends PhutilTestCase {
 
   public function testFilenameGreediness() {
     $names = array(

@@ -21,7 +21,7 @@
  *
  * @group testcase
  */
-final class PhutilUtilsTestCase extends ArcanistPhutilTestCase {
+final class PhutilUtilsTestCase extends PhutilTestCase {
 
   public function testMFilter_nullMethod_throwException() {
     $caught = null;

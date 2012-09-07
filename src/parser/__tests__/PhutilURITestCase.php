@@ -21,7 +21,7 @@
  *
  * @group testcase
  */
-final class PhutilURITestCase extends ArcanistPhutilTestCase {
+final class PhutilURITestCase extends PhutilTestCase {
 
   public function testURIParsing() {
     $uri = new PhutilURI('http://user:pass@host:99/path/?query=value#fragment');

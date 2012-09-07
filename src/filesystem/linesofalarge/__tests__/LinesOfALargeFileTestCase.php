@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class LinesOfALargeFileTestCase extends ArcanistPhutilTestCase {
+final class LinesOfALargeFileTestCase extends PhutilTestCase {
 
   public function testBasics() {
     $this->writeAndRead(

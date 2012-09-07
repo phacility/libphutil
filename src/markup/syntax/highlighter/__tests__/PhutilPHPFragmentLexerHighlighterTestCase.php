@@ -19,8 +19,7 @@
 /**
  * @group testcase
  */
-final class PhutilPHPFragmentLexerHighlighterTestCase
-  extends ArcanistPhutilTestCase {
+final class PhutilPHPFragmentLexerHighlighterTestCase extends PhutilTestCase {
 
   public function testLexer() {
     $highlighter = new PhutilLexerSyntaxHighlighter();

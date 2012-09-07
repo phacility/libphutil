@@ -21,7 +21,7 @@
  *
  * @group testcase
  */
-final class PhutilBufferedIteratorTestCase extends ArcanistPhutilTestCase {
+final class PhutilBufferedIteratorTestCase extends PhutilTestCase {
 
   public function testBufferedIterator() {
     $expect = array_fill(0, 23, 'example');

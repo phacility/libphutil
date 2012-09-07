@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class PhutilSimpleOptionsTestCase extends ArcanistPhutilTestCase {
+final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
 
   public function testSimpleOptionsParse() {
     $map = array(

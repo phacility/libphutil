@@ -21,7 +21,7 @@
  *
  * @group testcase
  */
-final class PhutilRemarkupEngineTestCase extends ArcanistPhutilTestCase {
+final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
 
   public function testEngine() {
     $root = dirname(__FILE__).'/remarkup/';

@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class PhutilConsoleWrapTestCase extends ArcanistPhutilTestCase {
+final class PhutilConsoleWrapTestCase extends PhutilTestCase {
 
   public function testWrap() {
     $dir = dirname(__FILE__).'/wrap/';

@@ -20,7 +20,7 @@
  * @nolint We test crazy stuff here.
  * @group xhpast
  */
-final class XHPASTTreeTestCase extends ArcanistPhutilTestCase {
+final class XHPASTTreeTestCase extends PhutilTestCase {
 
   public function testEvalStaticString() {
     $this->assertEval(1,    '1');

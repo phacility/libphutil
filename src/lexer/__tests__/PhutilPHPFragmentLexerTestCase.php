@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-final class PhutilPHPFragmentLexerTestCase extends ArcanistPhutilTestCase {
+final class PhutilPHPFragmentLexerTestCase extends PhutilTestCase {
 
   public function testFragmentLexer() {
     $dir = dirname(__FILE__).'/php';

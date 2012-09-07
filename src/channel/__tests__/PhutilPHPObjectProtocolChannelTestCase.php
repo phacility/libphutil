@@ -16,8 +16,7 @@
  * limitations under the License.
  */
 
-final class PhutilPHPObjectProtocolChannelTestCase
-  extends ArcanistPhutilTestCase {
+final class PhutilPHPObjectProtocolChannelTestCase extends PhutilTestCase {
 
   public function testPHPObjectChannelBasics() {
     list($x, $y) = PhutilSocketChannel::newChannelPair();

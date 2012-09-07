@@ -21,7 +21,7 @@
  *
  * @group util
  */
-final class PhutilGitURITestCase extends ArcanistPhutilTestCase {
+final class PhutilGitURITestCase extends PhutilTestCase {
 
   public function testGitURIParsing() {
     $uri = new PhutilGitURI('git@host.com:path/to/something');

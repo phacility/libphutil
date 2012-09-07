@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class PhutilArgumentSpecificationTestCase extends ArcanistPhutilTestCase {
+final class PhutilArgumentSpecificationTestCase extends PhutilTestCase {
 
   public function testNames() {
     $names = array(

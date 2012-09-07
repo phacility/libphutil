@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class AbstractDirectedGraphTestCase extends ArcanistPhutilTestCase {
+final class AbstractDirectedGraphTestCase extends PhutilTestCase {
 
   public function testTrivialGraph() {
     $graph = array(

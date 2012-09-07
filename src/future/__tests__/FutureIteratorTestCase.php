@@ -19,7 +19,7 @@
 /**
  * @group testcase
  */
-final class FutureIteratorTestCase extends ArcanistPhutilTestCase {
+final class FutureIteratorTestCase extends PhutilTestCase {
 
   public function testAddingFuture() {
     $future1 = new ExecFuture('cat');

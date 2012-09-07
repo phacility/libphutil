@@ -21,7 +21,7 @@
  *
  * @group testcase
  */
-final class PhutilPHTTestCase extends ArcanistPhutilTestCase {
+final class PhutilPHTTestCase extends PhutilTestCase {
 
   public function testPHT() {
     PhutilTranslator::setInstance(new PhutilTranslator());
