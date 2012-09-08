@@ -35,6 +35,10 @@ abstract class AASTToken {
     $this->tree = $tree;
   }
 
+  public function getTokenID() {
+    return $this->id;
+  }
+
   public function getTypeID() {
     return $this->typeID;
   }
