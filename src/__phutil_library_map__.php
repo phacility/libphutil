@@ -98,6 +98,7 @@ phutil_register_library_map(array(
     'PhutilDefaultSyntaxHighlighterEngineTestCase' => 'markup/syntax/engine/__tests__/PhutilDefaultSyntaxHighlighterEngineTestCase.php',
     'PhutilDeferredLog' => 'filesystem/PhutilDeferredLog.php',
     'PhutilDeferredLogTestCase' => 'filesystem/__tests__/PhutilDeferredLogTestCase.php',
+    'PhutilDirectoryFixture' => 'filesystem/PhutilDirectoryFixture.php',
     'PhutilDivinerSyntaxHighlighter' => 'markup/syntax/highlighter/PhutilDivinerSyntaxHighlighter.php',
     'PhutilDocblockParser' => 'parser/PhutilDocblockParser.php',
     'PhutilDocblockParserTestCase' => 'parser/__tests__/PhutilDocblockParserTestCase.php',
