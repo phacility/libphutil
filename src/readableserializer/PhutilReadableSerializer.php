@@ -47,6 +47,8 @@ final class PhutilReadableSerializer {
       return 'false';
     } else if ($value === true) {
       return 'true';
+    } else if (is_float($value) && (int)$value == $value) {
+      return $value.'.0';
     } else {
       return print_r($value, true);
     }
