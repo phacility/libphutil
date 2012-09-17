@@ -91,7 +91,7 @@ final class PhutilSocketChannel extends PhutilChannel {
     $domain = phutil_is_windows() ? STREAM_PF_INET : STREAM_PF_UNIX;
     $pair = stream_socket_pair($domain, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
     if (!$pair) {
-      throw new Exception("socket_create_pair() failed!");
+      throw new Exception("stream_socket_pair() failed!");
     }
 
     $x = new PhutilSocketChannel($pair[0]);
