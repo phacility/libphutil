@@ -109,24 +109,24 @@ final class PhutilInteractiveEditor {
 
   private function invokeEditor($editor, $path, $offset) {
     // NOTE: Popular Windows editors like Notepad++ and GitPad do not support
-	// line offsets, so just ignore the offset feature on Windows. We rarely
-	// use it anyway.
-  
+    // line offsets, so just ignore the offset feature on Windows. We rarely
+    // use it anyway.
+
     $offset_flag = '';
-	if ($offset && !phutil_is_windows()) {
-	  $offset = (int)$offset;
-	  if (preg_match('/^mate/', $editor)) {
-	    $offset_flag = csprintf('-l %d', $offset);
-	  } else {
-	    $offset_flag = csprintf('+%d', $offset);
-	  }
-	}
-	
-	$cmd = csprintf(
-	  '%C %C %s',
-	  $editor,
-	  $offset_flag,
-	  $path);
+    if ($offset && !phutil_is_windows()) {
+      $offset = (int)$offset;
+      if (preg_match('/^mate/', $editor)) {
+        $offset_flag = csprintf('-l %d', $offset);
+      } else {
+        $offset_flag = csprintf('+%d', $offset);
+      }
+    }
+
+    $cmd = csprintf(
+      '%C %C %s',
+      $editor,
+      $offset_flag,
+      $path);
 
     return phutil_passthru('%C', $cmd);
   }
