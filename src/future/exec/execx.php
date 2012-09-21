@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2011 Facebook, Inc.
+ * Copyright 2012 Facebook, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
  * @return array   List of stdout and stderr.
  * @group exec
  */
-function execx($cmd /*, ... */) {
+function execx($cmd /* , ... */) {
   $args = func_get_args();
   $future = newv('ExecFuture', $args);
   return $future->resolvex();
@@ -49,7 +49,7 @@ function execx($cmd /*, ... */) {
  * @return array   List of return code, stdout, and stderr.
  * @group exec
  */
-function exec_manual($cmd /*, ... */) {
+function exec_manual($cmd /* , ... */) {
   $args = func_get_args();
   $ef = newv('ExecFuture', $args);
   return $ef->resolve();
@@ -66,7 +66,7 @@ function exec_manual($cmd /*, ... */) {
  * @return int     Return code.
  * @group exec
  */
-function phutil_passthru($cmd /*, ... */) {
+function phutil_passthru($cmd /* , ... */) {
   $args = func_get_args();
   $command = call_user_func_array('csprintf', $args);
 
