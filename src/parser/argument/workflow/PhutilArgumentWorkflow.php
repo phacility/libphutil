@@ -154,4 +154,16 @@ class PhutilArgumentWorkflow {
     throw new Exception("This workflow isn't executable!");
   }
 
+  /**
+   * Normally, workflow arguments are parsed fully, so unexpected arguments will
+   * raise an error. You can return `true` from this method to parse workflow
+   * arguments only partially. This will allow you to manually parse remaining
+   * arguments or delegate to a second level of workflows.
+   *
+   * @return bool True to partially parse workflow arguments (default false).
+   */
+  public function shouldParsePartial() {
+    return false;
+  }
+
 }

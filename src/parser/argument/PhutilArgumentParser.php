@@ -331,6 +331,10 @@ final class PhutilArgumentParser {
   public function parseWorkflowsFull(array $workflows) {
     assert_instances_of($workflows, 'PhutilArgumentWorkflow');
 
+    // Clear out existing workflows. We need to do this to permit the
+    // construction of sub-workflows.
+    $this->workflows = array();
+
     foreach ($workflows as $workflow) {
       $name = $workflow->getName();
 
@@ -373,7 +377,12 @@ final class PhutilArgumentParser {
     }
 
     $this->argv = array_values($argv);
-    $this->parse($workflow->getArguments());
+
+    if ($workflow->shouldParsePartial()) {
+      $this->parsePartial($workflow->getArguments());
+    } else {
+      $this->parse($workflow->getArguments());
+    }
 
     if ($workflow->isExecutable()) {
       $err = $workflow->execute($this);
