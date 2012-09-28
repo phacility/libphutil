@@ -36,6 +36,8 @@ final class PhutilConsole {
   private $channel;
   private $messages = array();
 
+  private $flushing = false;
+
 
 /* -(  Console Construction  )----------------------------------------------- */
 
@@ -166,9 +168,11 @@ final class PhutilConsole {
     // We need as small buffer as possible. 0 means infinite, 1 means 4096 in
     // PHP < 5.4.0.
     ob_start(array($this, 'redirectOutCallback'), 2);
+    $this->flushing = true;
   }
 
   public function endRedirectOut() {
+    $this->flushing = false;
     ob_end_flush();
   }
 
@@ -178,7 +182,9 @@ final class PhutilConsole {
   // Must be public because it is called from output buffering.
   public function redirectOutCallback($string) {
     if (strlen($string)) {
+      $this->flushing = false;
       $this->writeOut('%s', $string);
+      $this->flushing = true;
     }
     return '';
   }
@@ -195,6 +201,9 @@ final class PhutilConsole {
   }
 
   private function writeMessage(PhutilConsoleMessage $message) {
+    if ($this->flushing) {
+      ob_flush();
+    }
     if ($this->channel) {
       $this->channel->write($message);
       $this->channel->flush();
