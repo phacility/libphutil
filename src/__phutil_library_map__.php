@@ -239,6 +239,7 @@ phutil_register_library_map(array(
     'pht' => 'internationalization/pht.php',
     'phutil_console_confirm' => 'console/format.php',
     'phutil_console_format' => 'console/format.php',
+    'phutil_console_get_terminal_width' => 'console/format.php',
     'phutil_console_prompt' => 'console/format.php',
     'phutil_console_require_tty' => 'console/format.php',
     'phutil_console_wrap' => 'console/format.php',

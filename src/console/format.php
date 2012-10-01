@@ -204,3 +204,40 @@ function phutil_console_require_tty() {
     throw new PhutilConsoleStdinNotInteractiveException();
   }
 }
+
+
+/**
+ * Determine the width of the terminal, if possible. Returns `null` on failure.
+ *
+ * @return int|null Terminal width in characters, or null on failure.
+ * @group console
+ */
+function phutil_console_get_terminal_width() {
+  if (phutil_is_windows()) {
+    // TODO: Figure out how to get this working in Windows.
+    return null;
+  }
+
+  $tmp = new TempFile();
+
+  // NOTE: We can't just execute this because it won't be connected to a TTY
+  // if we do.
+  $err = phutil_passthru('tput cols > %s', $tmp);
+
+  if ($err) {
+    return null;
+  }
+
+  try {
+    $cols = Filesystem::readFile($tmp);
+  } catch (FilesystemException $ex) {
+    return null;
+  }
+
+  $cols = (int)$cols;
+  if (!$cols) {
+    return null;
+  }
+
+  return $cols;
+}
