@@ -81,12 +81,51 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       'quack'             => array('q', 'u', 'a', 'c', 'k'),
       "x\xe6\x9d\xb1y"    => array('x', "\xe6\x9d\xb1", 'y'),
 
-      // TODO: This test does not pass. phutil_utf8v() should merge combining
-      // characters.
-      // "x\xCD\xA0y"        => array("x\xCD\xA0", 'y'),
+      // This is a combining character.
+      "x\xCD\xA0y"        => array("x", "\xCD\xA0", 'y'),
     );
     foreach ($strings as $str => $expect) {
       $this->assertEqual($expect, phutil_utf8v($str), 'Vector of '.$str);
+    }
+  }
+
+  public function testUTF8vCodepoints() {
+    $strings = array(
+      ''                  => array(),
+      'x'                 => array(0x78),
+      'quack'             => array(0x71, 0x75, 0x61, 0x63, 0x6B),
+      "x\xe6\x9d\xb1y"    => array(0x78, 0x6771, 0x79),
+
+      "\xC2\xBB"          => array(0x00BB),
+      "\xE2\x98\x83"      => array(0x2603),
+      "\xEF\xBF\xBF"      => array(0xFFFF),
+      "\xF0\x9F\x92\xA9"  => array(0x1F4A9),
+
+      // This is a combining character.
+      "x\xCD\xA0y"        => array(0x78, 0x0360, 0x79),
+    );
+    foreach ($strings as $str => $expect) {
+      $this->assertEqual(
+        $expect,
+        phutil_utf8v_codepoints($str),
+        'Codepoint Vector of '.$str);
+    }
+  }
+
+  public function testUTF8ConsoleStrlen() {
+    $strings = array(
+      ""              => 0,
+      "\0"            => 0,
+      "x"             => 1,
+
+      // Double-width chinese character.
+      "\xe6\x9d\xb1"  => 2,
+    );
+    foreach ($strings as $str => $expect) {
+      $this->assertEqual(
+        $expect,
+        phutil_utf8_console_strlen($str),
+        'Console Length of '.$str);
     }
   }
 

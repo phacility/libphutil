@@ -101,9 +101,58 @@ function phutil_utf8_strlen($string) {
 
 
 /**
- * Split a UTF-8 string into an array of characters.
+ * Find the console display length of a UTF-8 string. This may differ from the
+ * character length of the string if it contains double-width characters, like
+ * many Chinese characters.
  *
- * NOTE: This function does not deal properly with combining characters.
+ * This method is based on a C implementation here, which is based on the IEEE
+ * standards. The source has more discussion and addresses more considerations
+ * than this implementation does.
+ *
+ *   http://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c
+ *
+ * NOTE: We currently do not handle combining characters correctly.
+ *
+ * NOTE: We currently assume width 1 for East-Asian ambiguous characters.
+ *
+ * NOTE: This function is VERY slow.
+ *
+ * @param   string  A valid UTF-8 string.
+ * @return  int     The console display length of the string.
+ * @group   utf8
+ */
+function phutil_utf8_console_strlen($string) {
+  $string_v = phutil_utf8v_codepoints($string);
+
+  $len = 0;
+  foreach ($string_v as $c) {
+    if ($c == 0) {
+      continue;
+    }
+
+    $len += 1 +
+      ($c >= 0x1100 &&
+        ($c <= 0x115f ||                    /* Hangul Jamo init. consonants */
+          $c == 0x2329 || $c == 0x232a ||
+          ($c >= 0x2e80 && $c <= 0xa4cf &&
+            $c != 0x303f) ||                  /* CJK ... Yi */
+          ($c >= 0xac00 && $c <= 0xd7a3) || /* Hangul Syllables */
+          ($c >= 0xf900 && $c <= 0xfaff) || /* CJK Compatibility Ideographs */
+          ($c >= 0xfe10 && $c <= 0xfe19) || /* Vertical forms */
+          ($c >= 0xfe30 && $c <= 0xfe6f) || /* CJK Compatibility Forms */
+          ($c >= 0xff00 && $c <= 0xff60) || /* Fullwidth Forms */
+          ($c >= 0xffe0 && $c <= 0xffe6) ||
+          ($c >= 0x20000 && $c <= 0x2fffd) ||
+          ($c >= 0x30000 && $c <= 0x3fffd)));
+  }
+
+  return $len;
+}
+
+
+/**
+ * Split a UTF-8 string into an array of characters. Combining characters are
+ * also split.
  *
  * @param string A valid utf-8 string.
  * @return list  A list of characters in the string.
@@ -148,6 +197,57 @@ function phutil_utf8v($string) {
   }
   return $res;
 }
+
+
+/**
+ * Split a UTF-8 string into an array of codepoints (as integers).
+ *
+ * @param   string  A valid UTF-8 string.
+ * @return  list    A list of codepoints, as integers.
+ * @group   utf8
+ */
+function phutil_utf8v_codepoints($string) {
+  $str_v = phutil_utf8v($string);
+
+  foreach ($str_v as $key => $char) {
+    $c = ord($char[0]);
+    $v = 0;
+
+    if (($c & 0x80) == 0) {
+      $v = $c;
+    } else if (($c & 0xE0) == 0xC0) {
+      $v = (($c & 0x1F) << 6)
+         + ((ord($char[1]) & 0x3F));
+    } else if (($c & 0xF0) == 0xE0) {
+      $v = (($c & 0x0F) << 12)
+         + ((ord($char[1]) & 0x3f) << 6)
+         + ((ord($char[2]) & 0x3f));
+    } else if (($c & 0xF8) == 0xF0) {
+      $v = (($c & 0x07) << 18)
+         + ((ord($char[1]) & 0x3F) << 12)
+         + ((ord($char[2]) & 0x3F) << 6)
+         + ((ord($char[3]) & 0x3f));
+    } else if (($c & 0xFC) == 0xF8) {
+      $v = (($c & 0x03) << 24)
+         + ((ord($char[1]) & 0x3F) << 18)
+         + ((ord($char[2]) & 0x3F) << 12)
+         + ((ord($char[3]) & 0x3f) << 6)
+         + ((ord($char[4]) & 0x3f));
+    } else if (($c & 0xFE) == 0xFC) {
+      $v = (($c & 0x01) << 30)
+         + ((ord($char[1]) & 0x3F) << 24)
+         + ((ord($char[2]) & 0x3F) << 18)
+         + ((ord($char[3]) & 0x3f) << 12)
+         + ((ord($char[4]) & 0x3f) << 6)
+         + ((ord($char[5]) & 0x3f));
+    }
+
+    $str_v[$key] = $v;
+  }
+
+  return $str_v;
+}
+
 
 /**
  * Shorten a string to provide a summary, respecting UTF-8 characters. This
