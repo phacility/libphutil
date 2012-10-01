@@ -236,6 +236,7 @@ final class PhutilPHPFragmentLexer extends PhutilLexer {
         array('&', 'o'),
         array('\\(', 'o', '!pop'),
         array($identifier_pattern, 'no', '!pop'),
+        array('', null, '!pop'),
       )),
 
       // For "//" and "#" comments, we need to break out if we see "?" followed
