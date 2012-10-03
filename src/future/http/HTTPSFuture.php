@@ -58,23 +58,6 @@ final class HTTPSFuture extends BaseHTTPFuture {
     $uri = $this->getURI();
     $data = $this->getData();
 
-    $profiler = PhutilServiceProfiler::getInstance();
-    $this->profilerCallID = $profiler->beginServiceCall(
-      array(
-        'type' => 'http',
-        'uri' => $uri,
-      ));
-
-    // NOTE: If possible, we reuse the handle so we can take advantage of
-    // keepalives. This means every option has to be set every time, because
-    // cURL will not clear the settings between requests.
-
-    if (!self::$handle) {
-      self::$handle = curl_init();
-    }
-    $curl = self::$handle;
-
-    curl_setopt($curl, CURLOPT_URL, $uri);
     if ($data) {
 
       // NOTE: PHP's cURL implementation has a piece of magic which treats
@@ -103,10 +86,28 @@ final class HTTPSFuture extends BaseHTTPFuture {
           "which creates a wide attack window for security vulnerabilities. ".
           "Upgrade PHP or avoid making cURL requests which begin with '@'.");
       }
-      curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
     } else {
-      curl_setopt($curl, CURLOPT_POSTFIELDS, null);
+      $data = null;
     }
+
+    $profiler = PhutilServiceProfiler::getInstance();
+    $this->profilerCallID = $profiler->beginServiceCall(
+      array(
+        'type' => 'http',
+        'uri' => $uri,
+      ));
+
+    // NOTE: If possible, we reuse the handle so we can take advantage of
+    // keepalives. This means every option has to be set every time, because
+    // cURL will not clear the settings between requests.
+
+    if (!self::$handle) {
+      self::$handle = curl_init();
+    }
+    $curl = self::$handle;
+
+    curl_setopt($curl, CURLOPT_URL, $uri);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 
     $headers = $this->getHeaders();
     if ($headers) {
