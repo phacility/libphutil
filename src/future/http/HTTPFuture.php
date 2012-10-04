@@ -109,7 +109,7 @@ final class HTTPFuture extends BaseHTTPFuture {
   }
 
   public function isWriteComplete() {
-	  return $this->stateWriteComplete;
+    return $this->stateWriteComplete;
   }
 
   private function getDefaultUserAgent() {
@@ -235,7 +235,7 @@ final class HTTPFuture extends BaseHTTPFuture {
 
   private function buildErrorResult($error) {
     return array(
-      $status = new HTTPFutureResponseStatusTransport($error),
+      $status = new HTTPFutureResponseStatusTransport($error, $this->getURI()),
       $body = null,
       $headers = array());
   }
