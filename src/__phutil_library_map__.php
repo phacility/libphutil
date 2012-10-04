@@ -65,6 +65,7 @@ phutil_register_library_map(array(
     'LinesOfALargeFile' => 'filesystem/linesofalarge/LinesOfALargeFile.php',
     'LinesOfALargeFileTestCase' => 'filesystem/linesofalarge/__tests__/LinesOfALargeFileTestCase.php',
     'MFilterTestHelper' => 'utils/__tests__/MFilterTestHelper.php',
+    'Phobject' => 'object/Phobject.php',
     'PhutilAWSEC2Future' => 'future/aws/PhutilAWSEC2Future.php',
     'PhutilAWSException' => 'future/aws/PhutilAWSException.php',
     'PhutilAWSFuture' => 'future/aws/PhutilAWSFuture.php',
