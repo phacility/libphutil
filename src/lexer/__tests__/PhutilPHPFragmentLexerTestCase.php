@@ -29,10 +29,19 @@ final class PhutilPHPFragmentLexerTestCase extends PhutilTestCase {
   private function runLexer($file, $data) {
     $lexer = new PhutilPHPFragmentLexer();
 
+    switch ($file) {
+      case 'pop-from-php.txt':
+        $initial_state = 'php';
+        break;
+      default:
+        $initial_state = 'start';
+        break;
+    }
+
     $caught = null;
     $tokens = null;
     try {
-      $tokens = $lexer->getTokens($data);
+      $tokens = $lexer->getTokens($data, $initial_state);
     } catch (Exception $ex) {
       $caught = $ex;
     }
@@ -292,6 +301,16 @@ final class PhutilPHPFragmentLexerTestCase extends PhutilTestCase {
             array('no', 'echo', null),
             array(null, ' ', null),
             array('s', "<<<EOT\neot;\nEOT;\n", null),
+          ),
+          $tokens,
+          $file);
+        break;
+      case 'pop-from-php.txt':
+        $this->assertEqual(null, $caught);
+        $this->assertEqual(
+          array(
+            array('cp', '?>', null),
+            array(null, "\n", null),
           ),
           $tokens,
           $file);

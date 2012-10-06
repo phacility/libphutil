@@ -231,7 +231,10 @@ abstract class PhutilLexer {
 
     $tokens = array();
     $states = array();
-    $states[] = $initial_state;
+    $states[] = 'start';
+    if ($initial_state != 'start') {
+      $states[] = $initial_state;
+    }
     $context = array();
     while ($position < $length) {
       $state_rules = idx($rules, end($states), array());
