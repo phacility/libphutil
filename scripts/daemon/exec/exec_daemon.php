@@ -91,7 +91,7 @@ PhutilErrorHandler::initialize();
 function phutil_daemon_error_listener($event, $value, array $metadata) {
   $message = idx($metadata, 'default_message');
   if ($message) {
-    file_put_contents('php://stderr', $message);
+    fwrite(STDERR, $message);
   }
 }
 
