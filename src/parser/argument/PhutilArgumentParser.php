@@ -635,7 +635,7 @@ final class PhutilArgumentParser {
   public function printUsageException(PhutilArgumentUsageException $ex) {
     fwrite(
       STDERR,
-      $this->format('**Usage Exception:** '.$ex->getMessage()."\n"));
+      $this->format("**Usage Exception:** %s\n", $ex->getMessage()));
   }
 
 
