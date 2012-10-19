@@ -34,6 +34,7 @@ final class PhutilConsoleSyntaxHighlighter {
 
   public function getHighlightFuture($source) {
 
+    $in_command = false;
     $lines = explode("\n", $source);
     foreach ($lines as $key => $line) {
       $matches = null;
@@ -44,7 +45,12 @@ final class PhutilConsoleSyntaxHighlighter {
       //
       // ...into path, command, and comment components.
 
-      if (preg_match('@^(\S+/ )?([$] .*?)(#.*)?$@', $line, $matches)) {
+      $pattern =
+        '@'.
+        ($in_command ? '()(.*?)' : '^(\S+/ )?([$] .*?)').
+        '(#.*|\\\\)?$@';
+
+      if (preg_match($pattern, $line, $matches)) {
         $line = '';
         if ($matches[1]) {
           $line .= phutil_escape_html($matches[1]);
@@ -54,6 +60,7 @@ final class PhutilConsoleSyntaxHighlighter {
           $line .= '<span class="k">'.phutil_escape_html($matches[3]).'</span>';
         }
         $lines[$key] = $line;
+        $in_command = ($matches[3] == '\\');
       } else {
         $lines[$key] = '<span class="go">'.phutil_escape_html($line).'</span>';
       }
