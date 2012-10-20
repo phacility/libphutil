@@ -50,13 +50,13 @@ class PhutilAggregateException extends Exception {
     $full_message = array();
     $full_message[] = $message;
     foreach ($other_exceptions as $exception) {
-      $ex_message = $exception->getMessage();
+      $ex_message = get_class($exception).': '.$exception->getMessage();
       $ex_message = '    - '.str_replace("\n", "\n      ", $ex_message);
 
       $full_message[] = $ex_message;
     }
 
-    parent::__construct(implode("\n", $full_message));
+    parent::__construct(implode("\n", $full_message), count($other_exceptions));
   }
 
 }
