@@ -59,4 +59,8 @@ class PhutilAggregateException extends Exception {
     parent::__construct(implode("\n", $full_message), count($other_exceptions));
   }
 
+  public function getExceptions() {
+    return $this->exceptions;
+  }
+
 }
