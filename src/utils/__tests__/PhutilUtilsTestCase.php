@@ -275,8 +275,8 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       "\n\n\n" => array("\n", "\n", "\n"),
       "\r\n" => array("\r\n"),
       "x\r\ny\n" => array("x\r\n", "y\n"),
-      "x\ry\nz\r\n" => array("x\r", "y\n", "z\r\n"),
-      "x\ry\nz\r\n\n" => array("x\r", "y\n", "z\r\n", "\n"),
+      "x\ry\nz\r\n" => array("x\ry\n", "z\r\n"),
+      "x\ry\nz\r\n\n" => array("x\ry\n", "z\r\n", "\n"),
     );
 
     foreach ($retain_cases as $input => $expect) {
@@ -294,8 +294,8 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       "\n\n\n" => array("", "", ""),
       "\r\n" => array(""),
       "x\r\ny\n" => array("x", "y"),
-      "x\ry\nz\r\n" => array("x", "y", "z"),
-      "x\ry\nz\r\n\n" => array("x", "y", "z", ""),
+      "x\ry\nz\r\n" => array("x\ry", "z"),
+      "x\ry\nz\r\n\n" => array("x\ry", "z", ""),
     );
 
     foreach ($discard_cases as $input => $expect) {

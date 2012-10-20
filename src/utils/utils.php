@@ -659,8 +659,11 @@ function array_mergev(array $arrayv) {
 
 
 /**
- * Split a corpus of text into lines. This function splits on "\r", "\n",
- * "\r\n", or a mixture of any of them.
+ * Split a corpus of text into lines. This function splits on "\n", "\r\n", or
+ * a mixture of any of them.
+ *
+ * NOTE: This function does not treat "\r" on its own as a newline because none
+ * of SVN, Git or Mercurial do on any OS.
  *
  * @param string Block of text to be split into lines.
  * @param bool If true, retain line endings in result strings.
@@ -672,11 +675,11 @@ function phutil_split_lines($corpus, $retain_endings = true) {
     return array('');
   }
 
-  // Split on "\r\n", "\r", or "\n", but don't split "\r\n" into two lines.
+  // Split on "\r\n" or "\n".
   if ($retain_endings) {
-    $lines = preg_split('/(?<=\r)(?!\n)|(?<=\n)/', $corpus);
+    $lines = preg_split('/(?<=\n)/', $corpus);
   } else {
-    $lines = preg_split('/\r(?!\n)|\r?\n/', $corpus);
+    $lines = preg_split('/\r?\n/', $corpus);
   }
 
   // If the text ends with "\n" or similar, we'll end up with an empty string
