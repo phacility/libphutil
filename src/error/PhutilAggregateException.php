@@ -29,7 +29,7 @@
  *       $success = true;
  *       break;
  *     } catch (Exception $ex) {
- *       $exceptions[] = $ex;
+ *       $exceptions[get_class($engine)] = $ex;
  *     }
  *   }
  *
@@ -45,12 +45,18 @@ class PhutilAggregateException extends Exception {
   private $exceptions = array();
 
   public function __construct($message, array $other_exceptions) {
+    // We don't call assert_instances_of($other_exceptions, 'Exception') to not
+    // throw another exception in this exception.
+
     $this->exceptions = $other_exceptions;
 
     $full_message = array();
     $full_message[] = $message;
-    foreach ($other_exceptions as $exception) {
-      $ex_message = get_class($exception).': '.$exception->getMessage();
+    foreach ($other_exceptions as $key => $exception) {
+      $ex_message =
+        (is_string($key) ? $key.': ' : '').
+        get_class($exception).': '.
+        $exception->getMessage();
       $ex_message = '    - '.str_replace("\n", "\n      ", $ex_message);
 
       $full_message[] = $ex_message;
