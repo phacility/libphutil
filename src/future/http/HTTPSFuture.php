@@ -151,6 +151,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
       curl_setopt($curl, CURLOPT_CAINFO, $cabundle);
     }
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($curl, CURLOPT_SSLVERSION, 3);
 
     $result = curl_exec($curl);
     $err_code = curl_errno($curl);
