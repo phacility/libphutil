@@ -70,6 +70,16 @@ final class PhutilConsoleServer {
     }
   }
 
+  /**
+   * Set handler called for unknown messages.
+   *
+   * @param callable Signature: (PhutilConsoleMessage $message).
+   */
+  public function setHandler($callback) {
+    $this->handler = $callback;
+    return $this;
+  }
+
   private function buildMessage($type, $data) {
     $response = new PhutilConsoleMessage();
     $response->setType($type);

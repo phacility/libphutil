@@ -149,6 +149,11 @@ final class PhutilConsole {
     return $response->getData();
   }
 
+  public function sendMessage($data) {
+    $message = id(new PhutilConsoleMessage())->setData($data);
+    return $this->writeMessage($message);
+  }
+
   public function writeOut($pattern /* , ... */) {
     $args = func_get_args();
     return $this->writeTextMessage(PhutilConsoleMessage::TYPE_OUT, $args);
@@ -228,6 +233,8 @@ final class PhutilConsole {
     return $message;
   }
 
-
+  public function getServer() {
+    return $this->server;
+  }
 
 }
