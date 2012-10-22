@@ -144,6 +144,11 @@ final class PhutilErrorHandler {
       throw new RuntimeException($str);
     }
 
+    // Convert uses of undefined properties into exceptions.
+    if (preg_match('/^Undefined property: /', $str)) {
+      throw new RuntimeException($str);
+    }
+
     $trace = debug_backtrace();
     array_shift($trace);
     self::dispatchErrorMessage(
