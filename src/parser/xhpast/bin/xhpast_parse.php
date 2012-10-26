@@ -42,6 +42,9 @@ function xhpast_is_available() {
  * @group xhpast
  */
 function xhpast_get_binary_path() {
+  if (phutil_is_windows()) {
+    return dirname(__FILE__).'\\xhpast.exe';
+  }
   return dirname(__FILE__).'/xhpast';
 }
 
