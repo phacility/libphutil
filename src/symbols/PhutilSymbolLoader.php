@@ -107,7 +107,7 @@ final class PhutilSymbolLoader {
    * @task config
    */
   public function setPathPrefix($path) {
-    $this->pathPrefix = $path;
+    $this->pathPrefix = str_replace(DIRECTORY_SEPARATOR, '/', $path);
     return $this;
   }
 
