@@ -47,7 +47,7 @@ final class PhutilConsoleSyntaxHighlighter {
 
       $pattern =
         '@'.
-        ($in_command ? '()(.*?)' : '^(\S+/ )?([$] .*?)').
+        ($in_command ? '()(.*?)' : '^(\S+[\\\\/] )?([$] .*?)').
         '(#.*|\\\\)?$@';
 
       if (preg_match($pattern, $line, $matches)) {
