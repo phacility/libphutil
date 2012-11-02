@@ -26,7 +26,18 @@
  * Example Usage
  *
  *    $future = new HTTPFuture('http://www.example.com/');
- *    list($http_response_code, $response_body, $headers) = $future->resolve();
+ *    list($response_body, $headers) = $future->resolvex();
+ *
+ * Or
+ *
+ *    $future = new HTTPFuture('http://www.example.com/');
+ *    list($http_response_status_object,
+ *         $response_body,
+ *         $headers) = $future->resolve();
+ *
+ * Prefer resolvex() to resolve() as the former throws
+ * @{class:HTTPFutureResponseStatusHTTP} on failures, which includes an
+ * informative exception message.
  *
  * @group futures
  */
