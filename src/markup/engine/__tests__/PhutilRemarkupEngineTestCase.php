@@ -22,6 +22,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $this->assertEqual(2, count($parts));
 
     list($input_remarkup, $expected_output) = $parts;
+    $expected_output = preg_replace('/\n\z/', '', $expected_output);
 
     switch ($file) {
       case 'raw-escape.txt':

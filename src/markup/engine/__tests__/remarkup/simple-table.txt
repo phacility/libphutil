@@ -13,3 +13,4 @@
 <tr><th><em>user</em></th><td>49 s</td><td>25 s</td><td>31 s</td><td>49 s</td></tr>
 <tr><th><em>sys</em></th><td>24 s</td><td>12 s</td><td>13 s</td><td>24 s</td></tr>
 </table>
+
