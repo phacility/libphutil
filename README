@@ -43,3 +43,7 @@ Utilities
   A handful of solid utility functions.
 
 libphutil is used by Phabricator, Arcanist and Diviner.
+
+LICENSE
+
+libphutil is released under the Apache 2.0 license except as otherwise noted.

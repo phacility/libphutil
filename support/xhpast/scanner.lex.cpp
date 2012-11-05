@@ -212,11 +212,6 @@ typedef void* yyscan_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
 /* %if-not-reentrant */
 /* %endif */
 
@@ -247,6 +242,11 @@ typedef size_t yy_size_t;
 
 #define unput(c) yyunput( c, yyg->yytext_ptr , yyscanner )
 
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -269,7 +269,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	yy_size_t yy_n_chars;
+	int yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -366,7 +366,7 @@ static void xhpast_init_buffer (YY_BUFFER_STATE b,FILE *file ,yyscan_t yyscanner
 
 YY_BUFFER_STATE xhpast_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
 YY_BUFFER_STATE xhpast_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE xhpast_scan_bytes (yyconst char *bytes,yy_size_t len ,yyscan_t yyscanner );
+YY_BUFFER_STATE xhpast_scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
 
 /* %endif */
 
@@ -3612,21 +3612,21 @@ static yyconst yy_state_type yy_NUL_trans[595] =
 
 static yyconst flex_int16_t yy_rule_linenum[140] =
     {   0,
-       95,  100,  107,  114,  121,  128,  134,  138,  150,  154,
-      159,  163,  173,  178,  179,  184,  187,  191,  193,  201,
-      212,  213,  214,  215,  216,  217,  218,  219,  220,  221,
-      222,  223,  224,  225,  226,  227,  228,  229,  230,  231,
-      232,  233,  234,  235,  236,  237,  238,  239,  240,  241,
-      242,  243,  244,  245,  246,  247,  248,  249,  250,  251,
-      252,  253,  254,  255,  256,  257,  258,  259,  260,  261,
-      262,  263,  264,  265,  266,  267,  268,  269,  270,  271,
-      272,  273,  274,  275,  276,  277,  278,  279,  284,  285,
-      286,  287,  288,  289,  290,  291,  292,  293,  294,  295,
+       79,   84,   91,   98,  105,  112,  118,  122,  134,  138,
+      143,  147,  157,  162,  163,  168,  171,  175,  177,  185,
+      196,  197,  198,  199,  200,  201,  202,  203,  204,  205,
+      206,  207,  208,  209,  210,  211,  212,  213,  214,  215,
+      216,  217,  218,  219,  220,  221,  222,  223,  224,  225,
+      226,  227,  228,  229,  230,  231,  232,  233,  234,  235,
+      236,  237,  238,  239,  240,  241,  242,  243,  244,  245,
+      246,  247,  248,  249,  250,  251,  252,  253,  254,  255,
+      256,  257,  258,  259,  260,  261,  262,  263,  268,  269,
+      270,  271,  272,  273,  274,  275,  276,  277,  278,  279,
 
-      296,  297,  298,  299,  300,  301,  302,  303,  304,  305,
-      306,  307,  308,  309,  310,  315,  316,  317,  318,  319,
-      320,  321,  322,  323,  328,  329,  330,  331,  332,  336,
-      343,  349,  359,  366,  373,  381,  394,  399,  407
+      280,  281,  282,  283,  284,  285,  286,  287,  288,  289,
+      290,  291,  292,  293,  294,  299,  300,  301,  302,  303,
+      304,  305,  306,  307,  312,  313,  314,  315,  316,  320,
+      327,  333,  343,  350,  357,  365,  378,  383,  391
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -3637,22 +3637,7 @@ static yyconst flex_int16_t yy_rule_linenum[140] =
 #define YY_MORE_ADJ yyg->yy_more_len
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "scanner.l"
-/*
- * Copyright 2012 Facebook, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-#line 18 "scanner.l"
+#line 2 "scanner.l"
 #include "ast.hpp"
 #define push_state(s) xhp_new_push_state(s, yyg)
 #define pop_state() xhp_new_pop_state(yyg)
@@ -3701,7 +3686,7 @@ static void yy_scan_newlines(const char* text, struct yyguts_t* yyg);
 
 
 
-#line 3705 "scanner.lex.cpp"
+#line 3690 "scanner.lex.cpp"
 
 #define INITIAL 0
 #define PHP 1
@@ -3748,8 +3733,8 @@ struct yyguts_t
     size_t yy_buffer_stack_max; /**< capacity of stack. */
     YY_BUFFER_STATE * yy_buffer_stack; /**< Stack as an array. */
     char yy_hold_char;
-    yy_size_t yy_n_chars;
-    yy_size_t yyleng_r;
+    int yy_n_chars;
+    int yyleng_r;
     char *yy_c_buf_p;
     int yy_init;
     int yy_start;
@@ -3812,7 +3797,7 @@ FILE *xhpastget_out (yyscan_t yyscanner );
 
 void xhpastset_out  (FILE * out_str ,yyscan_t yyscanner );
 
-yy_size_t xhpastget_leng (yyscan_t yyscanner );
+int xhpastget_leng (yyscan_t yyscanner );
 
 char *xhpastget_text (yyscan_t yyscanner );
 
@@ -3906,7 +3891,7 @@ static int input (yyscan_t yyscanner );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		yy_size_t n; \
+		unsigned n; \
 		for ( n = 0; n < max_size && \
 			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
@@ -4016,11 +4001,11 @@ YY_DECL
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [7.0] user's declarations go here */
-#line 91 "scanner.l"
+#line 75 "scanner.l"
 
 
  /* Open / close PHP + inline HTML */
-#line 4024 "scanner.lex.cpp"
+#line 4009 "scanner.lex.cpp"
 
     yylval = yylval_param;
 
@@ -4143,7 +4128,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 95 "scanner.l"
+#line 79 "scanner.l"
 {
     yy_scan_newlines(yytext + 5, yyg);
     // the state transition will be done in yy_token()
@@ -4152,7 +4137,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 100 "scanner.l"
+#line 84 "scanner.l"
 {
     if (yyextra->short_tags) {
       tok(T_OPEN_TAG);
@@ -4163,7 +4148,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 107 "scanner.l"
+#line 91 "scanner.l"
 {
     if (yyextra->short_tags) {
       tok(T_OPEN_TAG_WITH_ECHO);
@@ -4174,7 +4159,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 114 "scanner.l"
+#line 98 "scanner.l"
 {
     if (yyextra->asp_tags) {
       tok(T_OPEN_TAG);
@@ -4185,7 +4170,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 121 "scanner.l"
+#line 105 "scanner.l"
 {
     if (yyextra->asp_tags) {
       tok(T_OPEN_TAG_WITH_ECHO);
@@ -4197,7 +4182,7 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 128 "scanner.l"
+#line 112 "scanner.l"
 {
     yy_scan_newlines(yytext, yyg);
     tok(T_INLINE_HTML);
@@ -4208,7 +4193,7 @@ YY_RULE_SETUP
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 134 "scanner.l"
+#line 118 "scanner.l"
 {
     yy_scan_newlines(yytext + 2, yyg);
     tok(T_CLOSE_TAG);
@@ -4216,7 +4201,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 138 "scanner.l"
+#line 122 "scanner.l"
 {
     if (yyextra->asp_tags) {
       tok(T_CLOSE_TAG);
@@ -4231,7 +4216,7 @@ YY_RULE_SETUP
 
 case 9:
 YY_RULE_SETUP
-#line 150 "scanner.l"
+#line 134 "scanner.l"
 {
     push_state(PHP_EOL_COMMENT);
     yymore();
@@ -4240,7 +4225,7 @@ YY_RULE_SETUP
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 154 "scanner.l"
+#line 138 "scanner.l"
 {
     yy_scan_newlines(yytext + 3, yyg);
     push_state(PHP_DOC_COMMENT);
@@ -4249,7 +4234,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 159 "scanner.l"
+#line 143 "scanner.l"
 {
     push_state(PHP_COMMENT);
     yymore();
@@ -4258,7 +4243,7 @@ YY_RULE_SETUP
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 163 "scanner.l"
+#line 147 "scanner.l"
 {
     yy_scan_newlines(yytext, yyg);
     ptok(T_WHITESPACE);
@@ -4266,7 +4251,7 @@ YY_RULE_SETUP
 	YY_BREAK
 
 case YY_STATE_EOF(PHP_EOL_COMMENT):
-#line 168 "scanner.l"
+#line 152 "scanner.l"
 {
   ptok(T_COMMENT);
   pop_state();
@@ -4276,7 +4261,7 @@ case YY_STATE_EOF(PHP_EOL_COMMENT):
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 173 "scanner.l"
+#line 157 "scanner.l"
 {
     ++yyextra->lineno;
     ptok(T_COMMENT);
@@ -4285,12 +4270,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 178 "scanner.l"
+#line 162 "scanner.l"
 yymore();
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 179 "scanner.l"
+#line 163 "scanner.l"
 {
     yyless(yyleng - 2);
     ptok(T_COMMENT);
@@ -4299,7 +4284,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 184 "scanner.l"
+#line 168 "scanner.l"
 yymore();
 	YY_BREAK
 
@@ -4307,7 +4292,7 @@ yymore();
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 187 "scanner.l"
+#line 171 "scanner.l"
 {
     ++yyextra->lineno;
     yymore();
@@ -4315,20 +4300,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 191 "scanner.l"
+#line 175 "scanner.l"
 yymore();
 	YY_BREAK
 
 case 19:
 YY_RULE_SETUP
-#line 193 "scanner.l"
+#line 177 "scanner.l"
 {
   ptok(T_DOC_COMMENT);
   pop_state();
 }
 	YY_BREAK
 case YY_STATE_EOF(PHP_DOC_COMMENT):
-#line 197 "scanner.l"
+#line 181 "scanner.l"
 {
   ptok(T_DOC_COMMENT);
   pop_state();
@@ -4336,14 +4321,14 @@ case YY_STATE_EOF(PHP_DOC_COMMENT):
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 201 "scanner.l"
+#line 185 "scanner.l"
 {
   ptok(T_COMMENT);
   pop_state();
 }
 	YY_BREAK
 case YY_STATE_EOF(PHP_COMMENT):
-#line 205 "scanner.l"
+#line 189 "scanner.l"
 {
   ptok(T_COMMENT);
   pop_state();
@@ -4353,342 +4338,342 @@ case YY_STATE_EOF(PHP_COMMENT):
 
 case 21:
 YY_RULE_SETUP
-#line 212 "scanner.l"
+#line 196 "scanner.l"
 tok(T_INCLUDE);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 213 "scanner.l"
+#line 197 "scanner.l"
 tok(T_INCLUDE_ONCE);
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 214 "scanner.l"
+#line 198 "scanner.l"
 tok(T_EVAL);
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 215 "scanner.l"
+#line 199 "scanner.l"
 tok(T_REQUIRE);
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 216 "scanner.l"
+#line 200 "scanner.l"
 tok(T_REQUIRE_ONCE);
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 217 "scanner.l"
+#line 201 "scanner.l"
 tok(T_LOGICAL_OR);
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 218 "scanner.l"
+#line 202 "scanner.l"
 tok(T_LOGICAL_XOR);
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 219 "scanner.l"
+#line 203 "scanner.l"
 tok(T_LOGICAL_AND);
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 220 "scanner.l"
+#line 204 "scanner.l"
 tok(T_PRINT);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 221 "scanner.l"
+#line 205 "scanner.l"
 tok(T_INSTANCEOF);
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 222 "scanner.l"
+#line 206 "scanner.l"
 tok(T_NEW);
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 223 "scanner.l"
+#line 207 "scanner.l"
 tok(T_CLONE);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 224 "scanner.l"
+#line 208 "scanner.l"
 tok(T_EXIT);
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 225 "scanner.l"
+#line 209 "scanner.l"
 tok(T_IF);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 226 "scanner.l"
+#line 210 "scanner.l"
 tok(T_ELSEIF);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 227 "scanner.l"
+#line 211 "scanner.l"
 tok(T_ELSE);
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 228 "scanner.l"
+#line 212 "scanner.l"
 tok(T_ENDIF);
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 229 "scanner.l"
+#line 213 "scanner.l"
 tok(T_ECHO);
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 230 "scanner.l"
+#line 214 "scanner.l"
 tok(T_DO);
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 231 "scanner.l"
+#line 215 "scanner.l"
 tok(T_WHILE);
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 232 "scanner.l"
+#line 216 "scanner.l"
 tok(T_ENDWHILE);
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 233 "scanner.l"
+#line 217 "scanner.l"
 tok(T_FOR);
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 234 "scanner.l"
+#line 218 "scanner.l"
 tok(T_ENDFOR);
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 235 "scanner.l"
+#line 219 "scanner.l"
 tok(T_FOREACH);
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 236 "scanner.l"
+#line 220 "scanner.l"
 tok(T_ENDFOREACH);
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 237 "scanner.l"
+#line 221 "scanner.l"
 tok(T_DECLARE);
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 238 "scanner.l"
+#line 222 "scanner.l"
 tok(T_ENDDECLARE);
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 239 "scanner.l"
+#line 223 "scanner.l"
 tok(T_AS);
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 240 "scanner.l"
+#line 224 "scanner.l"
 tok(T_SWITCH);
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 241 "scanner.l"
+#line 225 "scanner.l"
 tok(T_ENDSWITCH);
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 242 "scanner.l"
+#line 226 "scanner.l"
 tok(T_CASE);
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 243 "scanner.l"
+#line 227 "scanner.l"
 tok(T_DEFAULT);
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 244 "scanner.l"
+#line 228 "scanner.l"
 tok(T_BREAK);
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 245 "scanner.l"
+#line 229 "scanner.l"
 tok(T_CONTINUE);
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 246 "scanner.l"
+#line 230 "scanner.l"
 tok(T_GOTO);
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 247 "scanner.l"
+#line 231 "scanner.l"
 tok(T_FUNCTION);
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 248 "scanner.l"
+#line 232 "scanner.l"
 tok(T_CONST);
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 249 "scanner.l"
+#line 233 "scanner.l"
 tok(T_RETURN);
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 250 "scanner.l"
+#line 234 "scanner.l"
 tok(T_TRY);
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 251 "scanner.l"
+#line 235 "scanner.l"
 tok(T_CATCH);
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 252 "scanner.l"
+#line 236 "scanner.l"
 tok(T_THROW);
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 253 "scanner.l"
+#line 237 "scanner.l"
 tok(T_USE);
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 254 "scanner.l"
+#line 238 "scanner.l"
 tok(T_GLOBAL);
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 255 "scanner.l"
+#line 239 "scanner.l"
 tok(T_STATIC);
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 256 "scanner.l"
+#line 240 "scanner.l"
 tok(T_ABSTRACT);
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 257 "scanner.l"
+#line 241 "scanner.l"
 tok(T_FINAL);
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 258 "scanner.l"
+#line 242 "scanner.l"
 tok(T_PRIVATE);
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 259 "scanner.l"
+#line 243 "scanner.l"
 tok(T_PROTECTED);
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 260 "scanner.l"
+#line 244 "scanner.l"
 tok(T_PUBLIC);
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 261 "scanner.l"
+#line 245 "scanner.l"
 tok(T_VAR);
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 262 "scanner.l"
+#line 246 "scanner.l"
 tok(T_UNSET);
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 263 "scanner.l"
+#line 247 "scanner.l"
 tok(T_ISSET);
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 264 "scanner.l"
+#line 248 "scanner.l"
 tok(T_EMPTY);
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 265 "scanner.l"
+#line 249 "scanner.l"
 tok(T_HALT_COMPILER);
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 266 "scanner.l"
+#line 250 "scanner.l"
 tok(T_CLASS);
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 267 "scanner.l"
+#line 251 "scanner.l"
 tok(T_INTERFACE);
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 268 "scanner.l"
+#line 252 "scanner.l"
 tok(T_EXTENDS);
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 269 "scanner.l"
+#line 253 "scanner.l"
 tok(T_IMPLEMENTS);
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 270 "scanner.l"
+#line 254 "scanner.l"
 tok(T_LIST);
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 271 "scanner.l"
+#line 255 "scanner.l"
 tok(T_ARRAY);
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 272 "scanner.l"
+#line 256 "scanner.l"
 tok(T_CLASS_C);
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 273 "scanner.l"
+#line 257 "scanner.l"
 tok(T_METHOD_C);
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 274 "scanner.l"
+#line 258 "scanner.l"
 tok(T_FUNC_C);
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 275 "scanner.l"
+#line 259 "scanner.l"
 tok(T_LINE);
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 276 "scanner.l"
+#line 260 "scanner.l"
 tok(T_FILE);
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 277 "scanner.l"
+#line 261 "scanner.l"
 tok(T_NAMESPACE);
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 278 "scanner.l"
+#line 262 "scanner.l"
 tok(T_NS_C);
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 279 "scanner.l"
+#line 263 "scanner.l"
 tok(T_DIR);
 	YY_BREAK
 
@@ -4696,137 +4681,137 @@ tok(T_DIR);
 
 case 89:
 YY_RULE_SETUP
-#line 284 "scanner.l"
+#line 268 "scanner.l"
 tok(T_PLUS_EQUAL);
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 285 "scanner.l"
+#line 269 "scanner.l"
 tok(T_MINUS_EQUAL);
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 286 "scanner.l"
+#line 270 "scanner.l"
 tok(T_MUL_EQUAL);
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 287 "scanner.l"
+#line 271 "scanner.l"
 tok(T_DIV_EQUAL);
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 288 "scanner.l"
+#line 272 "scanner.l"
 tok(T_CONCAT_EQUAL);
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 289 "scanner.l"
+#line 273 "scanner.l"
 tok(T_MOD_EQUAL);
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 290 "scanner.l"
+#line 274 "scanner.l"
 tok(T_AND_EQUAL);
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 291 "scanner.l"
+#line 275 "scanner.l"
 tok(T_OR_EQUAL);
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 292 "scanner.l"
+#line 276 "scanner.l"
 tok(T_XOR_EQUAL);
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 293 "scanner.l"
+#line 277 "scanner.l"
 tok(T_SL_EQUAL);
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 294 "scanner.l"
+#line 278 "scanner.l"
 tok(T_SR_EQUAL);
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 295 "scanner.l"
+#line 279 "scanner.l"
 tok(T_BOOLEAN_OR);
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 296 "scanner.l"
+#line 280 "scanner.l"
 tok(T_BOOLEAN_AND);
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 297 "scanner.l"
+#line 281 "scanner.l"
 tok(T_IS_EQUAL);
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 298 "scanner.l"
+#line 282 "scanner.l"
 tok(T_IS_NOT_EQUAL);
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 299 "scanner.l"
+#line 283 "scanner.l"
 tok(T_IS_IDENTICAL);
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 300 "scanner.l"
+#line 284 "scanner.l"
 tok(T_IS_NOT_IDENTICAL);
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 301 "scanner.l"
+#line 285 "scanner.l"
 tok(T_IS_SMALLER_OR_EQUAL);
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 302 "scanner.l"
+#line 286 "scanner.l"
 tok(T_IS_GREATER_OR_EQUAL);
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 303 "scanner.l"
+#line 287 "scanner.l"
 tok(T_SL);
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 304 "scanner.l"
+#line 288 "scanner.l"
 tok(T_SR);
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 305 "scanner.l"
+#line 289 "scanner.l"
 tok(T_INC);
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 306 "scanner.l"
+#line 290 "scanner.l"
 tok(T_DEC);
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 307 "scanner.l"
+#line 291 "scanner.l"
 tok(T_OBJECT_OPERATOR);
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 308 "scanner.l"
+#line 292 "scanner.l"
 tok(T_DOUBLE_ARROW);
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 309 "scanner.l"
+#line 293 "scanner.l"
 tok(T_PAAMAYIM_NEKUDOTAYIM);
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 310 "scanner.l"
+#line 294 "scanner.l"
 tok(T_NS_SEPARATOR);
 	YY_BREAK
 
@@ -4834,47 +4819,47 @@ tok(T_NS_SEPARATOR);
 
 case 116:
 YY_RULE_SETUP
-#line 315 "scanner.l"
+#line 299 "scanner.l"
 tok(T_INT_CAST);
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 316 "scanner.l"
+#line 300 "scanner.l"
 tok(T_DOUBLE_CAST);
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 317 "scanner.l"
+#line 301 "scanner.l"
 tok(T_STRING_CAST);
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 318 "scanner.l"
+#line 302 "scanner.l"
 tok(T_UNICODE_CAST);
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 319 "scanner.l"
+#line 303 "scanner.l"
 tok(T_BINARY_CAST);
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 320 "scanner.l"
+#line 304 "scanner.l"
 tok(T_ARRAY_CAST);
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 321 "scanner.l"
+#line 305 "scanner.l"
 tok(T_OBJECT_CAST);
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 322 "scanner.l"
+#line 306 "scanner.l"
 tok(T_BOOL_CAST);
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 323 "scanner.l"
+#line 307 "scanner.l"
 tok(T_UNSET_CAST);
 	YY_BREAK
 
@@ -4882,28 +4867,28 @@ tok(T_UNSET_CAST);
 
 case 125:
 YY_RULE_SETUP
-#line 328 "scanner.l"
+#line 312 "scanner.l"
 tok(T_LNUMBER);
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 329 "scanner.l"
+#line 313 "scanner.l"
 tok(T_DNUMBER);
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 330 "scanner.l"
+#line 314 "scanner.l"
 tok(T_STRING);
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 331 "scanner.l"
+#line 315 "scanner.l"
 tok(T_VARIABLE);
 	YY_BREAK
 case 129:
 /* rule 129 can match eol */
 YY_RULE_SETUP
-#line 332 "scanner.l"
+#line 316 "scanner.l"
 {
     yy_scan_newlines(yytext, yyg);
     tok(T_CONSTANT_ENCAPSED_STRING);
@@ -4912,7 +4897,7 @@ YY_RULE_SETUP
 case 130:
 /* rule 130 can match eol */
 YY_RULE_SETUP
-#line 336 "scanner.l"
+#line 320 "scanner.l"
 {
     yy_scan_newlines(yytext, yyg);
     tok(T_BACKTICKS_EXPR);
@@ -4922,7 +4907,7 @@ YY_RULE_SETUP
 /* (HERE|NOW)DOC's */
 case 131:
 YY_RULE_SETUP
-#line 343 "scanner.l"
+#line 327 "scanner.l"
 {
   push_state(PHP_HEREDOC_START);
   yyextra->heredoc_yyleng = yyleng;
@@ -4932,7 +4917,7 @@ YY_RULE_SETUP
 
 case 132:
 YY_RULE_SETUP
-#line 349 "scanner.l"
+#line 333 "scanner.l"
 {
     // Create a new string for the heredoc label. Since we're using yymore above
     // yytext will actually start at the "<<<" and not the label. Use of
@@ -4946,7 +4931,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 359 "scanner.l"
+#line 343 "scanner.l"
 {
     yyextra->heredoc_label = string(yytext + yyextra->heredoc_yyleng);
     set_state(PHP_HEREDOC_NSTART);
@@ -4958,7 +4943,7 @@ YY_RULE_SETUP
 case 134:
 /* rule 134 can match eol */
 YY_RULE_SETUP
-#line 366 "scanner.l"
+#line 350 "scanner.l"
 {
   ++yyextra->lineno;
   yyextra->heredoc_data = yytext + yyleng;
@@ -4970,7 +4955,7 @@ YY_RULE_SETUP
 case 135:
 /* rule 135 can match eol */
 YY_RULE_SETUP
-#line 373 "scanner.l"
+#line 357 "scanner.l"
 {
     ++yyextra->lineno;
     set_state(PHP_HEREDOC_NEWLINE);
@@ -4983,7 +4968,7 @@ YY_RULE_SETUP
 case 136:
 /* rule 136 can match eol */
 YY_RULE_SETUP
-#line 381 "scanner.l"
+#line 365 "scanner.l"
 {
     if (strncmp(yyextra->heredoc_label.c_str(), yytext + yyextra->heredoc_yyleng, yyextra->heredoc_label.size()) == 0) {
       switch (yytext[yyextra->heredoc_yyleng + yyextra->heredoc_label.size()]) {
@@ -5000,7 +4985,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 394 "scanner.l"
+#line 378 "scanner.l"
 {
     set_state(PHP_HEREDOC_DATA);
     yyextra->heredoc_yyleng = yyleng;
@@ -5010,7 +4995,7 @@ YY_RULE_SETUP
 case 138:
 /* rule 138 can match eol */
 YY_RULE_SETUP
-#line 399 "scanner.l"
+#line 383 "scanner.l"
 {
     ++yyextra->lineno;
     yyextra->heredoc_yyleng = yyleng;
@@ -5022,7 +5007,7 @@ YY_RULE_SETUP
 case 139:
 /* rule 139 can match eol */
 YY_RULE_SETUP
-#line 407 "scanner.l"
+#line 391 "scanner.l"
 {
   tok(yytext[0]);
   // fix unused function warnings
@@ -5032,10 +5017,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 414 "scanner.l"
+#line 398 "scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 5039 "scanner.lex.cpp"
+#line 5024 "scanner.lex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(PHP):
 case YY_STATE_EOF(PHP_HEREDOC_START):
@@ -5243,7 +5228,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 	else
 		{
-			yy_size_t num_to_read =
+			int num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -5257,7 +5242,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 			if ( b->yy_is_our_buffer )
 				{
-				yy_size_t new_size = b->yy_buf_size * 2;
+				int new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -5288,7 +5273,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			yyg->yy_n_chars, num_to_read );
+			yyg->yy_n_chars, (size_t) num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = yyg->yy_n_chars;
 		}
@@ -5414,7 +5399,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register yy_size_t number_to_move = yyg->yy_n_chars + 2;
+		register int number_to_move = yyg->yy_n_chars + 2;
 		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		register char *source =
@@ -5473,7 +5458,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 		else
 			{ /* need more input */
-			yy_size_t offset = yyg->yy_c_buf_p - yyg->yytext_ptr;
+			int offset = yyg->yy_c_buf_p - yyg->yytext_ptr;
 			++yyg->yy_c_buf_p;
 
 			switch ( yy_get_next_buffer( yyscanner ) )
@@ -5497,7 +5482,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( xhpastwrap(yyscanner ) )
-						return 0;
+						return EOF;
 
 					if ( ! yyg->yy_did_buffer_switch_on_eof )
 						YY_NEW_FILE;
@@ -5818,7 +5803,7 @@ static void xhpastensure_buffer_stack (yyscan_t yyscanner)
 /* %if-c++-only */
 /* %endif */
 {
-	yy_size_t num_to_alloc;
+	int num_to_alloc;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	if (!yyg->yy_buffer_stack) {
@@ -5922,11 +5907,12 @@ YY_BUFFER_STATE xhpast_scan_string (yyconst char * yystr , yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE xhpast_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len , yyscan_t yyscanner)
+YY_BUFFER_STATE xhpast_scan_bytes  (yyconst char * yybytes, int  _yybytes_len , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
 	char *buf;
-	yy_size_t n, i;
+	yy_size_t n;
+	int i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
@@ -6098,7 +6084,7 @@ FILE *xhpastget_out  (yyscan_t yyscanner)
 /** Get the length of the current token.
  * @param yyscanner The scanner object.
  */
-yy_size_t xhpastget_leng  (yyscan_t yyscanner)
+int xhpastget_leng  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyleng;
@@ -6397,7 +6383,7 @@ void xhpastfree (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 414 "scanner.l"
+#line 398 "scanner.l"
 
 
 

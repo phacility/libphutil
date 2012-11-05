@@ -2,6 +2,5 @@
   "project_id" : "libphutil",
   "conduit_uri" : "https://secure.phabricator.com/api/",
   "lint.engine" : "PhutilLintEngine",
-  "unit.engine" : "PhutilUnitTestEngine",
-  "copyright_holder" : "Facebook, Inc."
+  "unit.engine" : "PhutilUnitTestEngine"
 }
