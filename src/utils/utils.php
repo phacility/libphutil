@@ -125,6 +125,80 @@ function mpull(array $list, $method, $key_method = null) {
 
 
 /**
+ * Access a property on a list of objects. Short for "property pull", this
+ * function works just like @{function:mpull}, except that it accesses object
+ * properties instead of methods. This function simplifies a common type of
+ * mapping operation:
+ *
+ *    COUNTEREXAMPLE
+ *    $names = array();
+ *    foreach ($objects as $key => $object) {
+ *      $names[$key] = $object->name;
+ *    }
+ *
+ * You can express this more concisely with ppull():
+ *
+ *    $names = ppull($objects, 'name');
+ *
+ * ppull() takes a third argument, which allows you to do the same but for
+ * the array's keys:
+ *
+ *    COUNTEREXAMPLE
+ *    $names = array();
+ *    foreach ($objects as $object) {
+ *      $names[$object->id] = $object->name;
+ *    }
+ *
+ * This is the ppull version():
+ *
+ *    $names = ppull($objects, 'name', 'id');
+ *
+ * If you pass ##null## as the second argument, the objects will be preserved:
+ *
+ *    COUNTEREXAMPLE
+ *    $id_map = array();
+ *    foreach ($objects as $object) {
+ *      $id_map[$object->id] = $object;
+ *    }
+ *
+ * With ppull():
+ *
+ *    $id_map = ppull($objects, null, 'id');
+ *
+ * See also @{function:mpull}, which works similarly but calls object methods
+ * instead of accessing object properties.
+ *
+ * @param   list          Some list of objects.
+ * @param   string|null   Determines which **values** will appear in the result
+ *                        array. Use a string like 'name' to store the value of
+ *                        accessing the named property in each value, or
+ *                        ##null## to preserve the original objects.
+ * @param   string|null   Determines how **keys** will be assigned in the result
+ *                        array. Use a string like 'id' to use the result of
+ *                        accessing the named property as each object's key, or
+ *                        ##null## to preserve the original keys.
+ * @return  dict          A dictionary with keys and values derived according
+ *                        to whatever you passed as $property and $key_property.
+ * @group   util
+ */
+function ppull(array $list, $property, $key_property = null) {
+  $result = array();
+  foreach ($list as $key => $object) {
+    if ($key_property !== null) {
+      $key = $object->$key_property;
+    }
+    if ($property !== null) {
+      $value = $object->$property;
+    } else {
+      $value = $object;
+    }
+    $result[$key] = $value;
+  }
+  return $result;
+}
+
+
+/**
  * Choose an index from a list of arrays. Short for "index pull", this function
  * works just like @{function:mpull}, except that it operates on a list of
  * arrays and selects an index from them instead of operating on a list of
