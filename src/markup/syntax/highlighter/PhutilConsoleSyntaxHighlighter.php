@@ -44,7 +44,7 @@ final class PhutilConsoleSyntaxHighlighter {
           $line .= '<span class="k">'.phutil_escape_html($matches[3]).'</span>';
         }
         $lines[$key] = $line;
-        $in_command = ($matches[3] == '\\');
+        $in_command = (idx($matches, 3) == '\\');
       } else {
         $lines[$key] = '<span class="go">'.phutil_escape_html($line).'</span>';
       }
