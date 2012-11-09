@@ -178,7 +178,7 @@ abstract class LinesOfALarge implements Iterator {
         // NOTE: We keep track of EOF (an empty read) so we don't make any more
         // reads afterward. Normally, we'll return from the first EOF read,
         // emit the line, and then next() will be called again. Without tracking
-        // EOF, we'll attempt another read. A well-behaved impelmentation should
+        // EOF, we'll attempt another read. A well-behaved implementation should
         // still return empty string, but we can protect against any issues
         // here by keeping a flag.
         $more = '';

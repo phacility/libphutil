@@ -80,14 +80,46 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
     $this->assertEqual(true, $caught instanceof $ex);
   }
 
+  public function testLineFilter() {
+    $write = "bat\ncat\ndog\nBat\nCat\nDog\n";
+    $read = array(
+      1 => "cat",
+      4 => "Cat",
+    );
+
+    $tmp = new TempFile();
+    Filesystem::writeFile($tmp, $write);
+
+    $lines = array();
+    $iterator = new PhutilCallbackFilterIterator(
+      new LinesOfALargeFile($tmp),
+      array($this, 'allowCatsOnly'));
+    foreach ($iterator as $n => $line) {
+      $lines[$n - 1] = $line;
+    }
+
+    $this->assertEqual(
+      $read,
+      $lines,
+      "Write: ".phutil_utf8_shorten($write, 32));
+  }
+
+  public function allowCatsOnly($line) {
+    $line = strtoupper($line);
+    if ($line != "CAT") {
+      return null;
+    }
+    return $line;
+  }
+
   private function writeAndRead($write, $read, $delimiter = "\n") {
     $tmp = new TempFile();
     Filesystem::writeFile($tmp, $write);
 
     $lines = array();
     $iterator = id(new LinesOfALargeFile($tmp))->setDelimiter($delimiter);
-    foreach ($iterator as $line) {
-      $lines[] = $line;
+    foreach ($iterator as $n => $line) {
+      $lines[$n - 1] = $line;
     }
 
     $this->assertEqual(
