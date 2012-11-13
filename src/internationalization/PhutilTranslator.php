@@ -132,6 +132,23 @@ final class PhutilTranslator {
     return implode('', $parts);
   }
 
+  /**
+   * Format number with grouped thousands and optional decimal part. Requires
+   * translations of '.' (decimal point) and ',' (thousands separator). Both
+   * these translations must be 1 byte long.
+   *
+   * @param float
+   * @param int
+   * @return string
+   */
+  public function formatNumber($number, $decimals = 0) {
+    return number_format(
+      $number,
+      $decimals,
+      $this->translate('.'),
+      $this->translate(','));
+  }
+
   public function validateTranslation($original, $translation) {
     $pattern = '/<(\S[^>]*>?)?|&(\S[^;]*;?)?/i';
     $original_matches = null;

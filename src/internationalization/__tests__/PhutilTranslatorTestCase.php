@@ -109,6 +109,22 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
     $this->assertEqual('color', pht('color'));
   }
 
+  public function testFormatNumber() {
+    $translator = new PhutilTranslator();
+    $this->assertEqual('1,234', $translator->formatNumber(1234));
+    $this->assertEqual('1,234.5', $translator->formatNumber(1234.5, 1));
+    $this->assertEqual('1,234.5678', $translator->formatNumber(1234.5678, 4));
+
+    $translator->addTranslations(
+      array(
+        ',' => ' ',
+        '.' => ','
+      ));
+    $this->assertEqual('1 234', $translator->formatNumber(1234));
+    $this->assertEqual('1 234,5', $translator->formatNumber(1234.5, 1));
+    $this->assertEqual('1 234,5678', $translator->formatNumber(1234.5678, 4));
+  }
+
   public function testValidateTranslation() {
     $tests = array(
       'a < 2' => array(
