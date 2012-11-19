@@ -119,6 +119,7 @@ final class ConduitClient {
       array(
         'type'    => 'conduit',
         'method'  => $method,
+        'size'    => strlen(http_build_query($data, '', '&')),
       ));
 
     $conduit_future = new ConduitFuture($core_future);

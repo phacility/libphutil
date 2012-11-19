@@ -94,7 +94,7 @@ final class PhutilServiceProfiler {
           $desc = '$ '.$data['command'];
           break;
         case 'conduit':
-          $desc = $data['method'].'()';
+          $desc = $data['method'].'() <bytes = '.$data['size'].'>';
           break;
         case 'lock':
           $desc = $data['name'];
