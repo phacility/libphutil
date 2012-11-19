@@ -5,7 +5,7 @@
  * straightforward:
  *
  *   $path = '/path/to/lock.file';
- *   $lock = new PhutilFileLock($path);
+ *   $lock = PhutilFileLock::newForPath($path);
  *   $lock->lock();
  *
  *     do_contentious_things();

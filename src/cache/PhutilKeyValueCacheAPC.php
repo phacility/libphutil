@@ -4,10 +4,13 @@
  * Interface to the APC key-value cache. This is a very high-performance cache
  * which is local to the current machine.
  *
- * @task  kvimpl    Key-Value Cache Implementation
  * @group cache
  */
 final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
+
+
+/* -(  Key-Value Cache Implementation  )------------------------------------- */
+
 
   public function isAvailable() {
     return function_exists('apc_fetch') &&
@@ -17,8 +20,8 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
 
   public function getKeys(array $keys, $ttl = null) {
     $call_id = null;
-    if ($this->profiler) {
-      $call_id = $this->profiler->beginServiceCall(
+    if ($this->getProfiler()) {
+      $call_id = $this->getProfiler()->beginServiceCall(
         array(
           'type' => 'kvcache-get',
           'name' => 'apc',
@@ -36,7 +39,7 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
     }
 
     if ($call_id) {
-      $this->profiler->endServiceCall(
+      $this->getProfiler()->endServiceCall(
         $call_id,
         array(
           'hits' => array_keys($results),
@@ -48,8 +51,8 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
 
   public function setKeys(array $keys, $ttl = null) {
     $call_id = null;
-    if ($this->profiler) {
-      $call_id = $this->profiler->beginServiceCall(
+    if ($this->getProfiler()) {
+      $call_id = $this->getProfiler()->beginServiceCall(
         array(
           'type' => 'kvcache-set',
           'name' => 'apc',
@@ -65,14 +68,16 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
     }
 
     if ($call_id) {
-      $this->profiler->endServiceCall($call_id, array());
+      $this->getProfiler()->endServiceCall($call_id, array());
     }
+
+    return $this;
   }
 
   public function deleteKeys(array $keys) {
     $call_id = null;
-    if ($this->profiler) {
-      $call_id = $this->profiler->beginServiceCall(
+    if ($this->getProfiler()) {
+      $call_id = $this->getProfiler()->beginServiceCall(
         array(
           'type' => 'kvcache-del',
           'name' => 'apc',
@@ -85,12 +90,16 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
     }
 
     if ($call_id) {
-      $this->profiler->endServiceCall($call_id, array());
+      $this->getProfiler()->endServiceCall($call_id, array());
     }
+
+    return $this;
   }
 
   public function destroyCache() {
-    apc_clear_cache();
+    apc_clear_cache('user');
+
+    return $this;
   }
 
 }

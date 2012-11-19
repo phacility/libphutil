@@ -13,7 +13,6 @@
  * improves it significantly, it may indicate an architectural problem in your
  * application.
  *
- * @task  kvimpl    Key-Value Cache Implementation
  * @group cache
  */
 final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
@@ -21,14 +20,18 @@ final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
   private $cache = array();
   private $ttl = array();
 
+
+/* -(  Key-Value Cache Implementation  )------------------------------------- */
+
+
   public function isAvailable() {
     return true;
   }
 
-  public function getKeys(array $keys, $ttl = null) {
+  public function getKeys(array $keys) {
     $call_id = null;
-    if ($this->profiler) {
-      $call_id = $this->profiler->beginServiceCall(
+    if ($this->getProfiler()) {
+      $call_id = $this->getProfiler()->beginServiceCall(
         array(
           'type' => 'kvcache-get',
           'name' => 'request',
@@ -50,7 +53,7 @@ final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
     }
 
     if ($call_id) {
-      $this->profiler->endServiceCall(
+      $this->getProfiler()->endServiceCall(
         $call_id,
         array(
           'hits' => array_keys($results),
@@ -62,8 +65,8 @@ final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
 
   public function setKeys(array $keys, $ttl = null) {
     $call_id = null;
-    if ($this->profiler) {
-      $call_id = $this->profiler->beginServiceCall(
+    if ($this->getProfiler()) {
+      $call_id = $this->getProfiler()->beginServiceCall(
         array(
           'type' => 'kvcache-set',
           'name' => 'request',
@@ -84,14 +87,16 @@ final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
     }
 
     if ($call_id) {
-      $this->profiler->endServiceCall($call_id, array());
+      $this->getProfiler()->endServiceCall($call_id, array());
     }
+
+    return $this;
   }
 
   public function deleteKeys(array $keys) {
     $call_id = null;
-    if ($this->profiler) {
-      $call_id = $this->profiler->beginServiceCall(
+    if ($this->getProfiler()) {
+      $call_id = $this->getProfiler()->beginServiceCall(
         array(
           'type' => 'kvcache-del',
           'name' => 'request',
@@ -105,13 +110,17 @@ final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
     }
 
      if ($call_id) {
-      $this->profiler->endServiceCall($call_id, array());
+      $this->getProfiler()->endServiceCall($call_id, array());
     }
+
+    return $this;
   }
 
   public function destroyCache() {
     $this->cache = array();
     $this->ttl = array();
+
+    return $this;
   }
 
 }

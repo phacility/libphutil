@@ -10,33 +10,138 @@
  */
 abstract class PhutilKeyValueCache {
 
-  protected $profiler;
+  private $profiler;
 
+/* -(  Key-Value Cache Implementation  )------------------------------------- */
+
+
+  /**
+   * Set a profiler for cache operations.
+   *
+   * @param PhutilServiceProfiler Service profiler.
+   * @return this
+   * @task kvimpl
+   */
   public function setProfiler(PhutilServiceProfiler $profiler) {
     $this->profiler = $profiler;
     return $this;
   }
 
+
+  /**
+   * Get the current profiler.
+   *
+   * @return PhutilServiceProfiler|null Profiler, or null if none is set.
+   * @task kvimpl
+   */
+  public function getProfiler() {
+    return $this->profiler;
+  }
+
+
+  /**
+   * Determine if the cache is available. For example, the APC cache tests if
+   * APC is installed. If this method returns false, the cache is not
+   * operational and can not be used.
+   *
+   * @return bool True if the cache can be used.
+   * @task kvimpl
+   */
   public function isAvailable() {
     return false;
   }
 
-  public function getKey($key, $default = null, $ttl = null) {
+
+  /**
+   * Get a single key from cache. See @{method:getKeys} to get multiple keys at
+   * once.
+   *
+   * @param   string  Key to retrieve.
+   * @param   wild    Optional value to return if the key is not found. By
+   *                  default, returns null.
+   * @return  wild    Cache value (on cache hit) or default value (on cache
+   *                  miss).
+   * @task kvimpl
+   */
+  final public function getKey($key, $default = null) {
     $map = $this->getKeys(array($key));
     return idx($map, $key, $default);
   }
 
-  public function setKey($key, $value, $ttl = null) {
-    $this->setKeys(array($key => $value), $ttl);
+
+  /**
+   * Set a single key in cache. See @{method:setKeys} to set multiple keys at
+   * once.
+   *
+   * See @{method:setKeys} for a description of TTLs.
+   *
+   * @param   string    Key to set.
+   * @param   wild      Value to set.
+   * @param   int|null  Optional TTL.
+   * @return  this
+   * @task kvimpl
+   */
+  final public function setKey($key, $value, $ttl = null) {
+    return $this->setKeys(array($key => $value), $ttl);
   }
 
-  public function deleteKey($key) {
-    $this->deleteKeys(array($key));
+
+  /**
+   * Delete a key from the cache. See @{method:deleteKeys} to delete multiple
+   * keys at once.
+   *
+   * @param   string  Key to delete.
+   * @return  this
+   * @task kvimpl
+   */
+  final public function deleteKey($key) {
+    return $this->deleteKeys(array($key));
   }
 
-  abstract public function getKeys(array $keys, $ttl = null);
+
+  /**
+   * Get data from the cache.
+   *
+   * @param   list<string>        List of cache keys to retrieve.
+   * @return  dict<string, wild>  Dictionary of keys that were found in the
+   *                              cache. Keys not present in the cache are
+   *                              omitted, so you can detect a cache miss.
+   * @task kvimpl
+   */
+  abstract public function getKeys(array $keys);
+
+
+  /**
+   * Put data into the key-value cache.
+   *
+   * With a TTL ("time to live"), the cache will automatically delete the key
+   * after a specified number of seconds. By default, there is no expiration
+   * policy and data will persist in cache indefinitely.
+   *
+   * @param dict<string, wild>  Map of cache keys to values.
+   * @param int|null            TTL for cache keys, in seconds.
+   * @return this
+   * @task kvimpl
+   */
   abstract public function setKeys(array $keys, $ttl = null);
+
+
+  /**
+   * Delete a list of keys from the cache.
+   *
+   * @param list<string> List of keys to delete.
+   * @return this
+   * @task kvimpl
+   */
   abstract public function deleteKeys(array $keys);
+
+
+  /**
+   * Completely destroy all data in the cache.
+   *
+   * @return this
+   * @task kvimpl
+   */
   abstract public function destroyCache();
 
 }
