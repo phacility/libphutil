@@ -174,6 +174,10 @@ final class PhutilKeyValueCacheMemcache extends PhutilKeyValueCache {
     return $buckets;
   }
 
+
+  /**
+   * @phutil-external-symbol function memcache_pconnect
+   */
   private function getConnection($server) {
     if (empty($this->connections[$server])) {
       $spec = $this->servers[$server];
