@@ -7,7 +7,7 @@
  */
 final class PhutilUtilsTestCase extends PhutilTestCase {
 
-  public function testMFilter_nullMethod_throwException() {
+  public function testMFilterNullMethodThrowException() {
     $caught = null;
     try {
       mfilter(array(), null);
@@ -21,7 +21,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   }
 
 
-  public function testMFilter_withEmptyValue_filtered() {
+  public function testMFilterWithEmptyValueFiltered() {
     $a = new MFilterTestHelper('o', 'p', 'q');
     $b = new MFilterTestHelper('o', '', 'q');
     $c = new MFilterTestHelper('o', 'p', 'q');
@@ -42,7 +42,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   }
 
 
-  public function testMFilter_withEmptyValueNegate_filtered() {
+  public function testMFilterWithEmptyValueNegateFiltered() {
     $a = new MFilterTestHelper('o', 'p', 'q');
     $b = new MFilterTestHelper('o', '', 'q');
     $c = new MFilterTestHelper('o', 'p', 'q');
@@ -62,7 +62,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   }
 
 
-  public function testIFilter_invalidIndex_throwException() {
+  public function testIFilterInvalidIndexThrowException() {
     $caught = null;
     try {
       ifilter(array(), null);
@@ -76,7 +76,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   }
 
 
-  public function testIFilter_withEmptyValue_filtered() {
+  public function testIFilterWithEmptyValueFiltered() {
     $list = array(
       'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
       'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
@@ -96,7 +96,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   }
 
 
-  public function testIFilter_indexNotExists_allFiltered() {
+  public function testIFilterIndexNotExistsAllFiltered() {
     $list = array(
       'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
       'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
@@ -109,7 +109,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   }
 
 
-  public function testIFilter_withEmptyValueNegate_filtered() {
+  public function testIFilterWithEmptyValueNegateFiltered() {
     $list = array(
       'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
       'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
@@ -131,7 +131,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   }
 
 
-  public function testIFilter_indexNotExists_notFiltered() {
+  public function testIFilterIndexNotExistsNotFiltered() {
     $list = array(
       'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
       'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
@@ -146,7 +146,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $this->assertEqual($expected, $actual);
   }
 
-  public function testmergev_merging_basicallyWorksCorrectly() {
+  public function testmergevMergingBasicallyWorksCorrectly() {
     $this->assertEqual(
       array(),
       array_mergev(

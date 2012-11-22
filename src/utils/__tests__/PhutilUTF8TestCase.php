@@ -7,24 +7,24 @@
  */
 final class PhutilUTF8TestCase extends PhutilTestCase {
 
-  public function testUTF8ize_ASCII_ignored() {
+  public function testUTF8izeASCIIIgnored() {
     $input = "this\x01 is a \x7f test string";
     $this->assertEqual($input, phutil_utf8ize($input));
   }
 
-  public function testUTF8ize_UTF8_ignored() {
+  public function testUTF8izeUTF8Ignored() {
     $input = "\xc3\x9c \xc3\xbc \xe6\x9d\xb1!";
     $this->assertEqual($input, phutil_utf8ize($input));
   }
 
-  public function testUTF8ize_LongString_nosegfault() {
+  public function testUTF8izeLongStringNosegfault() {
     // For some reason my laptop is segfaulting on long inputs inside
     // preg_match(). Forestall this craziness in the common case, at least.
     phutil_utf8ize(str_repeat('x', 1024 * 1024));
     $this->assertEqual(true, true);
   }
 
-  public function testUTF8ize_invalidUTF8_fixed() {
+  public function testUTF8izeInvalidUTF8Fixed() {
     $input =
       "\xc3 this has \xe6\x9d some invalid utf8 \xe6";
     $expect =
@@ -34,7 +34,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     $this->assertEqual($expect, $result);
   }
 
-  public function testUTF8ize_owl_isCuteAndFerocious() {
+  public function testUTF8izeOwlIsCuteAndFerocious() {
     // This was once a ferocious owl when we used to use "?" as the replacement
     // character instead of U+FFFD, but now he is sort of not as cute or
     // ferocious.

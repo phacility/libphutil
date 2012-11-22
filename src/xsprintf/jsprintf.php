@@ -25,7 +25,7 @@
  *
  * @group markup
  */
-function jsprintf($pattern /*, ... */) {
+function jsprintf($pattern /* , ... */) {
   $args = func_get_args();
   return xsprintf('xsprintf_javascript', null, $args);
 }

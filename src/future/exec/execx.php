@@ -76,7 +76,7 @@ function phutil_passthru($cmd /* , ... */) {
   } else {
     $proc = @proc_open($command, $spec, $pipes);
   }
-  
+
   if ($proc === false) {
     $err = 1;
   } else {

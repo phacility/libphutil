@@ -55,7 +55,7 @@ function phutil_escape_html($string) {
  *
  * @group markup
  */
-function hsprintf($html/*, ... */) {
+function hsprintf($html/* , ... */) {
   $args = func_get_args();
   array_shift($args);
   return vsprintf($html, array_map('phutil_escape_html', $args));

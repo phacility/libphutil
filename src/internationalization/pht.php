@@ -13,7 +13,7 @@
  *
  * @group internationalization
  */
-function pht($text, $variant = null /*, ... */) {
+function pht($text, $variant = null /* , ... */) {
   $args = func_get_args();
   $translator = PhutilTranslator::getInstance();
   return call_user_func_array(array($translator, 'translate'), $args);
