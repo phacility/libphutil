@@ -51,8 +51,8 @@ final class HTTPFutureResponseStatusCURL extends HTTPFutureResponseStatus {
       // CURLE_SSL_CACERT_BADFILE but there's no corresponding constant in
       // PHP.
       77 =>
-        'The SSL CA Bundle "libphutil/resources/ssl/custom.pem" could not '.
-        'be read or is not formatted correctly.',
+        'The SSL CA Bundles that we tried to use could not be read or are '.
+        'not formatted correctly.',
 
       CURLE_SSL_CONNECT_ERROR =>
         'There was an error negotiating the SSL connection. This usually '.

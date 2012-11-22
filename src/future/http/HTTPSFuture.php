@@ -13,6 +13,48 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
   private $profilerCallID;
 
+  private $cabundle;
+
+  /**
+   * Create a temp file containing an SSL cert, and use it for this session.
+   *
+   * This allows us to do host-specific SSL certificates in whatever client
+   * is using libphutil. e.g. in Arcanist, you could add an "ssl_cert" key
+   * to a specific host in ~/.arcrc and use that.
+   *
+   * cURL needs this to be a file, it doesn't seem to be able to handle a string
+   * which contains the cert. So we make a temporary file and store it there.
+   *
+   * @param string The multi-line, possibly lengthy, SSL certificate to use.
+   * @return this
+   */
+  public function setCABundleFromString($certificate) {
+    $temp = new TempFile();
+    Filesystem::writeFile($temp, $certificate);
+    $this->cabundle = $temp;
+    return $this;
+  }
+
+  /**
+   * Set the SSL certificate to use for this session, given a path.
+   *
+   * @param string The path to a valid SSL certificate for this session
+   * @return this
+   */
+  public function setCABundleFromPath($path) {
+    $this->cabundle = $path;
+    return $this;
+  }
+
+  /**
+   * Get the path to the SSL certificate for this session.
+   *
+   * @return string|null
+   */
+  public function getCABundle() {
+    return $this->cabundle;
+  }
+
   /**
    * Load contents of remote URI. Behaves pretty much like
    *  `@file_get_contents($uri)` but doesn't require `allow_url_fopen`.
@@ -124,16 +166,30 @@ final class HTTPSFuture extends BaseHTTPFuture {
       curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
     }
 
-    $ini_val = ini_get('curl.cainfo');
-    if (!$ini_val) {
+    // Try some decent fallbacks here:
+    // - First, check if a cabundle path is already set (e.g. externally).
+    // - Then, if a local custom.pem exists, use that, because it probably means
+    //   that the user wants to override everything (also because the user might
+    //   not have access to change the box's php.ini to add curl.cainfo.
+    // - Otherwise, try using curl.cainfo. If it's set explicitly, it's probably
+    //   reasonable to try using it before we fall back to what libphutil
+    //   ships with.
+    // - Lastly, try the default that libphutil ships with. If it doesn't
+    //   work, give up and yell at the user.
+    if (!$this->getCABundle()) {
       $caroot = dirname(phutil_get_library_root('phutil')).'/resources/ssl/';
+      $ini_val = ini_get('curl.cainfo');
       if (Filesystem::pathExists($caroot.'custom.pem')) {
-        $cabundle = $caroot.'custom.pem';
+        $this->setCABundleFromPath($caroot.'custom.pem');
+      } else if ($ini_val) {
+        // TODO: We can probably do a pathExists() here, even.
+        $this->setCABundleFromPath($ini_val);
       } else {
-        $cabundle = $caroot.'default.pem';
+        $this->setCABundleFromPath($caroot.'default.pem');
       }
-      curl_setopt($curl, CURLOPT_CAINFO, $cabundle);
     }
+
+    curl_setopt($curl, CURLOPT_CAINFO, $this->getCABundle());
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
     curl_setopt($curl, CURLOPT_SSLVERSION, 3);
 
