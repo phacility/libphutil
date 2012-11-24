@@ -9,9 +9,10 @@ final class PhutilSpriteSheet {
   private $sources = array();
   private $cssHeader;
   private $generated;
+  private $scales = array(1);
 
   private $css;
-  private $image;
+  private $images;
 
   public function addSprite(PhutilSprite $sprite) {
     $this->generated = false;
@@ -22,6 +23,11 @@ final class PhutilSpriteSheet {
   public function setCSSHeader($header) {
     $this->generated = false;
     $this->cssHeader = $header;
+    return $this;
+  }
+
+  public function setScales(array $scales) {
+    $this->scales = $scales;
     return $this;
   }
 
@@ -118,9 +124,15 @@ final class PhutilSpriteSheet {
       $out_w = max($row['w'], $out_w);
     }
 
-    $out = imagecreatetruecolor($out_w, $out_h);
-    imagesavealpha($out, true);
-    imagefill($out, 0, 0, imagecolorallocatealpha($out, 0, 0, 0, 127));
+    $images = array();
+    foreach ($this->scales as $scale) {
+      $img = imagecreatetruecolor($out_w * $scale, $out_h * $scale);
+      imagesavealpha($img, true);
+      imagefill($img, 0, 0, imagecolorallocatealpha($img, 0, 0, 0, 127));
+
+      $images[$scale] = $img;
+    }
+
 
     // Put the shorter rows first. At the same height, put the wider rows first.
     // This makes the resulting sheet more human-readable.
@@ -136,12 +148,15 @@ final class PhutilSpriteSheet {
       foreach ($row['boxes'] as $box) {
         $sprite = array_pop($boxes[$box[0]][$box[1]]);
 
-        $src = $this->loadSource($sprite);
-
-        imagecopy(
-          $out,             $src,
-          $pos_x, $pos_y,   $sprite->getSourceX(), $sprite->getSourceY(),
-                            $sprite->getSourceW(), $sprite->getSourceH());
+        foreach ($images as $scale => $img) {
+          $src = $this->loadSource($sprite, $scale);
+          imagecopy(
+            $img,
+            $src,
+            $scale * $pos_x,                $scale * $pos_y,
+            $scale * $sprite->getSourceX(), $scale * $sprite->getSourceY(),
+            $scale * $sprite->getSourceW(), $scale * $sprite->getSourceH());
+        }
 
         $rule = $sprite->getTargetCSS();
         $cssx = (-$pos_x).'px';
@@ -156,29 +171,50 @@ final class PhutilSpriteSheet {
       $pos_y += $max_h + $margin_h;
     }
 
-    $this->image = $out;
+    $this->images = $images;
     $this->css = implode("\n\n", $css)."\n";
     $this->generated = true;
   }
 
-  public function generateImage($path) {
+  public function generateImage($path, $scale = 1) {
     $this->generate();
     $this->log("Writing sprite '{$path}'...");
-    imagepng($this->image, $path);
+    imagepng($this->images[$scale], $path);
+    return $this;
   }
 
   public function generateCSS($path) {
     $this->generate();
     $this->log("Writing CSS '{$path}'...");
-    Filesystem::writeFile($path, $this->css);
+
+    $out = $this->css;
+    $out = str_replace('{X}', imagesx($this->images[1]), $out);
+    $out = str_replace('{Y}', imagesy($this->images[1]), $out);
+
+    Filesystem::writeFile($path, $out);
+    return $this;
+  }
+
+  public function generateManifest($path) {
+    $sprites = mpull($this->sprites, 'getName');
+    sort($sprites);
+
+    $data = array(
+      'sprites' => $sprites,
+    );
+
+    $json = new PhutilJSON();
+    $data = $json->encodeFormatted($data);
+    Filesystem::writeFile($path, $data);
+    return $this;
   }
 
   private function log($message) {
     echo $message."\n";
   }
 
-  private function loadSource(PhutilSprite $sprite) {
-    $file = $sprite->getSourceFile();
+  private function loadSource(PhutilSprite $sprite, $scale) {
+    $file = $sprite->getSourceFile($scale);
     if (empty($this->sources[$file])) {
       $data = Filesystem::readFile($file);
       $image = imagecreatefromstring($data);
@@ -189,7 +225,7 @@ final class PhutilSpriteSheet {
       );
     }
 
-    $s_w = $sprite->getSourceW();
+    $s_w = $sprite->getSourceW() * $scale;
     $i_w = $this->sources[$file]['x'];
     if ($s_w > $i_w) {
       throw new Exception(
@@ -197,7 +233,7 @@ final class PhutilSpriteSheet {
         "found {$i_w}).");
     }
 
-    $s_h = $sprite->getSourceH();
+    $s_h = $sprite->getSourceH() * $scale;
     $i_h = $this->sources[$file]['y'];
     if ($s_h > $i_h) {
       throw new Exception(

@@ -5,13 +5,23 @@
  */
 final class PhutilSprite {
 
-  private $sourceFile;
+  private $sourceFiles = array();
   private $sourceX;
   private $sourceY;
   private $sourceW;
   private $sourceH;
   private $targetCSS;
   private $spriteSheet;
+  private $name;
+
+  public function setName($name) {
+    $this->name = $name;
+    return $this;
+  }
+
+  public function getName() {
+    return $this->name;
+  }
 
   public function setTargetCSS($target_css) {
     $this->targetCSS = $target_css;
@@ -50,13 +60,17 @@ final class PhutilSprite {
     return $this->sourceX;
   }
 
-  public function setSourceFile($source_file) {
-    $this->sourceFile = $source_file;
+  public function setSourceFile($source_file, $scale = 1) {
+    $this->sourceFiles[$scale] = $source_file;
     return $this;
   }
 
-  public function getSourceFile() {
-    return $this->sourceFile;
+  public function getSourceFile($scale) {
+    if (empty($this->sourceFiles[$scale])) {
+      throw new Exception("No source file for scale '{$scale}'!");
+    }
+
+    return $this->sourceFiles[$scale];
   }
 
 }
