@@ -96,6 +96,9 @@ final class PhutilServiceProfiler {
         case 'conduit':
           $desc = $data['method'].'() <bytes = '.$data['size'].'>';
           break;
+        case 'http':
+          $desc = $data['uri'];
+          break;
         case 'lock':
           $desc = $data['name'];
           break;
