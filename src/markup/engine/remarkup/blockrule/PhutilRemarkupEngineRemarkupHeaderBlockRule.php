@@ -60,7 +60,7 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
       $suffix++;
     }
 
-    $anchors[$anchor] = array($level, $text);
+    $anchors[$anchor] = array($level, $this->applyRules($text));
     $engine->setTextMetadata($key, $anchors);
 
     return phutil_render_tag(
@@ -104,7 +104,7 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
           array(
             'href' => '#'.$anchor,
           ),
-          phutil_escape_html($name)));
+          $name));
     }
     while ($depth > 0) {
       $toc[] = '</ul>';
