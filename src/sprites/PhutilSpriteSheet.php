@@ -5,8 +5,11 @@
  */
 final class PhutilSpriteSheet {
 
+  const MANIFEST_VERSION = 1;
+
   private $sprites = array();
   private $sources = array();
+  private $hashes  = array();
   private $cssHeader;
   private $generated;
   private $scales = array(1);
@@ -27,7 +30,7 @@ final class PhutilSpriteSheet {
   }
 
   public function setScales(array $scales) {
-    $this->scales = $scales;
+    $this->scales = array_values($scales);
     return $this;
   }
 
@@ -63,15 +66,15 @@ final class PhutilSpriteSheet {
     // so similar sprites end up nearby on the final sheet.
     $boxes = array();
     foreach (array_reverse($this->sprites) as $sprite) {
-      $s_w = $sprite->getSourceH() + $margin_w;
-      $s_h = $sprite->getSourceW() + $margin_h;
+      $s_w = $sprite->getSourceW() + $margin_w;
+      $s_h = $sprite->getSourceH() + $margin_h;
       $boxes[$s_w][$s_h][] = $sprite;
     }
 
     $rows = array();
     foreach ($this->sprites as $sprite) {
-      $s_w = $sprite->getSourceH() + $margin_w;
-      $s_h = $sprite->getSourceW() + $margin_h;
+      $s_w = $sprite->getSourceW() + $margin_w;
+      $s_h = $sprite->getSourceH() + $margin_h;
 
       // Choose a row for this sprite.
       $maybe = array();
@@ -195,13 +198,34 @@ final class PhutilSpriteSheet {
     return $this;
   }
 
-  public function generateManifest($path) {
-    $sprites = mpull($this->sprites, 'getName');
-    sort($sprites);
+  public function needsRegeneration(array $manifest) {
+    return ($this->buildManifest() !== $manifest);
+  }
+
+  private function buildManifest() {
+    $output = array();
+    foreach ($this->sprites as $sprite) {
+      $output[$sprite->getName()] = array(
+        'name' => $sprite->getName(),
+        'rule' => $sprite->getTargetCSS(),
+        'hash' => $this->loadSourceHash($sprite),
+      );
+    }
+
+    ksort($output);
 
     $data = array(
-      'sprites' => $sprites,
+      'version' => self::MANIFEST_VERSION,
+      'sprites' => $output,
+      'scales'  => $this->scales,
+      'header'  => $this->cssHeader,
     );
+
+    return $data;
+  }
+
+  public function generateManifest($path) {
+    $data = $this->buildManifest();
 
     $json = new PhutilJSON();
     $data = $json->encodeFormatted($data);
@@ -211,6 +235,26 @@ final class PhutilSpriteSheet {
 
   private function log($message) {
     echo $message."\n";
+  }
+
+  private function loadSourceHash(PhutilSprite $sprite) {
+    $inputs = array();
+
+    foreach ($this->scales as $scale) {
+      $file = $sprite->getSourceFile($scale);
+      if (empty($this->hashes[$file])) {
+        $this->hashes[$file] = md5(Filesystem::readFile($file));
+      }
+      $inputs[] = $file;
+      $inputs[] = $this->hashes[$file];
+    }
+
+    $inputs[] = $sprite->getSourceX();
+    $inputs[] = $sprite->getSourceY();
+    $inputs[] = $sprite->getSourceW();
+    $inputs[] = $sprite->getSourceH();
+
+    return md5(implode(':', $inputs));
   }
 
   private function loadSource(PhutilSprite $sprite, $scale) {
