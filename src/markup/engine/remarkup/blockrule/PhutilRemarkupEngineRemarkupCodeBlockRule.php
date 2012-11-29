@@ -63,7 +63,8 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
       'lines'           => null,
     );
 
-    $custom = PhutilSimpleOptions::parse(head($lines));
+    $parser = new PhutilSimpleOptions();
+    $custom = $parser->parse(head($lines));
     if ($custom) {
       $valid = true;
       foreach ($custom as $key => $value) {

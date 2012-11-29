@@ -6,13 +6,16 @@
  *   lang=text
  *   lang=php, name=example.php, lines=30, counterexample
  *
- * @task parse Parsing Simple Options
- * @task unparse Unparsing Simple Options
+ * @task parse    Parsing Simple Options
+ * @task unparse  Unparsing Simple Options
+ * @task config   Parser Configuration
  * @task internal Internals
  *
  * @group util
  */
 final class PhutilSimpleOptions {
+
+  private $caseSensitive;
 
 
 /* -(  Parsing Simple Options  )--------------------------------------------- */
@@ -34,7 +37,7 @@ final class PhutilSimpleOptions {
    * @return  dict    Parsed dictionary.
    * @task parse
    */
-  public static function parse($input) {
+  public function parse($input) {
     $result = array();
 
     $vars = explode(',', $input);
@@ -45,9 +48,8 @@ final class PhutilSimpleOptions {
       } else {
         list($key, $value) = array($var, true);
       }
-      $key = trim($key);
-      $key = strtolower($key);
-      if (!self::isValidKey($key)) {
+      $key = $this->normalizeKey($key);
+      if (!$this->isValidKey($key)) {
         // If there are bad keys, just bail, so we don't get silly results for
         // parsing inputs like "SELECT id, name, size FROM table".
         return array();
@@ -81,12 +83,12 @@ final class PhutilSimpleOptions {
    * @param   dict    Input dictionary.
    * @return  string  Unparsed option list.
    */
-  public static function unparse(array $options) {
+  public function unparse(array $options) {
     $result = array();
     foreach ($options as $name => $value) {
-      if (!self::isValidKey($name)) {
+      if (!$this->isValidKey($name)) {
         throw new Exception(
-          "SimpleOptions: keys must contain only lowercase letters.");
+          "SimpleOptions: keys '{$name}' is not valid.");
       }
       if (!strlen($value)) {
         continue;
@@ -101,11 +103,44 @@ final class PhutilSimpleOptions {
   }
 
 
+/* -(  Parser Configuration  )----------------------------------------------- */
+
+
+  /**
+   * Configure case sensitivity of the parser. By default, the parser is
+   * case insensitive, so "legs=4" has the same meaning as "LEGS=4". If you
+   * set it to be case sensitive, the keys have different meanings.
+   *
+   * @param bool  True to make the parser case sensitive, false (default) to
+   *              make it case-insensitive.
+   * @return this
+   * @task config
+   */
+  public function setCaseSensitive($case_sensitive) {
+    $this->caseSensitive = $case_sensitive;
+    return $this;
+  }
+
+
 /* -(  Internals  )---------------------------------------------------------- */
 
 
-  private static function isValidKey($key) {
-    return (bool)preg_match('/^[a-z]+$/', $key);
+  private function isValidKey($key) {
+    if (!$this->caseSensitive) {
+      $regexp = '/^[a-z]+$/';
+    } else {
+      $regexp = '/^[a-z]+$/i';
+    }
+
+    return (bool)preg_match($regexp, $key);
+  }
+
+  private function normalizeKey($key) {
+    $key = trim($key);
+    if (!$this->caseSensitive) {
+      $key = strtolower($key);
+    }
+    return $key;
   }
 
 }

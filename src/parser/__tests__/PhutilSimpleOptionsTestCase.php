@@ -38,10 +38,30 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
     );
 
     foreach ($map as $string => $expect) {
+      $parser = new PhutilSimpleOptions();
       $this->assertEqual(
         $expect,
-        PhutilSimpleOptions::parse($string),
+        $parser->parse($string),
         "Correct parse of '{$string}'");
+    }
+  }
+
+  public function testSimpleOptionsCaseParse() {
+    $map = array(
+      'legs=4, LEGS=8, LeGs' => array(
+        'legs' => '4',
+        'LEGS' => '8',
+        'LeGs' => true,
+      ),
+    );
+
+    foreach ($map as $string => $expect) {
+      $parser = new PhutilSimpleOptions();
+      $parser->setCaseSensitive(true);
+      $this->assertEqual(
+        $expect,
+        $parser->parse($string),
+        "Correct case-sensitive parse of '{$string}'");
     }
   }
 
@@ -56,9 +76,10 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
     );
 
     foreach ($map as $expect => $dict) {
+      $parser = new PhutilSimpleOptions();
       $this->assertEqual(
         $expect,
-        PhutilSimpleOptions::unparse($dict),
+        $parser->unparse($dict),
         "Correct unparse of ".print_r($dict, true));
     }
 
@@ -72,7 +93,8 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
     foreach ($bogus as $bad_input) {
       $caught = null;
       try {
-        PhutilSimpleOptions::unparse($bad_input);
+        $parser = new PhutilSimpleOptions();
+        $parser->unparse($bad_input);
       } catch (Exception $ex) {
         $caught = $ex;
       }
