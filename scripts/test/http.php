@@ -4,7 +4,23 @@
 $root = dirname(dirname(dirname(__FILE__)));
 require_once $root.'/scripts/__init_script__.php';
 
-$uri      = 'https://secure.phabricator.com/derp/derp/';
+$args = new PhutilArgumentParser($argv);
+$args->parseStandardArguments();
+$args->parse(
+  array(
+    array(
+      'name'      => 'url',
+      'wildcard'  => true,
+    ),
+  ));
+
+$uri = $args->getArg('url');
+if (count($uri) !== 1) {
+  throw new PhutilArgumentUsageException(
+    "Specify exactly one URL to retrieve.");
+}
+$uri = head($uri);
+
 $method   = 'GET';
 $data     = '';
 $timeout  = 30;
