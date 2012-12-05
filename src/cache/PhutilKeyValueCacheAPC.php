@@ -61,8 +61,10 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
         ));
     }
 
-    if ($ttl === null) {
-      apc_store($keys);
+    if (phutil_is_hiphop_runtime()) {
+      foreach ($keys as $key => $value) {
+        apc_store($key, $value, $ttl);
+      }
     } else {
       apc_store($keys, null, $ttl);
     }
