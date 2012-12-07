@@ -357,7 +357,19 @@ final class PhutilArgumentParser {
     $workflow = $this->workflows[$flow];
 
     if ($this->showHelp) {
-      $this->printHelpAndExit();
+      // Make "cmd flow --help" behave like "cmd help flow", not "cmd help".
+      $help_flow = idx($this->workflows, 'help');
+      if ($help_flow) {
+        if ($help_flow !== $workflow) {
+          $workflow = $help_flow;
+          $argv = array($flow);
+
+          // Prevent parse() from dumping us back out to standard help.
+          $this->showHelp = false;
+        }
+      } else {
+        $this->printHelpAndExit();
+      }
     }
 
     $this->argv = array_values($argv);
