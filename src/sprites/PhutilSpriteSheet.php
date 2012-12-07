@@ -7,12 +7,17 @@ final class PhutilSpriteSheet {
 
   const MANIFEST_VERSION = 1;
 
+  const TYPE_STANDARD = 'standard';
+  const TYPE_REPEAT_X = 'repeat-x';
+  const TYPE_REPEAT_Y = 'repeat-y';
+
   private $sprites = array();
   private $sources = array();
   private $hashes  = array();
   private $cssHeader;
   private $generated;
   private $scales = array(1);
+  private $type = self::TYPE_STANDARD;
 
   private $css;
   private $images;
@@ -34,18 +39,66 @@ final class PhutilSpriteSheet {
     return $this;
   }
 
+  public function getScales() {
+    return $this->scales;
+  }
+
+  public function setSheetType($type) {
+    $this->type = $type;
+    return $this;
+  }
+
   private function generate() {
     if ($this->generated) {
       return;
     }
 
+    $multi_row = true;
+    $multi_col = true;
+    $margin_w = 1;
+    $margin_h = 1;
+
+    $type = $this->type;
+    switch ($type) {
+      case self::TYPE_STANDARD:
+        break;
+      case self::TYPE_REPEAT_X:
+        $multi_col = false;
+        $margin_w = 0;
+
+        $width = null;
+        foreach ($this->sprites as $sprite) {
+          if ($width === null) {
+            $width = $sprite->getSourceW();
+          } else if ($width !== $sprite->getSourceW()) {
+            throw new Exception(
+              "All sprites in a 'repeat-x' sheet must have the same width.");
+          }
+        }
+        break;
+      case self::TYPE_REPEAT_Y:
+        $multi_row = false;
+        $margin_h = 0;
+
+        $height = null;
+        foreach ($this->sprites as $sprite) {
+          if ($height === null) {
+            $height = $sprite->getSourceH();
+          } else if ($height !== $sprite->getSourceH()) {
+            throw new Exception(
+              "All sprites in a 'repeat-y' sheet must have the same height.");
+          }
+        }
+        break;
+      default:
+        throw new Exception("Unknown sprite sheet type '{$type}'!");
+    }
+
+
     $css = array();
     if ($this->cssHeader) {
       $css[] = $this->cssHeader;
     }
-
-    $margin_w = 1;
-    $margin_h = 1;
 
     $out_w = 0;
     $out_h = 0;
@@ -92,13 +145,13 @@ final class PhutilSpriteSheet {
       }
 
       $row_key = null;
-      if ($maybe) {
+      if ($maybe && $multi_col) {
         // If there were any candidate rows, pick the best one.
         asort($maybe);
         $row_key = head_key($maybe);
       }
 
-      if ($row_key !== null) {
+      if ($row_key !== null && $multi_row) {
         // If there's a candidate row, but adding the sprite to it would make
         // the sprite wider than it is tall, create a new row instead. This
         // generally keeps the sprite square-ish.
@@ -146,6 +199,7 @@ final class PhutilSpriteSheet {
 
     $pos_x = 0;
     $pos_y = 0;
+    $rules = array();
     foreach ($rows as $row) {
       $max_h = 0;
       foreach ($row['boxes'] as $box) {
@@ -165,13 +219,19 @@ final class PhutilSpriteSheet {
         $cssx = (-$pos_x).'px';
         $cssy = (-$pos_y).'px';
 
-        $css[] = "{$rule} {\n  background-position: {$cssx} {$cssy};\n}";
+        $rules[$sprite->getName()] = "{$rule} {\n".
+          "  background-position: {$cssx} {$cssy};\n}";
 
         $pos_x += $sprite->getSourceW() + $margin_w;
         $max_h = max($max_h, $sprite->getSourceH());
       }
       $pos_x = 0;
       $pos_y += $max_h + $margin_h;
+    }
+
+    // Generate CSS rules in input order.
+    foreach ($this->sprites as $sprite) {
+      $css[] = $rules[$sprite->getName()];
     }
 
     $this->images = $images;
@@ -219,6 +279,7 @@ final class PhutilSpriteSheet {
       'sprites' => $output,
       'scales'  => $this->scales,
       'header'  => $this->cssHeader,
+      'type'    => $this->type,
     );
 
     return $data;
