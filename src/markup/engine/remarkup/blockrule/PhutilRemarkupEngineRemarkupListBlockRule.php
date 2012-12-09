@@ -141,8 +141,17 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
         $style = '-';
       }
 
+      // If we don't match the block pattern (for example, because the user
+      // has typed only " " or " -"), treat the line as containing no text.
+      // This prevents newly added items from rendering with a bullet and
+      // the text "-", e.g.
+      $text = preg_replace($this->getBlockPattern(), '', $item);
+      if ($text == $item) {
+        $text = '';
+      }
+
       $items[$key] = array(
-        'text'  => preg_replace($this->getBlockPattern(), '', $item),
+        'text'  => $text,
         'depth' => $depth,
         'style' => $style,
       );
