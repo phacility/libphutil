@@ -87,6 +87,9 @@ final class PhutilServiceProfiler {
     $desc = null;
     if ($is_begin) {
       switch ($type) {
+        case 'connect':
+          $desc = $data['database'];
+          break;
         case 'query':
           $desc = substr($data['query'], 0, 512);
           break;
