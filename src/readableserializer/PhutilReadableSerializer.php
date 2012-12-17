@@ -56,12 +56,20 @@ final class PhutilReadableSerializer {
           $str .= 'of size '.count($value).' starting with: ';
         }
         reset($value); // Prevent key() from giving warning message in HPHP.
-        $str .= '{ '.key($value).' => '.
+        $str .= '{ '.self::printShort(key($value)).' => '.
           self::printShort(head($value)).' }';
       }
       return $str;
     } else {
-      return self::printableValue($value);
+      // NOTE: Avoid phutil_utf8_shorten() here since the data may not be
+      // UTF8 anyway, it's slow for large inputs, and it might not be loaded
+      // yet.
+      $limit = 1024;
+      $str = self::printableValue($value);
+      if (strlen($str) > $limit) {
+        $str = substr($str, 0, $limit).'...';
+      }
+      return $str;
     }
   }
 
