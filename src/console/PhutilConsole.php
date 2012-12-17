@@ -21,6 +21,7 @@ final class PhutilConsole {
   private $messages = array();
 
   private $flushing = false;
+  private $disabledTypes;
 
 
 /* -(  Console Construction  )----------------------------------------------- */
@@ -33,7 +34,7 @@ final class PhutilConsole {
    * @task construct
    */
   private function __construct() {
-    // <private>
+    $this->disabledTypes = new PhutilArrayWithDefaultValue();
   }
 
 
@@ -190,6 +191,10 @@ final class PhutilConsole {
   }
 
   private function writeMessage(PhutilConsoleMessage $message) {
+    if ($this->disabledTypes[$message->getType()]) {
+      return $this;
+    }
+
     if ($this->flushing) {
       ob_flush();
     }
@@ -220,5 +225,27 @@ final class PhutilConsole {
   public function getServer() {
     return $this->server;
   }
+
+  private function disableMessageType($type) {
+    $this->disabledTypes[$type] += 1;
+    return $this;
+  }
+
+  private function enableMessageType($type) {
+    if ($this->disabledTypes[$type] == 0) {
+      throw new Exception("Message type '{$type}' is already enabled!");
+    }
+    $this->disabledTypes[$type] -= 1;
+    return $this;
+  }
+
+  public function disableOut() {
+    return $this->disableMessageType(PhutilConsoleMessage::TYPE_OUT);
+  }
+
+  public function enableOut() {
+    return $this->enableMessageType(PhutilConsoleMessage::TYPE_OUT);
+  }
+
 
 }
