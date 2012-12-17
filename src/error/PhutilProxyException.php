@@ -25,7 +25,8 @@ class PhutilProxyException extends Exception {
   public function getPreviousException() {
     // NOTE: This can not be named "getPrevious()" because that method is final
     // after PHP 5.3. Similarly, the property can not be named "previous"
-    // because
+    // because HPHP declares a property with the same name and "protected"
+    // visibility.
     return $this->previousException;
   }
 
