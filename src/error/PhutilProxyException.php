@@ -10,10 +10,10 @@
  */
 class PhutilProxyException extends Exception {
 
-  private $previous;
+  private $previousException;
 
   public function __construct($message, Exception $previous, $code = 0) {
-    $this->previous = $previous;
+    $this->previousException = $previous;
 
     if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
       parent::__construct($message, $code, $previous);
@@ -24,8 +24,9 @@ class PhutilProxyException extends Exception {
 
   public function getPreviousException() {
     // NOTE: This can not be named "getPrevious()" because that method is final
-    // after PHP 5.3.
-    return $this->previous;
+    // after PHP 5.3. Similarly, the property can not be named "previous"
+    // because
+    return $this->previousException;
   }
 
 }
