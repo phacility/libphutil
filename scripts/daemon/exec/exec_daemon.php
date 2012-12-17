@@ -72,10 +72,15 @@ if ($load) {
 }
 
 PhutilErrorHandler::initialize();
+
 function phutil_daemon_error_listener($event, $value, array $metadata) {
   $message = idx($metadata, 'default_message');
   if ($message) {
-    fwrite(STDERR, $message);
+    fwrite(STDERR, $message."\n");
+  }
+  if (idx($metadata, 'trace')) {
+    $trace = PhutilErrorHandler::formatStacktrace($metadata['trace']);
+    fwrite(STDERR, $trace."\n");
   }
 }
 
@@ -103,4 +108,5 @@ if ($trace_memory) {
 if ($verbose) {
   $daemon->setVerbose(true);
 }
+
 $daemon->execute();

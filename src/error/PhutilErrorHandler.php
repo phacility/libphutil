@@ -174,6 +174,7 @@ final class PhutilErrorHandler {
     exit(255);
   }
 
+
   /**
    * Output a stacktrace to the PHP error log.
    *
@@ -182,6 +183,22 @@ final class PhutilErrorHandler {
    * @task internal
    */
   public static function outputStacktrace($trace) {
+    $lines = explode("\n", self::formatStacktrace($trace));
+    foreach ($lines as $line) {
+      error_log($line);
+    }
+  }
+
+
+  /**
+   * Format a stacktrace for output.
+   *
+   * @param trace A stacktrace, e.g. from debug_backtrace();
+   * @return string Human-readable trace.
+   * @task internal
+   */
+  public static function formatStacktrace($trace) {
+    $result = array();
     foreach ($trace as $key => $entry) {
       $line = '  #'.$key.' ';
       if (isset($entry['class'])) {
@@ -200,9 +217,12 @@ final class PhutilErrorHandler {
       if (isset($entry['file'])) {
         $line .= ' called at ['.$entry['file'].':'.$entry['line'].']';
       }
-      error_log($line);
+
+      $result[] = $line;
     }
+    return implode("\n", $result);
   }
+
 
   /**
    * All different types of error messages come here before they are
