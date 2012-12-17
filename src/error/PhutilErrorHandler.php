@@ -27,7 +27,8 @@
  *
  * Phabricator uses this class to drive the DarkConsole "Error Log" plugin.
  *
- * @task config Configuring Error Dispatch
+ * @task config   Configuring Error Dispatch
+ * @task exutil   Exception Utilities
  * @task internal Internals
  * @group error
  */
@@ -71,6 +72,45 @@ final class PhutilErrorHandler {
    */
   public static function setErrorListener($listener) {
     self::$errorListener = $listener;
+  }
+
+
+/* -(  Exception Utilities  )------------------------------------------------ */
+
+
+  /**
+   * Gets the previous exception of a nested exception. Prior to PHP 5.3 you
+   * can use @{class:PhutilProxyException} to nest exceptions; after PHP 5.3
+   * all exceptions are nestable.
+   *
+   * @param   Exception       Exception to unnest.
+   * @return  Exception|null  Previous exception, if one exists.
+   * @task    exutil
+   */
+  public static function getPreviousException(Exception $ex) {
+    if (method_exists($ex, 'getPrevious')) {
+      return $ex->getPrevious();
+    }
+    if (method_exists($ex, 'getPreviousException')) {
+      return $ex->getPreviousException();
+    }
+    return null;
+  }
+
+
+  /**
+   * Find the most deeply nested exception from a possibly-nested exception.
+   *
+   * @param   Exception     A possibly-nested exception.
+   * @return  Exception     Deepest exception in the nest.
+   * @task    exutil
+   */
+  public static function getRootException(Exception $ex) {
+    $root = $ex;
+    while (self::getPreviousException($root)) {
+      $root = self::getPreviousException($root);
+    }
+    return $root;
   }
 
 
@@ -163,7 +203,7 @@ final class PhutilErrorHandler {
       array(
         'file'  => $ex->getFile(),
         'line'  => $ex->getLine(),
-        'trace' => $ex->getTrace(),
+        'trace' => self::getRootException($ex)->getTrace(),
         'catch_trace' => debug_backtrace(),
       ));
 
@@ -261,16 +301,23 @@ final class PhutilErrorHandler {
         self::outputStacktrace($metadata['trace']);
         break;
       case PhutilErrorHandler::EXCEPTION:
+        $messages = array();
+        $current = $value;
+        do {
+          $messages[] = '('.get_class($current).') '.$current->getMessage();
+        } while ($current = self::getPreviousException($current));
+        $messages = implode(' {>} ', $messages);
+
         $default_message = sprintf(
           '[%s] EXCEPTION: %s at [%s:%d]',
           $timestamp,
-          '('.get_class($value).') '.$value->getMessage(),
-          $value->getFile(),
-          $value->getLine());
+          $messages,
+          self::getRootException($value)->getFile(),
+          self::getRootException($value)->getLine());
 
         $metadata['default_message'] = $default_message;
         error_log($default_message);
-        self::outputStacktrace($value->getTrace());
+        self::outputStacktrace(self::getRootException($value)->getTrace());
         break;
       case PhutilErrorHandler::PHLOG:
         $default_message = sprintf(
@@ -311,4 +358,5 @@ final class PhutilErrorHandler {
       $handling_error = false;
     }
   }
+
 }
