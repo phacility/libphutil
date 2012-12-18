@@ -79,6 +79,7 @@
 abstract class PhutilLexer {
 
   private $processedRules;
+  private $lastState;
 
 
 /* -(  Lexer Rules  )-------------------------------------------------------- */
@@ -210,6 +211,8 @@ abstract class PhutilLexer {
     }
     $rules = $this->processedRules;
 
+    $this->lastState = null;
+
     $position = 0;
     $length   = strlen($input);
 
@@ -284,6 +287,8 @@ abstract class PhutilLexer {
         "No lexer rule matched input at char {$position}.");
     }
 
+    $this->lastState = $states;
+
     return $tokens;
   }
 
@@ -312,6 +317,10 @@ abstract class PhutilLexer {
       $result[] = $last;
     }
     return $result;
+  }
+
+  public function getLexerState() {
+    return $this->lastState;
   }
 
 }

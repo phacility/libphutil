@@ -2,7 +2,7 @@
 
 final class PhutilPHPFragmentLexerTestCase extends PhutilTestCase {
 
-  public function testFragmentLexer() {
+  public function testPHPFragmentLexer() {
     $dir = dirname(__FILE__).'/php';
     foreach (Filesystem::listDirectory($dir, $hidden = false) as $file) {
       $data = Filesystem::readFile($dir.'/'.$file);
