@@ -5,20 +5,6 @@ define('__LIBPHUTIL__', true);
 /**
  * @group library
  */
-function phutil_require_module($library, $module) {
-  PhutilBootloader::getInstance()->loadModule($library, $module);
-}
-
-/**
- * @group library
- */
-function phutil_require_source($source) {
-  PhutilBootloader::getInstance()->loadSource($source);
-}
-
-/**
- * @group library
- */
 function phutil_register_library($library, $path) {
   PhutilBootloader::getInstance()->registerLibrary($library, $path);
 }
@@ -63,7 +49,6 @@ final class PhutilBootloader {
 
   private $registeredLibraries  = array();
   private $libraryMaps          = array();
-  private $moduleStack          = array();
   private $currentLibrary       = null;
   private $classTree            = array();
 
@@ -104,12 +89,6 @@ final class PhutilBootloader {
     }
 
     $this->registeredLibraries[$name] = $path;
-
-    // TODO: Remove this once we drop libphutil v1 support.
-    $version = $this->getLibraryFormatVersion($name);
-    if ($version == 1) {
-      return $this;
-    }
 
     // For libphutil v2 libraries, load all functions when we load the library.
 
@@ -159,21 +138,8 @@ final class PhutilBootloader {
 
       switch ($version) {
         case 1:
-          // NOTE: In the original version of the library, the map stored
-          // separate 'requires_class' (always a string) and
-          // 'requires_interface' keys (always an array). Load them into the
-          // classtree.
-
-          // TODO: Remove support once we drop libphutil v1 support.
-          foreach ($map['requires_class'] as $child => $parent) {
-            $this->classTree[$parent][] = $child;
-          }
-          foreach ($map['requires_interface'] as $child => $parents) {
-            foreach ($parents as $parent) {
-              $this->classTree[$parent][] = $child;
-            }
-          }
-          break;
+          throw new Exception(
+            "libphutil v1 libraries are no longer supported.");
         case 2:
           // NOTE: In version 2 of the library format, all parents (both
           // classes and interfaces) are stored in the 'xmap'. The value is
@@ -188,20 +154,8 @@ final class PhutilBootloader {
         default:
           throw new Exception("Unsupported library version '{$version}'!");
       }
-
     }
     return $this->libraryMaps[$name];
-  }
-
-  public function getLibraryFormatVersion($name) {
-    $map = $this->getLibraryMap($name);
-
-    // NOTE: We can't use "idx()" here because it may not be loaded yet.
-    $version = isset($map['__library_version__'])
-      ? $map['__library_version__']
-      : 1;
-
-    return $version;
   }
 
   public function getLibraryRoot($name) {
@@ -214,19 +168,6 @@ final class PhutilBootloader {
 
   public function getAllLibraries() {
     return array_keys($this->registeredLibraries);
-  }
-
-  private function pushModuleStack($library, $module) {
-    array_push($this->moduleStack, $this->getLibraryRoot($library).'/'.$module);
-    return $this;
-  }
-
-  private function popModuleStack() {
-    array_pop($this->moduleStack);
-  }
-
-  private function peekModuleStack() {
-    return end($this->moduleStack);
   }
 
   public function loadLibrary($path) {
@@ -243,40 +184,12 @@ final class PhutilBootloader {
     }
   }
 
-  public function loadModule($library, $module) {
-    $version = $this->getLibraryFormatVersion($library);
-    if ($version == 2) {
-      // If a v1 library has a "phutil_require_module(...)" for a v2 library,
-      // ignore it. We load functions on library registration and autoload
-      // classes.
-      return;
-    }
-
-    $this->pushModuleStack($library, $module);
-    phutil_require_source('__init__.php');
-    $this->popModuleStack();
-  }
-
   public function loadLibrarySource($library, $source) {
     $path = $this->getLibraryRoot($library).'/'.$source;
     $okay = $this->executeInclude($path);
     if (!$okay) {
       throw new PhutilBootloaderException("Include of '{$path}' failed!");
     }
-  }
-
-  public function loadSource($source) {
-    $base = $this->peekModuleStack();
-    $okay = $this->executeInclude($base.'/'.$source);
-    if (!$okay) {
-      throw new PhutilBootloaderException(
-        "Include of '{$base}/{$source}' failed!");
-    }
-  }
-
-  public function moduleExists($library, $module) {
-    $path = $this->getLibraryRoot($library);
-    return @file_exists($path.'/'.$module.'/__init__.php');
   }
 
   private function executeInclude($path) {

@@ -3,7 +3,7 @@
 /**
  * Query and load Phutil classes, interfaces and functions. PhutilSymbolLoader
  * is a query object which selects symbols which satisfy certain criteria, and
- * optionally loads them. For instance, to load all classes in a module:
+ * optionally loads them. For instance, to load all classes in a library:
  *
  *    $symbols = id(new PhutilSymbolLoader())
  *      ->setType('class')
@@ -18,7 +18,6 @@
  *        'type'    => 'class',
  *        'name'    => 'Example',
  *        'library' => 'libexample',
- *        'module'  => 'examples/example',     // Deprecated.
  *        'where'   => 'examples/example.php',
  *      ),
  *      // ... more ...
@@ -26,9 +25,6 @@
  *
  * The **library** and **where** keys show where the symbol is defined. The
  * **type** and **name** keys identify the symbol itself.
- *
- * TODO: Modules will not be supported soon, as they are dropped from
- * libphutil v2.
  *
  * NOTE: This class must not use libphutil funtions, including id() and idx().
  *
@@ -43,7 +39,6 @@ final class PhutilSymbolLoader {
   private $type;
   private $library;
   private $base;
-  private $module;
   private $name;
   private $concrete;
   private $pathPrefix;
@@ -92,21 +87,6 @@ final class PhutilSymbolLoader {
    */
   public function setPathPrefix($path) {
     $this->pathPrefix = str_replace(DIRECTORY_SEPARATOR, '/', $path);
-    return $this;
-  }
-
-
-  /**
-   * Restrict the symbol query to a single module. Deprecated.
-   *
-   * @deprecated
-   * @param string Module name.
-   * @return this
-   * @task config
-   */
-  public function setModule($module) {
-    // TODO: Remove when we drop v1 support.
-    $this->module = $module;
     return $this;
   }
 
@@ -161,8 +141,8 @@ final class PhutilSymbolLoader {
 
 
   /**
-   * Execute the query and select matching symbols, then load the modules where
-   * they are defined so they can be used.
+   * Execute the query and select matching symbols, then load them so they can
+   * be used.
    *
    * @return dict A dictionary of matching symbols. See top-level class
    *              documentation for details. These symbols will be loaded
@@ -223,14 +203,6 @@ final class PhutilSymbolLoader {
           $filtered_map = $lookup_map;
         }
 
-        if ($this->module) {
-          foreach ($filtered_map as $name => $module) {
-            if ($module != $this->module) {
-              unset($filtered_map[$name]);
-            }
-          }
-        }
-
         if ($this->pathPrefix) {
           $len = strlen($this->pathPrefix);
           foreach ($filtered_map as $name => $where) {
@@ -240,15 +212,12 @@ final class PhutilSymbolLoader {
           }
         }
 
-        foreach ($filtered_map as $name => $module) {
+        foreach ($filtered_map as $name => $where) {
           $symbols[$type.'$'.$name] = array(
             'type'        => $type,
             'name'        => $name,
             'library'     => $library,
-            // libphutil v1
-            'module'      => $module,
-            // libphutil v2
-            'where'       => $module,
+            'where'       => $where,
           );
         }
       }
@@ -305,10 +274,10 @@ final class PhutilSymbolLoader {
 
 
   /**
-   * Execute the query and select matching symbols, but do not load the modules
-   * where they are defined. This will perform slightly better if you are only
-   * interested in the existence of the symbols and don't plan to use them;
-   * otherwise, use ##selectAndLoadSymbols()##.
+   * Execute the query and select matching symbols, but do not load them. This
+   * will perform slightly better if you are only interested in the existence
+   * of the symbols and don't plan to use them; otherwise, use
+   * ##selectAndLoadSymbols()##.
    *
    * @return dict A dictionary of matching symbols. See top-level class
    *              documentation for details.
@@ -319,11 +288,6 @@ final class PhutilSymbolLoader {
     $result = $this->selectAndLoadSymbols();
     $this->suppressLoad = false;
     return $result;
-  }
-
-
-  public static function loadClass($class_name) {
-    // TODO: Remove this method once we drop libphutil v1 support.
   }
 
 
@@ -372,21 +336,10 @@ final class PhutilSymbolLoader {
 
     $lib_name = $symbol_spec['library'];
     $bootloader = PhutilBootloader::getInstance();
-    $version  = $bootloader->getLibraryFormatVersion($lib_name);
 
-    switch ($version) {
-      case 1:
-        // TODO: Remove this once we drop libphutil v1 support.
-        $bootloader->loadModule(
-          $symbol_spec['library'],
-          $symbol_spec['module']);
-        break;
-      case 2:
-        $bootloader->loadLibrarySource(
-          $symbol_spec['library'],
-          $symbol_spec['where']);
-        break;
-    }
+    $bootloader->loadLibrarySource(
+      $symbol_spec['library'],
+      $symbol_spec['where']);
 
     // Check that we successfully loaded the symbol from wherever it was
     // supposed to be defined.
