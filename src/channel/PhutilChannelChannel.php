@@ -16,6 +16,11 @@ abstract class PhutilChannelChannel extends PhutilChannel {
 
   public function __construct(PhutilChannel $channel) {
     $this->channel = $channel;
+    $this->didConstruct();
+  }
+
+  protected function didConstruct() {
+    // Hook for subclasses.
   }
 
   public function read() {
@@ -33,6 +38,14 @@ abstract class PhutilChannelChannel extends PhutilChannel {
 
   public function isOpen() {
     return $this->channel->isOpen();
+  }
+
+  public function isOpenForReading() {
+    return $this->channel->isOpenForReading();
+  }
+
+  public function isOpenForWriting() {
+    return $this->channel->isOpenForWriting();
   }
 
   protected function readBytes() {

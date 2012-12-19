@@ -231,6 +231,30 @@ abstract class PhutilChannel {
 
 
   /**
+   * Test if the channel is open for reading.
+   *
+   * @return bool True if the channel is open for reading.
+   *
+   * @task impl
+   */
+  public function isOpenForReading() {
+    return $this->isOpen();
+  }
+
+
+  /**
+   * Test if the channel is open for writing.
+   *
+   * @return bool True if the channel is open for writing.
+   *
+   * @task impl
+   */
+  public function isOpenForWriting() {
+    return $this->isOpen();
+  }
+
+
+  /**
    * Read from the channel's underlying I/O.
    *
    * @return string Bytes, if available.

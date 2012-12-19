@@ -23,6 +23,7 @@ final class PhutilSocketChannel extends PhutilChannel {
 
   private $readSocket;
   private $writeSocket;
+  private $isSingleSocket;
 
 /* -(  Construction  )------------------------------------------------------- */
 
@@ -53,7 +54,12 @@ final class PhutilSocketChannel extends PhutilChannel {
     }
 
     $this->readSocket = $read_socket;
-    $this->writeSocket = $write_socket;
+    if ($write_socket) {
+      $this->writeSocket = $write_socket;
+    } else {
+      $this->writeSocket = $read_socket;
+      $this->isSingleSocket = true;
+    }
   }
 
   public function __destruct() {
@@ -85,22 +91,35 @@ final class PhutilSocketChannel extends PhutilChannel {
   }
 
   public function isOpen() {
+    return ($this->isOpenForReading() || $this->isOpenForWriting());
+  }
+
+  public function isOpenForReading() {
     return (bool)$this->readSocket;
   }
 
+  public function isOpenForWriting() {
+    return (bool)$this->writeSocket;
+  }
+
   protected function readBytes() {
-    $data = @fread($this->readSocket, 4096);
+    $socket = $this->readSocket;
+    if (!$socket) {
+      return '';
+    }
+
+    $data = @fread($socket, 4096);
 
     if ($data === false) {
-      $this->closeSockets();
+      $this->closeReadSocket();
       $data = '';
     }
 
     // NOTE: fread() continues returning empty string after the socket is
     // closed, we need to check for EOF explicitly.
     if ($data === '') {
-      if (feof($this->readSocket)) {
-        $this->closeSockets();
+      if (feof($socket)) {
+        $this->closeReadSocket();
       }
     }
 
@@ -110,19 +129,22 @@ final class PhutilSocketChannel extends PhutilChannel {
   protected function writeBytes($bytes) {
     $socket = $this->writeSocket;
     if (!$socket) {
-      $socket = $this->readSocket;
+      return 0;
     }
 
     $len = @fwrite($socket, $bytes);
     if ($len === false) {
-      $this->closeSockets();
+      $this->closeWriteSocket();
       return 0;
     }
     return $len;
   }
 
   protected function getReadSockets() {
-    return array($this->readSocket);
+    if ($this->readSocket) {
+      return array($this->readSocket);
+    }
+    return array();
   }
 
   protected function getWriteSockets() {
@@ -131,23 +153,39 @@ final class PhutilSocketChannel extends PhutilChannel {
     } else if ($this->writeSocket) {
       return array($this->writeSocket);
     } else {
-      return array($this->readSocket);
+      return array();
     }
   }
 
-  private function closeSockets() {
-    foreach (array($this->readSocket, $this->writeSocket) as $socket) {
-      if (!$socket) {
-        continue;
-      }
-
-      // We should also stream_socket_shutdown() here but HHVM throws errors
-      // with it (for example 'Unexpected object type PlainFile'). We depend
-      // just on fclose() until it is fixed.
-      @fclose($socket);
-    }
+  private function closeReadSocket() {
+    $this->closeOneSocket($this->readSocket);
     $this->readSocket = null;
+    if ($this->isSingleSocket) {
+      $this->writeSocket = null;
+    }
+  }
+
+  private function closeWriteSocket() {
+    $this->closeOneSocket($this->writeSocket);
     $this->writeSocket = null;
+    if ($this->isSingleSocket) {
+      $this->readSocket = null;
+    }
+  }
+
+  private function closeOneSocket($socket) {
+    if (!$socket) {
+      return;
+    }
+    // We should also stream_socket_shutdown() here but HHVM throws errors
+    // with it (for example 'Unexpected object type PlainFile'). We depend
+    // just on fclose() until it is fixed.
+    @fclose($socket);
+  }
+
+  private function closeSockets() {
+    $this->closeReadSocket();
+    $this->closeWriteSocket();
   }
 
 }
