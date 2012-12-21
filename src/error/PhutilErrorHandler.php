@@ -153,6 +153,15 @@ final class PhutilErrorHandler {
    */
   public static function handleError($num, $str, $file, $line, $ctx) {
 
+    if ((error_reporting() & $num) == 0) {
+      // Respect the use of "@" to silence warnings: if this error was
+      // emitted from a context where "@" was in effect, the
+      // value returned by error_reporting() will be 0. This is the
+      // recommended way to check for this, see set_error_handler() docs
+      // on php.net.
+      return false;
+    }
+
     // Convert typehint failures into exceptions.
     if (preg_match('/^Argument (\d+) passed to (\S+) must be/', $str)) {
       throw new InvalidArgumentException($str);
@@ -280,14 +289,6 @@ final class PhutilErrorHandler {
 
     switch ($event) {
       case PhutilErrorHandler::ERROR:
-        if (error_reporting() === 0) {
-          // Respect the use of "@" to silence warnings: if this error was
-          // emitted from a context where "@" was in effect, the
-          // value returned by error_reporting() will be 0. This is the
-          // recommended way to check for this, see set_error_handler() docs
-          // on php.net.
-          break;
-        }
         $default_message = sprintf(
           '[%s] ERROR %d: %s at [%s:%d]',
           $timestamp,
