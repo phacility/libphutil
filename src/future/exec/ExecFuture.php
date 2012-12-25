@@ -316,9 +316,7 @@ final class ExecFuture extends Future {
     if ($err) {
       $cmd = $this->command;
       throw new CommandException(
-        "Command '{$cmd}' failed with error #{$err}:\n".
-        "stdout:\n{$stdout}\n".
-        "stderr:\n{$stderr}\n",
+        "Command failed with error #{$err}!",
         $cmd,
         $err,
         $stdout,

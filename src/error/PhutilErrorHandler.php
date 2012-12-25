@@ -309,6 +309,10 @@ final class PhutilErrorHandler {
         } while ($current = self::getPreviousException($current));
         $messages = implode(' {>} ', $messages);
 
+        if (strlen($messages) > 4096) {
+          $messages = substr($messages, 0, 4096).'...';
+        }
+
         $default_message = sprintf(
           '[%s] EXCEPTION: %s at [%s:%d]',
           $timestamp,
