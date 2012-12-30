@@ -203,6 +203,28 @@ final class Filesystem {
     self::executeRemovePath($path);
   }
 
+  /**
+   * Rename a file or directory.
+   *
+   * @param string    Old path.
+   * @param string    New path.
+   *
+   * @task file
+   */
+  public static function rename($old, $new) {
+    $old = self::resolvePath($old);
+    $new = self::resolvePath($new);
+
+    self::assertExists($old);
+
+    $ok = rename($old, $new);
+    if (!$ok) {
+      throw new FilesystemException(
+        $new,
+        "Failed to rename '{$old}' to '{$new}'!");
+    }
+  }
+
 
   /**
    * Internal. Recursively remove a file or an entire directory. Implements

@@ -64,8 +64,6 @@ final class PhutilKeyValueCacheOnDisk extends PhutilKeyValueCache {
 
 
   public function setKeys(array $keys, $ttl = null) {
-    $call_id = null;
-
     if ($ttl) {
       $ttl_epoch = time() + $ttl;
     } else {
@@ -168,7 +166,7 @@ final class PhutilKeyValueCacheOnDisk extends PhutilKeyValueCache {
     // copy across volumes.
     $new = $this->getCacheFile().'.new';
     Filesystem::writeFile($new, serialize($this->cache));
-    rename($new, $this->getCacheFile());
+    Filesystem::rename($new, $this->getCacheFile());
 
     $this->lock->unlock();
     $this->lock = null;
