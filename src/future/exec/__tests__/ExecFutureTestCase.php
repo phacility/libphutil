@@ -97,4 +97,16 @@ final class ExecFutureTestCase extends PhutilTestCase {
     }
   }
 
+  public function testNoHangOnExecFutureDestructionWithRunningChild() {
+    $start = microtime(true);
+      $future = new ExecFuture('sleep 30');
+      $future->start();
+      unset($future);
+    $end = microtime(true);
+
+    // If ExecFuture::__destruct() hangs until the child closes, we won't make
+    // it here in time.
+    $this->assertEqual(true, ($end - $start) < 5);
+  }
+
 }

@@ -380,8 +380,7 @@ final class ExecFuture extends Future {
       128 + $signal,
       $this->stdout,
       $this->stderr);
-    $this->__destruct();
-    $this->endProfile();
+    $this->closeProcess();
 
     return $this->result;
   }
@@ -554,8 +553,7 @@ final class ExecFuture extends Future {
         $this->stdout,
         $this->stderr,
       );
-      $this->__destruct();
-      $this->endProfile();
+      $this->closeProcess();
       return true;
     }
 
@@ -570,33 +568,45 @@ final class ExecFuture extends Future {
 
 
   /**
+   * @return void
+   * @task internal
+   */
+  public function __destruct() {
+    if (!$this->proc) {
+      return;
+    }
+
+    // NOTE: If we try to proc_close() an open process, we hang indefinitely. To
+    // avoid this, kill the process explicitly if it's still running.
+
+    $status = $this->procGetStatus();
+    if ($status['running']) {
+      $this->resolveKill();
+    } else {
+      $this->closeProcess();
+    }
+  }
+
+
+  /**
    * Close and free resources if necessary.
    *
    * @return void
    * @task internal
    */
-  public function __destruct() {
+  private function closeProcess() {
     foreach ($this->pipes as $pipe) {
       if (isset($pipe)) {
         @fclose($pipe);
       }
     }
-    $this->pipes  = array(null, null, null);
+    $this->pipes = array(null, null, null);
     if ($this->proc) {
       @proc_close($this->proc);
       $this->proc = null;
     }
     $this->stdin  = null;
-  }
 
-
-  /**
-   * End the service call profiler for this command.
-   *
-   * @return void
-   * @task internal
-   */
-  private function endProfile() {
     if ($this->profilerCallID !== null) {
       $profiler = PhutilServiceProfiler::getInstance();
       $profiler->endServiceCall(
@@ -604,8 +614,10 @@ final class ExecFuture extends Future {
         array(
           'err' => $this->result ? idx($this->result, 0) : null,
         ));
+      $this->profilerCallID = null;
     }
   }
+
 
   /**
    * Execute proc_get_status(), but avoid pitfalls.
