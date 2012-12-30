@@ -10,33 +10,8 @@
  */
 abstract class PhutilKeyValueCache {
 
-  private $profiler;
 
 /* -(  Key-Value Cache Implementation  )------------------------------------- */
-
-
-  /**
-   * Set a profiler for cache operations.
-   *
-   * @param PhutilServiceProfiler Service profiler.
-   * @return this
-   * @task kvimpl
-   */
-  public function setProfiler(PhutilServiceProfiler $profiler) {
-    $this->profiler = $profiler;
-    return $this;
-  }
-
-
-  /**
-   * Get the current profiler.
-   *
-   * @return PhutilServiceProfiler|null Profiler, or null if none is set.
-   * @task kvimpl
-   */
-  public function getProfiler() {
-    return $this->profiler;
-  }
 
 
   /**

@@ -29,18 +29,7 @@ final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
   }
 
   public function getKeys(array $keys) {
-    $call_id = null;
-    if ($this->getProfiler()) {
-      $call_id = $this->getProfiler()->beginServiceCall(
-        array(
-          'type' => 'kvcache-get',
-          'name' => 'request',
-          'keys' => $keys,
-        ));
-    }
-
     $results = array();
-    $fetched = false;
     $now = time();
     foreach ($keys as $key) {
       if (!isset($this->cache[$key]) && !array_key_exists($key, $this->cache)) {
@@ -52,28 +41,10 @@ final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
       $results[$key] = $this->cache[$key];
     }
 
-    if ($call_id) {
-      $this->getProfiler()->endServiceCall(
-        $call_id,
-        array(
-          'hits' => array_keys($results),
-        ));
-    }
-
     return $results;
   }
 
   public function setKeys(array $keys, $ttl = null) {
-    $call_id = null;
-    if ($this->getProfiler()) {
-      $call_id = $this->getProfiler()->beginServiceCall(
-        array(
-          'type' => 'kvcache-set',
-          'name' => 'request',
-          'keys' => array_keys($keys),
-        ));
-    }
-
     $this->cache = $keys + $this->cache;
     if ($ttl) {
       $end = time() + $ttl;
@@ -86,31 +57,13 @@ final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
       }
     }
 
-    if ($call_id) {
-      $this->getProfiler()->endServiceCall($call_id, array());
-    }
-
     return $this;
   }
 
   public function deleteKeys(array $keys) {
-    $call_id = null;
-    if ($this->getProfiler()) {
-      $call_id = $this->getProfiler()->beginServiceCall(
-        array(
-          'type' => 'kvcache-del',
-          'name' => 'request',
-          'keys' => $keys,
-        ));
-    }
-
     foreach ($keys as $key) {
       unset($this->cache[$key]);
       unset($this->ttl[$key]);
-    }
-
-     if ($call_id) {
-      $this->getProfiler()->endServiceCall($call_id, array());
     }
 
     return $this;

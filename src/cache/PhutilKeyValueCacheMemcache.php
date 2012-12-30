@@ -18,35 +18,15 @@ final class PhutilKeyValueCacheMemcache extends PhutilKeyValueCache {
   }
 
   public function getKeys(array $keys) {
-
     $buckets = $this->bucketKeys($keys);
     $results = array();
-    $call_id = null;
 
     foreach ($buckets as $bucket => $bucket_keys) {
       $conn = $this->getConnection($bucket);
-
-      if ($this->getProfiler()) {
-        $call_id = $this->getProfiler()->beginServiceCall(
-          array(
-            'type' => 'kvcache-get',
-            'name' => 'memcache',
-            'keys' => $bucket_keys,
-          ));
-      }
-
       $result = $conn->get($bucket_keys);
       if (!$result) {
         // If the call fails, treat it as a miss on all keys.
         $result = array();
-      }
-
-      if ($call_id) {
-        $this->getProfiler()->endServiceCall(
-          $call_id,
-          array(
-            'hits' => array_keys($result),
-          ));
       }
 
       $results += $result;
@@ -57,7 +37,6 @@ final class PhutilKeyValueCacheMemcache extends PhutilKeyValueCache {
 
   public function setKeys(array $keys, $ttl = null) {
     $buckets = $this->bucketKeys(array_keys($keys));
-    $call_id = null;
 
     // Memcache interprets TTLs as:
     //
@@ -76,20 +55,7 @@ final class PhutilKeyValueCacheMemcache extends PhutilKeyValueCache {
       $conn = $this->getConnection($bucket);
 
       foreach ($bucket_keys as $key) {
-        if ($this->getProfiler()) {
-          $call_id = $this->getProfiler()->beginServiceCall(
-            array(
-              'type' => 'kvcache-set',
-              'name' => 'memcache',
-              'keys' => array($key),
-            ));
-        }
-
         $conn->set($key, $keys[$key], 0, $effective_ttl);
-
-        if ($call_id) {
-          $this->getProfiler()->endServiceCall($call_id, array());
-        }
       }
     }
 
@@ -98,25 +64,11 @@ final class PhutilKeyValueCacheMemcache extends PhutilKeyValueCache {
 
   public function deleteKeys(array $keys) {
     $buckets = $this->bucketKeys($keys);
-    $call_id = null;
 
     foreach ($buckets as $bucket => $bucket_keys) {
       $conn = $this->getConnection($bucket);
       foreach ($bucket_keys as $key) {
-        if ($this->getProfiler()) {
-          $call_id = $this->getProfiler()->beginServiceCall(
-            array(
-              'type' => 'kvcache-del',
-              'name' => 'memcache',
-              'keys' => array($key),
-            ));
-        }
-
         $conn->delete($key);
-
-        if ($call_id) {
-          $this->getProfiler()->endServiceCall($call_id, array());
-        }
       }
     }
 
@@ -184,21 +136,7 @@ final class PhutilKeyValueCacheMemcache extends PhutilKeyValueCache {
       $host = $spec['host'];
       $port = $spec['port'];
 
-      $call_id = null;
-      if ($this->getProfiler()) {
-        $call_id = $this->getProfiler()->beginServiceCall(
-          array(
-            'type' => 'kvcache-connect',
-            'name' => 'memcache',
-            'host' => $host,
-          ));
-      }
-
       $conn = memcache_pconnect($host, $spec['port']);
-
-      if ($call_id) {
-        $this->getProfiler()->endServiceCall($call_id, array());
-      }
 
       if (!$conn) {
         throw new Exception(

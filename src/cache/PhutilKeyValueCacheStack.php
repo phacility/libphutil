@@ -48,11 +48,6 @@ final class PhutilKeyValueCacheStack extends PhutilKeyValueCache {
     $this->cachesForward  = $caches;
     $this->cachesBackward = array_reverse($caches);
 
-    if ($this->getProfiler()) {
-      // If a profiler is set, apply it to all the caches.
-      $this->setProfiler($this->getProfiler());
-    }
-
     return $this;
   }
 
@@ -80,15 +75,6 @@ final class PhutilKeyValueCacheStack extends PhutilKeyValueCache {
 
 
 /* -(  Key-Value Cache Implementation  )------------------------------------- */
-
-
-  public function setProfiler(PhutilServiceProfiler $profiler) {
-    parent::setProfiler($profiler);
-    foreach ($this->cachesForward as $cache) {
-      $cache->setProfiler($profiler);
-    }
-    return $this;
-  }
 
 
   public function getKeys(array $keys) {

@@ -55,8 +55,6 @@ final class PhutilKeyValueCacheTestCase extends ArcanistPhutilTestCase {
     $value1  = 'cache-hit1';
     $value2  = 'cache-hit2';
 
-    $cache->setProfiler(PhutilServiceProfiler::getInstance());
-
     $test_info = get_class($cache);
 
     // Test that we miss correctly on missing values.

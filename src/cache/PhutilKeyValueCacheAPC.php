@@ -19,16 +19,6 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
   }
 
   public function getKeys(array $keys, $ttl = null) {
-    $call_id = null;
-    if ($this->getProfiler()) {
-      $call_id = $this->getProfiler()->beginServiceCall(
-        array(
-          'type' => 'kvcache-get',
-          'name' => 'apc',
-          'keys' => $keys,
-        ));
-    }
-
     $results = array();
     $fetched = false;
     foreach ($keys as $key) {
@@ -37,30 +27,10 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
         $results[$key] = $result;
       }
     }
-
-    if ($call_id) {
-      $this->getProfiler()->endServiceCall(
-        $call_id,
-        array(
-          'hits' => array_keys($results),
-        ));
-    }
-
     return $results;
   }
 
   public function setKeys(array $keys, $ttl = null) {
-    $call_id = null;
-    if ($this->getProfiler()) {
-      $call_id = $this->getProfiler()->beginServiceCall(
-        array(
-          'type' => 'kvcache-set',
-          'name' => 'apc',
-          'keys' => array_keys($keys),
-          'ttl'  => $ttl,
-        ));
-    }
-
     if (phutil_is_hiphop_runtime()) {
       foreach ($keys as $key => $value) {
         apc_store($key, $value, $ttl);
@@ -69,30 +39,12 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
       apc_store($keys, null, $ttl);
     }
 
-    if ($call_id) {
-      $this->getProfiler()->endServiceCall($call_id, array());
-    }
-
     return $this;
   }
 
   public function deleteKeys(array $keys) {
-    $call_id = null;
-    if ($this->getProfiler()) {
-      $call_id = $this->getProfiler()->beginServiceCall(
-        array(
-          'type' => 'kvcache-del',
-          'name' => 'apc',
-          'keys' => $keys,
-        ));
-    }
-
     foreach ($keys as $key) {
       apc_delete($key);
-    }
-
-    if ($call_id) {
-      $this->getProfiler()->endServiceCall($call_id, array());
     }
 
     return $this;
