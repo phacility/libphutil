@@ -97,11 +97,11 @@ final class PhutilFileTree {
     }
 
     $found = false;
-    foreach ($this->parentNode->children as $name => $node) {
+    foreach ($this->parentNode->children as $node) {
       if ($found) {
         return $node;
       }
-      if ($this->name == $name) {
+      if ($this->name == $node->name) {
         $found = true;
       }
     }
