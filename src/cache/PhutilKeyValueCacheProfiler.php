@@ -51,7 +51,7 @@ final class PhutilKeyValueCacheProfiler extends PhutilKeyValueCacheProxy {
 
     $results = parent::getKeys($keys);
 
-    if ($call_id) {
+    if ($call_id !== null) {
       $this->getProfiler()->endServiceCall(
         $call_id,
         array(
@@ -77,7 +77,7 @@ final class PhutilKeyValueCacheProfiler extends PhutilKeyValueCacheProxy {
 
     $result = parent::setKeys($keys, $ttl);
 
-    if ($call_id) {
+    if ($call_id !== null) {
       $this->getProfiler()->endServiceCall($call_id, array());
     }
 
@@ -98,7 +98,7 @@ final class PhutilKeyValueCacheProfiler extends PhutilKeyValueCacheProxy {
 
     $result = parent::deleteKeys($keys);
 
-    if ($call_id) {
+    if ($call_id !== null) {
       $this->getProfiler()->endServiceCall($call_id, array());
     }
 
