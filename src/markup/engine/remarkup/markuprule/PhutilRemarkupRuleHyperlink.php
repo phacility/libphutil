@@ -18,20 +18,12 @@ class PhutilRemarkupRuleHyperlink
       array($this, 'markupHyperlink'),
       $text);
 
-    // Hyperlinks with explicit "()" around them get linked exactly, with the
-    // "()". This is simlar to angle brackets, except that people use parens
-    // in normal text so we preserve them in the output text.
-    $text = preg_replace_callback(
-      '@(?<=\\()(\w{3,}://.+?)(?=\\))@',
-      array($this, 'markupHyperlink'),
-      $text);
-
     // Anything else we match "ungreedily", which means we'll look for
     // stuff that's probably puncutation or otherwise not part of the URL and
     // not link it. This lets someone write "QuicK! Go to
     // http://www.example.com/!". We also apply some paren balancing rules.
     $text = preg_replace_callback(
-      '@(?<=^|\s)(\w{3,}://\S+)(?=\s|$)@',
+      '@(\w{3,}://\S+)@',
       array($this, 'markupHyperlinkUngreedy'),
       $text);
 
