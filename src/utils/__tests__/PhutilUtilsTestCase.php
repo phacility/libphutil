@@ -192,6 +192,37 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       nonempty(false, null));
   }
 
+  protected function tryAssertInstancesOfArray($input) {
+    assert_instances_of($input, 'array');
+  }
+
+  protected function tryAssertInstancesOfStdClass($input) {
+    assert_instances_of($input, 'stdClass');
+  }
+
+  public function testAssertInstancesOf() {
+    $object = new stdClass();
+    $inputs = array(
+      'empty' => array(),
+      'stdClass' => array($object, $object),
+      'PhutilUtilsTestCase' => array($object, $this),
+      'array' => array(array(), array()),
+      'integer' => array($object, 1),
+    );
+
+    $this->tryTestCases(
+      $inputs,
+      array(true, true, false, false, false),
+      array($this, 'tryAssertInstancesOfStdClass'),
+      'InvalidArgumentException');
+
+    $this->tryTestCases(
+      $inputs,
+      array(true, false, false, true, false),
+      array($this, 'tryAssertInstancesOfArray'),
+      'InvalidArgumentException');
+  }
+
   public function testCoalesce() {
     $this->assertEqual(
       'zebra',

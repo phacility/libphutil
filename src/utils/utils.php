@@ -531,23 +531,33 @@ function array_select_keys(array $dict, array $keys) {
  * Throws InvalidArgumentException if it isn't true for any value.
  *
  * @param  array
- * @param  string
+ * @param  string  Name of the class or 'array' to check arrays.
  * @return array   Returns passed array.
  * @group   util
  */
 function assert_instances_of(array $arr, $class) {
+  $is_array = !strcasecmp($class, 'array');
+
   foreach ($arr as $key => $object) {
-    if (!($object instanceof $class)) {
+    if ($is_array) {
+      if (!is_array($object)) {
+        $given = gettype($object);
+        throw new InvalidArgumentException(
+          "Array item with key '{$key}' must be of type array, ".
+          "{$given} given.");
+      }
+
+    } else if (!($object instanceof $class)) {
       $given = gettype($object);
       if (is_object($object)) {
         $given = 'instance of '.get_class($object);
       }
       throw new InvalidArgumentException(
         "Array item with key '{$key}' must be an instance of {$class}, ".
-        "{$given} given."
-        );
+        "{$given} given.");
     }
   }
+
   return $arr;
 }
 
