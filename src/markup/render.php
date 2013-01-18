@@ -2,9 +2,17 @@
 
 /**
  * @group markup
+ * @deprecated Use phutil_tag() instead.
  */
 function phutil_render_tag($tag, array $attributes = array(), $content = null) {
+  $html = phutil_tag($tag, $attributes, phutil_safe_html($content));
+  return $html->getHTMLContent();
+}
 
+/**
+ * @group markup
+ */
+function phutil_tag($tag, array $attributes = array(), $content = null) {
   if (!empty($attributes['href'])) {
 
     // This might be a URI object, so cast it to a string.
@@ -36,17 +44,40 @@ function phutil_render_tag($tag, array $attributes = array(), $content = null) {
   $attributes = implode('', $attributes);
 
   if ($content === null) {
-    return '<'.$tag.$attributes.' />';
-  } else {
-    return '<'.$tag.$attributes.'>'.$content.'</'.$tag.'>';
+    return new PhutilSafeHTML('<'.$tag.$attributes.' />');
   }
+
+  if (is_array($content)) {
+    $content = implode('', array_map('phutil_escape_html', $content));
+  } else {
+    $content = phutil_escape_html($content);
+  }
+  return new PhutilSafeHTML('<'.$tag.$attributes.'>'.$content.'</'.$tag.'>');
 }
 
 /**
  * @group markup
  */
 function phutil_escape_html($string) {
+  if ($string instanceof PhutilSafeHTML) {
+    return $string;
+  }
   return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * Mark string as safe for use in HTML.
+ *
+ * @group markup
+ */
+function phutil_safe_html($string) {
+  if ($string == '') {
+    return $string;
+  } else if ($string instanceof PhutilSafeHTML) {
+    return $string;
+  } else {
+    return new PhutilSafeHTML($string);
+  }
 }
 
 /**
@@ -58,7 +89,8 @@ function phutil_escape_html($string) {
 function hsprintf($html/* , ... */) {
   $args = func_get_args();
   array_shift($args);
-  return vsprintf($html, array_map('phutil_escape_html', $args));
+  return new PhutilSafeHTML(
+    vsprintf($html, array_map('phutil_escape_html', $args)));
 }
 
 

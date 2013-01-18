@@ -120,7 +120,7 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
   public function testHsprintf() {
     $this->assertEqual(
       '<div>&lt;3</div>',
-      hsprintf('<div>%s</div>', '<3'));
+      (string)hsprintf('<div>%s</div>', '<3'));
   }
 
 }
