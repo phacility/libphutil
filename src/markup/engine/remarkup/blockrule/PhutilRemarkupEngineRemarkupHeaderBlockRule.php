@@ -37,7 +37,9 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
       $anchor = $this->generateAnchor($level - 1, $text);
     }
 
-    return '<h'.$level.'>'.$anchor.$this->applyRules($text).'</h'.$level.'>';
+    $text = '<h'.$level.'>'.$anchor.$this->applyRules($text).'</h'.$level.'>';
+
+    return $engine->storeText($text);
   }
 
   private function generateAnchor($level, $text) {
@@ -60,7 +62,20 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
       $suffix++;
     }
 
-    $anchors[$anchor] = array($level, $this->applyRules($text));
+    // When a document contains a link inside a header, like this:
+    //
+    //  = [[ http://wwww.example.com/ | example ]] =
+    //
+    // ...we want to generate a TOC entry with just "example", but link the
+    // header itself. We push the 'toc' state so all the link rules generate
+    // just names.
+    $engine->pushState('toc');
+      $text = $this->applyRules($text);
+      $text = $engine->restoreText($text);
+
+      $anchors[$anchor] = array($level, $text);
+    $engine->popState('toc');
+
     $engine->setTextMetadata($key, $anchors);
 
     return phutil_render_tag(

@@ -49,7 +49,6 @@ final class PhutilRemarkupBlockStorage {
         array_reverse(array_keys($this->map)),
         array_reverse($this->map),
         $corpus);
-      $this->map = array();
     }
     return $corpus;
   }

@@ -24,6 +24,8 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     list($input_remarkup, $expected_output) = $parts;
     $expected_output = preg_replace('/\n\z/', '', $expected_output);
 
+    $engine = $this->buildNewTestEngine();
+
     switch ($file) {
       case 'raw-escape.txt':
 
@@ -35,11 +37,21 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
         $input_remarkup = str_replace("~", "\1", $input_remarkup);
         $expected_output = str_replace("~", "\1", $expected_output);
         break;
+      case 'toc.txt':
+        $engine->setConfig('header.generate-toc', true);
+        break;
     }
 
-    $engine = $this->buildNewTestEngine();
-
     $actual_output = $engine->markupText($input_remarkup);
+
+    switch ($file) {
+      case 'toc.txt':
+        $table_of_contents =
+          PhutilRemarkupEngineRemarkupHeaderBlockRule::renderTableOfContents(
+            $engine);
+        $actual_output = $table_of_contents."\n\n".$actual_output;
+        break;
+    }
 
     $this->assertEqual(
       $expected_output,

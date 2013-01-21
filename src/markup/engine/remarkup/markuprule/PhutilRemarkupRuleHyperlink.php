@@ -51,13 +51,17 @@ class PhutilRemarkupRuleHyperlink
   }
 
   protected function renderHyperlink($link) {
-    return phutil_render_tag(
-      'a',
-      array(
-        'href'    => $link,
-        'target'  => '_blank',
-      ),
-      phutil_escape_html($link));
+    if ($this->getEngine()->getState('toc')) {
+      return phutil_escape_html($link);
+    } else {
+      return phutil_render_tag(
+        'a',
+        array(
+          'href'    => $link,
+          'target'  => '_blank',
+        ),
+        phutil_escape_html($link));
+    }
   }
 
   private function markupHyperlinkUngreedy($matches) {

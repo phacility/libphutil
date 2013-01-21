@@ -8,6 +8,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   private $blockRules = array();
   private $config = array();
   private $metadata = array();
+  private $states = array();
 
   public function setConfig($key, $value) {
     $this->config[$key] = $value;
@@ -44,6 +45,29 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
   public function markupText($text) {
     return $this->postprocessText($this->preprocessText($text));
+  }
+
+  public function pushState($state) {
+    if (empty($this->states[$state])) {
+      $this->states[$state] = 0;
+    }
+    $this->states[$state]++;
+    return $this;
+  }
+
+  public function popState($state) {
+    if (empty($this->states[$state])) {
+      throw new Exception("State '{$state}' pushed more than popped!");
+    }
+    $this->states[$state]--;
+    if (!$this->states[$state]) {
+      unset($this->states[$state]);
+    }
+    return $this;
+  }
+
+  public function getState($state) {
+    return !empty($this->states[$state]);
   }
 
   private function setupProcessing() {
@@ -145,6 +169,10 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
       $block_rule->postprocess();
     }
 
-    return $this->storage->restore(idx($dict, 'output'));
+    return $this->restoreText(idx($dict, 'output'));
+  }
+
+  public function restoreText($text) {
+    return $this->storage->restore($text);
   }
 }

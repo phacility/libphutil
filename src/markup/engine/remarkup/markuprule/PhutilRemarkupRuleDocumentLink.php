@@ -17,13 +17,17 @@ final class PhutilRemarkupRuleDocumentLink
   }
 
   protected function renderHyperlink($link, $name) {
-    return phutil_render_tag(
-      'a',
-      array(
-        'href'    => $link,
-        'target'  => '_blank',
-      ),
-      phutil_escape_html($name));
+    if ($this->getEngine()->getState('toc')) {
+      return phutil_escape_html($name);
+    } else {
+      return phutil_render_tag(
+        'a',
+        array(
+          'href'    => $link,
+          'target'  => '_blank',
+        ),
+        phutil_escape_html($name));
+    }
   }
 
   public function markupDocumentLink($matches) {
