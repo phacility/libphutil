@@ -29,18 +29,14 @@ final class PhutilOpaqueEnvelopeKey {
    */
   public static function getKey() {
     if (self::$key === null) {
-      try {
-        self::$key = Filesystem::readRandomBytes(128);
-      } catch (Exception $ex) {
-
-        // NOTE: We can't throw here! Otherwise we might get a stack trace
-        // including the string that was passed to PhutilOpaqueEnvelope's
-        // constructor. Just die() instead.
-
-        die(
-          "Unable to read random bytes in PhutilOpaqueEnvelope. (This ".
-          "causes an immediate process exit to avoid leaking the envelope ".
-          "contents in a stack trace.)");
+      // NOTE: We're using a weak random source because cryptographic levels
+      // of security aren't terribly important here and it allows us to use
+      // envelopes on systems which don't have a strong random source. Notably,
+      // this lets us make it to the readbility check for `/dev/urandom` in
+      // Phabricator on systems where we can't read it.
+      self::$key = '';
+      for ($ii = 0; $ii < 8; $ii++) {
+        self::$key .= md5(mt_rand(), $raw_output = true);
       }
     }
     return self::$key;
