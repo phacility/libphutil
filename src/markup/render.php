@@ -5,6 +5,9 @@
  * @deprecated Use phutil_tag() instead.
  */
 function phutil_render_tag($tag, array $attributes = array(), $content = null) {
+  if (is_array($content)) {
+    $content = implode('', $content);
+  }
   $html = phutil_tag($tag, $attributes, phutil_safe_html($content));
   return $html->getHTMLContent();
 }
