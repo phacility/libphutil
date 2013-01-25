@@ -162,4 +162,37 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
     }
   }
 
+  public function testHTMLTranslations() {
+    $string = '%s awoke <strong>suddenly</strong> at %s.';
+    $when = '<4 AM>';
+
+    $translator = new PhutilTranslator();
+
+    // When no components are HTML, everything is treated as a string.
+    $who = '<span>Abraham</span>';
+    $translation = $translator->translate(
+      $string,
+      $who,
+      $when);
+    $this->assertEqual(
+      true,
+      gettype($translation) == 'string');
+    $this->assertEqual(
+      '<span>Abraham</span> awoke <strong>suddenly</strong> at <4 AM>.',
+      $translation);
+
+    // When at least one component is HTML, everything is treated as HTML.
+    $who = phutil_tag('span', array(), 'Abraham');
+    $translation = $translator->translate(
+      $string,
+      $who,
+      $when);
+    $this->assertEqual(
+      true,
+      ($translation instanceof PhutilSafeHTML));
+    $this->assertEqual(
+      '<span>Abraham</span> awoke <strong>suddenly</strong> at &lt;4 AM&gt;.',
+      $translation->getHTMLContent());
+  }
+
 }

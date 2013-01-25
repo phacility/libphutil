@@ -68,11 +68,33 @@ final class PhutilTranslator {
     }
     array_shift($args);
 
-    if ($this->language == 'en-ac') {
-      return strtoupper(vsprintf($translation, $args));
-    } else {
-      return vsprintf($translation, $args);
+    // Check if any arguments are PhutilSafeHTML. If they are, we will apply
+    // any escaping necessary and output HTML.
+    $is_html = false;
+    foreach ($args as $arg) {
+      if ($arg instanceof PhutilSafeHTML) {
+        $is_html = true;
+        break;
+      }
     }
+
+    if ($is_html) {
+      foreach ($args as $k => $arg) {
+        $args[$k] = (string)phutil_escape_html($arg);
+      }
+    }
+
+    if ($this->language == 'en-ac') {
+      $result = strtoupper(vsprintf($translation, $args));
+    } else {
+      $result = vsprintf($translation, $args);
+    }
+
+    if ($is_html) {
+      $result = phutil_safe_html($result);
+    }
+
+    return $result;
   }
 
   private function chooseVariant(array $translations, $variant) {
