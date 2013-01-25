@@ -67,13 +67,19 @@ final class PhutilTranslator {
       $translation = $this->chooseVariant($translation, next($args));
     }
     array_shift($args);
-    return vsprintf($translation, $args);
+
+    if ($this->language == 'en-ac') {
+      return strtoupper(vsprintf($translation, $args));
+    } else {
+      return vsprintf($translation, $args);
+    }
   }
 
   private function chooseVariant(array $translations, $variant) {
     switch ($this->language) {
 
       case 'en':
+      case 'en-ac':
         list($singular, $plural) = $translations;
         if ($variant == 1) {
           return $singular;
