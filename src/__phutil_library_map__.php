@@ -233,6 +233,7 @@ phutil_register_library_map(array(
     'Futures' => 'future/functions.php',
     '_qsprintf_check_scalar_type' => 'xsprintf/qsprintf.php',
     '_qsprintf_check_type' => 'xsprintf/qsprintf.php',
+    'array_fuse' => 'utils/utils.php',
     'array_mergev' => 'utils/utils.php',
     'array_select_keys' => 'utils/utils.php',
     'assert_instances_of' => 'utils/utils.php',

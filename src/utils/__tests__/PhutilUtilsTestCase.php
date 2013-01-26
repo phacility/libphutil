@@ -322,4 +322,9 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
 
   }
 
+  public function testArrayFuse() {
+    $this->assertEqual(array(), array_fuse(array()));
+    $this->assertEqual(array('x' => 'x'), array_fuse(array('x')));
+  }
+
 }

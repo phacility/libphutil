@@ -758,3 +758,31 @@ function phutil_split_lines($corpus, $retain_endings = true) {
 
   return $lines;
 }
+
+
+/**
+ * Simplifies a common use of `array_combine()`. Specifically, this:
+ *
+ *   COUNTEREXAMPLE:
+ *   if ($list) {
+ *     $result = array_combine($list, $list);
+ *   } else {
+ *     // Prior to PHP 5.4, array_combine() failed if given empty arrays.
+ *     $result = array();
+ *   }
+ *
+ * ...is equivalent to this:
+ *
+ *   $result = array_fuse($list);
+ *
+ * @param   list  List of scalars.
+ * @return  dict  Dictionary with inputs mapped to themselves.
+ * @group util
+ */
+function array_fuse(array $list) {
+  if ($list) {
+    return array_combine($list, $list);
+  }
+  return array();
+}
+

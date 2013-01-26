@@ -79,7 +79,7 @@ final class PhutilKeyValueCacheStack extends PhutilKeyValueCache {
 
   public function getKeys(array $keys) {
 
-    $remaining = array_combine($keys, $keys);
+    $remaining = array_fuse($keys);
     $results = array();
     $missed = array();
 
