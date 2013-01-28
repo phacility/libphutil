@@ -69,6 +69,13 @@ function phutil_escape_html($string) {
 }
 
 /**
+ * @group markup
+ */
+function phutil_escape_html_newlines($string) {
+  return phutil_safe_html(nl2br(phutil_escape_html($string)));
+}
+
+/**
  * Mark string as safe for use in HTML.
  *
  * @group markup
