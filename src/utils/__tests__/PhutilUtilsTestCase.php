@@ -327,4 +327,37 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $this->assertEqual(array('x' => 'x'), array_fuse(array('x')));
   }
 
+  public function testArrayInterleave() {
+    $this->assertEqual(array(), array_interleave('x', array()));
+    $this->assertEqual(array('y'), array_interleave('x', array('y')));
+
+    $this->assertEqual(
+      array('y', 'x', 'z'),
+      array_interleave('x', array('y', 'z')));
+
+    $this->assertEqual(
+      array('y', 'x', 'z'),
+      array_interleave(
+        'x',
+        array(
+          'kangaroo' => 'y',
+          'marmoset' => 'z',
+        )));
+
+    $obj1 = (object)array();
+    $obj2 = (object)array();
+
+    $this->assertEqual(
+      array($obj1, $obj2, $obj1, $obj2, $obj1),
+      array_interleave(
+        $obj2,
+        array(
+          $obj1,
+          $obj1,
+          $obj1,
+        )));
+  }
+
+
+
 }

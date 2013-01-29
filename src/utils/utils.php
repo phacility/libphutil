@@ -786,3 +786,40 @@ function array_fuse(array $list) {
   return array();
 }
 
+
+/**
+ * Add an element between every two elements of some array. That is, given a
+ * list `A, B, C, D`, and some element to interleave, `x`, this function returns
+ * `A, x, B, x, C, x, D`. This works like `implode()`, but does not concatenate
+ * the list into a string. In particular:
+ *
+ *   implode('', array_interleave($x, $list));
+ *
+ * ...is equivalent to:
+ *
+ *   implode($x, $list);
+ *
+ * One case where this is useful is in rendering lists of HTML elements
+ * separated by some character, like a middle dot:
+ *
+ *   phutil_tag(
+ *     'div',
+ *     array(),
+ *     array_interleave(" \xC2\xB7 ", $stuff));
+ *
+ * This function does not preserve keys.
+ *
+ * @param wild  Element to interleave.
+ * @param list  List of elements to be interleaved.
+ * @return list Original list with the new element interleaved.
+ * @group util
+ */
+function array_interleave($interleave, array $array) {
+  $result = array();
+  foreach ($array as $item) {
+    $result[] = $item;
+    $result[] = $interleave;
+  }
+  array_pop($result);
+  return $result;
+}
