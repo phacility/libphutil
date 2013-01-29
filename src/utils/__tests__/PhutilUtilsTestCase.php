@@ -356,6 +356,19 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
           $obj1,
           $obj1,
         )));
+
+    $implode_tests = array(
+      '' => array(1, 2, 3),
+      'x' => array(1, 2, 3),
+      'y' => array(),
+      'z' => array(1),
+    );
+
+    foreach ($implode_tests as $x => $y) {
+      $this->assertEqual(
+        implode('', array_interleave($x, $y)),
+        implode($x, $y));
+    }
   }
 
 
