@@ -166,12 +166,13 @@ final class XHPASTNode extends AASTNode {
         switch ($c) {
           case 'x':
             $u = isset($value[$ii + 1]) ? $value[$ii + 1] : null;
-            if (!preg_match('/^[a-z0-9]/i', $u)) {
+            if (!preg_match('/^[a-f0-9]/i', $u)) {
               // PHP treats \x followed by anything which is not a hex digit
               // as a literal \x.
               $out .= '\\\\'.$c;
               break;
             }
+            /* fallthrough */
           case 'n':
           case 'r':
           case 'f':
@@ -188,6 +189,11 @@ final class XHPASTNode extends AASTNode {
           case '6':
           case '7':
             $out .= '\\'.$c;
+            break;
+          case 'e':
+            // Since PHP 5.4.0, this means "esc". However, stripcslashes() does
+            // not perform this conversion.
+            $out .= chr(27);
             break;
           default:
             $out .= '\\\\'.$c;

@@ -71,8 +71,13 @@ final class XHPASTTreeTestCase extends PhutilTestCase {
       "\\`\\~\\\\\\|\\[\\]\\{\\}\\<\\>\\,\\.\\/\\?\\:\\;\\-\\_\\=\\+".
       "'");
 
+    // After PHP 5.4.0, "\e" means "escape", not "backslash e". We implement the
+    // newer rules, but if we're running in an older version of PHP we can not
+    // express them with "\e".
+    $this->assertEval(chr(27), '"\\e"');
+
     $this->assertEval(
-       "\a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z".
+       "\a\b\c\d\x1B\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z".
        "\1\2\3\4\5\6\7\8\9\0".
        "\!\@\#\$\%\^\&\*\(\)".
        "\`\~\\\|\[\]\{\}\<\>\,\.\/\?\:\;\-\_\=\+",
@@ -118,6 +123,10 @@ final class XHPASTTreeTestCase extends PhutilTestCase {
     $this->assertEval(
       "\x0",
       '"\x0"');
+
+    $this->assertEval(
+      "\xg",
+      '"\xg"');
 
   }
 
