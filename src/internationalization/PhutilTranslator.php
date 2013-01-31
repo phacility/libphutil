@@ -84,10 +84,16 @@ final class PhutilTranslator {
       }
     }
 
+    foreach ($args as $k => $arg) {
+      if ($arg instanceof PhutilNumber) {
+        $args[$k] = $this->formatNumber($arg->getNumber());
+      }
+    }
+
+    $result = vsprintf($translation, $args);
+
     if ($this->language == 'en-ac') {
-      $result = strtoupper(vsprintf($translation, $args));
-    } else {
-      $result = vsprintf($translation, $args);
+      $result = strtoupper($result);
     }
 
     if ($is_html) {
@@ -98,6 +104,10 @@ final class PhutilTranslator {
   }
 
   private function chooseVariant(array $translations, $variant) {
+    if ($variant instanceof PhutilNumber) {
+      $variant = $variant->getNumber();
+    }
+
     switch ($this->language) {
 
       case 'en':

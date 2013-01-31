@@ -125,6 +125,22 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
     $this->assertEqual('1 234,5678', $translator->formatNumber(1234.5678, 4));
   }
 
+  public function testNumberTranslations() {
+    $translator = new PhutilTranslator();
+    $translator->addTranslations(
+      array(
+        '%s line(s)' => array('%s line', '%s lines'),
+      ));
+
+    $this->assertEqual(
+      '1 line',
+      $translator->translate('%s line(s)', new PhutilNumber(1)));
+
+    $this->assertEqual(
+      '1,000 lines',
+      $translator->translate('%s line(s)', new PhutilNumber(1000)));
+  }
+
   public function testValidateTranslation() {
     $tests = array(
       'a < 2' => array(

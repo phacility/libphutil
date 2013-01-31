@@ -8,7 +8,7 @@ interface PhutilPerson {
   const SEX_FEMALE = 'f';
   const SEX_UNKNOWN = '';
 
-  function getSex();
-  function __toString();
+  public function getSex();
+  public function __toString();
 
 }
