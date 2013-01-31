@@ -5,7 +5,7 @@ final class PhutilSafeHTML {
   private $content;
 
   public function __construct($content) {
-    $this->content = $content;
+    $this->content = (string)$content;
   }
 
   public function __toString() {
@@ -13,7 +13,14 @@ final class PhutilSafeHTML {
   }
 
   public function getHTMLContent() {
-    return (string)$this->content;
+    return $this->content;
+  }
+
+  public function appendHTML($html /* , ... */) {
+    foreach (func_get_args() as $html) {
+      $this->content .= phutil_escape_html($html);
+    }
+    return $this;
   }
 
 }

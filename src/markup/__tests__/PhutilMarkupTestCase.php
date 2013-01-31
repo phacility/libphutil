@@ -123,4 +123,10 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
       (string)hsprintf('<div>%s</div>', '<3'));
   }
 
+  public function testAppendHTML() {
+    $html = phutil_tag('span');
+    $html->appendHTML(phutil_tag('em'), '<evil>');
+    $this->assertEqual('<span /><em />&lt;evil&gt;', $html->getHTMLContent());
+  }
+
 }
