@@ -202,7 +202,7 @@ EOHELP
     while (true) {
       $this->logMessage('INIT', 'Starting process.');
 
-      $future = new ExecFuture($command);
+      $future = new ExecFuture('%C', $command);
       $future->setCWD($exec_dir);
       $future->setStdoutSizeLimit($this->captureBufferSize);
       $future->setStderrSizeLimit($this->captureBufferSize);
