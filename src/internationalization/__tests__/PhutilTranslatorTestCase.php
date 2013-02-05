@@ -139,6 +139,12 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
     $this->assertEqual(
       '1,000 lines',
       $translator->translate('%s line(s)', new PhutilNumber(1000)));
+
+    $this->assertEqual(
+      '8.5 lines',
+      $translator->translate(
+        '%s line(s)',
+        id(new PhutilNumber(8.5))->setDecimals(1)));
   }
 
   public function testValidateTranslation() {

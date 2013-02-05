@@ -86,7 +86,7 @@ final class PhutilTranslator {
 
     foreach ($args as $k => $arg) {
       if ($arg instanceof PhutilNumber) {
-        $args[$k] = $this->formatNumber($arg->getNumber());
+        $args[$k] = $this->formatNumber($arg->getNumber(), $arg->getDecimals());
       }
     }
 
