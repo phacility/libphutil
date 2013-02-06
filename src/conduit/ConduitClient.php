@@ -85,17 +85,9 @@ final class ConduitClient {
       '__conduit__' => true,
     );
 
-    // NOTE: If we're on Windows, the socket-based HTTPFuture won't work
-    // properly. In theory it may be fixable, but the easier fix is just to use
-    // the cURL-based HTTPSFuture for HTTP. We'll lose the ability to
-    // parallelize requests but things will work correctly.
-    $use_https_future = ($uri->getProtocol() == 'https') || phutil_is_windows();
-
-    if ($use_https_future) {
-      $core_future = new HTTPSFuture($uri, $data);
-    } else {
-      $core_future = new HTTPFuture($uri, $data);
-    }
+    // Always use the cURL-based HTTPSFuture, for proxy support and other
+    // protocol edge cases that HTTPFuture does not support.
+    $core_future = new HTTPSFuture($uri, $data);
 
     $core_future->setMethod('POST');
     $core_future->setTimeout($this->timeout);
