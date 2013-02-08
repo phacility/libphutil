@@ -236,7 +236,7 @@ final class Filesystem {
    * @task file
    */
   private static function executeRemovePath($path) {
-    if (is_dir($path)) {
+    if (is_dir($path) && !is_link($path)) {
       foreach (Filesystem::listDirectory($path, true) as $child) {
         self::executeRemovePath($path.DIRECTORY_SEPARATOR.$child);
       }
