@@ -115,6 +115,20 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
       curl_setopt($curl, CURLOPT_URL, $uri);
 
+      if (defined('CURLOPT_PROTOCOLS')) {
+        // cURL supports a lot of protocols, and by default it will honor
+        // redirects across protocols (for instance, from HTTP to POP3). Beyond
+        // being very silly, this also has security implications:
+        //
+        //   http://blog.volema.com/curl-rce.html
+        //
+        // Disable all protocols other than HTTP and HTTPS.
+
+        $allowed_protocols = CURLPROTO_HTTPS | CURLPROTO_HTTP;
+        curl_setopt($curl, CURLOPT_PROTOCOLS, $allowed_protocols);
+        curl_setopt($curl, CURLOPT_REDIR_PROTOCOLS, $allowed_protocols);
+      }
+
       $data = $this->getData();
       if ($data) {
 
