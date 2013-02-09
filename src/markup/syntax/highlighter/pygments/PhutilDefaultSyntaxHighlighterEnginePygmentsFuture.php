@@ -27,7 +27,7 @@ final class PhutilDefaultSyntaxHighlighterEnginePygmentsFuture
       if ($this->scrub) {
         $stdout = preg_replace('/^.*\n/', '', $stdout);
       }
-      return $stdout;
+      return phutil_safe_html($stdout);
     }
 
     throw new PhutilSyntaxHighlighterException($stderr, $err);

@@ -91,6 +91,17 @@ function phutil_safe_html($string) {
 }
 
 /**
+ * HTML safe version of implode().
+ *
+ * @group markup
+ */
+function phutil_implode_html($glue, array $pieces) {
+  $glue = phutil_escape_html($glue);
+  $pieces = array_map('phutil_escape_html', $pieces);
+  return phutil_safe_html(implode($glue, $pieces));
+}
+
+/**
  * Format a HTML code. This function behaves like sprintf(), except that all
  * the normal conversions (like %s) will be properly escaped.
  *

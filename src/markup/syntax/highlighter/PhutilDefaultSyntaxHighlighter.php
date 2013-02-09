@@ -10,7 +10,7 @@ final class PhutilDefaultSyntaxHighlighter {
   }
 
   public function getHighlightFuture($source) {
-    $result = phutil_escape_html($source);
+    $result = hsprintf('%s', $source);
     return new ImmediateFuture($result);
   }
 }

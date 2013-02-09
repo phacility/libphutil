@@ -34,14 +34,14 @@ final class PhutilRainbowSyntaxHighlighter {
         $result[] = $character;
         continue;
       }
-      $result[] =
-        '<span class="'.$colors[$color].'">'.
-          phutil_escape_html($character).
-        '</span>';
+      $result[] = phutil_tag(
+        'span',
+        array('class' => $colors[$color]),
+        $character);
       $color = ($color + 1) % count($colors);
     }
 
-    $result = implode('', $result);
+    $result = phutil_implode_html('', $result);
     return new ImmediateFuture($result);
   }
 }

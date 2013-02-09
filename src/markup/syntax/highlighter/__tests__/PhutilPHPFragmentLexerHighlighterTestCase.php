@@ -19,7 +19,7 @@ final class PhutilPHPFragmentLexerHighlighterTestCase extends PhutilTestCase {
 
         $this->assertEqual(
           Filesystem::readFile($path.'/'.$expect),
-          $highlighter->getHighlightFuture($source)->resolve(),
+          (string)$highlighter->getHighlightFuture($source)->resolve(),
           $f);
       }
     }

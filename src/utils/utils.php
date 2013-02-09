@@ -799,14 +799,6 @@ function array_fuse(array $list) {
  *
  *   implode($x, $list);
  *
- * One case where this is useful is in rendering lists of HTML elements
- * separated by some character, like a middle dot:
- *
- *   phutil_tag(
- *     'div',
- *     array(),
- *     array_interleave(" \xC2\xB7 ", $stuff));
- *
  * This function does not preserve keys.
  *
  * @param wild  Element to interleave.

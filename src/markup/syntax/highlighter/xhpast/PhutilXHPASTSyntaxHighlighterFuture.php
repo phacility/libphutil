@@ -50,19 +50,15 @@ final class PhutilXHPASTSyntaxHighlighterFuture extends FutureProxy {
 
     $out = array();
     foreach ($tokens as $key => $token) {
-      $value = phutil_escape_html($token->getValue());
+      $value = $token->getValue();
       $class = null;
       $multi = false;
-      $attrs = '';
+      $attrs = array();
       if (isset($interesting_symbols[$key])) {
         $sym = $interesting_symbols[$key];
         $class = $sym[0];
-        if (isset($sym['context'])) {
-          $attrs = $attrs.' data-symbol-context="'.$sym['context'].'"';
-        }
-        if (isset($sym['symbol'])) {
-          $attrs = $attrs.' data-symbol-name="'.$sym['symbol'].'"';
-        }
+        $attrs['data-symbol-context'] = idx($sym, 'context');
+        $attrs['data-symbol-name'] = idx($sym, 'symbol');
       } else {
         switch ($token->getTypeName()) {
           case 'T_WHITESPACE':
@@ -99,7 +95,7 @@ final class PhutilXHPASTSyntaxHighlighterFuture extends FutureProxy {
               'false' => true,
               'null' => true,
             );
-            if (isset($magic[$value])) {
+            if (isset($magic[strtolower($value)])) {
               $class = 'k';
               break;
             }
@@ -110,21 +106,20 @@ final class PhutilXHPASTSyntaxHighlighterFuture extends FutureProxy {
             break;
         }
       }
-      if ($class) {
-        $l = '<span class="'.$class.'"'.$attrs.'>';
-        $r = '</span>';
 
-        $value = $l.$value.$r;
+      if ($class) {
+        $attrs['class'] = $class;
         if ($multi) {
           // If the token may have multiple lines in it, make sure each
           // <span> crosses no more than one line so the lines can be put
           // in a table, etc., later.
-          $value = str_replace(
-            "\n",
-            $r."\n".$l,
-            $value);
+          $value = explode("\n", $value);
+        } else {
+          $value = array($value);
         }
-        $out[] = $value;
+        foreach ($value as $val) {
+          $out[] = phutil_tag('span', $attrs, $val);
+        }
       } else {
         $out[] = $value;
       }
@@ -134,7 +129,7 @@ final class PhutilXHPASTSyntaxHighlighterFuture extends FutureProxy {
       array_shift($out);
     }
 
-    return rtrim(implode('', $out));
+    return phutil_implode_html('', $out);
   }
 
   private function findInterestingSymbols(XHPASTNode $root) {

@@ -280,6 +280,7 @@ phutil_register_library_map(array(
     'phutil_get_library_name_for_root' => 'moduleutils/moduleutils.php',
     'phutil_get_library_root' => 'moduleutils/moduleutils.php',
     'phutil_get_library_root_for_path' => 'moduleutils/moduleutils.php',
+    'phutil_implode_html' => 'markup/render.php',
     'phutil_is_utf8' => 'utils/utf8.php',
     'phutil_passthru' => 'future/exec/execx.php',
     'phutil_render_tag' => 'markup/render.php',

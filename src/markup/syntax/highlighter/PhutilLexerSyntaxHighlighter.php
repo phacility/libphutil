@@ -30,26 +30,14 @@ final class PhutilLexerSyntaxHighlighter extends PhutilSyntaxHighlighter {
     $result = array();
     foreach ($tokens as $token) {
       list($type, $value, $context) = $token;
-      $value = phutil_escape_html($value);
 
       $data_name = null;
       switch ($type) {
         case 'nc':
         case 'nf':
         case 'na':
-          $data_name = ' data-symbol-name="'.$value.'"';
+          $data_name = $value;
           break;
-      }
-
-      $data_context = null;
-      if ($context) {
-        $context = phutil_escape_html($context);
-        $data_context = ' data-symbol-context="'.$context.'"';
-      }
-
-      $class_name = null;
-      if ($type) {
-        $class_name = ' class="'.$type.'"';
       }
 
       if (strpos($value, "\n") !== false) {
@@ -59,11 +47,15 @@ final class PhutilLexerSyntaxHighlighter extends PhutilSyntaxHighlighter {
       }
       foreach ($value as $part) {
         if (strlen($part)) {
-          if ($class_name) {
-            $result[] =
-              '<span'.$class_name.$data_context.$data_name.'>'.
-                $part.
-              '</span>';
+          if ($type) {
+            $result[] = phutil_tag(
+              'span',
+              array(
+                'class' => $type,
+                'data-symbol-context' => $context,
+                'data-symbol-name' => $data_name,
+              ),
+              $part);
           } else {
             $result[] = $part;
           }
@@ -75,7 +67,7 @@ final class PhutilLexerSyntaxHighlighter extends PhutilSyntaxHighlighter {
       array_pop($result);
     }
 
-    $result = implode('', $result);
+    $result = phutil_implode_html('', $result);
 
     return new ImmediateFuture($result);
   }

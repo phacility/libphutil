@@ -35,21 +35,19 @@ final class PhutilConsoleSyntaxHighlighter {
         '(#.*|\\\\)?$@';
 
       if (preg_match($pattern, $line, $matches)) {
-        $line = '';
-        if ($matches[1]) {
-          $line .= phutil_escape_html($matches[1]);
-        }
-        $line .= '<span class="gp">'.phutil_escape_html($matches[2]).'</span>';
-        if (!empty($matches[3])) {
-          $line .= '<span class="k">'.phutil_escape_html($matches[3]).'</span>';
-        }
-        $lines[$key] = $line;
+        $lines[$key] = hsprintf(
+          '%s<span class="gp">%s</span>%s',
+          $matches[1],
+          $matches[2],
+          (!empty($matches[3])
+            ? hsprintf('<span class="k">%s</span>', $matches[3])
+            : ''));
         $in_command = (idx($matches, 3) == '\\');
       } else {
-        $lines[$key] = '<span class="go">'.phutil_escape_html($line).'</span>';
+        $lines[$key] = hsprintf('<span class="go">%s</span>', $line);
       }
     }
-    $lines = implode("\n", $lines);
+    $lines = phutil_implode_html("\n", $lines);
 
     return new ImmediateFuture($lines);
   }

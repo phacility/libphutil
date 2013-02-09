@@ -40,6 +40,7 @@ final class PhutilDivinerSyntaxHighlighter {
     // Highlight stuff that looks like headers.
     $source = $this->highlightPattern('/^=(.*)$/m', $source, 'nv');
 
+    $source = phutil_safe_html($source);
     return new ImmediateFuture($source);
   }
 
