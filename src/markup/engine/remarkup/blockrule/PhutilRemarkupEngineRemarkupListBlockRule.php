@@ -226,7 +226,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
     $out = $this->renderTree($tree);
 
-    return implode('', $out);
+    return phutil_implode_html('', $out);
   }
 
   /**
@@ -325,18 +325,18 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
     $out = array();
     switch ($style) {
       case '#':
-        $out[] = "<ol>\n";
+        $out[] = hsprintf("<ol>\n");
         break;
       case '-':
-        $out[] = "<ul>\n";
+        $out[] = hsprintf("<ul>\n");
         break;
     }
 
     foreach ($tree as $item) {
       if ($item['text'] === null) {
-        $out[] = '<li class="phantom-item">';
+        $out[] = hsprintf('<li class="phantom-item">');
       } else {
-        $out[] = '<li>';
+        $out[] = hsprintf('<li>');
         $out[] = $this->applyRules($item['text']);
       }
       if ($item['items']) {
@@ -344,15 +344,15 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
           $out[] = $i;
         }
       }
-      $out[] = "</li>\n";
+      $out[] = hsprintf("</li>\n");
     }
 
     switch ($style) {
       case '#':
-        $out[] = '</ol>';
+        $out[] = hsprintf('</ol>');
         break;
       case '-':
-        $out[] = '</ul>';
+        $out[] = hsprintf('</ul>');
         break;
     }
 

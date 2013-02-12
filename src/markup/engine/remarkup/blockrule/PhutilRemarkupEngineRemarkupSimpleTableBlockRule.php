@@ -52,19 +52,20 @@ final class PhutilRemarkupEngineRemarkupSimpleTableBlockRule
     }
 
     $out = array();
-    $out[] = "<table class=\"remarkup-table\">\n";
+    $out[] = hsprintf("<table class=\"remarkup-table\">\n");
     foreach ($rows as $cells) {
-      $out[] = '<tr>';
+      $out[] = hsprintf('<tr>');
       foreach ($cells as $cell) {
-        $out[] = '<'.$cell['type'].'>';
-        $out[] = $this->applyRules($cell['content']);
-        $out[] = '</'.$cell['type'].'>';
+        $out[] = phutil_tag(
+          $cell['type'],
+          array(),
+          $this->applyRules($cell['content']));
       }
-      $out[] = "</tr>\n";
+      $out[] = hsprintf("</tr>\n");
     }
-    $out[] = "</table>\n";
+    $out[] = hsprintf("</table>\n");
 
-    return implode($out);
+    return phutil_implode_html('', $out);
   }
 
 }

@@ -72,7 +72,7 @@ function phutil_escape_html($string) {
  * @group markup
  */
 function phutil_escape_html_newlines($string) {
-  return phutil_safe_html(nl2br(phutil_escape_html($string)));
+  return PhutilSafeHTML::applyFunction('nl2br', $string);
 }
 
 /**

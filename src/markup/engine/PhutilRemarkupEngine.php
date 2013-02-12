@@ -153,7 +153,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     $metadata = $this->metadata;
 
     return array(
-      'output'    => implode("\n\n", $output),
+      'output'    => phutil_implode_html("\n\n", $output),
       'storage'   => $map,
       'metadata'  => $metadata,
     );

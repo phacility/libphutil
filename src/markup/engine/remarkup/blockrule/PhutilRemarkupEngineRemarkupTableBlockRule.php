@@ -89,27 +89,25 @@ final class PhutilRemarkupEngineRemarkupTableBlockRule
     }
 
     $out = array();
-    $out[] = '<table class="remarkup-table">';
     foreach ($out_rows as $row) {
-      $out[] = '<'.$row['type'].'>';
+      $cells = array();
       foreach ($row['content'] as $cell) {
-        $out[] = '<'.$cell['type'].'>';
-        $out[] = $this->applyRules($cell['content']);
-        $out[] = '</'.$cell['type'].'>';
+        $cells[] = phutil_tag(
+          $cell['type'],
+          array(),
+          $this->applyRules($cell['content']));
       }
-      $out[] = '</'.$row['type'].'>';
+      $out[] = phutil_tag($row['type'], array(), $cells);
     }
-    $out[] = '</table>';
 
-    return implode("\n", $out);
+    return phutil_tag('table', array('class' => 'remarkup-table'), $out);
   }
 
   private function fail($near, $message) {
-    return
-      '<div style="color: red;">'.
-        phutil_escape_html($message).' near: '.
-        phutil_escape_html(phutil_utf8_shorten($near, 32000)).
-      '</div>';
+    return hsprintf(
+      '<div style="color: red;">%s near: %s</div>',
+      $message,
+      phutil_utf8_shorten($near, 32000));
   }
 
 }

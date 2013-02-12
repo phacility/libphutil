@@ -45,10 +45,10 @@ final class PhutilRemarkupBlockStorage {
 
   public function restore($corpus) {
     if ($this->map) {
-      $corpus = str_replace(
+      $corpus = phutil_safe_html(str_replace(
         array_reverse(array_keys($this->map)),
-        array_reverse($this->map),
-        $corpus);
+        array_map('phutil_escape_html', array_reverse($this->map)),
+        phutil_escape_html($corpus)));
     }
     return $corpus;
   }

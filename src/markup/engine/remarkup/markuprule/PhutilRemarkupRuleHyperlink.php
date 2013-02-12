@@ -14,7 +14,7 @@ class PhutilRemarkupRuleHyperlink
     // with weird characters". This is assumed to be reasonable because they
     // don't appear in normal text or normal URLs.
     $text = preg_replace_callback(
-      '@[<](\w{3,}://.+?)[>]@',
+      '@<(\w{3,}://.+?)>@',
       array($this, 'markupHyperlink'),
       $text);
 
@@ -40,7 +40,7 @@ class PhutilRemarkupRuleHyperlink
     if (!idx($protocols, $protocol)) {
       // If this URI doesn't use a whitelisted protocol, don't link it. This
       // is primarily intended to prevent javascript:// silliness.
-      return $this->getEngine()->storeText(phutil_escape_html($matches[1]));
+      return $this->getEngine()->storeText($matches[1]);
     }
 
     return $this->storeRenderedHyperlink($matches[1]);
@@ -52,19 +52,19 @@ class PhutilRemarkupRuleHyperlink
 
   protected function renderHyperlink($link) {
     if ($this->getEngine()->getState('toc')) {
-      return phutil_escape_html($link);
+      return $link;
     } else {
-      return phutil_render_tag(
+      return phutil_tag(
         'a',
         array(
           'href'    => $link,
           'target'  => '_blank',
         ),
-        phutil_escape_html($link));
+        $link);
     }
   }
 
-  private function markupHyperlinkUngreedy($matches) {
+  protected function markupHyperlinkUngreedy($matches) {
     $match = $matches[1];
     $tail = null;
     $trailing = null;
@@ -88,7 +88,7 @@ class PhutilRemarkupRuleHyperlink
       $match = substr($match, 0, -1);
     }
 
-    return $this->markupHyperlink(array(null, $match)).$tail;
+    return hsprintf('%s%s', $this->markupHyperlink(array(null, $match)), $tail);
   }
 
 }

@@ -37,7 +37,10 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
       $anchor = $this->generateAnchor($level - 1, $text);
     }
 
-    $text = '<h'.$level.'>'.$anchor.$this->applyRules($text).'</h'.$level.'>';
+    $text = phutil_tag(
+      'h'.$level,
+      array(),
+      array($anchor, $this->applyRules($text)));
 
     return $engine->storeText($text);
   }
@@ -78,7 +81,7 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
 
     $engine->setTextMetadata($key, $anchors);
 
-    return phutil_render_tag(
+    return phutil_tag(
       'a',
       array(
         'name' => $anchor,
@@ -103,18 +106,18 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
       list($level, $name) = $info;
 
       while ($depth < $level) {
-        $toc[] = '<ul>';
+        $toc[] = hsprintf('<ul>');
         $depth++;
       }
       while ($depth > $level) {
-        $toc[] = '</ul>';
+        $toc[] = hsprintf('</ul>');
         $depth--;
       }
 
-      $toc[] = phutil_render_tag(
+      $toc[] = phutil_tag(
         'li',
         array(),
-        phutil_render_tag(
+        phutil_tag(
           'a',
           array(
             'href' => '#'.$anchor,
@@ -122,11 +125,11 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
           $name));
     }
     while ($depth > 0) {
-      $toc[] = '</ul>';
+      $toc[] = hsprintf('</ul>');
       $depth--;
     }
 
-    return implode("\n", $toc);
+    return phutil_implode_html("\n", $toc);
   }
 
 }

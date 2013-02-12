@@ -18,15 +18,15 @@ final class PhutilRemarkupRuleDocumentLink
 
   protected function renderHyperlink($link, $name) {
     if ($this->getEngine()->getState('toc')) {
-      return phutil_escape_html($name);
+      return $name;
     } else {
-      return phutil_render_tag(
+      return phutil_tag(
         'a',
         array(
           'href'    => $link,
           'target'  => '_blank',
         ),
-        phutil_escape_html($name));
+        $name);
     }
   }
 

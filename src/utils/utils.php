@@ -756,6 +756,10 @@ function phutil_split_lines($corpus, $retain_endings = true) {
     array_pop($lines);
   }
 
+  if ($corpus instanceof PhutilSafeHTML) {
+    return array_map('phutil_safe_html', $lines);
+  }
+
   return $lines;
 }
 

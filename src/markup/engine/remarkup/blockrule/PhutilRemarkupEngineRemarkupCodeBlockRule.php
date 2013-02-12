@@ -120,12 +120,12 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
 
     $name_header = null;
     if ($options['name']) {
-      $name_header = phutil_render_tag(
+      $name_header = phutil_tag(
         'div',
         array(
           'class' => 'remarkup-code-header',
         ),
-        phutil_escape_html($options['name']));
+        $options['name']);
     }
 
     $aux_style = null;
@@ -144,21 +144,23 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
     $engine->setConfig(
       'pygments.enabled',
       $this->getEngine()->getConfig('pygments.enabled'));
-    $code_body = phutil_render_tag(
+    $code_body = phutil_tag(
       'pre',
       array(
         'class' => 'remarkup-code'.$aux_class,
         'style' => $aux_style,
       ),
-      $engine->highlightSource($options['lang'], $text));
+      PhutilSafeHTML::applyFunction(
+        'trim',
+        $engine->highlightSource($options['lang'], $text)));
 
-    return phutil_render_tag(
+    return phutil_tag(
       'div',
       array(
         'class' => 'remarkup-code-block',
         'data-code-lang' => $options['lang'],
       ),
-      $name_header.$code_body);
+      array($name_header, $code_body));
 
   }
 }

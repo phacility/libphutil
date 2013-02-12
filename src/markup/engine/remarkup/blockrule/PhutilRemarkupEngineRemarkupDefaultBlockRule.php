@@ -16,14 +16,13 @@ final class PhutilRemarkupEngineRemarkupDefaultBlockRule
 
   public function markupText($text) {
     $text = $this->applyRules($text);
+    $text = PhutilSafeHTML::applyFunction('trim', $text);
 
-    $lines = explode("\n", trim($text));
+    if ($this->getEngine()->getConfig('preserve-linebreaks')) {
+      $text = phutil_escape_html_newlines($text);
+    }
 
-    $implode_on = $this->getEngine()->getConfig('preserve-linebreaks')
-      ? '<br />'
-      : '';
-
-    return '<p>'.trim(implode($implode_on."\n", $lines)).'</p>';
+    return phutil_tag('p', array(), $text);
   }
 
 }

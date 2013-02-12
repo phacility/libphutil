@@ -15,9 +15,8 @@ final class PhutilRemarkupEngineRemarkupNoteBlockRule
   }
 
   public function markupText($text) {
-    return
-      '<div class="remarkup-note">'.
-        $this->applyRules($text).
-      '</div>';
+    return hsprintf(
+      '<div class="remarkup-note">%s</div>',
+      $this->applyRules($text));
   }
 }

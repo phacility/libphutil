@@ -7,10 +7,14 @@ final class PhutilRemarkupRuleBold
   extends PhutilRemarkupRule {
 
   public function apply($text) {
-    return preg_replace(
+    return $this->replaceHTML(
       '@\\*\\*(.+?)\\*\\*@s',
-      '<strong>\1</strong>',
+      array($this, 'applyCallback'),
       $text);
+  }
+
+  protected function applyCallback($matches) {
+    return hsprintf('<strong>%s</strong>', $matches[1]);
   }
 
 }

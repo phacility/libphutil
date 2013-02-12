@@ -42,7 +42,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
         break;
     }
 
-    $actual_output = $engine->markupText($input_remarkup);
+    $actual_output = (string)$engine->markupText($input_remarkup);
 
     switch ($file) {
       case 'toc.txt':
@@ -73,7 +73,6 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $rules[] = new PhutilRemarkupRuleMonospace();
     $rules[] = new PhutilRemarkupRuleDocumentLink();
     $rules[] = new PhutilRemarkupRuleHyperlink();
-    $rules[] = new PhutilRemarkupRuleEscapeHTML();
     $rules[] = new PhutilRemarkupRuleBold();
     $rules[] = new PhutilRemarkupRuleItalic();
     $rules[] = new PhutilRemarkupRuleDel();

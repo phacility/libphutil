@@ -19,10 +19,10 @@ final class PhutilRemarkupRuleMonospace
       $text);
   }
 
-  private function markupMonospacedText($matches) {
+  protected function markupMonospacedText($matches) {
     $match = isset($matches[2]) ? $matches[2] : $matches[1];
 
-    $result = '<tt>'.phutil_escape_html($match).'</tt>';
+    $result = phutil_tag('tt', array(), $match);
 
     return $this->getEngine()->storeText($result);
   }

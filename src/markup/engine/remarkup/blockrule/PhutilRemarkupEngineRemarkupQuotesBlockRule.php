@@ -19,6 +19,8 @@ final class PhutilRemarkupEngineRemarkupQuotesBlockRule
     foreach (explode("\n", $text) as $line) {
       $lines[] = $this->applyRules(preg_replace('/^>/', '', $line));
     }
-    return '<blockquote>'.implode('<br />', $lines).'</blockquote>';
+    return hsprintf(
+      '<blockquote>%s</blockquote>',
+      phutil_implode_html(phutil_tag('br'), $lines));
   }
 }
