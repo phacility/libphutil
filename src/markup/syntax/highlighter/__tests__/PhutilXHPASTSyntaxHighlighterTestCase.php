@@ -25,6 +25,10 @@ final class PhutilXHPASTSyntaxHighlighterTestCase extends PhutilTestCase {
       $this->read('trailing-comment.expect'),
       (string)$this->highlight($this->read('trailing-comment.source')),
       'Trailing comments should not be dropped.');
+    $this->assertEqual(
+      $this->read('multiline-token.expect'),
+      (string)$this->highlight($this->read('multiline-token.source')),
+      'Multi-line tokens should be split across lines.');
   }
 
 }

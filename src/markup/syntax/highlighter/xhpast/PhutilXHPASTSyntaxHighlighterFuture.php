@@ -113,7 +113,7 @@ final class PhutilXHPASTSyntaxHighlighterFuture extends FutureProxy {
           // If the token may have multiple lines in it, make sure each
           // <span> crosses no more than one line so the lines can be put
           // in a table, etc., later.
-          $value = explode("\n", $value);
+          $value = phutil_split_lines($value, $retain_endings = true);
         } else {
           $value = array($value);
         }
