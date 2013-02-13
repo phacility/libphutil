@@ -7,59 +7,59 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
 
   public function testTagDefaults() {
     $this->assertEqual(
-      phutil_render_tag('x'),
-      phutil_render_tag('x', array()));
+      (string)phutil_tag('x'),
+      (string)phutil_tag('x', array()));
 
     $this->assertEqual(
-      phutil_render_tag('x', array()),
-      phutil_render_tag('x', array(), null));
+      (string)phutil_tag('x', array()),
+      (string)phutil_tag('x', array(), null));
   }
 
   public function testTagEmpty() {
     $this->assertEqual(
       '<x />',
-      phutil_render_tag('x', array(), null));
+      (string)phutil_tag('x', array(), null));
 
     $this->assertEqual(
       '<x></x>',
-      phutil_render_tag('x', array(), ''));
+      (string)phutil_tag('x', array(), ''));
   }
 
 
   public function testTagBasics() {
     $this->assertEqual(
       '<x />',
-      phutil_render_tag('x'));
+      (string)phutil_tag('x'));
 
     $this->assertEqual(
       '<x>y</x>',
-      phutil_render_tag('x', array(), 'y'));
+      (string)phutil_tag('x', array(), 'y'));
   }
 
   public function testTagAttributes() {
     $this->assertEqual(
       '<x u="v">y</x>',
-      phutil_render_tag('x', array('u' => 'v'), 'y'));
+      (string)phutil_tag('x', array('u' => 'v'), 'y'));
 
     $this->assertEqual(
       '<x u="v" />',
-      phutil_render_tag('x', array('u' => 'v')));
+      (string)phutil_tag('x', array('u' => 'v')));
   }
 
   public function testTagEscapes() {
     $this->assertEqual(
       '<x u="&lt;" />',
-      phutil_render_tag('x', array('u' => '<')));
+      (string)phutil_tag('x', array('u' => '<')));
 
     $this->assertEqual(
       '<x><y /></x>',
-      phutil_render_tag('x', array(), phutil_render_tag('y')));
+      (string)phutil_tag('x', array(), phutil_tag('y')));
   }
 
   public function testTagNullAttribute() {
     $this->assertEqual(
       '<x />',
-      phutil_render_tag('x', array('y' => null)));
+      (string)phutil_tag('x', array('y' => null)));
   }
 
   public function testTagJavascriptProtocolRejection() {
@@ -82,7 +82,7 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
 
         $caught = null;
         try {
-          phutil_render_tag('a', array('href' => $href), 'click for candy');
+          phutil_tag('a', array('href' => $href), 'click for candy');
         } catch (Exception $ex) {
           $caught = $ex;
         }
