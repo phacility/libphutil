@@ -129,4 +129,51 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
     $this->assertEqual('<span /><em />&lt;evil&gt;', $html->getHTMLContent());
   }
 
+  public function testArrayEscaping() {
+    $this->assertEqual(
+      '<div>&lt;div&gt;</div>',
+      phutil_escape_html(
+        array(
+          hsprintf('<div>'),
+          array(
+            array(
+              '<',
+              array(
+                'd',
+                array(
+                  array(
+                    hsprintf('i'),
+                  ),
+                  'v',
+                ),
+              ),
+              array(
+                array(
+                  '>',
+                ),
+              ),
+            ),
+          ),
+          hsprintf('</div>'),
+        )));
+
+      $this->assertEqual(
+        '<div><x /><y /><z /></div>',
+        phutil_tag(
+          'div',
+          array(
+          ),
+          array(
+            array(
+              array(
+                phutil_tag('x'),
+                array(
+                  phutil_tag('y'),
+                ),
+                phutil_tag('z'),
+              ),
+            ),
+          ))->getHTMLContent());
+    }
+
 }
