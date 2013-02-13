@@ -18,7 +18,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
   }
 
   public function shouldMergeBlocks() {
-    return true;
+    return false;
   }
 
   public function markupText($text) {
