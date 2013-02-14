@@ -81,6 +81,7 @@ class PhutilArgumentWorkflow {
   private $synopsis;
   private $specs = array();
   private $examples;
+  private $help;
 
   final public function __construct() {
     $this->didConstruct();
@@ -95,6 +96,15 @@ class PhutilArgumentWorkflow {
     return $this->name;
   }
 
+  /**
+   * Provide brief usage examples of common calling conventions, like:
+   *
+   *   $workflow->setExamples("**delete** __file__ [__options__]");
+   *
+   * This text is shown in both brief and detailed help, and should give the
+   * user a quick reference for common uses. You can separate several common
+   * uses with newlines, but usually should not provide more than 2-3 examples.
+   */
   final public function setExamples($examples) {
     $this->examples = $examples;
     return $this;
@@ -107,6 +117,12 @@ class PhutilArgumentWorkflow {
     return $this->examples;
   }
 
+  /**
+   * Provide a brief description of the command, like "Delete a file.".
+   *
+   * This text is shown in both brief and detailed help, and should give the
+   * user a general idea of what the workflow does.
+   */
   final public function setSynopsis($synopsis) {
     $this->synopsis = $synopsis;
     return $this;
@@ -114,6 +130,20 @@ class PhutilArgumentWorkflow {
 
   final public function getSynopsis() {
     return $this->synopsis;
+  }
+
+
+  /**
+   * Provide a full explanation of the command. This text is shown only in
+   * detailed help.
+   */
+  final public function getHelp() {
+    return $this->help;
+  }
+
+  final public function setHelp($help) {
+    $this->help = $help;
+    return $this;
   }
 
   final public function setArguments(array $specs) {

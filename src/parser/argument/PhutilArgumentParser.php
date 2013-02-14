@@ -567,7 +567,7 @@ final class PhutilArgumentParser {
         }
         $out[] = $this->renderWorkflowHelp(
           $workflow->getName(),
-          $show_flags = false);
+          $show_details = false);
       }
       if ($has_help) {
         $more[] = "Use **help** __command__ for a detailed command reference.";
@@ -602,19 +602,26 @@ final class PhutilArgumentParser {
 
   public function renderWorkflowHelp(
     $workflow_name,
-    $show_flags = false) {
+    $show_details = false) {
 
     $out = array();
+
+    $indent = ($show_details ? 0 : 6);
 
     $workflow = idx($this->workflows, strtolower($workflow_name));
     if (!$workflow) {
       $out[] = $this->indent(
-        6,
+        $indent,
         "There is no **{$workflow_name}** workflow.");
     } else {
-      $out[] = $this->indent(6, $workflow->getExamples());
-      $out[] = $this->indent(6, $workflow->getSynopsis());
-      if ($show_flags) {
+      $out[] = $this->indent($indent, $workflow->getExamples());
+      $out[] = $this->indent($indent, $workflow->getSynopsis());
+      if ($show_details) {
+        $full_help = $workflow->getHelp();
+        if ($full_help) {
+          $out[] = null;
+          $out[] = $this->indent($indent, $full_help);
+        }
         $specs = $this->renderArgumentSpecs($workflow->getArguments());
         if ($specs) {
           $out[] = null;
