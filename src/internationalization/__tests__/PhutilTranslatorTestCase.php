@@ -33,6 +33,29 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
     $this->assertEqual('1 beer(s)', $translator->translate('%d beer(s)', 1));
   }
 
+  public function testSingleVariant() {
+    $translator = new PhutilTranslator();
+    $translator->setLanguage('en');
+
+    // In this translation, we have no alternatives for the first conversion.
+    $translator->addTranslations(
+      array(
+        'Run the command %s %d time(s).' => array(
+          array(
+            'Run the command %s once.',
+            'Run the command %s %d times.',
+          ),
+        ),
+      ));
+
+    $this->assertEqual(
+      'Run the command <tt>ls</tt> 123 times.',
+      (string)$translator->translate(
+        'Run the command %s %d time(s).',
+        hsprintf('<tt>%s</tt>', 'ls'),
+        123));
+  }
+
   public function testCzech() {
     $translator = new PhutilTranslator();
     $translator->setLanguage('cs');

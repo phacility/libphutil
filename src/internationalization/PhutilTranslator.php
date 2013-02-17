@@ -104,6 +104,11 @@ final class PhutilTranslator {
   }
 
   private function chooseVariant(array $translations, $variant) {
+    if (count($translations) == 1) {
+      // If we only have one variant, we can select it directly.
+      return reset($translations);
+    }
+
     if ($variant instanceof PhutilNumber) {
       $variant = $variant->getNumber();
     }
