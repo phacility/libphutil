@@ -137,9 +137,12 @@ final class FileFinder {
     } else {
       $map = array();
       foreach (explode("\0", $stdout) as $line) {
-        $file = substr($line, 1);
-        $file = $this->root.ltrim($file, '.');
-        $map[$file] = md5_file($file);
+        $file = $this->root.ltrim($line, '.');
+        if (is_dir($file)) {
+          $map[$file] = null;
+        } else {
+          $map[$file] = md5_file($file);
+        }
       }
       return $map;
     }

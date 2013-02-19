@@ -241,6 +241,7 @@ phutil_register_library_map(array(
     'array_mergev' => 'utils/utils.php',
     'array_select_keys' => 'utils/utils.php',
     'assert_instances_of' => 'utils/utils.php',
+    'assert_stringlike' => 'utils/utils.php',
     'coalesce' => 'utils/utils.php',
     'csprintf' => 'xsprintf/csprintf.php',
     'exec_manual' => 'future/exec/execx.php',
