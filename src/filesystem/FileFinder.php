@@ -119,32 +119,7 @@ final class FileFinder {
       $command[] = $this->generateList('wholename', $this->paths);
     }
 
-    $command[] = '-print0';
-
-    if ($this->generateChecksums) {
-      static $md5sum_binary = null;
-      if ($md5sum_binary == null) {
-
-        $options = array(
-          'md5sum' => 'md5sum',
-          'md5'    => 'md5 -r',
-        );
-        foreach ($options as $bin => $choose) {
-          list($err) = exec_manual('which %s', $bin);
-          if ($err == 0) {
-            $md5sum_binary = $choose;
-            break;
-          }
-        }
-        if ($md5sum_binary === null) {
-          throw new Exception(
-            "Unable to locate the md5/md5sum binary for this system.");
-        }
-      }
-      $command[] = ' | xargs -0 -n512 '.$md5sum_binary;
-    }
-
-    $command[] = ')';
+    $command[] = '-print0 )';
 
     list($stdout) = call_user_func_array(
       'execx',
@@ -161,15 +136,10 @@ final class FileFinder {
       return explode("\0", $stdout);
     } else {
       $map = array();
-      foreach (explode("\n", $stdout) as $line) {
-        $file = substr($line, 34);
-        if ($file == '-') {
-          continue;
-        }
-        // This mess is to make this class work on both mainline Linux systems
-        // and OSX, which has subtly different 'find' semantics.
+      foreach (explode("\0", $stdout) as $line) {
+        $file = substr($line, 1);
         $file = $this->root.ltrim($file, '.');
-        $map[$file] = substr($line, 0, 32);
+        $map[$file] = md5_file($file);
       }
       return $map;
     }
