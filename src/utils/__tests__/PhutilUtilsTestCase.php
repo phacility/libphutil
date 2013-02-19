@@ -253,12 +253,10 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   public function testHeadKeyLastKey() {
     $this->assertEqual(
       'a',
-      head_key(array('a' => 0, 'b' => 1))
-      );
+      head_key(array('a' => 0, 'b' => 1)));
     $this->assertEqual(
       'b',
-      last_key(array('a' => 0, 'b' => 1))
-      );
+      last_key(array('a' => 0, 'b' => 1)));
     $this->assertEqual(NULL, head_key(array()));
     $this->assertEqual(NULL, last_key(array()));
   }
