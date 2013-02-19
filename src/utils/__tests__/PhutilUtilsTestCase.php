@@ -223,6 +223,80 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       'InvalidArgumentException');
   }
 
+  public function testAssertStringLike () {
+    $this->assertEqual(
+      null,
+      assert_stringlike(null));
+
+    $this->assertEqual(
+      null,
+      assert_stringlike(""));
+
+    $this->assertEqual(
+      null,
+      assert_stringlike("Hello World"));
+
+    $this->assertEqual(
+      null,
+      assert_stringlike(1));
+
+    $this->assertEqual(
+      null,
+      assert_stringlike(9.9999));
+
+    $this->assertEqual(
+      null,
+      assert_stringlike(true));
+
+    $obj = new Exception('.');
+    $this->assertEqual(
+      null,
+      assert_stringlike($obj));
+
+    $obj = (object)array();
+
+    try {
+      assert_stringlike($obj);
+    } catch (InvalidArgumentException $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertEqual(
+      true,
+      ($caught instanceof InvalidArgumentException));
+
+    $array = array(
+             "foo" => "bar",
+             "bar" => "foo",
+             );
+
+    try {
+      assert_stringlike($array);
+    } catch (InvalidArgumentException $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertEqual(
+      true,
+      ($caught instanceof InvalidArgumentException));
+
+    $tmp = new TempFile();
+    $resource = fopen($tmp, 'r');
+
+    try {
+      assert_stringlike($resource);
+    } catch (InvalidArgumentException $ex) {
+      $caught = $ex;
+    }
+
+    fclose($resource);
+
+    $this->assertEqual(
+      true,
+      ($caught instanceof InvalidArgumentException));
+
+  }
+
   public function testCoalesce() {
     $this->assertEqual(
       'zebra',

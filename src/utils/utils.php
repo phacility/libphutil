@@ -561,6 +561,37 @@ function assert_instances_of(array $arr, $class) {
   return $arr;
 }
 
+/**
+ * Assert that passed data can be converted to string.
+ *
+ * @param  string    Assert that this data is valid.
+ * @return void
+ *
+ * @task   assert
+ */
+function assert_stringlike($parameter) {
+  switch (gettype($parameter)) {
+    case 'string':
+    case 'NULL':
+    case 'boolean':
+    case 'double':
+    case 'integer':
+      return;
+    case 'object':
+      if (method_exists($parameter, '__toString')) {
+        return;
+      }
+      break;
+    case 'array':
+    case 'resource':
+    case 'unknown type':
+    default:
+      break;
+  }
+
+  throw new InvalidArgumentException(
+    "Argument must be scalar or object which implements __toString()!");
+}
 
 /**
  * Returns the first argument which is not strictly null, or ##null## if there

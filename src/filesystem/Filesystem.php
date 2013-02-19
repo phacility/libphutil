@@ -66,6 +66,7 @@ final class Filesystem {
 
     self::assertExists($dir);
     self::assertIsDirectory($dir);
+    assert_stringlike($data);
 
     // File either needs to not exist and have a writable parent, or be
     // writable itself.
@@ -109,7 +110,7 @@ final class Filesystem {
   public static function writeUniqueFile($base, $data) {
     $full_path = Filesystem::resolvePath($base);
     $sequence = 0;
-
+    assert_stringlike($data);
     // Try 'file', 'file.1', 'file.2', etc., until something doesn't exist.
 
     while (true) {
@@ -161,6 +162,7 @@ final class Filesystem {
     self::assertExists($dir);
     self::assertIsDirectory($dir);
     self::assertWritable($dir);
+    assert_stringlike($data);
 
     if (($fh = fopen($path, 'a')) === false) {
       throw new FilesystemException(
@@ -914,4 +916,6 @@ final class Filesystem {
         "Path `{$path}' is not readable.");
     }
   }
+
 }
+
