@@ -103,6 +103,14 @@ final class AphrontIsolatedDatabaseConnection
     $this->affectedRows = 1;
   }
 
+  public function executeRawQueries(array $raw_queries) {
+    $results = array();
+    foreach ($raw_queries as $id => $raw_query) {
+      $results[$id] = array();
+    }
+    return $results;
+  }
+
   public function getQueryTranscript() {
     return $this->transcript;
   }

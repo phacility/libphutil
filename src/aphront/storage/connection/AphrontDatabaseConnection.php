@@ -12,6 +12,7 @@ abstract class AphrontDatabaseConnection {
   abstract public function getAffectedRows();
   abstract public function selectAllResults();
   abstract public function executeRawQuery($raw_query);
+  abstract public function executeRawQueries(array $raw_queries);
   abstract public function close();
 
   abstract public function escapeString($string);
@@ -29,6 +30,23 @@ abstract class AphrontDatabaseConnection {
     $args = func_get_args();
     array_unshift($args, $this);
     return call_user_func_array('queryfx', $args);
+  }
+
+
+  public function supportsAsyncQueries() {
+    return false;
+  }
+
+  public function supportsParallelQueries() {
+    return false;
+  }
+
+  public function asyncQuery($raw_query) {
+    throw new Exception("Async queries are not supported.");
+  }
+
+  public static function resolveAsyncQueries(array $conns, array $asyncs) {
+    throw new Exception("Async queries are not supported.");
   }
 
 

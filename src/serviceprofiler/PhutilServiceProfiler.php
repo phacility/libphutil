@@ -93,6 +93,13 @@ final class PhutilServiceProfiler {
         case 'query':
           $desc = substr($data['query'], 0, 512);
           break;
+        case 'multi-query':
+          $desc = array();
+          foreach ($data['queries'] as $query) {
+            $desc[] = substr($query, 0, 256);
+          }
+          $desc = implode('; ', $desc);
+          break;
         case 'exec':
           $desc = '$ '.$data['command'];
           break;

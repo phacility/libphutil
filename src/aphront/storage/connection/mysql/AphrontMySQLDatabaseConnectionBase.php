@@ -8,19 +8,26 @@ abstract class AphrontMySQLDatabaseConnectionBase
 
   private $configuration;
   private $connection;
+  private $connectionPool = array();
   private $lastResult;
 
   private $nextError;
 
   abstract protected function connect();
   abstract protected function rawQuery($raw_query);
+  abstract protected function rawQueries(array $raw_queries);
   abstract protected function fetchAssoc($result);
   abstract protected function getErrorCode($connection);
   abstract protected function getErrorDescription($connection);
   abstract protected function closeConnection();
+  abstract protected function freeResult($result);
 
   public function __construct(array $configuration) {
     $this->configuration  = $configuration;
+  }
+
+  public function __clone() {
+    $this->establishConnection();
   }
 
   public function close() {
@@ -76,8 +83,6 @@ abstract class AphrontMySQLDatabaseConnectionBase
   }
 
   private function establishConnection() {
-    $start = microtime(true);
-
     $host = $this->getConfiguration('host');
     $database = $this->getConfiguration('database');
 
@@ -112,9 +117,26 @@ abstract class AphrontMySQLDatabaseConnectionBase
 
   protected function requireConnection() {
     if (!$this->connection) {
-      $this->establishConnection();
+      if ($this->connectionPool) {
+        $this->connection = array_pop($this->connectionPool);
+      } else {
+        $this->establishConnection();
+      }
     }
     return $this->connection;
+  }
+
+  protected function beginAsyncConnection() {
+    $connection = $this->requireConnection();
+    $this->connection = null;
+    return $connection;
+  }
+
+  protected function endAsyncConnection($connection) {
+    if ($this->connection) {
+      $this->connectionPool[] = $this->connection;
+    }
+    $this->connection = $connection;
   }
 
   public function selectAllResults() {
@@ -135,14 +157,7 @@ abstract class AphrontMySQLDatabaseConnectionBase
     while ($retries--) {
       try {
         $this->requireConnection();
-
-        // TODO: Do we need to include transactional statements here?
-        $is_write = !preg_match('/^(SELECT|SHOW|EXPLAIN)\s/', $raw_query);
-        if ($is_write) {
-          AphrontWriteGuard::willWrite();
-        }
-
-        $start = microtime(true);
+        $is_write = $this->checkWrite($raw_query);
 
         $profiler = PhutilServiceProfiler::getInstance();
         $call_id = $profiler->beginServiceCall(
@@ -194,6 +209,60 @@ abstract class AphrontMySQLDatabaseConnectionBase
     }
   }
 
+  public function executeRawQueries(array $raw_queries) {
+    if (!$raw_queries) {
+      return array();
+    }
+
+    $is_write = false;
+    foreach ($raw_queries as $key => $raw_query) {
+      $is_write = $is_write || $this->checkWrite($raw_query);
+      $raw_queries[$key] = rtrim($raw_query, "\r\n\t ;");
+    }
+
+    $profiler = PhutilServiceProfiler::getInstance();
+    $call_id = $profiler->beginServiceCall(
+      array(
+        'type'    => 'multi-query',
+        'config'  => $this->configuration,
+        'queries' => $raw_queries,
+        'write'   => $is_write,
+      ));
+
+    $results = $this->rawQueries($raw_queries);
+
+    $profiler->endServiceCall($call_id, array());
+
+    return $results;
+  }
+
+  protected function processResult($result) {
+    if (!$result) {
+      try {
+        $this->throwQueryException($this->requireConnection());
+      } catch (Exception $ex) {
+        return $ex;
+      }
+    } else if (is_bool($result)) {
+      return $this->getAffectedRows();
+    }
+    $rows = array();
+    while (($row = $this->fetchAssoc($result))) {
+      $rows[] = $row;
+    }
+    $this->freeResult($result);
+    return $rows;
+  }
+
+  protected function checkWrite($raw_query) {
+    $is_write = !preg_match('/^(SELECT|SHOW|EXPLAIN)\s/', $raw_query);
+    if ($is_write) {
+      AphrontWriteGuard::willWrite();
+      return true;
+    }
+    return false;
+  }
+
   protected function throwQueryException($connection) {
     if ($this->nextError) {
       $errno = $this->nextError;
@@ -203,7 +272,10 @@ abstract class AphrontMySQLDatabaseConnectionBase
       $errno = $this->getErrorCode($connection);
       $error = $this->getErrorDescription($connection);
     }
+    $this->throwQueryCodeException($errno, $error);
+  }
 
+  protected function throwQueryCodeException($errno, $error) {
     $exmsg = "#{$errno}: {$error}";
 
     switch ($errno) {

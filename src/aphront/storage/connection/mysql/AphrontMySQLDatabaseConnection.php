@@ -73,6 +73,119 @@ final class AphrontMySQLDatabaseConnection
     return @mysql_query($raw_query, $this->requireConnection());
   }
 
+  /**
+   * @phutil-external-symbol function mysql_multi_query
+   * @phutil-external-symbol function mysql_fetch_result
+   * @phutil-external-symbol function mysql_more_results
+   * @phutil-external-symbol function mysql_next_result
+   */
+  protected function rawQueries(array $raw_queries) {
+    $conn = $this->requireConnection();
+    $results = array();
+
+    if (!function_exists('mysql_multi_query')) {
+      foreach ($raw_queries as $key => $raw_query) {
+        $results[$key] = $this->processResult($this->rawQuery($raw_query));
+      }
+      return $results;
+    }
+
+    if (!mysql_multi_query(implode('; ', $raw_queries), $conn)) {
+      foreach ($raw_queries as $key => $raw_query) {
+        $results[$key] = $this->processResult(false);
+      }
+      return $results;
+    }
+
+    $processed_all = false;
+    foreach ($raw_queries as $key => $raw_query) {
+      $results[$key] = $this->processResult(mysql_fetch_result($conn));
+      if (!mysql_more_results($conn)) {
+        $processed_all = true;
+        break;
+      }
+      mysql_next_result($conn);
+    }
+
+    if (!$processed_all) {
+      throw new Exception("There are some results left in the result set.");
+    }
+
+    return $results;
+  }
+
+  protected function freeResult($result) {
+    mysql_free_result($result);
+  }
+
+  public function supportsParallelQueries() {
+    return function_exists('fb_parallel_query');
+  }
+
+  /**
+   * @phutil-external-symbol function fb_parallel_query
+   */
+  public function executeParallelQueries(
+    array $queries,
+    array $conns = array()) {
+    assert_instances_of($conns, 'AphrontMySQLDatabaseConnection');
+
+    $map = array();
+    $is_write = false;
+    foreach ($queries as $id => $query) {
+      $is_write = $is_write || $this->checkWrite($query);
+      $conn = idx($conns, $id, $this);
+
+      $host = $conn->getConfiguration('host');
+      $port = 0;
+      $match = null;
+      if (preg_match('/(.+):(.+)/', $host, $match)) {
+        list(, $host, $port) = $match;
+      }
+
+      $pass = $conn->getConfiguration('pass');
+      if ($pass instanceof PhutilOpaqueEnvelope) {
+        $pass = $pass->openEnvelope();
+      }
+
+      $map[$id] = array(
+        'sql' => $query,
+        'ip' => $host,
+        'port' => $port,
+        'username' => $conn->getConfiguration('user'),
+        'password' => $pass,
+        'db' => $conn->getConfiguration('database'),
+      );
+    }
+
+    $profiler = PhutilServiceProfiler::getInstance();
+    $call_id = $profiler->beginServiceCall(
+      array(
+        'type'    => 'multi-query',
+        'queries' => $queries,
+        'write'   => $is_write,
+      ));
+
+    $map = fb_parallel_query($map);
+
+    $profiler->endServiceCall($call_id, array());
+
+    $results = array();
+    foreach ($queries as $id => $query) {
+      $errno = idx($map['errno'], $id);
+      if ($errno) {
+        try {
+          $this->throwQueryCodeException($errno, $map['error'][$id]);
+        } catch (Exception $ex) {
+          $results[$id] = $ex;
+        }
+        continue;
+      }
+      $results[$id] = $map['result'][$id];
+    }
+    return $results;
+  }
+
   protected function fetchAssoc($result) {
     return mysql_fetch_assoc($result);
   }
