@@ -338,7 +338,13 @@ final class Filesystem {
       }
 
       try {
-        return $com->GetRandom($number_of_bytes);
+        // The default CAPICOM_ENCODE_BINARY generates the random bytes in
+        // UTF-16 and converts them to the encoding specified by the third
+        // parameter of COM() which defaults to ANSI. The result is that it
+        // produces random strings like "??A????" for length 14.
+        $capicom_encode_base64 = 0;
+        $base64 = $com->GetRandom($number_of_bytes, $capicom_encode_base64);
+        return base64_decode($base64);
       } catch (Exception $ex) {
         throw new FilesystemException(
           'CAPICOM.Utilities.1',
