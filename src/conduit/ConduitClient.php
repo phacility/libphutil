@@ -7,7 +7,6 @@ final class ConduitClient {
 
   private $uri;
   private $connectionID;
-  private $profilerCallID;
   private $sessionKey;
   private $timeout = 300.0;
   private $basicAuthCredentials;
@@ -28,13 +27,6 @@ final class ConduitClient {
   }
 
   public function didReceiveResponse($method, $data) {
-    if ($this->profilerCallID !== null) {
-      $profiler = PhutilServiceProfiler::getInstance();
-      $profiler->endServiceCall(
-        $this->profilerCallID,
-        array());
-    }
-
     if ($method == 'conduit.connect') {
       $this->sessionKey = idx($data, 'sessionKey');
       $this->connectionID = idx($data, 'connectionID');
@@ -97,16 +89,9 @@ final class ConduitClient {
         'Basic '.$this->basicAuthCredentials);
     }
 
-    $profiler = PhutilServiceProfiler::getInstance();
-    $this->profilerCallID = $profiler->beginServiceCall(
-      array(
-        'type'    => 'conduit',
-        'method'  => $method,
-        'size'    => strlen(http_build_query($data, '', '&')),
-      ));
-
     $conduit_future = new ConduitFuture($core_future);
     $conduit_future->setClient($this, $method);
+    $conduit_future->beginProfile($data);
     $conduit_future->isReady();
 
     return $conduit_future;
