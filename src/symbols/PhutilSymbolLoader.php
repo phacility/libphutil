@@ -335,23 +335,33 @@ final class PhutilSymbolLoader {
     }
 
     $lib_name = $symbol_spec['library'];
+    $where = $symbol_spec['where'];
     $bootloader = PhutilBootloader::getInstance();
 
-    $bootloader->loadLibrarySource(
-      $symbol_spec['library'],
-      $symbol_spec['where']);
+    $bootloader->loadLibrarySource($lib_name, $where);
 
     // Check that we successfully loaded the symbol from wherever it was
     // supposed to be defined.
 
+    $load_failed = null;
     if ($is_function) {
       if (!function_exists($name)) {
-        throw new PhutilMissingSymbolException($name);
+        $load_failed = 'function';
       }
     } else {
       if (!class_exists($name, false) && !interface_exists($name, false)) {
-        throw new PhutilMissingSymbolException($name);
+        $load_failed = 'class or interface';
       }
+    }
+
+    if ($load_failed !== null) {
+      $lib_path = phutil_get_library_root($lib_name);
+      throw new PhutilMissingSymbolException(
+        $name,
+        $load_failed,
+        "the symbol map for library '{$lib_name}' (at '{$lib_path}') claims ".
+        "this {$load_failed} is defined in '{$where}', but loading that ".
+        "source file did not cause the {$load_failed} to become defined.");
     }
   }
 

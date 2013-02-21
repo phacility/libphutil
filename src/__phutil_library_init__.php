@@ -307,7 +307,11 @@ function __phutil_autoload($class_name) {
       ->setName($class_name)
       ->selectAndLoadSymbols();
     if (!$symbols) {
-      throw new PhutilMissingSymbolException($class_name);
+      throw new PhutilMissingSymbolException(
+        $class_name,
+        'class or interface',
+        "the class or interface '{$class_name}' is not defined in the library ".
+        "map for any loaded phutil library.");
     }
   } catch (PhutilMissingSymbolException $ex) {
     // If there are other SPL autoloaders installed, we need to give them a
