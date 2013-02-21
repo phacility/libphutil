@@ -55,7 +55,7 @@ final class XHPASTTree extends AASTTree {
       if ($err == 1) {
         $matches = null;
         $is_syntax = preg_match(
-          '/^XHPAST Parse Error: (.*) on line (\d+)/',
+          '/^XHPAST Parse Error: (.*) on line (\d+)/s',
           $stderr,
           $matches);
         if ($is_syntax) {
