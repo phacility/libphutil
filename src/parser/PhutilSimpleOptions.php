@@ -40,25 +40,71 @@ final class PhutilSimpleOptions {
   public function parse($input) {
     $result = array();
 
-    $vars = explode(',', $input);
-    foreach ($vars as $var) {
-      if (strpos($var, '=') !== false) {
-        list($key, $value) = explode('=', $var, 2);
-        $value = trim($value);
-      } else {
-        list($key, $value) = array($var, true);
+    $lexer = new PhutilSimpleOptionsLexer();
+    $tokens = $lexer->getNiceTokens($input);
+
+    $state = 'key';
+    $pairs = array();
+    foreach ($tokens as $token) {
+      list($type, $value) = $token;
+      switch ($state) {
+        case 'key':
+          if ($type != 'word') {
+            return array();
+          }
+          if (!strlen($value)) {
+            return array();
+          }
+          $key = $this->normalizeKey($value);
+          $state = '=';
+          break;
+        case '=':
+          if ($type == '=') {
+            $state = 'value';
+            break;
+          }
+          if ($type == ',') {
+            $pairs[] = array($key, true);
+            $state = 'key';
+            break;
+          }
+          return array();
+        case 'value':
+          if ($type == ',') {
+            $pairs[] = array($key, null);
+            $state = 'key';
+            break;
+          }
+          if ($type != 'word') {
+            return array();
+          }
+          $pairs[] = array($key, $value);
+          $state = ',';
+          break;
+        case ',':
+          if ($type != ',') {
+            return array();
+          }
+          $state = 'key';
+          break;
       }
-      $key = $this->normalizeKey($key);
-      if (!$this->isValidKey($key)) {
-        // If there are bad keys, just bail, so we don't get silly results for
-        // parsing inputs like "SELECT id, name, size FROM table".
-        return array();
-      }
-      if (!strlen($value)) {
+    }
+
+    if ($state == '=') {
+      $pairs[] = array($key, true);
+    }
+    if ($state == 'value') {
+      $pairs[] = array($key, null);
+    }
+
+    $result = array();
+    foreach ($pairs as $pair) {
+      list($key, $value) = $pair;
+      if ($value === null) {
         unset($result[$key]);
-        continue;
+      } else {
+        $result[$key] = $value;
       }
-      $result[$key] = $value;
     }
 
     return $result;
@@ -81,22 +127,22 @@ final class PhutilSimpleOptions {
    *    legs=4, eyes=2
    *
    * @param   dict    Input dictionary.
+   * @param   string  Additional characters to escape.
    * @return  string  Unparsed option list.
    */
-  public function unparse(array $options) {
+  public function unparse(array $options, $escape = '') {
     $result = array();
     foreach ($options as $name => $value) {
-      if (!$this->isValidKey($name)) {
-        throw new Exception(
-          "SimpleOptions: keys '{$name}' is not valid.");
-      }
+      $name = $this->normalizeKey($name);
       if (!strlen($value)) {
         continue;
       }
       if ($value === true) {
-        $result[] = $name;
+        $result[] = $this->quoteString($name, $escape);
       } else {
-        $result[] = $name.'='.$value;
+        $qn = $this->quoteString($name, $escape);
+        $qv = $this->quoteString($value, $escape);
+        $result[] = $qn.'='.$qv;
       }
     }
     return implode(', ', $result);
@@ -125,22 +171,21 @@ final class PhutilSimpleOptions {
 /* -(  Internals  )---------------------------------------------------------- */
 
 
-  private function isValidKey($key) {
-    if (!$this->caseSensitive) {
-      $regexp = '/^[a-z]+$/';
-    } else {
-      $regexp = '/^[a-z]+$/i';
-    }
-
-    return (bool)preg_match($regexp, $key);
-  }
-
   private function normalizeKey($key) {
-    $key = trim($key);
+    if (!strlen($key)) {
+      throw new Exception("Empty key is invalid!");
+    }
     if (!$this->caseSensitive) {
       $key = strtolower($key);
     }
     return $key;
+  }
+
+  private function quoteString($string, $escape) {
+    if (preg_match('/[^a-zA-Z0-9]/', $string)) {
+      $string = '"'.addcslashes($string, '\\\'"'.$escape).'"';
+    }
+    return $string;
   }
 
 }
