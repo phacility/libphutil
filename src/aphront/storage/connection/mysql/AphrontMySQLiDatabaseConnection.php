@@ -65,11 +65,13 @@ final class AphrontMySQLiDatabaseConnection
 
   protected function rawQueries(array $raw_queries) {
     $conn = $this->requireConnection();
-    $results = array();
 
     if (!$conn->multi_query(implode('; ', $raw_queries))) {
-      $this->throwQueryException($conn);
+      $ex = $this->processResult(false);
+      return array_fill_keys(array_keys($raw_queries), $ex);
     }
+
+    $results = array();
 
     $processed_all = false;
     foreach ($raw_queries as $key => $raw_query) {

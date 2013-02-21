@@ -91,15 +91,13 @@ final class AphrontMySQLDatabaseConnection
     }
 
     if (!mysql_multi_query(implode('; ', $raw_queries), $conn)) {
-      foreach ($raw_queries as $key => $raw_query) {
-        $results[$key] = $this->processResult(false);
-      }
-      return $results;
+      $ex = $this->processResult(false);
+      return array_fill_keys(array_keys($raw_queries), $ex);
     }
 
     $processed_all = false;
     foreach ($raw_queries as $key => $raw_query) {
-      $results[$key] = $this->processResult(mysql_fetch_result($conn));
+      $results[$key] = $this->processResult(@mysql_fetch_result($conn));
       if (!mysql_more_results($conn)) {
         $processed_all = true;
         break;
@@ -119,7 +117,8 @@ final class AphrontMySQLDatabaseConnection
   }
 
   public function supportsParallelQueries() {
-    return function_exists('fb_parallel_query');
+    // fb_parallel_query() doesn't support results with different columns.
+    return false;
   }
 
   /**
@@ -171,8 +170,11 @@ final class AphrontMySQLDatabaseConnection
     $profiler->endServiceCall($call_id, array());
 
     $results = array();
+    $pos = 0;
+    $err_pos = 0;
     foreach ($queries as $id => $query) {
-      $errno = idx($map['errno'], $id);
+      $errno = idx(idx($map, 'errno', array()), $err_pos);
+      $err_pos++;
       if ($errno) {
         try {
           $this->throwQueryCodeException($errno, $map['error'][$id]);
@@ -181,7 +183,8 @@ final class AphrontMySQLDatabaseConnection
         }
         continue;
       }
-      $results[$id] = $map['result'][$id];
+      $results[$id] = $map['result'][$pos];
+      $pos++;
     }
     return $results;
   }
