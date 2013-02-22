@@ -104,6 +104,10 @@ final class PhutilBootloader {
 
     try {
       $loader->selectAndLoadSymbols();
+    } catch (PhutilBootloaderException $ex) {
+      // Ignore this, it happens if a global function's file is removed or
+      // similar. Worst case is that we fatal when calling the function, which
+      // is no worse than fataling here.
     } catch (PhutilMissingSymbolException $ex) {
       // Ignore this, it happens if a global function is removed. Everything
       // else loaded so proceed forward: worst case is a fatal when we
