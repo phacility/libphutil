@@ -218,10 +218,12 @@ final class PhutilEditDistanceMatrix {
 
     $m = array();
 
+    $infinity = $this->getInfinity();
+
     $use_damerau = ($this->transposeCost !== null);
     if ($use_damerau) {
       // Initialize the default cost of a transpose.
-      $m[-1][-1] = PHP_INT_MAX;
+      $m[-1][-1] = $infinity;
 
       // Initialize the character position dictionary for Damerau.
       $d = array();
@@ -234,11 +236,11 @@ final class PhutilEditDistanceMatrix {
 
       // Initialize the transpose costs for Damerau.
       for ($xx = 0; $xx <= $xl; $xx++) {
-        $m[$xx][-1] = PHP_INT_MAX;
+        $m[$xx][-1] = $infinity;
       }
 
       for ($yy = 0; $yy <= $yl; $yy++) {
-        $m[-1][$yy] = PHP_INT_MAX;
+        $m[-1][$yy] = $infinity;
       }
     }
 
@@ -336,6 +338,10 @@ final class PhutilEditDistanceMatrix {
     }
   }
 
+  private function getInfinity() {
+    return INF;
+  }
+
   private function printMatrix(array $m) {
     $x = $this->x;
     $y = $this->y;
@@ -349,7 +355,7 @@ final class PhutilEditDistanceMatrix {
     foreach ($m as $xk => $xv) {
       printf($p, idx($y, $xk - 1, '-'));
       foreach ($xv as $yk => $yv) {
-        printf($p, ($yv == PHP_INT_MAX ? 'inf' : $yv));
+        printf($p, ($yv == $this->getInfinity() ? 'inf' : $yv));
       }
       echo "\n";
     }
