@@ -109,6 +109,12 @@ final class PhutilServiceProfiler {
         case 'http':
           $desc = $data['uri'];
           break;
+        case 'lint':
+          $desc = $data['linter'];
+          if (isset($data['paths'])) {
+            $desc .= ' <paths = '.count($data['paths']).'>';
+          }
+          break;
         case 'lock':
           $desc = $data['name'];
           break;
