@@ -23,6 +23,19 @@ final class PhutilDivinerSyntaxHighlighter {
     // This highlighter isn't perfect but tries to do an okay job at getting
     // some of the basics at least. There's lots of room for improvement.
 
+    $blocks = explode("\n\n", $source);
+    foreach ($blocks as $key => $block) {
+      if (preg_match('/^[^ ](?! )/m', $block)) {
+        $blocks[$key] = $this->highlightBlock($block);
+      }
+    }
+    $source = implode("\n\n", $blocks);
+
+    $source = phutil_safe_html($source);
+    return new ImmediateFuture($source);
+  }
+
+  private function highlightBlock($source) {
     // Highlight "@{class:...}" links to other documentation pages.
     $source = $this->highlightPattern('/@{([\w@]+?):([^}]+?)}/', $source, 'nc');
 
@@ -40,8 +53,7 @@ final class PhutilDivinerSyntaxHighlighter {
     // Highlight stuff that looks like headers.
     $source = $this->highlightPattern('/^=(.*)$/m', $source, 'nv');
 
-    $source = phutil_safe_html($source);
-    return new ImmediateFuture($source);
+    return $source;
   }
 
   private function highlightPattern($regexp, $source, $class) {

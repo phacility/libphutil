@@ -2,6 +2,7 @@
 
 /**
  * @group markup
+ * @deprecated
  */
 final class PhutilRemarkupRuleEscapeHTML
   extends PhutilRemarkupRule {
