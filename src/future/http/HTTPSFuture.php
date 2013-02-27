@@ -164,15 +164,31 @@ final class HTTPSFuture extends BaseHTTPFuture {
       }
 
       $headers = $this->getHeaders();
-      if ($headers) {
-        for ($ii = 0; $ii < count($headers); $ii++) {
-          list($name, $value) = $headers[$ii];
-          $headers[$ii] = $name.': '.$value;
+
+      $saw_expect = false;
+      for ($ii = 0; $ii < count($headers); $ii++) {
+        list($name, $value) = $headers[$ii];
+        $headers[$ii] = $name.': '.$value;
+        if (!strncasecmp($name, 'Expect')) {
+          $saw_expect = true;
         }
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-      } else {
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array());
       }
+      if (!$saw_expect) {
+        // cURL sends an "Expect" header by default for certain requests. While
+        // there is some reasoning behind this, it causes a practical problem
+        // in that lighttpd servers reject these requests with a 417. Both sides
+        // are locked in an eternal struggle (lighttpd has introduced a
+        // 'server.reject-expect-100-with-417' option to deal with this case).
+        //
+        // The ostensibly correct way to suppress this behavior on the cURL side
+        // is to add an empty "Expect:" header. If we haven't seen some other
+        // explicit "Expect:" header, do so.
+        //
+        // See here, for example, although this issue is fairly widespread:
+        //   http://curl.haxx.se/mail/archive-2009-07/0008.html
+        $headers[] = 'Expect:';
+      }
+      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
       // Set the requested HTTP method, e.g. GET / POST / PUT.
       curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $this->getMethod());
