@@ -213,6 +213,54 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     }
   }
 
+  public function testUTF8NonHTMLWrap() {
+    $inputs = array(
+      array(
+        'aaaaaaa',
+        3,
+        array(
+          'aaa',
+          'aaa',
+          'a',
+        )),
+      array(
+        'abracadabra!',
+        4,
+        array(
+          'abra',
+          'cada',
+          'bra!',
+        )),
+      array(
+        '',
+        10,
+        array(
+        )),
+      array(
+        'a',
+        20,
+        array(
+          'a',
+        )),
+      array(
+        "aa\xe6\x9d\xb1aaaa",
+        3,
+        array(
+          "aa\xe6\x9d\xb1",
+          'aaa',
+          'a',
+        )),
+    );
+
+    foreach ($inputs as $input) {
+      list($string, $width, $expect) = $input;
+      $this->assertEqual(
+        $expect,
+        phutil_utf8_hard_wrap($string, $width),
+        "Wrapping of '".$string."'");
+    }
+  }
+
   public function testUTF8ConvertParams() {
     $caught = null;
     try {

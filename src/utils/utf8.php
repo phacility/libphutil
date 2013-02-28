@@ -392,6 +392,38 @@ function phutil_utf8_hard_wrap_html($string, $width) {
   return $result;
 }
 
+/**
+  * Hard-wrap a block of UTF-8 text with no embedded HTML tags and entitites
+  *
+  * @param string A non HTML string
+  * @param int Width of the hard-wrapped lines
+  * @return list List of hard-wrapped lines.
+  * @group utf8
+  */
+function phutil_utf8_hard_wrap($string, $width) {
+
+  // Convert the UTF-8 string int a list of UTF-8 characters.
+  $vector = phutil_utf8v($string);
+
+  $len = count($vector);
+  $result = array();
+  $string = '';
+
+  // Build string segments
+  for ($ii = 1; $ii <= $len; ++$ii) {
+    $string .= $vector[$ii - 1];
+    if (($ii % $width) === 0) {
+      $result[] = $string;
+      $string = '';
+    }
+  }
+
+  if (strlen($string)) {
+    $result[] = $string;
+  }
+
+  return $result;
+}
 
 /**
  * Convert a string from one encoding (like ISO-8859-1) to another encoding
