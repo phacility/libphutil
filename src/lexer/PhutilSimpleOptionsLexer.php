@@ -28,6 +28,26 @@ final class PhutilSimpleOptionsLexer extends PhutilLexer {
 
     $tokens = $this->mergeTokens($tokens);
 
+    // Find spaces in between two words and turn them into words. This allows
+    // us to parse unescaped spaces in values correctly.
+    for ($ii = 0; $ii < count($tokens); $ii++) {
+      list($type, $value) = $tokens[$ii];
+      if ($type != ' ') {
+        continue;
+      }
+      $last = idx($tokens, $ii - 1);
+      if (!$last) {
+        continue;
+      }
+      $next = idx($tokens, $ii + 1);
+      if (!$next) {
+        continue;
+      }
+      if ($last[0] == 'word' && $next[0] == 'word') {
+        $tokens[$ii][0] = 'word';
+      }
+    }
+
     // NOTE: Strip these only after merging tokens, so "a b" merges into two
     // words, "a" and "b", not a single "ab" word.
     foreach ($tokens as $key => $token) {

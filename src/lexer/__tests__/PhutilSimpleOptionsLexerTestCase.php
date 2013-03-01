@@ -37,6 +37,7 @@ final class PhutilSimpleOptionsLexerTestCase extends PhutilTestCase {
     $this->assertEqual(
       array(
         array('word', 'a', null),
+        array('word', ' ', null),
         array('word', 'b', null),
       ),
       $this->getNiceTokens('  a b  '));

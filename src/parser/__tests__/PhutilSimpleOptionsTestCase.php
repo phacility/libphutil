@@ -21,9 +21,12 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
       'flag'  => array('flag' => true),
       'legs=4,flag' => array('legs' => '4', 'flag' => true),
 
-      // Spaces should be ignored.
+      // Leading and trailing spaces should be ignored.
       '  flag  ' => array('flag' => true),
       '  legs =  4   , eyes  = 2' => array('legs' => '4', 'eyes' => '2'),
+
+      // Unescaped spaces inside values are OK.
+      'legs=a b   c d' => array('legs' => 'a b   c d'),
 
       // Case should be ignored.
       'LEGS=4' => array('legs' => '4'),

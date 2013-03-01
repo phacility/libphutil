@@ -82,6 +82,12 @@ final class PhutilSimpleOptions {
           $state = ',';
           break;
         case ',':
+          if ($type == 'word') {
+            $pair = array_pop($pairs);
+            $pair[1] .= $value;
+            $pairs[] = $pair;
+            break;
+          }
           if ($type != ',') {
             return array();
           }
