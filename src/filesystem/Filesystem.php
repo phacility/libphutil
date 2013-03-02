@@ -677,7 +677,7 @@ final class Filesystem {
    */
   public static function resolvePath($path, $relative_to = null) {
     if (phutil_is_windows()) {
-      $is_absolute = preg_match('/^[A-Z]+:/', $path);
+      $is_absolute = preg_match('/^[A-Za-z]+:/', $path);
     } else {
       $is_absolute = !strncmp($path, DIRECTORY_SEPARATOR, 1);
     }
