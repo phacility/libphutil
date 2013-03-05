@@ -25,6 +25,7 @@ final class FileFinder {
   private $type;
   private $generateChecksums = false;
   private $followSymlinks;
+  private $forceMode;
 
   /**
    * Create a new FileFinder.
@@ -34,7 +35,7 @@ final class FileFinder {
    * @task create
    */
   public function __construct($root) {
-    $this->root = $root;
+    $this->root = rtrim($root, '/');
   }
 
   /**
@@ -86,62 +87,169 @@ final class FileFinder {
   }
 
   /**
+   * @task config
+   * @param string Either "php", "shell", or the empty string.
+   */
+  public function setForceMode($mode) {
+    $this->forceMode = $mode;
+    return $this;
+  }
+
+  /**
+   * @task internal
+   */
+  public function validateFile($file) {
+    $matches = (count($this->suffix) == 0);
+    foreach ($this->suffix as $curr_suffix) {
+      if (fnmatch($curr_suffix, $file)) {
+        $matches = true;
+        break;
+      }
+    }
+    if (!$matches) {
+      return false;
+    }
+
+    $matches = (count($this->paths) == 0);
+    foreach ($this->paths as $path) {
+      if (fnmatch($path, $this->root.'/'.$file)) {
+        $matches = true;
+        break;
+      }
+    }
+
+    $fullpath = $this->root.'/'.ltrim($file, '/');
+    if (($this->type == 'f' && is_dir($fullpath))
+        || ($this->type == 'd' && !is_dir($fullpath))) {
+      $matches = false;
+    }
+
+    return $matches;
+  }
+
+  /**
+   * @task internal
+   */
+  private function getFiles($dir) {
+    $found = Filesystem::listDirectory($this->root.'/'.$dir, true);
+    $files = array();
+    if (strlen($dir) > 0) {
+      $dir = rtrim($dir, '/').'/';
+    }
+    foreach ($found as $filename) {
+      // Only exclude files whose names match relative to the root.
+      if ($dir == "") {
+        $matches = true;
+        foreach ($this->exclude as $exclude_path) {
+          if (fnmatch(ltrim($exclude_path, './'), $dir.$filename)) {
+            $matches = false;
+            break;
+          }
+        }
+        if (!$matches) {
+          continue;
+        }
+      }
+
+      if ($this->validateFile($dir.$filename)) {
+        $files[] = $dir.$filename;
+      }
+
+      if (is_dir($this->root.'/'.$dir.$filename)) {
+        foreach ($this->getFiles($dir.$filename) as $file) {
+          $files[] = $file;
+        }
+      }
+    }
+    return $files;
+  }
+
+  /**
    * @task exec
    */
   public function find() {
-    $args = array();
-    $command = array();
 
-    $command[] = '(cd %s; ';
-    $args[] = $this->root;
+    $files = array();
 
-    $command[] = 'find';
-    if ($this->followSymlinks) {
-      $command[] = '-L';
-    }
-    $command[] = '.';
-
-    if ($this->exclude) {
-      $command[] = $this->generateList('path', $this->exclude).' -prune';
-      $command[] = '-o';
+    if (!is_dir($this->root) || !is_readable($this->root)) {
+      throw new Exception("Invalid root directory specified. " .
+                          "Use an absolute path.");
     }
 
-    if ($this->type) {
-      $command[] = '-type %s';
-      $args[] = $this->type;
+    if ($this->forceMode == "shell") {
+      $php_mode = false;
+    } else if ($this->forceMode == "php") {
+      $php_mode = true;
+    } else {
+      $php_mode = (phutil_is_windows() || exec("which find") == "");
     }
 
-    if ($this->suffix) {
-      $command[] = $this->generateList('name', $this->suffix);
-    }
+    if ($php_mode) {
+      $files = $this->getFiles("");
+    } else {
+      $args = array();
+      $command = array();
 
-    if ($this->paths) {
-      $command[] = $this->generateList('wholename', $this->paths);
-    }
+      $command[] = '(cd %s; ';
+      $args[] = $this->root;
 
-    $command[] = '-print0 )';
+      $command[] = 'find';
+      if ($this->followSymlinks) {
+        $command[] = '-L';
+      }
+      $command[] = '.';
 
-    list($stdout) = call_user_func_array(
-      'execx',
-      array_merge(
-        array(implode(' ', $command)),
-        $args));
+      if ($this->exclude) {
+        $command[] = $this->generateList('path', $this->exclude).' -prune';
+        $command[] = '-o';
+      }
 
-    $stdout = trim($stdout);
-    if (!strlen($stdout)) {
-      return array();
+      if ($this->type) {
+        $command[] = '-type %s';
+        $args[] = $this->type;
+      }
+
+      if ($this->suffix) {
+        $command[] = $this->generateList('name', $this->suffix);
+      }
+
+      if ($this->paths) {
+        $command[] = $this->generateList('wholename', $this->paths);
+      }
+
+      $command[] = '-print0 )';
+
+      list($stdout) = call_user_func_array(
+        'execx',
+        array_merge(
+          array(implode(' ', $command)),
+          $args));
+
+      $stdout = trim($stdout);
+      if (!strlen($stdout)) {
+        return array();
+      }
+
+      $files = explode("\0", $stdout);
+
+      // On OSX/BSD, find prepends a './' to each file.
+      for ($i = 0; $i < count($files); $i++) {
+        if (substr($files[$i], 0, 2) == './') {
+          $files[$i] = substr($files[$i], 2);
+        }
+      }
     }
 
     if (!$this->generateChecksums) {
-      return explode("\0", $stdout);
+      return $files;
     } else {
       $map = array();
-      foreach (explode("\0", $stdout) as $line) {
-        $file = $this->root.ltrim($line, '.');
-        if (is_dir($file)) {
-          $map[$file] = null;
+      foreach ($files as $line) {
+        $fullpath = $this->root.'/'.ltrim($line, '/');
+        if (is_dir($fullpath)) {
+          $map[$line] = null;
         } else {
-          $map[$file] = md5_file($file);
+          $map[$line] = md5_file($fullpath);
         }
       }
       return $map;
