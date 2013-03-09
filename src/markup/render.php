@@ -61,6 +61,26 @@ function phutil_tag($tag, array $attributes = array(), $content = null) {
 function phutil_escape_html($string) {
   if ($string instanceof PhutilSafeHTML) {
     return $string;
+  } else if ($string instanceof PhutilSafeHTMLProducerInterface) {
+    $result = $string->producePhutilSafeHTML();
+    if ($result instanceof PhutilSafeHTML) {
+      return phutil_escape_html($result);
+    } else if (is_array($result)) {
+      return phutil_escape_html($result);
+    } else if ($result instanceof PhutilSafeHTMLProducerInterface) {
+      return phutil_escape_html($result);
+    } else {
+      try {
+        assert_stringlike($result);
+        return phutil_escape_html((string)$result);
+      } catch (Exception $ex) {
+        $class = get_class($string);
+        throw new Exception(
+          "Object (of class '{$class}') implements ".
+          "PhutilSafeHTMLProducerInterface but did not return anything ".
+          "renderable from producePhutilSafeHTML().");
+      }
+    }
   } else if (is_array($string)) {
     return implode('', array_map('phutil_escape_html', $string));
   }

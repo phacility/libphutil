@@ -201,6 +201,7 @@ phutil_register_library_map(array(
     'PhutilRemarkupRuleLinebreaks' => 'markup/engine/remarkup/markuprule/PhutilRemarkupRuleLinebreaks.php',
     'PhutilRemarkupRuleMonospace' => 'markup/engine/remarkup/markuprule/PhutilRemarkupRuleMonospace.php',
     'PhutilSafeHTML' => 'markup/PhutilSafeHTML.php',
+    'PhutilSafeHTMLProducerInterface' => 'markup/PhutilSafeHTMLProducerInterface.php',
     'PhutilSaturateStdoutDaemon' => 'daemon/torture/PhutilSaturateStdoutDaemon.php',
     'PhutilServiceProfiler' => 'serviceprofiler/PhutilServiceProfiler.php',
     'PhutilShellLexer' => 'lexer/PhutilShellLexer.php',
