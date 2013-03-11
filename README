@@ -11,9 +11,10 @@ libphutil Library System
 Futures
   Futures (also known as "promises") are objects which act as placeholders for
   some future result of computation. They let you express parallel and
-  asynchronous execution with a natural syntax. There are two provided concrete
-  Future implementations: ExecFuture for executing system commands, and
-  HTTPFuture for making HTTP requests.
+  asynchronous execution with a natural syntax. There are three provided
+  concrete Future implementations: ExecFuture for executing system commands,
+  HTTPFuture for making HTTP requests, and QueryFuture for executing database
+  queries.
 
 Filesystem
   The builtin PHP filesystem functions return error codes and emit warnings.
@@ -26,7 +27,7 @@ xsprintf
   concrete implementations are provided:
     csprintf(): safely escape data for system commands
     jsprintf(): safely escape data for Javascript
-    qsprintf(): safely escape data for MySQL (in Phabricator)
+    qsprintf(): safely escape data for MySQL
 
 AAST/PHPAST
   An abstract, abstract syntax tree which can make it easier to perform simple
