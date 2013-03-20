@@ -182,6 +182,12 @@ final class PhutilErrorHandler {
       throw new RuntimeException($str);
     }
 
+    // Convert undefined constants into exceptions. Usually this means there
+    // is a missing `$` and the program is horribly broken.
+    if (preg_match('/^Use of undefined constant /', $str)) {
+      throw new RuntimeException($str);
+    }
+
     $trace = debug_backtrace();
     array_shift($trace);
     self::dispatchErrorMessage(
