@@ -54,6 +54,40 @@ final class PhutilKeyValueCacheTestCase extends ArcanistPhutilTestCase {
     $this->assertEqual(false, Filesystem::pathExists($dir));
   }
 
+  public function testNamespaceCache() {
+    $namespace = 'namespace'.mt_rand();
+    $in_request_cache = new PhutilKeyValueCacheInRequest();
+    $cache = new PhutilKeyValueCacheNamespace($in_request_cache);
+    $cache->setNamespace($namespace);
+
+    $test_info = get_class($cache);
+    $keys = array(
+      'key1' => mt_rand(),
+      'key2' => '',
+      'key3' => 'Phabricator');
+    $cache->setKeys($keys);
+    $cached_keys = $in_request_cache->getAllKeys();
+
+    foreach ($keys as $key => $value) {
+      $cached_key = $namespace.':'.$key;
+
+      $this->assertEqual(
+        true,
+        isset($cached_keys[$cached_key]),
+        $test_info);
+
+      $this->assertEqual(
+        $value,
+        $cached_keys[$cached_key],
+        $test_info);
+    }
+
+    $cache->destroyCache();
+
+    $this->doCacheTest($cache);
+    $cache->destroyCache();
+  }
+
   public function testCacheStack() {
     $req_cache = new PhutilKeyValueCacheInRequest();
     $disk_cache = new PhutilKeyValueCacheOnDisk();

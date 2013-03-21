@@ -69,6 +69,10 @@ final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
     return $this;
   }
 
+  public function getAllKeys() {
+    return $this->cache;
+  }
+
   public function destroyCache() {
     $this->cache = array();
     $this->ttl = array();
