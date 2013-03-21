@@ -7,3 +7,7 @@ text block
 </ul>
 
 <p>text block</p>
+~~~~~~~~~~
+- < > & "
+
+text block

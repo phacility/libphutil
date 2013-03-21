@@ -10,3 +10,9 @@ more code```
 <span class="no">more</span> <span class="no">code</span>
 
 <span class="no">more</span> <span class="no">code</span></pre></div>
+~~~~~~~~~~
+  code
+
+  more code
+
+  more code

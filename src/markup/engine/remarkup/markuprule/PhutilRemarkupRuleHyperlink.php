@@ -51,6 +51,10 @@ class PhutilRemarkupRuleHyperlink
   }
 
   protected function renderHyperlink($link) {
+    if ($this->getEngine()->isTextMode()) {
+      return $link;
+    }
+
     if ($this->getEngine()->getState('toc')) {
       return $link;
     } else {

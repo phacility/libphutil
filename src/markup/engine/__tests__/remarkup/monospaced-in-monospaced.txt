@@ -10,3 +10,9 @@
 <p><tt>SELECT * FROM ##table##</tt></p>
 
 <p><tt>**x**</tt></p>
+~~~~~~~~~~
+##SELECT * FROM `table`##
+
+`SELECT * FROM ##table##`
+
+`**x**`

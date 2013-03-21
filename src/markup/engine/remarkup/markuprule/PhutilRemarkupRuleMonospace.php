@@ -20,9 +20,13 @@ final class PhutilRemarkupRuleMonospace
   }
 
   protected function markupMonospacedText($matches) {
-    $match = isset($matches[2]) ? $matches[2] : $matches[1];
+    if ($this->getEngine()->isTextMode()) {
+      $result = $matches[0];
 
-    $result = phutil_tag('tt', array(), $match);
+    } else {
+      $match = isset($matches[2]) ? $matches[2] : $matches[1];
+      $result = phutil_tag('tt', array(), $match);
+    }
 
     return $this->getEngine()->storeText($result);
   }

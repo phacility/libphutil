@@ -17,6 +17,17 @@ final class PhutilRemarkupRuleDocumentLink
   }
 
   protected function renderHyperlink($link, $name) {
+    if ($this->getEngine()->isTextMode()) {
+      $text = $link;
+      if (strncmp($link, '/', 1) == 0) {
+        $text = rtrim($this->getEngine()->getConfig('uri.prefix'), '/').$text;
+      }
+      if ($link != $name) {
+        $text .= ' | '.$name;
+      }
+      return '[[ '.$text.' ]]';
+    }
+
     if ($this->getEngine()->getState('toc')) {
       return $name;
     } else {

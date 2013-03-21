@@ -32,16 +32,16 @@ final class PhutilRemarkupEngineRemarkupSimpleTableBlockRule
         if (!preg_match('/^(|--+)$/', $cell)) {
           $headings = false;
         }
-        $cells[] = array('type' => 'td', 'content' => $cell);
+        $cells[] = array('type' => 'td', 'content' => $this->applyRules($cell));
       }
 
       if (!$headings) {
-        $rows[] = $cells;
+        $rows[] = array('type' => 'tr', 'content' => $cells);
       } else if ($rows) {
         // Mark previous row with headings.
         foreach ($cells as $i => $cell) {
           if ($cell['content']) {
-            $rows[last_key($rows)][$i]['type'] = 'th';
+            $rows[last_key($rows)]['content'][$i]['type'] = 'th';
           }
         }
       }
@@ -51,21 +51,7 @@ final class PhutilRemarkupEngineRemarkupSimpleTableBlockRule
       return $this->applyRules($text);
     }
 
-    $out = array();
-    $out[] = hsprintf("<table class=\"remarkup-table\">\n");
-    foreach ($rows as $cells) {
-      $out[] = hsprintf('<tr>');
-      foreach ($cells as $cell) {
-        $out[] = phutil_tag(
-          $cell['type'],
-          array(),
-          $this->applyRules($cell['content']));
-      }
-      $out[] = hsprintf("</tr>\n");
-    }
-    $out[] = hsprintf("</table>\n");
-
-    return phutil_implode_html('', $out);
+    return $this->renderRemarkupTable($rows);
   }
 
 }

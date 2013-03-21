@@ -19,10 +19,9 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $file = basename($markup_file);
 
     $parts = explode("\n~~~~~~~~~~\n", $contents);
-    $this->assertEqual(2, count($parts));
+    $this->assertEqual(3, count($parts));
 
-    list($input_remarkup, $expected_output) = $parts;
-    $expected_output = preg_replace('/\n\z/', '', $expected_output);
+    list($input_remarkup, $expected_output, $expected_text) = $parts;
 
     $engine = $this->buildNewTestEngine();
 
@@ -36,6 +35,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
 
         $input_remarkup = str_replace("~", "\1", $input_remarkup);
         $expected_output = str_replace("~", "\1", $expected_output);
+        $expected_text = str_replace("~", "\1", $expected_text);
         break;
       case 'toc.txt':
         $engine->setConfig('header.generate-toc', true);
@@ -56,11 +56,20 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $this->assertEqual(
       $expected_output,
       $actual_output,
-      "Failed to markup file '{$file}'.");
+      "Failed to markup HTML in file '{$file}'.");
+
+    $engine->setMode(PhutilRemarkupEngine::MODE_TEXT);
+    $actual_output = (string)$engine->markupText($input_remarkup);
+
+    $this->assertEqual(
+      $expected_text,
+      $actual_output,
+      "Failed to markup text in file '{$file}'.");
   }
 
   private function buildNewTestEngine() {
     $engine = new PhutilRemarkupEngine();
+    $engine->setConfig('uri.prefix', 'http://www.example.com/');
 
     $engine->setConfig(
       'uri.allowed-protocols',
@@ -78,11 +87,13 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $rules[] = new PhutilRemarkupRuleDel();
 
     $blocks = array();
+    $blocks[] = new PhutilRemarkupEngineRemarkupQuotesBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupHeaderBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupHorizontalRuleBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupListBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupCodeBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupNoteBlockRule();
+    $blocks[] = new PhutilRemarkupEngineRemarkupTableBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupSimpleTableBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupDefaultBlockRule();
 

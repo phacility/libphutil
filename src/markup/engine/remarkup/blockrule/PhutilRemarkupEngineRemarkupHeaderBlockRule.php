@@ -19,7 +19,7 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
   public function markupText($text) {
     $text = trim($text);
 
-    $level = 1;
+    $level = 0;
     for ($ii = 0; $ii < min(5, strlen($text)); $ii++) {
       if ($text[$ii] == '=') {
         ++$level;
@@ -30,19 +30,27 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
     $text = trim($text, ' =');
 
     $engine = $this->getEngine();
+
+    if ($engine->isTextMode()) {
+      return
+        str_repeat('=', $level).' '.
+        $this->applyRules($text).
+        ' '.str_repeat('=', $level);
+    }
+
     $use_anchors = $engine->getConfig('header.generate-toc');
 
     $anchor = null;
     if ($use_anchors) {
-      $anchor = $this->generateAnchor($level - 1, $text);
+      $anchor = $this->generateAnchor($level, $text);
     }
 
     $text = phutil_tag(
-      'h'.$level,
+      'h'.($level + 1),
       array(),
       array($anchor, $this->applyRules($text)));
 
-    return $engine->storeText($text);
+    return $text;
   }
 
   private function generateAnchor($level, $text) {

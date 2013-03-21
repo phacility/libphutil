@@ -7,6 +7,10 @@ final class PhutilRemarkupRuleItalic
   extends PhutilRemarkupRule {
 
   public function apply($text) {
+    if ($this->getEngine()->isTextMode()) {
+      return $text;
+    }
+
     return $this->replaceHTML(
       '@(?<!:)//(.+?)//@s',
       array($this, 'applyCallback'),

@@ -22,3 +22,15 @@ y
 + z</pre></div>
 
 <p>derp derp</p>
+~~~~~~~~~~
+here is a diff
+
+  @@ derp derp @@
+  x
+  y
+
+  - x
+  - y
+  + z
+
+derp derp

@@ -18,3 +18,9 @@
 <h3><a name="bold"></a><strong>bold</strong></h3>
 
 <h2><a name="http-www-example-com"></a><a href="http://www.example.com" target="_blank">http://www.example.com</a></h2>
+~~~~~~~~~~
+= [[ http://www.example.com/ | link_name ]] =
+
+== **bold** ==
+
+= http://www.example.com =

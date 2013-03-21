@@ -17,10 +17,15 @@ final class PhutilRemarkupEngineRemarkupQuotesBlockRule
   public function markupText($text) {
     $lines = array();
     foreach (explode("\n", $text) as $line) {
-      $lines[] = $this->applyRules(preg_replace('/^>/', '', $line));
+      $lines[] = $this->applyRules(preg_replace('/^>\s*/', '', $line));
     }
+
+    if ($this->getEngine()->isTextMode()) {
+      return '> '.implode("\n> ", $lines);
+    }
+
     return hsprintf(
-      '<blockquote>%s</blockquote>',
+      '<blockquote><p>%s</p></blockquote>',
       phutil_implode_html(phutil_tag('br'), $lines));
   }
 }

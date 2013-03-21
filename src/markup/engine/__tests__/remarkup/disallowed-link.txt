@@ -1,3 +1,5 @@
 javascript://www.example.com/
 ~~~~~~~~~~
 <p>javascript://www.example.com/</p>
+~~~~~~~~~~
+javascript://www.example.com/

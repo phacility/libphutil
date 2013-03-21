@@ -79,12 +79,6 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
       }
     }
 
-    if ($options['counterexample']) {
-      $aux_class = ' remarkup-counterexample';
-    } else {
-      $aux_class = null;
-    }
-
     // Normalize the text back to a 0-level indent.
     $min_indent = 80;
     foreach ($lines as $line) {
@@ -96,14 +90,31 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
       }
     }
 
+    $text = implode("\n", $lines);
     if ($min_indent) {
       $indent_string = str_repeat(' ', $min_indent);
-      $text = preg_replace(
-        '/^'.$indent_string.'/m',
-        '',
-        implode("\n", $lines));
-    } else {
-      $text = implode("\n", $lines);
+      $text = preg_replace('/^'.$indent_string.'/m', '', $text);
+    }
+
+    if ($this->getEngine()->isTextMode()) {
+      $out = array();
+
+      $header = array();
+      if ($options['counterexample']) {
+        $header[] = 'counterexample';
+      }
+      if ($options['name'] != '') {
+        $header[] = 'name='.$options['name'];
+      }
+      if ($header) {
+        $out[] = implode(', ', $header);
+      }
+
+      $text = preg_replace('/^/m', '  ', $text);
+      $text = preg_replace('/^\s+$/m', '', $text);
+      $out[] = $text;
+
+      return implode("\n", $out);
     }
 
     if (empty($options['lang'])) {
@@ -118,6 +129,8 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
       $options['lang'] = $lang;
     }
 
+    $code_body = $this->highlightSource($text, $options);
+
     $name_header = null;
     if ($options['name']) {
       $name_header = phutil_tag(
@@ -126,6 +139,22 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
           'class' => 'remarkup-code-header',
         ),
         $options['name']);
+    }
+
+    return phutil_tag(
+      'div',
+      array(
+        'class' => 'remarkup-code-block',
+        'data-code-lang' => $options['lang'],
+      ),
+      array($name_header, $code_body));
+  }
+
+  private function highlightSource($text, array $options) {
+    if ($options['counterexample']) {
+      $aux_class = ' remarkup-counterexample';
+    } else {
+      $aux_class = null;
     }
 
     $aux_style = null;
@@ -144,7 +173,7 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
     $engine->setConfig(
       'pygments.enabled',
       $this->getEngine()->getConfig('pygments.enabled'));
-    $code_body = phutil_tag(
+    return phutil_tag(
       'pre',
       array(
         'class' => 'remarkup-code'.$aux_class,
@@ -153,14 +182,6 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
       PhutilSafeHTML::applyFunction(
         'trim',
         $engine->highlightSource($options['lang'], $text)));
-
-    return phutil_tag(
-      'div',
-      array(
-        'class' => 'remarkup-code-block',
-        'data-code-lang' => $options['lang'],
-      ),
-      array($name_header, $code_body));
-
   }
+
 }

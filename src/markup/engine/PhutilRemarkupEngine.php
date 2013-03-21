@@ -5,8 +5,12 @@
  */
 final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
+  const MODE_DEFAULT = 0;
+  const MODE_TEXT = 1;
+
   private $blockRules = array();
   private $config = array();
+  private $mode;
   private $metadata = array();
   private $states = array();
 
@@ -17,6 +21,15 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
   public function getConfig($key, $default = null) {
     return idx($this->config, $key, $default);
+  }
+
+  public function setMode($mode) {
+    $this->mode = $mode;
+    return $this;
+  }
+
+  public function isTextMode() {
+    return $this->mode & self::MODE_TEXT;
   }
 
   public function setBlockRules(array $rules) {
@@ -35,10 +48,16 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   }
 
   public function storeText($text) {
+    if ($this->isTextMode()) {
+      $text = phutil_safe_html($text);
+    }
     return $this->storage->store($text);
   }
 
   public function overwriteStoredText($token, $new_text) {
+    if ($this->isTextMode()) {
+      $new_text = phutil_safe_html($new_text);
+    }
     $this->storage->overwrite($token, $new_text);
     return $this;
   }
@@ -152,8 +171,14 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     unset($this->storage);
     $metadata = $this->metadata;
 
+    if ($this->isTextMode()) {
+      $output = implode("\n\n", $output)."\n";
+    } else {
+      $output = phutil_implode_html("\n\n", $output);
+    }
+
     return array(
-      'output'    => phutil_implode_html("\n\n", $output),
+      'output'    => $output,
       'storage'   => $map,
       'metadata'  => $metadata,
     );

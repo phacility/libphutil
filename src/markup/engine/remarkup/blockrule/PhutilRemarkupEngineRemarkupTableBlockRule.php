@@ -78,7 +78,7 @@ final class PhutilRemarkupEngineRemarkupTableBlockRule
 
         $out_cells[] = array(
           'type'      => $cell_type,
-          'content'   => $cell_content,
+          'content'   => $this->applyRules($cell_content),
         );
       }
 
@@ -88,26 +88,20 @@ final class PhutilRemarkupEngineRemarkupTableBlockRule
       );
     }
 
-    $out = array();
-    foreach ($out_rows as $row) {
-      $cells = array();
-      foreach ($row['content'] as $cell) {
-        $cells[] = phutil_tag(
-          $cell['type'],
-          array(),
-          $this->applyRules($cell['content']));
-      }
-      $out[] = phutil_tag($row['type'], array(), $cells);
-    }
-
-    return phutil_tag('table', array('class' => 'remarkup-table'), $out);
+    return $this->renderRemarkupTable($out_rows);
   }
 
   private function fail($near, $message) {
-    return hsprintf(
-      '<div style="color: red;">%s near: %s</div>',
+    $message = sprintf(
+      '%s near: %s',
       $message,
       phutil_utf8_shorten($near, 32000));
+
+    if ($this->getEngine()->isTextMode()) {
+      return '('.$message.')';
+    }
+
+    return hsprintf('<div style="color: red;">%s</div>', $message);
   }
 
 }

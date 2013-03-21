@@ -226,6 +226,13 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
     $out = $this->renderTree($tree);
 
+    if ($this->getEngine()->isTextMode()) {
+      $out = implode('', $out);
+      $out = rtrim($out, "\n");
+      $out = preg_replace('/ +$/m', '', $out);
+      return $out;
+    }
+
     return phutil_implode_html('', $out);
   }
 
@@ -319,41 +326,61 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
   /**
    * See additional notes in markupText().
    */
-  private function renderTree(array $tree) {
+  private function renderTree(array $tree, $level = 0) {
     $style = idx(head($tree), 'style');
 
     $out = array();
-    switch ($style) {
-      case '#':
-        $out[] = hsprintf("<ol>\n");
-        break;
-      case '-':
-        $out[] = hsprintf("<ul>\n");
-        break;
+
+    if (!$this->getEngine()->isTextMode()) {
+      switch ($style) {
+        case '#':
+          $out[] = hsprintf("<ol>\n");
+          break;
+        case '-':
+          $out[] = hsprintf("<ul>\n");
+          break;
+      }
     }
 
+    $number = 1;
     foreach ($tree as $item) {
-      if ($item['text'] === null) {
+      if ($this->getEngine()->isTextMode()) {
+        $out[] = str_repeat(' ', 2 * $level);
+        switch ($style) {
+          case '#':
+            $out[] = $number.'. ';
+            $number++;
+            break;
+          case '-':
+            $out[] = '- ';
+            break;
+        }
+        $out[] = $this->applyRules($item['text'])."\n";
+      } else if ($item['text'] === null) {
         $out[] = hsprintf('<li class="phantom-item">');
       } else {
         $out[] = hsprintf('<li>');
         $out[] = $this->applyRules($item['text']);
       }
       if ($item['items']) {
-        foreach ($this->renderTree($item['items']) as $i) {
+        foreach ($this->renderTree($item['items'], $level + 1) as $i) {
           $out[] = $i;
         }
       }
-      $out[] = hsprintf("</li>\n");
+      if (!$this->getEngine()->isTextMode()) {
+        $out[] = hsprintf("</li>\n");
+      }
     }
 
-    switch ($style) {
-      case '#':
-        $out[] = hsprintf('</ol>');
-        break;
-      case '-':
-        $out[] = hsprintf('</ul>');
-        break;
+    if (!$this->getEngine()->isTextMode()) {
+      switch ($style) {
+        case '#':
+          $out[] = hsprintf('</ol>');
+          break;
+        case '-':
+          $out[] = hsprintf('</ul>');
+          break;
+      }
     }
 
     return $out;
