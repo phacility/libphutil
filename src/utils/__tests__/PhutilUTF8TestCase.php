@@ -250,6 +250,15 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
           'aaa',
           'a',
         )),
+      array(
+        "mmm\nmmm\nmmmm",
+        3,
+        array(
+          'mmm',
+          'mmm',
+          'mmm',
+          'm',
+        )),
     );
 
     foreach ($inputs as $input) {

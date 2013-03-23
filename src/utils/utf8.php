@@ -401,25 +401,28 @@ function phutil_utf8_hard_wrap_html($string, $width) {
   * @group utf8
   */
 function phutil_utf8_hard_wrap($string, $width) {
-
-  // Convert the UTF-8 string int a list of UTF-8 characters.
-  $vector = phutil_utf8v($string);
-
-  $len = count($vector);
   $result = array();
-  $string = '';
 
-  // Build string segments
-  for ($ii = 1; $ii <= $len; ++$ii) {
-    $string .= $vector[$ii - 1];
-    if (($ii % $width) === 0) {
-      $result[] = $string;
-      $string = '';
+  $lines = phutil_split_lines($string, $retain_endings = false);
+  foreach ($lines as $line) {
+
+    // Convert the UTF-8 string into a list of UTF-8 characters.
+    $vector = phutil_utf8v($line);
+
+    $len = count($vector);
+    $buffer = '';
+
+    for ($ii = 1; $ii <= $len; ++$ii) {
+      $buffer .= $vector[$ii - 1];
+      if (($ii % $width) === 0) {
+        $result[] = $buffer;
+        $buffer = '';
+      }
     }
-  }
 
-  if (strlen($string)) {
-    $result[] = $string;
+    if (strlen($buffer)) {
+      $result[] = $buffer;
+    }
   }
 
   return $result;
