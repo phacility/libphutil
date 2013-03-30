@@ -190,9 +190,6 @@ final class FileFinder {
       $args = array();
       $command = array();
 
-      $command[] = '(cd %s; ';
-      $args[] = $this->root;
-
       $command[] = 'find';
       if ($this->followSymlinks) {
         $command[] = '-L';
@@ -214,16 +211,15 @@ final class FileFinder {
       }
 
       if ($this->paths) {
-        $command[] = $this->generateList('wholename', $this->paths);
+        $command[] = $this->generateList('path', $this->paths);
       }
 
-      $command[] = '-print0 )';
+      $command[] = '-print0';
 
-      list($stdout) = call_user_func_array(
-        'execx',
-        array_merge(
-          array(implode(' ', $command)),
-          $args));
+      array_unshift($args, implode(' ', $command));
+      list($stdout) = newv('ExecFuture', $args)
+        ->setCWD($this->root)
+        ->resolvex();
 
       $stdout = trim($stdout);
       if (!strlen($stdout)) {
@@ -265,7 +261,7 @@ final class FileFinder {
       $items[$key] = '-'.$flag.' '.$item;
     }
     $items = implode(' -o ', $items);
-    return '\\( '.$items.' \\)';
+    return '"(" '.$items.' ")"';
   }
 }
 
