@@ -322,34 +322,18 @@ final class Filesystem {
   public static function readRandomBytes($number_of_bytes) {
 
     if (phutil_is_windows()) {
-      if (!class_exists('COM')) {
-        throw new FilesystemException(
-          'CAPICOM.Utilities.1',
-          "Class 'COM' does not exist, you must enable php_com_dotnet.dll.");
+      if (!function_exists('openssl_random_pseudo_bytes')) {
+        if (version_compare(PHP_VERSION, '5.3.0') < 0) {
+          throw new Exception(
+            'Filesystem::readRandomBytes() requires at least PHP 5.3 under '.
+            'Windows.');
+        }
+        throw new Exception(
+          'Filesystem::readRandomBytes() requires OpenSSL extension under '.
+          'Windows.');
       }
-
-      try {
-        $com = new COM('CAPICOM.Utilities.1');
-      } catch (Exception $ex) {
-        throw new FilesystemException(
-          'CAPICOM.Utilities.1',
-          'Unable to load DLL, follow instructions at '.
-            'https://bugs.php.net/48498.');
-      }
-
-      try {
-        // The default CAPICOM_ENCODE_BINARY generates the random bytes in
-        // UTF-16 and converts them to the encoding specified by the third
-        // parameter of COM() which defaults to ANSI. The result is that it
-        // produces random strings like "??A????" for length 14.
-        $capicom_encode_base64 = 0;
-        $base64 = $com->GetRandom($number_of_bytes, $capicom_encode_base64);
-        return base64_decode($base64);
-      } catch (Exception $ex) {
-        throw new FilesystemException(
-          'CAPICOM.Utilities.1',
-          'Unable to read random bytes through CAPICOM!');
-      }
+      $strong = true;
+      return openssl_random_pseudo_bytes($number_of_bytes, $strong);
     }
 
     $urandom = @fopen('/dev/urandom', 'rb');
