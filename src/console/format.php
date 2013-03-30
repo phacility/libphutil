@@ -55,6 +55,8 @@ function phutil_console_prompt($prompt, $history = '') {
     list($err) = exec_manual('bash -c %s', 'true');
     if ($err) {
       $use_history = false;
+    } else if (phutil_is_windows()) {
+      $history = str_replace('\\', '/', $history);
     }
   }
 
