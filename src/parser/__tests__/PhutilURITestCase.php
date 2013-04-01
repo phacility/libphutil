@@ -45,5 +45,11 @@ final class PhutilURITestCase extends PhutilTestCase {
       'uri');
   }
 
+  public function testURIGeneration() {
+    $uri = new PhutilURI('http://example.com');
+    $uri->setPath('bar');
+    $this->assertEqual('http://example.com/bar', $uri->__toString());
+  }
+
 
 }
