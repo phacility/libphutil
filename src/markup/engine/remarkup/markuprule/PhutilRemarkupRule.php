@@ -20,6 +20,10 @@ abstract class PhutilRemarkupRule {
 
   abstract public function apply($text);
 
+  public function getPostprocessKey() {
+    return spl_object_hash($this);
+  }
+
   public function didMarkupText() {
     return;
   }

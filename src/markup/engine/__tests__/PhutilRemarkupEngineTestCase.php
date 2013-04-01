@@ -19,7 +19,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $file = basename($markup_file);
 
     $parts = explode("\n~~~~~~~~~~\n", $contents);
-    $this->assertEqual(3, count($parts));
+    $this->assertEqual(3, count($parts), $markup_file);
 
     list($input_remarkup, $expected_output, $expected_text) = $parts;
 

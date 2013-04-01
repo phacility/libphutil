@@ -13,6 +13,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   private $mode;
   private $metadata = array();
   private $states = array();
+  private $postprocessRules = array();
 
   public function setConfig($key, $value) {
     $this->config[$key] = $value;
@@ -35,10 +36,29 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   public function setBlockRules(array $rules) {
     assert_instances_of($rules, 'PhutilRemarkupEngineBlockRule');
     $this->blockRules = $rules;
+    foreach ($this->blockRules as $rule) {
+      $rule->setEngine($this);
+    }
+
+    $post_rules = array();
+    foreach ($this->blockRules as $block_rule) {
+      foreach ($block_rule->getMarkupRules() as $rule) {
+        $key = $rule->getPostprocessKey();
+        if ($key !== null) {
+          $post_rules[$key] = $rule;
+        }
+      }
+    }
+
+    $this->postprocessRules = $post_rules;
+
     return $this;
   }
 
   public function getTextMetadata($key, $default = null) {
+    if (isset($this->metadata[$key])) {
+      return $this->metadata[$key];
+    }
     return idx($this->metadata, $key, $default);
   }
 
@@ -89,21 +109,9 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     return !empty($this->states[$state]);
   }
 
-  private function setupProcessing() {
+  public function preprocessText($text) {
     $this->metadata = array();
     $this->storage = new PhutilRemarkupBlockStorage();
-
-    $block_rules = $this->blockRules;
-    if (empty($block_rules)) {
-      throw new Exception("Remarkup engine not configured with block rules.");
-    }
-    foreach ($block_rules as $rule) {
-      $rule->setEngine($this);
-    }
-  }
-
-  public function preprocessText($text) {
-    $this->setupProcessing();
 
     // Apply basic block and paragraph normalization to the text. NOTE: We don't
     // strip trailing whitespace because it is semantic in some contexts,
@@ -185,13 +193,17 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   }
 
   public function postprocessText(array $dict) {
-    $this->setupProcessing();
-
     $this->metadata = idx($dict, 'metadata', array());
+
+    $this->storage = new PhutilRemarkupBlockStorage();
     $this->storage->setMap(idx($dict, 'storage', array()));
 
     foreach ($this->blockRules as $block_rule) {
       $block_rule->postprocess();
+    }
+
+    foreach ($this->postprocessRules as $rule) {
+      $rule->didMarkupText();
     }
 
     return $this->restoreText(idx($dict, 'output'));

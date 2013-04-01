@@ -27,6 +27,7 @@ abstract class PhutilRemarkupEngineBlockRule {
 
   final public function setEngine(PhutilRemarkupEngine $engine) {
     $this->engine = $engine;
+    $this->updateRules();
     return $this;
   }
 
@@ -37,26 +38,30 @@ abstract class PhutilRemarkupEngineBlockRule {
   public function setMarkupRules(array $rules) {
     assert_instances_of($rules, 'PhutilRemarkupRule');
     $this->rules = $rules;
+    $this->updateRules();
     return $this;
   }
 
-  final private function getMarkupRules() {
+  private function updateRules() {
+    $engine = $this->getEngine();
+    if ($engine) {
+      foreach ($this->rules as $rule) {
+        $rule->setEngine($engine);
+      }
+    }
+    return $this;
+  }
+
+  final public function getMarkupRules() {
     return $this->rules;
   }
 
   final public function postprocess() {
-    $engine = $this->getEngine();
     $this->didMarkupText();
-    foreach ($this->getMarkupRules() as $rule) {
-      $rule->setEngine($engine);
-      $rule->didMarkupText();
-    }
   }
 
   final protected function applyRules($text) {
-    $engine = $this->getEngine();
     foreach ($this->getMarkupRules() as $rule) {
-      $rule->setEngine($engine);
       $text = $rule->apply($text);
     }
     return $text;
