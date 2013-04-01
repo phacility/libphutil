@@ -48,25 +48,16 @@ final class Filesystem {
     return $data;
   }
 
-
   /**
-   * Write a file in a manner similar to file_put_contents(), but throw
-   * detailed exceptions on failure. If the file already exists, it will be
-   * overwritten.
-   *
-   * @param  string  File path to write. This file must be writable and its
-   *                 parent directory must exist.
-   * @param  string  Data to write.
-   *
-   * @task   file
+   * Make assertions about the state of path in preparation for
+   * writeFile() and writeFileIfChanged().
    */
-  public static function writeFile($path, $data) {
+  private static function assertWritableFile($path) {
     $path = self::resolvePath($path);
-    $dir  = dirname($path);
+    $dir = dirname($path);
 
     self::assertExists($dir);
     self::assertIsDirectory($dir);
-    assert_stringlike($data);
 
     // File either needs to not exist and have a writable parent, or be
     // writable itself.
@@ -81,12 +72,85 @@ final class Filesystem {
     if (!$exists) {
       self::assertWritable($dir);
     }
+  }
+
+  /**
+   * Write a file in a manner similar to file_put_contents(), but throw
+   * detailed exceptions on failure. If the file already exists, it will be
+   * overwritten.
+   *
+   * @param  string  File path to write. This file must be writable and its
+   *                 parent directory must exist.
+   * @param  string  Data to write.
+   *
+   * @task   file
+   */
+  public static function writeFile($path, $data) {
+    self::assertWritableFile($path);
 
     if (@file_put_contents($path, $data) === false) {
       throw new FilesystemException(
         $path,
         "Failed to write file `{$path}'.");
     }
+  }
+
+  /**
+   * Write a file in a manner similar to file_put_contents(), but only
+   * touch the file if the contents are different, and throw detailed
+   * exceptions on failure.
+   *
+   * As this function is used in build steps to update code, if we write
+   * a new file, we do so by writing to a temporary file and moving it
+   * into place.  This allows a concurrently reading process to see
+   * a consistent view of the file without needing locking; any given
+   * read of the file is guaranteed to be self-consistent and not see
+   * partial file contents.
+   *
+   * @param string file path to write
+   * @param string data to write
+   *
+   * @return boolean indicating whether the file was changed by this
+   * function
+   */
+  public static function writeFileIfChanged($path, $data) {
+    if (file_exists($path)) {
+      $current = self::readFile($path);
+      if ($current === $data) {
+        return false;
+      }
+    }
+    self::assertWritableFile($path);
+
+    // Create the temporary file alongside the intended destination,
+    // as this ensures that the rename() will be atomic (on the same fs)
+    $dir = dirname($path);
+    $temp = tempnam($dir, 'GEN');
+    if (!$temp) {
+      throw new FilesystemException(
+        $dir,
+        "unable to create temporary file in $dir"
+      );
+    }
+    try {
+      self::writeFile($temp, $data);
+      // tempnam will always restrict ownership to us, broaden
+      // it so that these files respect the actual umask
+      self::changePermissions($temp, 0666 & ~umask());
+      // This will appear atomic to concurrent readers
+      $ok = rename($temp, $path);
+      if (!$ok) {
+        throw new FilesystemException(
+          $path,
+          "unable to move $temp to $path"
+        );
+      }
+    } catch (Exception $e) {
+      // Make best effort to remove temp file
+      unlink($temp);
+      throw $e;
+    }
+    return true;
   }
 
 
