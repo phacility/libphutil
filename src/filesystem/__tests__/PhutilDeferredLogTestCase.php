@@ -119,6 +119,43 @@ final class PhutilDeferredLogTestCase extends PhutilTestCase {
       Filesystem::readFile($tmp));
   }
 
+  public function testNoWrite() {
+    $tmp = new TempFile();
+
+    $log = new PhutilDeferredLog($tmp, 'xyz');
+    $log->setFile(null);
+    unset($log);
+
+    $this->assertEqual('', Filesystem::readFile($tmp), 'No Write');
+  }
+
+  public function testDoubleWrite() {
+    $tmp = new TempFile();
+
+    $log = new PhutilDeferredLog($tmp, 'xyz');
+    $log->write();
+    $log->write();
+    unset($log);
+
+    $this->assertEqual("xyz\n", Filesystem::readFile($tmp), 'Double Write');
+  }
+
+  public function testSetAfterWrite() {
+    $tmp1 = new TempFile();
+    $tmp2 = new TempFile();
+
+    $log = new PhutilDeferredLog($tmp1, 'xyz');
+    $log->write();
+
+    $caught = null;
+    try {
+      $log->setFile($tmp2);
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertEqual(true, ($caught instanceof Exception), 'Set After Write');
+  }
 
   private function checkLog($expect, $format, $data) {
     $tmp = new TempFile();

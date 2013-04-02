@@ -33,6 +33,7 @@
  * with @{method:setData}, it will be written as "-".
  *
  * @task log        Logging
+ * @task write      Writing the Log
  * @task internal   Internals
  * @group filesystem
  */
@@ -54,8 +55,9 @@ final class PhutilDeferredLog {
    *
    *   $log = new PhutilDeferredLog('/some/file.log', '[%T] %u');
    *
-   * @param string The file the entry should be written to.
-   * @param string The log entry format.
+   * @param string|null The file the entry should be written to, or null to
+   *                    create a log object which does not write anywhere.
+   * @param string      The log entry format.
    * @task log
    */
   public function __construct($file, $format) {
@@ -92,14 +94,51 @@ final class PhutilDeferredLog {
     return $this;
   }
 
+
+  /**
+   * Get existing log data.
+   *
+   * @param   string  Log data key.
+   * @param   wild    Default to return if data does not exist.
+   * @return  wild    Data, or default if data does not exist.
+   * @task log
+   */
   public function getData($key, $default = null) {
     return idx($this->data, $key, $default);
   }
 
 
   /**
-   * When the log object is destroyed, it writes if it hasn't written yet.
+   * Set the path where the log will be written. You can pass `null` to prevent
+   * the log from writing.
+   *
+   * NOTE: You can not change the file after the log writes.
+   *
+   * @param string|null File where the entry should be written to, or null to
+   *                    prevent writes.
+   * @return this
    * @task log
+   */
+  public function setFile($file) {
+    if ($this->didWrite) {
+      throw new Exception(
+        "You can not change the logfile after a write has occurred!");
+    }
+    $this->file = $file;
+    return $this;
+  }
+
+  public function getFile() {
+    return $this->file;
+  }
+
+
+/* -(  Writing the Log  )---------------------------------------------------- */
+
+
+  /**
+   * When the log object is destroyed, it writes if it hasn't written yet.
+   * @task write
    */
   public function __destruct() {
     $this->write();
@@ -116,23 +155,27 @@ final class PhutilDeferredLog {
    * method even if the object's destructor later runs.
    *
    * @return this
-   * @task log
+   * @task write
    */
   public function write() {
     if ($this->didWrite) {
       return $this;
     }
 
+    // Even if we aren't going to write, format the line to catch any errors
+    // and invoke possible __toString() calls.
     $line = $this->format();
 
-    $ok = @file_put_contents(
-      $this->file,
-      $line,
-      FILE_APPEND | LOCK_EX);
+    if ($this->file !== null) {
+      $ok = @file_put_contents(
+        $this->file,
+        $line,
+        FILE_APPEND | LOCK_EX);
 
-    if ($ok === false) {
-      throw new Exception(
-        "Unable to write to logfile '{$this->file}'!");
+      if ($ok === false) {
+        throw new Exception(
+          "Unable to write to logfile '{$this->file}'!");
+      }
     }
 
     $this->didWrite = true;
