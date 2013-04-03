@@ -82,9 +82,8 @@ final class PhutilURI {
       $fragment = null;
     }
 
-    $path = strlen($this->getPath()) ? '/'.ltrim($this->getPath(), '/') : '';
 
-    return $prefix.$path.$query.$fragment;
+    return $prefix.$this->getPath().$query.$fragment;
   }
 
   public function setQueryParam($key, $value) {
@@ -131,6 +130,9 @@ final class PhutilURI {
   }
 
   public function setPath($path) {
+    if ($this->domain && strlen($path) && $path[0] !== '/') {
+      $path = '/'.$path;
+    }
     $this->path = $path;
     return $this;
   }
