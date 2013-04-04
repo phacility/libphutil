@@ -26,23 +26,6 @@ function phutil_load_library($path) {
 /**
  * @group library
  */
-function phutil_is_windows() {
-  // We can also use PHP_OS, but that's kind of sketchy because it returns
-  // "WINNT" for Windows 7 and "Darwin" for Mac OS X. Practically, testing for
-  // DIRECTORY_SEPARATOR is more straightforward.
-  return (DIRECTORY_SEPARATOR != '/');
-}
-
-/**
- * @group library
- */
-function phutil_is_hiphop_runtime() {
-  return (array_key_exists('HPHP', $_ENV) && $_ENV['HPHP'] === 1);
-}
-
-/**
- * @group library
- */
 final class PhutilBootloader {
 
   private static $instance;
