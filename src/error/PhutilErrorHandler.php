@@ -13,9 +13,6 @@
  *
  *    PhutilErrorHandler::initialize();
  *
- * This will also enable @{function:phlog}, for printing development debugging
- * messages.
- *
  * To additionally install a custom listener which can print error information
  * to some other file or console, register a listener:
  *
@@ -291,7 +288,7 @@ final class PhutilErrorHandler {
    * @task internal
    */
   public static function dispatchErrorMessage($event, $value, $metadata) {
-    $timestamp = strftime("%F %T");
+    $timestamp = strftime('%Y-%m-%d %H:%M:%S');
 
     switch ($event) {
       case PhutilErrorHandler::ERROR:
