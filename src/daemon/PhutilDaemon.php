@@ -52,12 +52,17 @@ abstract class PhutilDaemon {
   }
 
   final protected function sleep($duration) {
+    $this->willSleep($duration);
     $this->stillWorking();
     while ($duration > 0) {
       sleep(min($duration, 60));
       $duration -= 60;
       $this->stillWorking();
     }
+  }
+
+  protected function willSleep($duration) {
+    return;
   }
 
   public static function exitOnSignal($signo) {
