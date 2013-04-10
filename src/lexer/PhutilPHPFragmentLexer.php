@@ -200,18 +200,21 @@ final class PhutilPHPFragmentLexer extends PhutilLexer {
         array('[^\'\\\\]+', 's1'),
         array("'", 's1', '!pop'),
         array('\\\\.', 'k'),
+        array('\\\\$', 'k'),
       ),
 
       'stringb' => array(
         array('[^`\\\\]+', 'sb'),
         array('`', 'sb', '!pop'),
         array('\\\\.', 'k'),
+        array('\\\\$', 'k'),
       ),
 
       'string2' => array(
         array('[^"\\\\]+', 's2'),
         array('"', 's2', '!pop'),
         array('\\\\.', 'k'),
+        array('\\\\$', 'k'),
       ),
 
       // In a function definition (after "function"), we don't link the name

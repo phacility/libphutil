@@ -13,12 +13,16 @@ final class PhutilPHPFragmentLexerTestCase extends PhutilTestCase {
   private function runLexer($file, $data) {
     $lexer = new PhutilPHPFragmentLexer();
 
+    $initial_state = 'start';
     switch ($file) {
       case 'pop-from-php.txt':
         $initial_state = 'php';
         break;
-      default:
-        $initial_state = 'start';
+      case 'trailing-backslash-1.txt':
+      case 'trailing-backslash-2.txt':
+      case 'trailing-backslash-b.txt':
+        // It's important these test cases not have trailing newlines.
+        $data = rtrim($data);
         break;
     }
 
@@ -298,6 +302,11 @@ final class PhutilPHPFragmentLexerTestCase extends PhutilTestCase {
           ),
           $tokens,
           $file);
+        break;
+      case 'trailing-backslash-1.txt':
+      case 'trailing-backslash-2.txt':
+      case 'trailing-backslash-b.txt':
+        $this->assertEqual(null, $caught);
         break;
       default:
         throw new Exception("No assertion block for test '{$file}'!");
