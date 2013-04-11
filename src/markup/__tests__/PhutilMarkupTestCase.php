@@ -7,59 +7,62 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
 
   public function testTagDefaults() {
     $this->assertEqual(
-      (string)phutil_tag('x'),
-      (string)phutil_tag('x', array()));
+      (string)phutil_tag('br'),
+      (string)phutil_tag('br', array()));
 
     $this->assertEqual(
-      (string)phutil_tag('x', array()),
-      (string)phutil_tag('x', array(), null));
+      (string)phutil_tag('br', array()),
+      (string)phutil_tag('br', array(), null));
   }
 
   public function testTagEmpty() {
     $this->assertEqual(
-      '<x />',
-      (string)phutil_tag('x', array(), null));
+      '<br />',
+      (string)phutil_tag('br', array(), null));
 
     $this->assertEqual(
-      '<x></x>',
-      (string)phutil_tag('x', array(), ''));
-  }
+      '<div></div>',
+      (string)phutil_tag('div', array(), null));
 
+    $this->assertEqual(
+      '<div></div>',
+      (string)phutil_tag('div', array(), ''));
+  }
 
   public function testTagBasics() {
     $this->assertEqual(
-      '<x />',
-      (string)phutil_tag('x'));
+      '<br />',
+      (string)phutil_tag('br'));
 
     $this->assertEqual(
-      '<x>y</x>',
-      (string)phutil_tag('x', array(), 'y'));
+      '<div>y</div>',
+      (string)phutil_tag('div', array(), 'y'));
   }
 
   public function testTagAttributes() {
     $this->assertEqual(
-      '<x u="v">y</x>',
-      (string)phutil_tag('x', array('u' => 'v'), 'y'));
+      '<div u="v">y</div>',
+      (string)phutil_tag('div', array('u' => 'v'), 'y'));
 
     $this->assertEqual(
-      '<x u="v" />',
-      (string)phutil_tag('x', array('u' => 'v')));
+      '<br u="v" />',
+      (string)phutil_tag('br', array('u' => 'v')));
   }
 
   public function testTagEscapes() {
     $this->assertEqual(
-      '<x u="&lt;" />',
-      (string)phutil_tag('x', array('u' => '<')));
+      '<br u="&lt;" />',
+      (string)phutil_tag('br', array('u' => '<')));
 
     $this->assertEqual(
-      '<x><y /></x>',
-      (string)phutil_tag('x', array(), phutil_tag('y')));
+      '<div><br /></div>',
+      (string)phutil_tag('div', array(), phutil_tag('br')));
   }
 
   public function testTagNullAttribute() {
     $this->assertEqual(
-      '<x />',
-      (string)phutil_tag('x', array('y' => null)));
+      '<br />',
+      (string)phutil_tag('br', array('y' => null)));
   }
 
   public function testTagJavascriptProtocolRejection() {
@@ -124,9 +127,9 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
   }
 
   public function testAppendHTML() {
-    $html = phutil_tag('span');
-    $html->appendHTML(phutil_tag('em'), '<evil>');
-    $this->assertEqual('<span /><em />&lt;evil&gt;', $html->getHTMLContent());
+    $html = phutil_tag('hr');
+    $html->appendHTML(phutil_tag('br'), '<evil>');
+    $this->assertEqual('<hr /><br />&lt;evil&gt;', $html->getHTMLContent());
   }
 
   public function testArrayEscaping() {
@@ -158,7 +161,7 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
         )));
 
       $this->assertEqual(
-        '<div><x /><y /><z /></div>',
+        '<div><br /><hr /><wbr /></div>',
         phutil_tag(
           'div',
           array(
@@ -166,11 +169,11 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
           array(
             array(
               array(
-                phutil_tag('x'),
+                phutil_tag('br'),
                 array(
-                  phutil_tag('y'),
+                  phutil_tag('hr'),
                 ),
-                phutil_tag('z'),
+                phutil_tag('wbr'),
               ),
             ),
           ))->getHTMLContent());

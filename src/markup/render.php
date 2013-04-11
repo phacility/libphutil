@@ -36,6 +36,31 @@ function phutil_tag($tag, array $attributes = array(), $content = null) {
     }
   }
 
+  // For tags which can't self-close, treat null as the empty string -- for
+  // example, always render `<div></div>`, never `<div />`.
+  static $self_closing_tags = array(
+    'area'    => true,
+    'base'    => true,
+    'br'      => true,
+    'col'     => true,
+    'command' => true,
+    'embed'   => true,
+    'hr'      => true,
+    'img'     => true,
+    'input'   => true,
+    'keygen'  => true,
+    'link'    => true,
+    'meta'    => true,
+    'param'   => true,
+    'source'  => true,
+    'track'   => true,
+    'wbr'     => true,
+  );
+
+  if ($content === null && empty($self_closing_tags[$tag])) {
+    $content = '';
+  }
+
   foreach ($attributes as $k => $v) {
     if ($v === null) {
       continue;
