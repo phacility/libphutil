@@ -358,4 +358,52 @@ EOHELP
     }
   }
 
+
+  /**
+   * Identify running daemons by examining the process table. This isn't
+   * completely reliable, but can be used as a fallback if the pid files fail
+   * or we end up with stray daemons by other means.
+   *
+   * Example output (array keys are process IDs):
+   *
+   *   array(
+   *     12345 => array(
+   *       'type' => 'overseer',
+   *       'command' => 'php launch_daemon.php --daemonize ...',
+   *     ),
+   *     12346 => array(
+   *       'type' => 'daemon',
+   *       'command' => 'php exec_daemon.php ...',
+   *     ),
+   *  );
+   *
+   * @return dict   Map of PIDs to process information, identifying running
+   *                daemon processes.
+   */
+  public static function findRunningDaemons() {
+    $results = array();
+
+    list($err, $processes) = exec_manual('ps -o pid,command -a -x -w -w -w');
+    if ($err) {
+      return $results;
+    }
+
+    $processes = array_filter(explode("\n", trim($processes)));
+    foreach ($processes as $process) {
+      list($pid, $command) = explode(' ', $process, 2);
+
+      $matches = null;
+      if (!preg_match('/(launch|exec)_daemon.php/', $command, $matches)) {
+        continue;
+      }
+
+      $results[(int)$pid] = array(
+        'type'    => ($matches[1] == 'launch') ? 'overseer' : 'daemon',
+        'command' => $command,
+      );
+    }
+
+    return $results;
+  }
+
 }
