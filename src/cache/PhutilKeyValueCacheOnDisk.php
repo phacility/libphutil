@@ -21,6 +21,7 @@ final class PhutilKeyValueCacheOnDisk extends PhutilKeyValueCache {
   private $cache = array();
   private $cacheFile;
   private $lock;
+  private $wait = 0;
 
 
 /* -(  Key-Value Cache Implementation  )------------------------------------- */
@@ -30,6 +31,14 @@ final class PhutilKeyValueCacheOnDisk extends PhutilKeyValueCache {
     return true;
   }
 
+
+  /**
+   * Set duration (in seconds) to wait for the file lock.
+   */
+  public function setWait($wait) {
+    $this->wait = $wait;
+    return $this;
+  }
 
   public function getKeys(array $keys) {
     $now = time();
@@ -129,7 +138,16 @@ final class PhutilKeyValueCacheOnDisk extends PhutilKeyValueCache {
     }
 
     $lock = PhutilFileLock::newForPath($this->getCacheFile().'.lock');
-    $lock->lock();
+    try {
+      $lock->lock($this->wait);
+    } catch (PhutilLockException $ex) {
+      if ($hold_lock) {
+        throw $ex;
+      } else {
+        $this->cache = array();
+        return;
+      }
+    }
 
     try {
       $this->cache = array();
