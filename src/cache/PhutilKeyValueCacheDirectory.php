@@ -181,6 +181,9 @@ final class PhutilKeyValueCacheDirectory extends PhutilKeyValueCache {
    * @task storage
    */
   private function getKeyFile($key) {
+    // Colon is a drive separator on Windows.
+    $key = str_replace(':', '_', $key);
+
     // NOTE: We add ".cache" to each file so we don't get a collision if you
     // set the keys "a" and "a/b". Without ".cache", the file "a" would need
     // to be both a file and a directory.
@@ -194,6 +197,7 @@ final class PhutilKeyValueCacheDirectory extends PhutilKeyValueCache {
   private function validateKeys(array $keys) {
     foreach ($keys as $key) {
       // NOTE: Use of "." is reserved for ".lock", "key.new" and "key.cache".
+      // Use of "_" is reserved for converting ":".
       if (!preg_match('@^[a-zA-Z0-9/:-]+$@', $key)) {
         throw new Exception(
           "Invalid key '{$key}': directory caches may only contain letters, ".
