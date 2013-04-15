@@ -15,11 +15,7 @@ abstract class PhutilContextFreeGrammar {
     return $this->applyRules('[start]', $count, $rules);
   }
 
-  final private function applyRules($input, &$count, array $rules = null) {
-    if (!$rules) {
-      $rules = $this->getRules();
-    }
-
+  final protected function applyRules($input, &$count, array $rules) {
     if (++$count > $this->limit) {
       throw new Exception("Token replacement count exceeded limit!");
     }
