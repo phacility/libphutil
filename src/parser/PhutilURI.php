@@ -17,39 +17,22 @@ final class PhutilURI {
   private $fragment;
 
   public function __construct($uri) {
-    $parts = $this->parseURI($uri);
+    $parts = parse_url($uri);
     if ($parts) {
-      $this->protocol = $parts[1];
-      $this->user     = $parts[2];
-      $this->pass     = $parts[3];
-      $this->domain   = $parts[4];
-      $this->port     = $parts[5];
-      $this->path     = $parts[6];
-      parse_str($parts[7], $this->query);
-      $this->fragment = $parts[8];
+      // stringyness is to preserve API compatibility and
+      // allow the tests to continue passing
+      $this->protocol = idx($parts, 'scheme', '');
+      $this->user     = idx($parts, 'user', '');
+      $this->pass     = idx($parts, 'pass', '');
+      $this->domain   = idx($parts, 'host', '');
+      $this->port     = (string)idx($parts, 'port', '');
+      $this->path     = idx($parts, 'path', '');
+      $query = idx($parts, 'query');
+      if ($query) {
+        parse_str($query, $this->query);
+      }
+      $this->fragment = idx($parts, 'fragment', '');
     }
-  }
-
-  private static function parseURI($uri) {
-    // NOTE: We allow "+" in the protocol for "svn+ssh" and similar.
-    $protocol = '([\w+]+):\/\/';
-    $auth     = '(?:([^:@]+)(?::([^@]+))?@)?';
-    $domain   = '([a-zA-Z0-9\.\-_]*)';
-    $port     = '(?::(\d+))?';
-    $path     = '((?:\/|^)[^#?]*)?';
-    $query    = '(?:\?([^#]*))?';
-    $anchor   = '(?:#(.*))?';
-
-    $regexp = '/^(?:'.$protocol.$auth.$domain.$port.')?'.
-              $path.$query.$anchor.'$/S';
-
-    $matches = null;
-    $ok = preg_match($regexp, $uri, $matches);
-    if ($ok) {
-      return array_pad($matches, 9, '');
-    }
-
-    return null;
   }
 
   public function __toString() {
