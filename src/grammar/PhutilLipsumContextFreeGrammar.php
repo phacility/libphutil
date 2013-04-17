@@ -6,16 +6,6 @@ final class PhutilLipsumContextFreeGrammar
   protected function getRules() {
     return array(
       'start' => array(
-        '[sentence]',
-        '[sentence] [sentence]',
-        '[sentence] [sentence] [sentence]',
-        '[sentence] [sentence] [sentence] [sentence]',
-        '[sentence] [sentence] [sentence] [sentence]',
-        '[sentence] [sentence] [sentence] [sentence] [sentence]',
-        '[sentence] [sentence] [sentence] [sentence] [sentence]',
-        '[sentence] [sentence] [sentence] [sentence] [sentence] [sentence]',
-      ),
-      'sentence' => array(
         '[words].',
         '[words].',
         '[words].',

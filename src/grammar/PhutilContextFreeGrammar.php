@@ -9,6 +9,14 @@ abstract class PhutilContextFreeGrammar {
 
   abstract protected function getRules();
 
+  public function generateSeveral($count, $implode = " ") {
+    $paragraph = array();
+    for ($ii = 0; $ii < $count; $ii++) {
+      $paragraph[$ii] = $this->generate();
+    }
+    return implode($implode, $paragraph);
+  }
+
   public function generate() {
     $count = 0;
     $rules = $this->getRules();
