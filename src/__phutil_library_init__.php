@@ -98,6 +98,25 @@ final class PhutilBootloader {
       // no worse than fataling here.
     }
 
+    if (empty($_SERVER['PHUTIL_DISABLE_RUNTIME_EXTENSIONS'])) {
+      $extdir = $path.DIRECTORY_SEPARATOR.'extensions';
+      if (Filesystem::pathExists($extdir)) {
+        $extensions = id(new FileFinder($extdir))
+          ->withSuffix('php')
+          ->withType('f')
+          ->withFollowSymlinks(true)
+          ->setForceMode('php')
+          ->find();
+
+        foreach ($extensions as $extension) {
+          $this->loadExtension(
+            $name,
+            $path,
+            $extdir.DIRECTORY_SEPARATOR.$extension);
+        }
+      }
+    }
+
     return $this;
   }
 
@@ -187,6 +206,62 @@ final class PhutilBootloader {
     error_reporting($old);
 
     return $okay;
+  }
+
+  private function loadExtension($library, $root, $path) {
+
+    $old_functions = get_defined_functions();
+    $old_functions = array_fill_keys($old_functions['user'], true);
+    $old_classes = array_fill_keys(get_declared_classes(), true);
+    $old_interfaces = array_fill_keys(get_declared_interfaces(), true);
+
+    $ok = $this->executeInclude($path);
+    if (!$ok) {
+      throw new PhutilBootloaderException(
+        "Include of extension file '{$path}' failed!");
+    }
+
+    $new_functions = get_defined_functions();
+    $new_functions = array_fill_keys($new_functions['user'], true);
+    $new_classes = array_fill_keys(get_declared_classes(), true);
+    $new_interfaces = array_fill_keys(get_declared_interfaces(), true);
+
+    $add_functions = array_diff_key($new_functions, $old_functions);
+    $add_classes = array_diff_key($new_classes, $old_classes);
+    $add_interfaces = array_diff_key($new_interfaces, $old_interfaces);
+
+    // NOTE: We can't trust the path we loaded to be the location of these
+    // symbols, because it might have loaded other paths.
+
+    foreach ($add_functions as $func => $ignored) {
+      $rfunc = new ReflectionFunction($func);
+      $fpath = Filesystem::resolvePath($rfunc->getFileName(), $root);
+      $this->libraryMaps[$library]['function'][$func] = $fpath;
+    }
+
+    foreach ($add_classes + $add_interfaces as $class => $ignored) {
+      $rclass = new ReflectionClass($class);
+      $cpath = Filesystem::resolvePath($rclass->getFileName(), $root);
+      $this->libraryMaps[$library]['class'][$class] = $cpath;
+
+      $xmap = $rclass->getInterfaceNames();
+      $parent = $rclass->getParentClass();
+      if ($parent) {
+        $xmap[] = $parent->getName();
+      }
+
+      if ($xmap) {
+        foreach ($xmap as $parent_class) {
+          $this->classTree[$parent_class][] = $class;
+        }
+
+        if (count($xmap) == 1) {
+          $xmap = head($xmap);
+        }
+
+        $this->libraryMaps[$library]['xmap'][$class] = $xmap;
+      }
+    }
   }
 
 }

@@ -22,9 +22,13 @@ parser.yacc.output
 /support/xhpast/xhpast.dSYM
 
 /src/.phutil_module_cache
+/support/phutiltestlib/.phutil_module_cache
 
 # This file overrides "default.pem" if present.
 /resources/ssl/custom.pem
 
 # arc sratch directory.
 /.arc/
+
+# User extensions
+/src/extensions/*

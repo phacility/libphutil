@@ -172,8 +172,10 @@ final class FileFinder {
     $files = array();
 
     if (!is_dir($this->root) || !is_readable($this->root)) {
-      throw new Exception("Invalid root directory specified. " .
-                          "Use an absolute path.");
+      throw new Exception(
+        "Invalid FileFinder root directory specified ('{$this->root}'). ".
+        "Root directory must be a directory, be readable, and be specified ".
+        "with an absolute path.");
     }
 
     if ($this->forceMode == "shell") {
