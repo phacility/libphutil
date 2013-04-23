@@ -198,18 +198,25 @@ final class ExecFuture extends Future {
    * @task interact
    */
   public function read() {
+    $stdout = $this->readStdout();
+
+    $result = array(
+      $stdout,
+      (string)substr($this->stderr, $this->stderrPos),
+    );
+
+    $this->stderrPos = strlen($this->stderr);
+
+    return $result;
+  }
+
+  public function readStdout() {
     if ($this->start) {
       $this->isReady(); // Sync
     }
 
-    $result = array(
-      (string)substr($this->stdout, $this->stdoutPos),
-      (string)substr($this->stderr, $this->stderrPos),
-    );
-
+    $result = (string)substr($this->stdout, $this->stdoutPos);
     $this->stdoutPos = strlen($this->stdout);
-    $this->stderrPos = strlen($this->stderr);
-
     return $result;
   }
 
@@ -258,11 +265,17 @@ final class ExecFuture extends Future {
    * @task interact
    */
   public function discardBuffers() {
-    $this->stdout = '';
+    $this->discardStdoutBuffer();
+
     $this->stderr = '';
-    $this->stdoutPos = 0;
     $this->stderrPos = 0;
 
+    return $this;
+  }
+
+  public function discardStdoutBuffer() {
+    $this->stdout = '';
+    $this->stdoutPos = 0;
     return $this;
   }
 

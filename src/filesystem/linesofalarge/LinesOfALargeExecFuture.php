@@ -90,8 +90,8 @@ final class LinesOfALargeExecFuture extends LinesOfALarge {
     while (true) {
       // Read is nonblocking, so we need to sit in this loop waiting for input
       // or we'll incorrectly signal EOF to the parent.
-      list($stdout) = $future->read();
-      $future->discardBuffers();
+      $stdout = $future->readStdout();
+      $future->discardStdoutBuffer();
 
       if (strlen($stdout)) {
         return $stdout;
@@ -107,8 +107,8 @@ final class LinesOfALargeExecFuture extends LinesOfALarge {
         $future->resolvex();
 
         // Read and return anything that's left.
-        list($stdout) = $future->read();
-        $future->discardBuffers();
+        $stdout = $future->readStdout();
+        $future->discardStdoutBuffer();
 
         return $stdout;
       }
