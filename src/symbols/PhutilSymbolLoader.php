@@ -291,6 +291,35 @@ final class PhutilSymbolLoader {
   }
 
 
+  /**
+   * Select symbols matching the query and then instantiate them, returning
+   * concrete objects. This is a convenience method which simplifies symbol
+   * handling if you are only interested in building objects.
+   *
+   * If you want to do more than build objects, or want to build objects with
+   * varying constructor arguments, use @{method:selectAndLoadSymbols} for
+   * fine-grained control over results.
+   *
+   * This method implicitly restricts the query to match only concrete
+   * classes.
+   *
+   * @param  list<wild>           List of constructor arguments.
+   * @return map<string, object>  Map of class names to constructed objects.
+   */
+  public function loadObjects(array $argv = array()) {
+    $symbols = $this
+      ->setConcreteOnly(true)
+      ->setType('class')
+      ->selectAndLoadSymbols();
+
+    $objects = array();
+    foreach ($symbols as $symbol) {
+      $objects[$symbol['name']] = newv($symbol['name'], $argv);
+    }
+
+    return $objects;
+  }
+
 /* -(  Internals  )---------------------------------------------------------- */
 
 
