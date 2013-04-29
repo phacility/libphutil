@@ -51,5 +51,9 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('http://example.com/bar', $uri->__toString());
   }
 
+  public function testStrictURIParsingOfHosts() {
+    $uri = new PhutilURI('http://&amp;/');
+    $this->assertEqual('', $uri->getDomain());
+  }
 
 }

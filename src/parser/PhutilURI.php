@@ -18,21 +18,33 @@ final class PhutilURI {
 
   public function __construct($uri) {
     $parts = parse_url($uri);
+
+    // NOTE: `parse_url()` is very liberal about host names; fail the parse if
+    // the host looks like garbage.
     if ($parts) {
-      // stringyness is to preserve API compatibility and
-      // allow the tests to continue passing
-      $this->protocol = idx($parts, 'scheme', '');
-      $this->user     = idx($parts, 'user', '');
-      $this->pass     = idx($parts, 'pass', '');
-      $this->domain   = idx($parts, 'host', '');
-      $this->port     = (string)idx($parts, 'port', '');
-      $this->path     = idx($parts, 'path', '');
-      $query = idx($parts, 'query');
-      if ($query) {
-        parse_str($query, $this->query);
+      $host = idx($parts, 'host', '');
+      if (!preg_match('/^([a-zA-Z0-9\\.\\-]*)$/', $host)) {
+        $parts = false;
       }
-      $this->fragment = idx($parts, 'fragment', '');
     }
+
+    if (!$parts) {
+      $parts = array();
+    }
+
+    // stringyness is to preserve API compatibility and
+    // allow the tests to continue passing
+    $this->protocol = idx($parts, 'scheme', '');
+    $this->user     = idx($parts, 'user', '');
+    $this->pass     = idx($parts, 'pass', '');
+    $this->domain   = idx($parts, 'host', '');
+    $this->port     = (string)idx($parts, 'port', '');
+    $this->path     = idx($parts, 'path', '');
+    $query = idx($parts, 'query');
+    if ($query) {
+      parse_str($query, $this->query);
+    }
+    $this->fragment = idx($parts, 'fragment', '');
   }
 
   public function __toString() {
