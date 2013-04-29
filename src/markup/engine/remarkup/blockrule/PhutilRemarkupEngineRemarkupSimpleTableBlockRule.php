@@ -22,7 +22,21 @@ final class PhutilRemarkupEngineRemarkupSimpleTableBlockRule
       // Ignore ending delimiters.
       $line = rtrim($line, '|');
 
-      preg_match_all('/\|([^|]*)/', $line, $matches);
+      // NOTE: The complexity in this regular expression allows us to match
+      // a table like "| a | [[ href | b ]] | c |".
+
+      preg_match_all(
+        '/\|'.
+        '('.
+          '(?:'.
+            '(?:\\[\\[.*?\\]\\])'. // [[ ... | ... ]], a link
+            '|'.
+              '(?:[^|[]*)'.          // Anything but "|" or "[".
+            '|'.
+              '(?:\\[[^\\|[])'.      // "[" followed by anything but "[" or "|"
+          ')*'.
+        ')/', $line, $matches);
+
       $headings = true;
       $cells = array();
       foreach ($matches[1] as $cell) {

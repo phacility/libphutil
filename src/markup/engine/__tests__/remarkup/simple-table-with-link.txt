@@ -1,0 +1,7 @@
+| [[ http://example.com | name ]] |
+~~~~~~~~~~
+<table class="remarkup-table">
+<tr><td><a href="http://example.com" target="_blank">name</a></td></tr>
+</table>
+~~~~~~~~~~
+| [[ http://example.com | name ]] |
