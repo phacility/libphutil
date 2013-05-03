@@ -117,7 +117,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     // strip trailing whitespace because it is semantic in some contexts,
     // notably inlined diffs that the author intends to show as a code block.
     $text = preg_replace("/\r\n?/", "\n", $text);
-    $text = preg_split("/\n\n/", $text);
+    $text = preg_split("/\n{2,}/", $text);
 
     $block_rules = $this->blockRules;
 
