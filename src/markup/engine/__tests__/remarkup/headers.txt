@@ -1,18 +1,77 @@
+@nolint (UTF8)
+
 =a=
 
 blah blah blah
 
 
 = b =
+
+Markdown-Style Large Header
+====
+
+Markdown-Style Small Header
+----
+
+=== Remarkup-Style Smaller Header
+
+
+= ☃☃☃ UTF8 Header ☃☃☃ =
+
+This is not
+a header
+===
+
+This is also
+= 2 + 2
+not a header.
 ~~~~~~~~~~
+<p>@nolint (UTF8)</p>
+
 <h2>a</h2>
 
 <p>blah blah blah</p>
 
 <h2>b</h2>
+
+<h2>Markdown-Style Large Header</h2>
+
+<h3>Markdown-Style Small Header</h3>
+
+<h4>Remarkup-Style Smaller Header</h4>
+
+<h2>☃☃☃ UTF8 Header ☃☃☃</h2>
+
+<p>This is not
+a header
+===</p>
+
+<p>This is also
+= 2 + 2
+not a header.</p>
 ~~~~~~~~~~
-= a =
+@nolint (UTF8)
+
+a
+=
 
 blah blah blah
 
-= b =
+b
+=
+
+Markdown-Style Large Header
+===========================
+
+Markdown-Style Small Header
+---------------------------
+
+Remarkup-Style Smaller Header
+-----------------------------
+
+☃☃☃ UTF8 Header ☃☃☃
+===================
+
+This is not a header ===
+
+This is also = 2 + 2 not a header.
