@@ -11,8 +11,8 @@
 
 <p><a href="/" target="_blank">/</a></p>
 ~~~~~~~~~~
-[[ http://www.example.com/ ]]
+http://www.example.com/
 
-[[ http://www.example.com/ | example.com ]]
+example.com <http://www.example.com/>
 
-[[ http://www.example.com/ ]]
+http://www.example.com/
