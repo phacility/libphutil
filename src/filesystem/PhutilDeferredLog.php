@@ -43,6 +43,7 @@ final class PhutilDeferredLog {
   private $format;
   private $data;
   private $didWrite;
+  private $failQuietly;
 
 
 /* -(  Logging  )------------------------------------------------------------ */
@@ -133,6 +134,17 @@ final class PhutilDeferredLog {
   }
 
 
+  /**
+   * Set quiet (logged) failure, instead of the default loud (exception)
+   * failure. Throwing exceptions from destructors which exit at the end of a
+   * request can result in difficult-to-debug behavior.
+   */
+  public function setFailQuietly($fail_quietly) {
+    $this->failQuietly = $fail_quietly;
+    return $this;
+  }
+
+
 /* -(  Writing the Log  )---------------------------------------------------- */
 
 
@@ -173,8 +185,12 @@ final class PhutilDeferredLog {
         FILE_APPEND | LOCK_EX);
 
       if ($ok === false) {
-        throw new Exception(
-          "Unable to write to logfile '{$this->file}'!");
+        $message = "Unable to write to logfile '{$this->file}'!";
+        if ($this->failQuietly) {
+          phlog($message);
+        } else {
+          throw new Exception($message);
+        }
       }
     }
 
