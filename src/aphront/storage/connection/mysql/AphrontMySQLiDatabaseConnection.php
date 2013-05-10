@@ -66,7 +66,8 @@ final class AphrontMySQLiDatabaseConnection
   protected function rawQueries(array $raw_queries) {
     $conn = $this->requireConnection();
 
-    if (!$conn->multi_query(implode('; ', $raw_queries))) {
+    // End line in front of semicolon to allow single line comments in queries.
+    if (!$conn->multi_query(implode("\n;\n\n", $raw_queries))) {
       $ex = $this->processResult(false);
       return array_fill_keys(array_keys($raw_queries), $ex);
     }

@@ -90,7 +90,7 @@ final class AphrontMySQLDatabaseConnection
       return $results;
     }
 
-    if (!mysql_multi_query(implode('; ', $raw_queries), $conn)) {
+    if (!mysql_multi_query(implode("\n;\n\n", $raw_queries), $conn)) {
       $ex = $this->processResult(false);
       return array_fill_keys(array_keys($raw_queries), $ex);
     }
