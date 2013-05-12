@@ -15,7 +15,7 @@ This is a paragraph.
 ~~~~~~~~~~
 <p>This is a paragraph.</p>
 
-<div class="remarkup-code-block" data-code-lang="txt"><pre class="remarkup-code">First line of code block.
+<div class="remarkup-code-block" data-code-lang="txt" data-sigil="remarkup-code-block"><pre class="remarkup-code">First line of code block.
 Second line of code block.</pre></div>
 
 <table class="remarkup-table">
