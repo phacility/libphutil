@@ -169,7 +169,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
       for ($ii = 0; $ii < count($headers); $ii++) {
         list($name, $value) = $headers[$ii];
         $headers[$ii] = $name.': '.$value;
-        if (!strncasecmp($name, 'Expect')) {
+        if (!strncasecmp($name, 'Expect', strlen('Expect'))) {
           $saw_expect = true;
         }
       }
