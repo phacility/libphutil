@@ -15,6 +15,11 @@ abstract class PhutilArray
   protected $data = array();
 
 
+  public function __construct(array $initial_value = array()) {
+    $this->data = $initial_value;
+  }
+
+
 /* -(  Conversion  )--------------------------------------------------------- */
 
 

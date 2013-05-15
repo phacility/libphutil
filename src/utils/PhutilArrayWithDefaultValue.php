@@ -32,10 +32,6 @@ final class PhutilArrayWithDefaultValue extends PhutilArray {
 
   private $defaultValue = 0;
 
-  public function __construct(array $initial_value = array()) {
-    $this->data = $initial_value;
-  }
-
   public function setDefaultValue($default_value) {
     $this->defaultValue = $default_value;
     return $this;
