@@ -1,7 +1,7 @@
-| [[ http://example.com | name ]] |
+| [[ http://example.com | name ]] | [x] |
 ~~~~~~~~~~
 <table class="remarkup-table">
-<tr><td><a href="http://example.com" target="_blank">name</a></td></tr>
+<tr><td><a href="http://example.com" target="_blank">name</a></td><td>[x]</td></tr>
 </table>
 ~~~~~~~~~~
-| name <http://example.com> |
+| name <http://example.com> | [x] |

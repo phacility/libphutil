@@ -31,7 +31,7 @@ final class PhutilRemarkupEngineRemarkupSimpleTableBlockRule
           '(?:'.
             '(?:\\[\\[.*?\\]\\])'. // [[ ... | ... ]], a link
             '|'.
-              '(?:[^|[]*)'.          // Anything but "|" or "[".
+              '(?:[^|[]+)'.          // Anything but "|" or "[".
             '|'.
               '(?:\\[[^\\|[])'.      // "[" followed by anything but "[" or "|"
           ')*'.
