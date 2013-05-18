@@ -18,6 +18,7 @@ final class PhutilSpriteSheet {
   private $generated;
   private $scales = array(1);
   private $type = self::TYPE_STANDARD;
+  private $basePath;
 
   private $css;
   private $images;
@@ -45,6 +46,11 @@ final class PhutilSpriteSheet {
 
   public function setSheetType($type) {
     $this->type = $type;
+    return $this;
+  }
+
+  public function setBasePath($base_path) {
+    $this->basePath = $base_path;
     return $this;
   }
 
@@ -303,11 +309,28 @@ final class PhutilSpriteSheet {
 
     foreach ($this->scales as $scale) {
       $file = $sprite->getSourceFile($scale);
-      if (empty($this->hashes[$file])) {
-        $this->hashes[$file] = md5(Filesystem::readFile($file));
+
+      // If two users have a project in different places, like:
+      //
+      //    /home/alincoln/project
+      //    /home/htaft/project
+      //
+      // ...we want to ignore the `/home/alincoln` part when hashing the sheet,
+      // since the sprites don't change when the project directory moves. If
+      // the base path is set, build the hashes using paths relative to the
+      // base path.
+
+      $file_key = $file;
+      if ($this->basePath) {
+        $file_key = Filesystem::readablePath($file, $this->basePath);
       }
-      $inputs[] = $file;
-      $inputs[] = $this->hashes[$file];
+
+      if (empty($this->hashes[$file_key])) {
+        $this->hashes[$file_key] = md5(Filesystem::readFile($file));
+      }
+
+      $inputs[] = $file_key;
+      $inputs[] = $this->hashes[$file_key];
     }
 
     $inputs[] = $sprite->getSourceX();
