@@ -255,8 +255,7 @@ final class PhutilInteractiveEditor {
 
     // Look for `editor` in PATH, some systems provide an editor which is
     // linked to something sensible.
-    list($err) = exec_manual('which editor');
-    if (!$err) {
+    if (Filesystem::binaryExists('editor')) {
       return 'editor';
     }
 
@@ -264,8 +263,7 @@ final class PhutilInteractiveEditor {
       return $this->fallback;
     }
 
-    list($err) = exec_manual('which nano');
-    if (!$err) {
+    if (Filesystem::binaryExists('nano')) {
       return 'nano';
     }
 

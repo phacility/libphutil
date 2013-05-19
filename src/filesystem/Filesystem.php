@@ -12,6 +12,7 @@
  * @task directory   Directories
  * @task file        Files
  * @task path        Paths
+ * @task exec        Executables
  * @task assert      Assertions
  * @group filesystem
  */
@@ -834,6 +835,25 @@ final class Filesystem {
    */
   public static function pathExists($path) {
     return file_exists($path) || is_link($path);
+  }
+
+
+  /**
+   * Determine if an executable binary (like `git` or `svn`) exists within
+   * the configured `$PATH`.
+   *
+   * @param   string  Binary name, like `'git'` or `'svn'`.
+   * @return  bool    True if the binary exists and is executable.
+   * @task    exec
+   */
+  public static function binaryExists($binary) {
+    if (phutil_is_windows()) {
+      list($err) = exec_manual('where %s', $binary);
+    } else {
+      list($err) = exec_manual('which %s', $binary);
+    }
+
+    return !$err;
   }
 
 

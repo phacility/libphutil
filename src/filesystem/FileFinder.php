@@ -183,7 +183,7 @@ final class FileFinder {
     } else if ($this->forceMode == "php") {
       $php_mode = true;
     } else {
-      $php_mode = (phutil_is_windows() || exec("which find") == "");
+      $php_mode = (phutil_is_windows() || !Filesystem::binaryExists('find'));
     }
 
     if ($php_mode) {
