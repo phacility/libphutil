@@ -26,13 +26,24 @@ final class PhutilRemarkupRuleDocumentLink
   protected function renderHyperlink($link, $name) {
     if ($this->getEngine()->isTextMode()) {
       $text = $link;
-      if (strncmp($link, '/', 1) == 0) {
-        $text = rtrim($this->getEngine()->getConfig('uri.prefix'), '/').$text;
+      if (strncmp($link, '/', 1) == 0 || strncmp($link, '#', 1) == 0) {
+        $base = $this->getEngine()->getConfig('uri.prefix');
+        if (strncmp($link, '/', 1) == 0) {
+          $base = rtrim($base, '/');
+        }
+        $text = $base.$text;
       }
       if ($link == $name) {
         return $text;
       }
       return $name.' <'.$text.'>';
+    }
+
+    // By default, we open links in a new window or tab. For anchors on the same
+    // page, just jump normally.
+    $target = '_blank';
+    if (strncmp($link, '#', 1) == 0) {
+      $target = null;
     }
 
     if ($this->getEngine()->getState('toc')) {
@@ -42,7 +53,7 @@ final class PhutilRemarkupRuleDocumentLink
         'a',
         array(
           'href'    => $link,
-          'target'  => '_blank',
+          'target'  => $target,
         ),
         $name);
     }
@@ -79,11 +90,11 @@ final class PhutilRemarkupRuleDocumentLink
     $uri = trim($matches[1]);
     $name = trim(idx($matches, 2, $uri));
 
-    // If whatever is being linked to begins with "/" or has "://", treat it
-    // as a URI instead of a wiki page.
-    $is_uri = preg_match('@(^/)|(://)@', $uri);
+    // If whatever is being linked to begins with "/" or "#", or has "://",
+    // treat it as a URI instead of a wiki page.
+    $is_uri = preg_match('@(^/)|(://)|(^#)@', $uri);
 
-    if ($is_uri && strncmp('/', $uri, 1)) {
+    if ($is_uri && strncmp('/', $uri, 1) && strncmp('#', $uri, 1)) {
       $protocols = $this->getEngine()->getConfig(
         'uri.allowed-protocols',
         array());

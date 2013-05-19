@@ -4,15 +4,26 @@
 
 [[/]]
 
+[[#anchor]]
+
+[[#anchor | Anchors ]]
 ~~~~~~~~~~
 <p><a href="http://www.example.com/" target="_blank">http://www.example.com/</a></p>
 
 <p><a href="http://www.example.com/" target="_blank">example.com</a></p>
 
 <p><a href="/" target="_blank">/</a></p>
+
+<p><a href="#anchor">#anchor</a></p>
+
+<p><a href="#anchor">Anchors</a></p>
 ~~~~~~~~~~
 http://www.example.com/
 
 example.com <http://www.example.com/>
 
 http://www.example.com/
+
+http://www.example.com/#anchor
+
+Anchors <http://www.example.com/#anchor>
