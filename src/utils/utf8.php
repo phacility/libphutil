@@ -619,3 +619,32 @@ function phutil_utf8_strtr($str, array $map) {
 
   return $result;
 }
+
+/**
+ * Determine if a given unicode character is a combining character or not.
+ *
+ * @param   string              A single unicode character.
+ * @return  boolean             True or false.
+ *
+ * @group utf8
+ */
+
+function phutil_utf8_is_combining_character($character) {
+  $components = phutil_utf8v_codepoints($character);
+
+  // Combining Diacritical Marks (0300 - 036F).
+  // Combining Diacritical Marks Supplement (1DC0 - 1DFF).
+  // Combining Diacritical Marks for Symbols (20D0 - 20FF).
+  // Combining Half Marks (FE20 - FE2F).
+
+  foreach ($components as $codepoint) {
+    if ($codepoint >= 0x0300 && $codepoint <= 0x036F ||
+         $codepoint >= 0x1DC0 && $codepoint <= 0x1DFF ||
+         $codepoint >= 0x20D0 && $codepoint <= 0x20FF ||
+         $codepoint >= 0xFE20 && $codepoint <= 0xFE2F) {
+      return true;
+    }
+  }
+
+  return false;
+}

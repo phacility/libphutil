@@ -368,5 +368,17 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     }
   }
 
+  public function testUTF8IsCombiningCharacter() {
+    $character = "\xCD\xA0";
+    $this->assertEqual(
+      true,
+      phutil_utf8_is_combining_character($character));
+
+    $character = 'a';
+    $this->assertEqual(
+      false,
+      phutil_utf8_is_combining_character($character));
+  }
+
 
 }
