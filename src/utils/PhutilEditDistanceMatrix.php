@@ -54,6 +54,11 @@ final class PhutilEditDistanceMatrix {
   private $alterCost     = 0;
   private $computeString;
 
+  private $x;
+  private $y;
+  private $prefix;
+  private $suffix;
+
   private $distanceMatrix = null;
   private $typeMatrix = null;
 
@@ -112,9 +117,39 @@ final class PhutilEditDistanceMatrix {
   }
 
   public function setSequences(array $x, array $y) {
-    $this->x = array_values($x);
-    $this->y = array_values($y);
+
+    // NOTE: We strip common prefixes and suffixes from the inputs because
+    // the runtime of the edit distance algorithm is large and it is common
+    // to diff similar strings.
+
+    $xl = count($x);
+    $yl = count($y);
+    $l = min($xl, $yl);
+
+    $prefix_l = 0;
+    $suffix_l = 0;
+
+    for ($ii = 0; $ii < $l; $ii++) {
+      if ($x[$ii] !== $y[$ii]) {
+        break;
+      }
+      $prefix_l++;
+    }
+
+    for ($ii = 1; $ii <= ($l - $prefix_l); $ii++) {
+      if ($x[$xl - $ii] !== $y[$yl - $ii]) {
+        break;
+      }
+      $suffix_l++;
+    }
+
+    $this->prefix = array_slice($x, 0, $prefix_l);
+    $this->suffix = array_slice($x, $xl - $suffix_l);
+
+    $this->x = array_slice($x, $prefix_l, $xl - $suffix_l);
+    $this->y = array_slice($y, $prefix_l, $yl - $suffix_l);
     $this->distanceMatrix = null;
+
     return $this;
   }
 
@@ -165,19 +200,19 @@ final class PhutilEditDistanceMatrix {
     $y = $this->y;
 
     if (!$x && !$y) {
-      return '';
+      return $this->padEditString('');
     }
 
     if (!$x) {
-      return str_repeat('i', count($y));
+      return $this->padEditString(str_repeat('i', count($y)));
     }
 
     if (!$y) {
-      return str_repeat('d', count($x));
+      return $this->padEditString(str_repeat('d', count($x)));
     }
 
     if ($x === $y) {
-      return str_repeat('s', count($x));
+      return $this->padEditString(str_repeat('s', count($x)));
     }
 
     $matrix = $this->getTypeMatrix();
@@ -220,7 +255,17 @@ final class PhutilEditDistanceMatrix {
       }
     }
 
-    return strrev($str);
+    return $this->padEditString(strrev($str));
+  }
+
+  private function padEditString($str) {
+    if ($this->prefix) {
+      $str = str_repeat('s', count($this->prefix)).$str;
+    }
+    if ($this->suffix) {
+      $str = $str.str_repeat('s', count($this->suffix));
+    }
+    return $str;
   }
 
   private function getTypeMatrix() {
