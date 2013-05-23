@@ -380,5 +380,55 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       phutil_utf8_is_combining_character($character));
   }
 
+  public function testUTF8vCombined() {
+    // Empty string.
+    $string = '';
+    $this->assertEqual(array(), phutil_utf8v_combined($string));
+
+    // Single character.
+    $string = 'x';
+    $this->assertEqual(array('x'), phutil_utf8v_combined($string));
+
+    // No combining characters.
+    $string = 'cat';
+    $this->assertEqual(array('c', 'a', 't'), phutil_utf8v_combined($string));
+
+    // String with a combining character in the middle.
+    $string = "ca\xCD\xA0t";
+    $this->assertEqual(
+      array('c', "a\xCD\xA0", 't'),
+      phutil_utf8v_combined($string));
+
+    // String starting with a combined character.
+    $string = "c\xCD\xA0at";
+    $this->assertEqual(
+      array("c\xCD\xA0", 'a', 't'),
+      phutil_utf8v_combined($string));
+
+    // String with trailing combining character.
+    $string = "cat\xCD\xA0";
+    $this->assertEqual(
+      array('c', 'a', "t\xCD\xA0"),
+      phutil_utf8v_combined($string));
+
+    // String with muliple combined characters.
+    $string = "c\xCD\xA0a\xCD\xA0t\xCD\xA0";
+    $this->assertEqual(
+      array("c\xCD\xA0", "a\xCD\xA0", "t\xCD\xA0"),
+      phutil_utf8v_combined($string));
+
+    // String with multiple combining characters.
+    $string = "ca\xCD\xA0\xCD\xA0t";
+    $this->assertEqual(
+      array('c', "a\xCD\xA0\xCD\xA0", 't'),
+      phutil_utf8v_combined($string));
+
+    // String beginning with a combining character.
+    $string = "\xCD\xA0\xCD\xA0c";
+    $this->assertEqual(
+      array(" \xCD\xA0\xCD\xA0", 'c'),
+      phutil_utf8v_combined($string));
+
+  }
 
 }

@@ -648,3 +648,44 @@ function phutil_utf8_is_combining_character($character) {
 
   return false;
 }
+
+/**
+ * Split a UTF-8 string into an array of characters. Combining characters
+ * are not split.
+ *
+ * @param string A valid utf-8 string.
+ * @return list  A list of characters in the string.
+ *
+ * @group utf8
+ */
+
+function phutil_utf8v_combined($string) {
+  $components = phutil_utf8v($string);
+  $array_length = count($components);
+
+  // If the first character in the string is a combining character,
+  // prepend a space to the string.
+  if (
+    $array_length > 0 &&
+    phutil_utf8_is_combining_character($components[0])) {
+    $string = " ".$string;
+    $components = phutil_utf8v($string);
+    $array_length++;
+  }
+
+  for ($index = 1; $index < $array_length; $index++) {
+    if (phutil_utf8_is_combining_character($components[$index])) {
+      $components[$index - 1] =
+        $components[$index - 1].$components[$index];
+
+      unset($components[$index]);
+      $components = array_values($components);
+
+      $index --;
+      $array_length = count($components);
+    }
+  }
+
+  return $components;
+}
+
