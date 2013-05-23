@@ -94,7 +94,42 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
   public function testDamerauEditString() {
     $this->assertEditString('xxss', 'land', 'alnd');
     $this->assertEditString('ttss', 'land', 'alnd', 1, 1, 1, 1);
-    $this->assertEditSTring('tsts', 'land', 'nald', 3, 3, 3, 1);
+    $this->assertEditString('tsts', 'land', 'nald', 3, 3, 3, 1);
+  }
+
+  public function testEditMatrixMaximumLength() {
+    // These tests are hitting the maximum length limit; the expected costs
+    // and strings are degenerate.
+
+    $matrix = id(new PhutilEditDistanceMatrix())
+      ->setInsertCost(3)
+      ->setDeleteCost(7)
+      ->setMaximumLength(1)
+      ->setSequences(array('X', 'a', 'a', 'Y'), array('Q', 'a', 'a', 'R'));
+
+    $this->assertEqual(
+      40,
+      $matrix->getEditDistance());
+
+    $this->assertEqual(
+      'ddddiiii',
+      $matrix->getEditString());
+
+    $matrix = id(new PhutilEditDistanceMatrix())
+      ->setInsertCost(3)
+      ->setDeleteCost(7)
+      ->setMaximumLength(1)
+      ->setSequences(
+        array('f', 'f', 'X', 'a', 'a', 'Y', 'g', 'g'),
+        array('f', 'f', 'Q', 'a', 'a', 'R', 'g', 'g'));
+
+    $this->assertEqual(
+      40,
+      $matrix->getEditDistance());
+
+    $this->assertEqual(
+      'ssddddiiiiss',
+      $matrix->getEditString());
   }
 
   private function assertDistance(

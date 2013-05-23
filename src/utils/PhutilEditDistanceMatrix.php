@@ -52,6 +52,7 @@ final class PhutilEditDistanceMatrix {
   private $replaceCost   = 1;
   private $transposeCost = null;
   private $alterCost     = 0;
+  private $maximumLength;
   private $computeString;
 
   private $x;
@@ -61,6 +62,15 @@ final class PhutilEditDistanceMatrix {
 
   private $distanceMatrix = null;
   private $typeMatrix = null;
+
+  public function setMaximumLength($maximum_length) {
+    $this->maximumLength = $maximum_length;
+    return $this;
+  }
+
+  public function getMaximumLength() {
+    return coalesce($this->maximumLength, $this->getInfinity());
+  }
 
   public function setComputeString($compute_string) {
     $this->computeString = $compute_string;
@@ -146,8 +156,8 @@ final class PhutilEditDistanceMatrix {
     $this->prefix = array_slice($x, 0, $prefix_l);
     $this->suffix = array_slice($x, $xl - $suffix_l);
 
-    $this->x = array_slice($x, $prefix_l, $xl - $suffix_l);
-    $this->y = array_slice($y, $prefix_l, $yl - $suffix_l);
+    $this->x = array_slice($x, $prefix_l, $xl - ($suffix_l + $prefix_l));
+    $this->y = array_slice($y, $prefix_l, $yl - ($suffix_l + $prefix_l));
     $this->distanceMatrix = null;
 
     return $this;
@@ -172,6 +182,11 @@ final class PhutilEditDistanceMatrix {
 
     if (!$y) {
       return $this->deleteCost * count($x);
+    }
+
+    $max = $this->getMaximumLength();
+    if (count($x) > $max || count($y) > $max) {
+      return ($this->insertCost * count($y)) + ($this->deleteCost * count($x));
     }
 
     if ($x === $y) {
@@ -213,6 +228,13 @@ final class PhutilEditDistanceMatrix {
 
     if ($x === $y) {
       return $this->padEditString(str_repeat('s', count($x)));
+    }
+
+    $max = $this->getMaximumLength();
+    if (count($x) > $max || count($y) > $max) {
+      return $this->padEditString(
+        str_repeat('d', count($x)).
+        str_repeat('i', count($y)));
     }
 
     $matrix = $this->getTypeMatrix();
