@@ -25,6 +25,25 @@
  *
  *   $matrix->setTransposeCost(1);
  *
+ * You can also provide a cost to alter the type of operation being applied.
+ * Many strings have several equivalently expensive edit sequences, but one
+ * some sequences are more readable to humans than others. Providing a small
+ * cost to alter operation type tends to smooth out the sequence and produce
+ * long runs of a single operation, which are generally more readable. For
+ * example, these strings:
+ *
+ *   (x)
+ *   ((x))
+ *
+ * ...have edit strings "issis" and "isssi", which describe edit operations with
+ * the same cost, but the latter string is more comprehensible to human viewers.
+ *
+ * If you set an alter cost, you must call @{method:setComputeString} to enable
+ * type computation. The alter cost should generally be smaller than `c / N`,
+ * where `c` is the smallest operational cost and `N` is the length of the
+ * longest string. For example, if you are using the default costs (insert = 1,
+ * delete = 1, replace = 1) and computing edit distances for strings of fewer
+ * than 1,000 characters, you might set the alter cost to 0.001.
  */
 final class PhutilEditDistanceMatrix {
 
@@ -32,6 +51,7 @@ final class PhutilEditDistanceMatrix {
   private $deleteCost    = 1;
   private $replaceCost   = 1;
   private $transposeCost = null;
+  private $alterCost     = 0;
   private $computeString;
 
   private $distanceMatrix = null;
@@ -80,6 +100,15 @@ final class PhutilEditDistanceMatrix {
 
   public function getInsertCost() {
     return $this->insertCost;
+  }
+
+  public function setAlterCost($alter_cost) {
+    $this->alterCost = $alter_cost;
+    return $this;
+  }
+
+  public function getAlterCost() {
+    return $this->alterCost;
   }
 
   public function setSequences(array $x, array $y) {
@@ -264,6 +293,14 @@ final class PhutilEditDistanceMatrix {
       for ($yy = 0; $yy <= $yl; $yy++) {
         $t[0][$yy] = 'i';
       }
+      $t[0][0] = 's';
+    }
+
+    $alt_cost = $this->getAlterCost();
+    if ($alt_cost && !$use_types) {
+      throw new Exception(
+        "If you provide an alter cost with setAlterCost(), you must enable ".
+        "type computation with setComputeStrings().");
     }
 
     // Build the edit distance matrix.
@@ -276,40 +313,43 @@ final class PhutilEditDistanceMatrix {
         }
 
         if ($x[$xx - 1] === $y[$yy - 1]) {
-          // If the two positions are the same, we have no edit and thus no
-          // cost.
-          $cost = $m[$xx - 1][$yy - 1];
-          $last_dy = $yy - 1;
-          $type = 's';
+          $rep_cost = $m[$xx - 1][$yy - 1] + 0;
+          $rep_type = 's';
         } else {
-          $del_cost = $m[$xx - 1][$yy    ] + $this->deleteCost;
-          $ins_cost = $m[$xx    ][$yy - 1] + $this->insertCost;
           $rep_cost = $m[$xx - 1][$yy - 1] + $this->replaceCost;
+          $rep_type = 'x';
+        }
 
-          if ($rep_cost <= $del_cost && $rep_cost <= $ins_cost) {
-            $cost = $rep_cost;
-            $type = 'x';
-          } else if ($ins_cost <= $del_cost) {
-            $cost = $ins_cost;
-            $type = 'i';
-          } else {
-            $cost = $del_cost;
-            $type = 'd';
+        $del_cost = $m[$xx - 1][$yy    ] + $this->deleteCost;
+        $ins_cost = $m[$xx    ][$yy - 1] + $this->insertCost;
+        if ($alt_cost) {
+          $del_char = $t[$xx - 1][$yy    ];
+          $ins_char = $t[$xx    ][$yy - 1];
+          $rep_char = $t[$xx - 1][$yy - 1];
+
+          if ($del_char !== 'd') {
+            $del_cost += $alt_cost;
           }
-
-          if ($use_types) {
-            // If we can reach a position in two different ways that cost the
-            // same amount (for example, through "R" or through "D"), stick with
-            // the same type we used previously.
-            $del_type = $t[$xx - 1][$yy    ];
-            $ins_type = $t[$xx    ][$yy - 1];
-
-            if ($del_type == 'd' && $del_cost == $cost) {
-              $type = 'd';
-            } else if ($ins_type == 'i' && $ins_cost == $cost) {
-              $type = 'i';
-            }
+          if ($ins_char !== 'i') {
+            $ins_cost += $alt_cost;
           }
+          if ($rep_char !== $rep_type) {
+            $rep_cost += $alt_cost;
+          }
+        }
+
+        if ($rep_cost <= $del_cost && $rep_cost <= $ins_cost) {
+          $cost = $rep_cost;
+          $type = $rep_type;
+          if ($rep_type === 's') {
+            $last_dy = $yy - 1;
+          }
+        } else if ($ins_cost <= $del_cost) {
+          $cost = $ins_cost;
+          $type = 'i';
+        } else {
+          $cost = $del_cost;
+          $type = 'd';
         }
 
         if ($use_damerau) {
@@ -346,14 +386,33 @@ final class PhutilEditDistanceMatrix {
     $x = $this->x;
     $y = $this->y;
 
-    $p = '% 5s ';
+    $p = '% 8s ';
     printf($p, ' ');
     foreach (head($m) as $yk => $yv) {
-      printf($p, idx($x, $yk - 1, '-'));
+      printf($p, idx($y, $yk - 1, '-'));
     }
     echo "\n";
     foreach ($m as $xk => $xv) {
-      printf($p, idx($y, $xk - 1, '-'));
+      printf($p, idx($x, $xk - 1, '-'));
+      foreach ($xv as $yk => $yv) {
+        printf($p, ($yv == $this->getInfinity() ? 'inf' : $yv));
+      }
+      echo "\n";
+    }
+  }
+
+  private function printTypeMatrix(array $t) {
+    $x = $this->x;
+    $y = $this->y;
+
+    $p = '% 8s ';
+    printf($p, ' ');
+    foreach (head($t) as $yk => $yv) {
+      printf($p, idx($y, $yk - 1, '-'));
+    }
+    echo "\n";
+    foreach ($t as $xk => $xv) {
+      printf($p, idx($x, $xk - 1, '-'));
       foreach ($xv as $yk => $yv) {
         printf($p, ($yv == $this->getInfinity() ? 'inf' : $yv));
       }

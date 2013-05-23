@@ -76,6 +76,13 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
     $this->assertEditString('iii', '', 'aaa');
     $this->assertEditString('ddd', 'aaa', '');
 
+    $this->assertEditString('sss', 'aaa', 'aaa');
+    $this->assertEditString(
+      'xssisssisx',
+      'Qz(ab)zQ',
+      'Rz((ab))zR',
+      1, 1, 1, null, 0.001);
+
     $this->assertEditString('xxs', 'cat', 'rot');
 
     $this->assertEditString(
@@ -94,9 +101,10 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
     $expect,
     $x, $y,
     $ins = 1, $del = 1,
-    $rep = 1, $trn = null) {
+    $rep = 1, $trn = null,
+    $alt = 0) {
 
-    $matrix = $this->buildMatrix($x, $y, $ins, $del, $rep, $trn);
+    $matrix = $this->buildMatrix($x, $y, $ins, $del, $rep, $trn, $alt);
     $cost = $matrix->getEditDistance();
 
     $desc = array($ins, $del, $rep, ($trn === null ? '-' : $trn));
@@ -112,14 +120,17 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
     $expect,
     $x, $y,
     $ins = 1, $del = 1,
-    $rep = 1, $trn = null) {
+    $rep = 1, $trn = null,
+    $alt = 0) {
 
-    $matrix = $this->buildMatrix($x, $y, $ins, $del, $rep, $trn);
+    $matrix = $this->buildMatrix($x, $y, $ins, $del, $rep, $trn, $alt);
     $matrix->setComputeString(true);
 
     $string = $matrix->getEditString();
 
-    $desc = array($ins, $del, $rep, ($trn === null ? '-' : $trn));
+    $desc = array($ins, $del, $rep);
+    $desc[] = ($trn === null ? '-' : $trn);
+    $desc[] = ($alt === 0 ? '-' : $alt);
     $desc = implode(', ', $desc);
 
     $this->assertEqual(
@@ -128,7 +139,7 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
       "Edit string of '{$x}' -> '{$y}' with costs ({$desc}).");
   }
 
-  private function buildMatrix($x, $y, $ins, $del, $rep, $trn) {
+  private function buildMatrix($x, $y, $ins, $del, $rep, $trn, $alt) {
     if (!strlen($x)) {
       $xv = array();
     } else {
@@ -146,7 +157,8 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
       ->setInsertCost($ins)
       ->setDeleteCost($del)
       ->setReplaceCost($rep)
-      ->setTransposeCost($trn);
+      ->setTransposeCost($trn)
+      ->setAlterCost($alt);
   }
 
 
