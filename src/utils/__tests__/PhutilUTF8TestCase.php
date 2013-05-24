@@ -131,6 +131,10 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       array("D5rpderp, derp derp", 16, "...", "D5rpderp..."),
       array("D6rpderp, derp derp", 17, "...", "D6rpderp, derp..."),
 
+      // Strings with combining characters.
+      array("Gr\xCD\xA0mpyCatSmiles", 8, "...", "Gr\xCD\xA0mpy..."),
+      array("X\xCD\xA0\xCD\xA0\xCD\xA0Y", 1, "", "X\xCD\xA0\xCD\xA0\xCD\xA0"),
+
       // This behavior is maybe a little bad, but it seems mostly reasonable,
       // at least for latin languages.
       array("Derp, supercalafragalisticexpialadoshus", 30, "...",

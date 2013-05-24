@@ -238,8 +238,7 @@ function phutil_utf8v_codepoints($string) {
  * function attempts to truncate strings at word boundaries.
  *
  * NOTE: This function makes a best effort to apply some reasonable rules but
- * will not work well for the full range of unicode languages. For instance,
- * no effort is made to deal with combining characters.
+ * will not work well for the full range of unicode languages.
  *
  * @param   string  UTF-8 string to shorten.
  * @param   int     Maximum length of the result.
@@ -259,7 +258,7 @@ function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
       "String terminal length must be less than string length!");
   }
 
-  $string_v = phutil_utf8v($string);
+  $string_v = phutil_utf8v_combined($string);
   $string_len = count($string_v);
 
   if ($string_len <= $length) {
