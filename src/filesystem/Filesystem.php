@@ -866,12 +866,12 @@ final class Filesystem {
       if (!$stdout) {
         return null;
       }
-      $stdout = trim($stdout[0]);
+      $stdout = head($stdout);
     } else {
       list($err, $stdout) = exec_manual('which %s', $binary);
     }
-    
-    return $err === 0 ? $stdout : null;
+
+    return $err === 0 ? trim($stdout) : null;
   }
 
 
