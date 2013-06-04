@@ -4,7 +4,8 @@
  * @task  xaction Transaction Management
  * @group storage
  */
-abstract class AphrontDatabaseConnection {
+abstract class AphrontDatabaseConnection
+  implements PhutilQsprintfInterface {
 
   private $transactionState;
 
@@ -14,11 +15,6 @@ abstract class AphrontDatabaseConnection {
   abstract public function executeRawQuery($raw_query);
   abstract public function executeRawQueries(array $raw_queries);
   abstract public function close();
-
-  abstract public function escapeString($string);
-  abstract public function escapeColumnName($string);
-  abstract public function escapeMultilineComment($string);
-  abstract public function escapeStringForLikeClause($string);
 
   public function queryData($pattern/* , $arg, $arg, ... */) {
     $args = func_get_args();

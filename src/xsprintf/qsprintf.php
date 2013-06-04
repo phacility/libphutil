@@ -14,13 +14,13 @@
  *     get "= 3"; if you pass null, you get "IS NULL". For instance, this
  *     will work properly if `hatID' is a nullable column and $hat is null.
  *
- *       qsprintf($conn, 'WHERE hatID %=d', $hat);
+ *       qsprintf($escaper, 'WHERE hatID %=d', $hat);
  *
  *   %Ld, %Ls, %Lf
  *     "List" versions of %d, %s and %f. These are appropriate for use in
  *     an "IN" clause. For example:
  *
- *       qsprintf($conn, 'WHERE hatID IN(%Ld)', $list_of_hats);
+ *       qsprintf($escaper, 'WHERE hatID IN(%Ld)', $list_of_hats);
  *
  *   %T ("Table")
  *     Escapes a table name.
@@ -38,7 +38,7 @@
  *     Escapes a substring query for a LIKE (or NOT LIKE) clause. For example:
  *
  *       //  Find all rows with $search as a substing of `name`.
- *       qsprintf($conn, 'WHERE name LIKE %~', $search);
+ *       qsprintf($escaper, 'WHERE name LIKE %~', $search);
  *
  *     See also %> and %<.
  *
@@ -46,28 +46,28 @@
  *     Escapes a prefix query for a LIKE clause. For example:
  *
  *       //  Find all rows where `name` starts with $prefix.
- *       qsprintf($conn, 'WHERE name LIKE %>', $prefix);
+ *       qsprintf($escaper, 'WHERE name LIKE %>', $prefix);
  *
  *   %< ("Suffix")
  *     Escapes a suffix query for a LIKE clause. For example:
  *
  *       //  Find all rows where `name` ends with $suffix.
- *       qsprintf($conn, 'WHERE name LIKE %<', $suffix);
+ *       qsprintf($escaper, 'WHERE name LIKE %<', $suffix);
  *
  * @group storage
  */
-function qsprintf(AphrontDatabaseConnection $conn, $pattern/* , ... */) {
+function qsprintf(PhutilQsprintfInterface $escaper, $pattern/* , ... */) {
   $args = func_get_args();
   array_shift($args);
-  return xsprintf('xsprintf_query', $conn, $args);
+  return xsprintf('xsprintf_query', $escaper, $args);
 }
 
 /**
  * @group storage
  */
-function vqsprintf(AphrontDatabaseConnection $conn, $pattern, array $argv) {
+function vqsprintf(PhutilQsprintfInterface $escaper, $pattern, array $argv) {
   array_unshift($argv, $pattern);
-  return xsprintf('xsprintf_query', $conn, $argv);
+  return xsprintf('xsprintf_query', $escaper, $argv);
 }
 
 
@@ -76,17 +76,17 @@ function vqsprintf(AphrontDatabaseConnection $conn, $pattern, array $argv) {
  * @group storage
  */
 function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
-  $type   = $pattern[$pos];
-  $conn   = $userdata;
-  $next   = (strlen($pattern) > $pos + 1) ? $pattern[$pos + 1] : null;
+  $type    = $pattern[$pos];
+  $escaper = $userdata;
+  $next    = (strlen($pattern) > $pos + 1) ? $pattern[$pos + 1] : null;
 
   $nullable = false;
   $done     = false;
 
   $prefix   = '';
 
-  if (!($conn instanceof AphrontDatabaseConnection)) {
-    throw new Exception("Invalid database connection!");
+  if (!($escaper instanceof PhutilQsprintfInterface)) {
+    throw new Exception("Invalid database escaper!");
   }
 
   switch ($type) {
@@ -139,13 +139,13 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
           break;
         case 's': // ...strings.
           foreach ($value as $k => $v) {
-            $value[$k] = "'".$conn->escapeString($v)."'";
+            $value[$k] = "'".$escaper->escapeString($v)."'";
           }
           $value = implode(', ', $value);
           break;
         case 'C': // ...columns.
           foreach ($value as $k => $v) {
-            $value[$k] = $conn->escapeColumnName($v);
+            $value[$k] = $escaper->escapeColumnName($v);
           }
           $value = implode(', ', $value);
           break;
@@ -162,7 +162,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         if ($nullable && $value === null) {
           $value = 'NULL';
         } else {
-          $value = "'".$conn->escapeString($value)."'";
+          $value = "'".$escaper->escapeString($value)."'";
         }
         $type = 's';
         break;
@@ -174,7 +174,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
       case '~': // Like Substring
       case '>': // Like Prefix
       case '<': // Like Suffix
-        $value = $conn->escapeStringForLikeClause($value);
+        $value = $escaper->escapeStringForLikeClause($value);
         switch ($type) {
           case '~': $value = "'%".$value."%'"; break;
           case '>': $value = "'" .$value."%'"; break;
@@ -203,12 +203,12 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
 
       case 'T': // Table
       case 'C': // Column
-        $value = $conn->escapeColumnName($value);
+        $value = $escaper->escapeColumnName($value);
         $type = 's';
         break;
 
       case 'K': // Komment
-        $value = $conn->escapeMultilineComment($value);
+        $value = $escaper->escapeMultilineComment($value);
         $type = 's';
         break;
 
