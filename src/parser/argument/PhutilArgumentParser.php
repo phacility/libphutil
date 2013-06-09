@@ -350,8 +350,20 @@ final class PhutilArgumentParser {
     $flow = strtolower($flow);
 
     if (empty($this->workflows[$flow])) {
-      throw new PhutilArgumentUsageException(
-        "Invalid workflow '{$flow}'.");
+      $workflow_names = array();
+      foreach ($this->workflows as $wf) {
+        $workflow_names[] = $wf->getName();
+      }
+      sort($workflow_names);
+      $command_list = implode(', ', $workflow_names);
+      $ex_msg =
+        "Invalid command '{$flow}'. Valid commands are: {$command_list}.";
+      if (in_array("help", $workflow_names)) {
+        $bin = basename($this->bin);
+        $ex_msg .=
+          "\nFor more details on available commands, run `{$bin} help`.";
+      }
+      throw new PhutilArgumentUsageException($ex_msg);
     }
 
     $workflow = $this->workflows[$flow];
