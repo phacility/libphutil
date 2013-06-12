@@ -249,13 +249,10 @@ function phutil_utf8v_codepoints($string) {
  * @group utf8
  */
 function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
-  $terminal_len = phutil_utf8_strlen($terminal);
-  if ($terminal_len >= $length) {
-    // If you provide a terminal we still enforce that the result (including
-    // the terminal) is no longer than $length, but we can't do that if the
-    // terminal is too long.
-    throw new Exception(
-      "String terminal length must be less than string length!");
+  // If the string has fewer bytes than the minimum length, we can return
+  // it unmodified without doing any heavy lifting.
+  if (strlen($string) <= $length) {
+    return $string;
   }
 
   $string_v = phutil_utf8v_combined($string);
@@ -298,9 +295,12 @@ function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
   $word_boundary = null;
   $stop_boundary = null;
 
+  $terminal_len = phutil_utf8_strlen($terminal);
+
   // If we do a word break with a terminal, we have to look beyond at least the
-  // number of characters in the terminal.
-  $terminal_area = $length - $terminal_len;
+  // number of characters in the terminal. If the terminal is longer than the
+  // required length, we'll skip this whole block and return it on its own
+  $terminal_area = $length - min($length, $terminal_len);
   for ($ii = $length; $ii >= 0; $ii--) {
     $c = $string_v[$ii];
 
@@ -326,7 +326,7 @@ function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
   // If we didn't find any boundary characters or we found ONLY boundary
   // characters, just break at the maximum character length.
   if ($word_boundary === null || $word_boundary === 0) {
-    $word_boundary = $length - $terminal_len;
+    $word_boundary = $terminal_area;
   }
 
   $string_part = array_slice($string_v, 0, $word_boundary);

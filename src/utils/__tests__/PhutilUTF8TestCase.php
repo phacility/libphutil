@@ -143,6 +143,9 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       // If a string has only word-break characters in it, we should just cut
       // it, not produce only the terminal.
       array("((((((((((", 8, '...', '(((((...'),
+
+      // Terminal is longer than requested input.
+      array('derp', 3, 'quack', 'quack'),
     );
 
     foreach ($inputs as $input) {
@@ -151,14 +154,6 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       $this->assertEqual($expect, $result, 'Shortening of '.$string);
     }
 
-    try {
-      phutil_utf8_shorten('derp', 3, 'quack');
-      $caught = false;
-    } catch (Exception $ex) {
-      $caught = true;
-    }
-
-    $this->assertEqual(true, $caught, 'Expect exception for terminal.');
   }
 
   public function testUTF8Wrap() {
