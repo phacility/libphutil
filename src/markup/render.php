@@ -57,27 +57,26 @@ function phutil_tag($tag, array $attributes = array(), $content = null) {
     'wbr'     => true,
   );
 
-  if ($content === null && empty($self_closing_tags[$tag])) {
-    $content = '';
-  }
-
+  $attr_string = '';
   foreach ($attributes as $k => $v) {
     if ($v === null) {
       continue;
     }
     $v = phutil_escape_html($v);
-    $attributes[$k] = ' '.$k.'="'.$v.'"';
+    $attr_string .= ' '.$k.'="'.$v.'"';
   }
-
-  $attributes = implode('', $attributes);
 
   if ($content === null) {
-    return new PhutilSafeHTML('<'.$tag.$attributes.' />');
+    if (isset($self_closing_tags[$tag])) {
+      return new PhutilSafeHTML('<'.$tag.$attr_string.' />');
+    } else {
+      $content = '';
+    }
+  } else {
+    $content = phutil_escape_html($content);
   }
 
-  $content = phutil_escape_html($content);
-
-  return new PhutilSafeHTML('<'.$tag.$attributes.'>'.$content.'</'.$tag.'>');
+  return new PhutilSafeHTML('<'.$tag.$attr_string.'>'.$content.'</'.$tag.'>');
 }
 
 /**
@@ -107,7 +106,11 @@ function phutil_escape_html($string) {
       }
     }
   } else if (is_array($string)) {
-    return implode('', array_map('phutil_escape_html', $string));
+    $result = '';
+    foreach ($string as $item) {
+      $result .= phutil_escape_html($item);
+    }
+    return $result;
   }
 
   return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
@@ -142,7 +145,11 @@ function phutil_safe_html($string) {
  */
 function phutil_implode_html($glue, array $pieces) {
   $glue = phutil_escape_html($glue);
-  $pieces = array_map('phutil_escape_html', $pieces);
+
+  foreach ($pieces as $k => $piece) {
+    $pieces[$k] = phutil_escape_html($piece);
+  }
+
   return phutil_safe_html(implode($glue, $pieces));
 }
 

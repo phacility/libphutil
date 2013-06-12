@@ -9,7 +9,7 @@ final class PhutilSafeHTML {
   }
 
   public function __toString() {
-    return $this->getHTMLContent();
+    return $this->content;
   }
 
   public function getHTMLContent() {
