@@ -23,6 +23,33 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
   private $ldapUserData;
   private $ldapConnection;
 
+  private $console;
+
+  public function printConfiguration() {
+    $console = $this->console;
+    unset($this->console);
+
+      $properties = (array)$this;
+
+      $pre = "\0PhutilAuthAdapterLDAP";
+      $pre_len = strlen($pre);
+      foreach ($properties as $key => $value) {
+        if (strncmp($key, $pre, $pre_len) === 0) {
+          unset($properties[$key]);
+          $properties[substr($key, $pre_len)] = $value;
+        }
+      }
+      $config = print_r($properties, true);
+
+    $this->console = $console;
+    $this->log("%s\n", $config);
+  }
+
+  public function setConsole(PhutilConsole $console) {
+    $this->console = $console;
+    return $this;
+  }
+
   public function getAdapterType() {
     return 'ldap';
   }
@@ -137,6 +164,10 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
   private function getLDAPUserData($key, $default = null) {
     if ($this->ldapUserData === null) {
       $this->ldapUserData = $this->loadLDAPUserData();
+
+      $this->log(
+        "LDAP USER DATA\n\n%s\n\n",
+        print_r($this->ldapUserData, true));
     }
 
     return $this->readLDAPData($this->ldapUserData, $key, $default);
@@ -144,6 +175,13 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
 
   private function readLDAPData(array $data, $key, $default = null) {
     $list = idx($data, $key);
+    if (!is_array($list)) {
+      // At least in some cases (and maybe in all cases) the results from
+      // ldap_search() are keyed in lowercase. If we missed on the first
+      // try, retry with a lowercase key.
+      $list = idx($data, phutil_utf8_strtolower($key));
+    }
+
     if (!is_array($list)) {
       return $default;
     } else {
@@ -257,6 +295,13 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
 
     $conn = $this->establishConnection();
 
+    $this->log(
+      "%s\n",
+      pht(
+        "LDAP: Searching (%s), (%s)...",
+        $this->baseDistinguishedName,
+        $query));
+
     $result = @ldap_search($conn, $this->baseDistinguishedName, $query);
     if (!$result) {
       $this->raiseConnectionException(
@@ -265,11 +310,16 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
     }
 
     $entries = @ldap_get_entries($conn, $result);
+
     if (!$entries) {
       $this->raiseConnectionException(
         $conn,
         pht("Failed to get LDAP entries from search result."));
     }
+
+    $this->log(
+      "%s\n",
+      pht("LDAP: Found %s entries.", count($entries['count'])));
 
     $results = array();
     for ($ii = 0; $ii < $entries['count']; $ii++) {
@@ -299,6 +349,9 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
   }
 
   private function bindLDAP($conn, $user, PhutilOpaqueEnvelope $pass) {
+    $this->log("%s\n", pht("LDAP: Binding %s...", $user));
+
+
     // NOTE: ldap_bind() dumps cleartext passwords into logs by default. Keep
     // it quiet.
 
@@ -314,5 +367,16 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
         $is_bind = true);
     }
   }
+
+  private function log($pattern) {
+    $args = func_get_args();
+    $console = $this->console;
+    if (!$console) {
+      return;
+    }
+
+    call_user_func_array(array($console, 'writeLog'), $args);
+  }
+
 
 }
