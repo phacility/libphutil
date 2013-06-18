@@ -2,6 +2,14 @@
 
 final class PhutilAuthAdapterOAuthFacebook extends PhutilAuthAdapterOAuth {
 
+  private $requireSecureBrowsing;
+
+
+  public function setRequireSecureBrowsing($require_secure_browsing) {
+    $this->requireSecureBrowsing = $require_secure_browsing;
+    return $this;
+  }
+
   public function getAdapterType() {
     return 'facebook';
   }
@@ -44,6 +52,10 @@ final class PhutilAuthAdapterOAuthFacebook extends PhutilAuthAdapterOAuth {
     return $this->getOAuthAccountData('name');
   }
 
+  public function getAccountSecuritySettings() {
+    return $this->getOAuthAccountData('security_settings');
+  }
+
   protected function getAuthenticateBaseURI() {
     return 'https://www.facebook.com/dialog/oauth';
   }
@@ -72,6 +84,17 @@ final class PhutilAuthAdapterOAuthFacebook extends PhutilAuthAdapterOAuth {
       throw new Exception(
         "Expected valid JSON response from Facebook account data request, ".
         "got: ".$body);
+    }
+
+    if ($this->requireSecureBrowsing) {
+      if (empty($data['security_settings']['secure_browsing']['enabled'])) {
+        throw new Exception(
+          pht(
+            "This Phabricator install requires you to enable Secure Browsing ".
+            "on your Facebook account in order to use it to log in to ".
+            "Phabricator. For more information, see %s",
+            'https://www.facebook.com/help/156201551113407/'));
+      }
     }
 
     return $data;
