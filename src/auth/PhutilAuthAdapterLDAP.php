@@ -175,17 +175,29 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
 
   private function readLDAPData(array $data, $key, $default = null) {
     $list = idx($data, $key);
-    if (!is_array($list)) {
+    if ($list === null) {
       // At least in some cases (and maybe in all cases) the results from
       // ldap_search() are keyed in lowercase. If we missed on the first
       // try, retry with a lowercase key.
       $list = idx($data, phutil_utf8_strtolower($key));
     }
 
-    if (!is_array($list)) {
-      return $default;
-    } else {
+    // NOTE: In most cases, the property is an array, like:
+    //
+    //   array(
+    //     'count' => 1,
+    //     0 => 'actual-value-we-want',
+    //   )
+    //
+    // However, in at least the case of 'dn' after we "searchFirst", the
+    // property is a bare string.
+
+    if (is_scalar($list) && strlen($list)) {
+      return $list;
+    } else if (is_array($list)) {
       return $list[0];
+    } else {
+      return $default;
     }
   }
 
