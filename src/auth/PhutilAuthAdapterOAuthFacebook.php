@@ -4,7 +4,6 @@ final class PhutilAuthAdapterOAuthFacebook extends PhutilAuthAdapterOAuth {
 
   private $requireSecureBrowsing;
 
-
   public function setRequireSecureBrowsing($require_secure_browsing) {
     $this->requireSecureBrowsing = $require_secure_browsing;
     return $this;
@@ -41,7 +40,14 @@ final class PhutilAuthAdapterOAuthFacebook extends PhutilAuthAdapterOAuth {
   }
 
   public function getAccountImageURI() {
-    return $this->getOAuthAccountData('picture', 'data', 'url');
+    $picture = $this->getOAuthAccountData('picture');
+    if ($picture) {
+      $picture_data = idx($picture, 'data');
+      if ($picture_data) {
+        return idx($picture_data, 'url');
+      }
+    }
+    return null;
   }
 
   public function getAccountURI() {
