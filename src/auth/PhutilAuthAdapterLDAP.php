@@ -135,22 +135,34 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
   }
 
   public function getAccountID() {
-    $key = coalesce($this->usernameAttribute, $this->searchAttribute);
-    return $this->getLDAPUserData($key);
+    return $this->readLDAPRecordAccountID($this->getLDAPUserData());
   }
 
   public function getAccountName() {
-    return $this->getAccountID();
-  }
-
-  public function getAccountEmail() {
-    return $this->getLDAPUserData('mail');
+    return $this->readLDAPRecordAccountName($this->getLDAPUserData());
   }
 
   public function getAccountRealName() {
+    return $this->readLDAPRecordRealName($this->getLDAPUserData());
+  }
+
+  public function getAccountEmail() {
+    return $this->readLDAPRecordEmail($this->getLDAPUserData());
+  }
+
+  public function readLDAPRecordAccountID(array $record) {
+    $key = coalesce($this->usernameAttribute, $this->searchAttribute);
+    return $this->readLDAPData($record, $key);
+  }
+
+  public function readLDAPRecordAccountName(array $record) {
+    return $this->readLDAPRecordAccountID($record);
+  }
+
+  public function readLDAPRecordRealName(array $record) {
     $parts = array();
     foreach ($this->realNameAttributes as $attribute) {
-      $parts[] = $this->getLDAPUserData($attribute);
+      $parts[] = $this->readLDAPData($record, $attribute);
     }
     $parts = array_filter($parts);
 
@@ -161,7 +173,11 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
     return null;
   }
 
-  private function getLDAPUserData($key, $default = null) {
+  public function readLDAPRecordEmail(array $record) {
+    return $this->readLDAPData($record, 'mail');
+  }
+
+  private function getLDAPUserData() {
     if ($this->ldapUserData === null) {
       $this->ldapUserData = $this->loadLDAPUserData();
 
@@ -170,7 +186,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
         print_r($this->ldapUserData, true));
     }
 
-    return $this->readLDAPData($this->ldapUserData, $key, $default);
+    return $this->ldapUserData;
   }
 
   private function readLDAPData(array $data, $key, $default = null) {
@@ -245,8 +261,8 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
       }
 
       $options = array(
-        LDAP_OPT_PROTOCOL_VERSION => $this->ldapVersion,
-        LDAP_OPT_REFERRALS        => $this->ldapReferrals,
+        LDAP_OPT_PROTOCOL_VERSION => (int)$this->ldapVersion,
+        LDAP_OPT_REFERRALS        => (int)$this->ldapReferrals,
       );
 
       foreach ($options as $name => $value) {
@@ -301,7 +317,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
     return head($results);
   }
 
-  private function searchLDAP($pattern /* ... */) {
+  public function searchLDAP($pattern /* ... */) {
     $args = func_get_args();
     $query = call_user_func_array('ldap_sprintf', $args);
 
