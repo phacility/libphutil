@@ -58,6 +58,16 @@ final class PhutilAuthAdapterOAuthAsana extends PhutilAuthAdapterOAuth {
     );
   }
 
+  public function getExtraRefreshParameters() {
+    return array(
+      'grant_type' => 'refresh_token',
+    );
+  }
+
+  public function supportsTokenRefresh() {
+    return true;
+  }
+
   protected function loadOAuthAccountData() {
     return id(new PhutilAsanaFuture())
       ->setAccessToken($this->getAccessToken())
