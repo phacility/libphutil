@@ -151,7 +151,10 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
   }
 
   public function readLDAPRecordAccountID(array $record) {
-    $key = coalesce($this->usernameAttribute, $this->searchAttribute);
+    $key = $this->usernameAttribute;
+    if (!strlen($key)) {
+      $key = $this->searchAttribute;
+    }
     return $this->readLDAPData($record, $key);
   }
 
