@@ -59,20 +59,10 @@ final class PhutilAuthAdapterOAuthAsana extends PhutilAuthAdapterOAuth {
   }
 
   protected function loadOAuthAccountData() {
-    $uri = new PhutilURI('https://app.asana.com/api/1.0/users/me');
-
-    $future = new HTTPSFuture($uri);
-    $future->addHeader('Authorization', 'Bearer '.$this->getAccessToken());
-    list($body) = $future->resolvex();
-
-    $data = json_decode($body, true);
-    if (!is_array($data)) {
-      throw new Exception(
-        "Expected valid JSON response from Google account data request, ".
-        "got: ".$body);
-    }
-
-    return $data['data'];
+    return id(new PhutilAsanaFuture())
+      ->setAccessToken($this->getAccessToken())
+      ->setRawAsanaQuery('users/me')
+      ->resolve();
   }
 
 }
