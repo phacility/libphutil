@@ -42,7 +42,8 @@ final class PhutilURI {
     $this->path     = idx($parts, 'path', '');
     $query = idx($parts, 'query');
     if ($query) {
-      parse_str($query, $this->query);
+      $this->query = id(new PhutilQueryStringParser())->parseQueryString(
+        $query);
     }
     $this->fragment = idx($parts, 'fragment', '');
   }
