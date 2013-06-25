@@ -89,9 +89,10 @@ abstract class BaseHTTPFuture extends Future {
    */
   final public function setMethod($method) {
     static $supported_methods = array(
-      'GET'   => true,
-      'POST'  => true,
-      'PUT'   => true,
+      'GET'     => true,
+      'POST'    => true,
+      'PUT'     => true,
+      'DELETE'  => true,
     );
 
     if (empty($supported_methods[$method])) {
