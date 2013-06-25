@@ -203,6 +203,7 @@ phutil_register_library_map(array(
     'PhutilQueryStringParser' => 'parser/PhutilQueryStringParser.php',
     'PhutilQueryStringParserTestCase' => 'parser/__tests__/PhutilQueryStringParserTestCase.php',
     'PhutilRainbowSyntaxHighlighter' => 'markup/syntax/highlighter/PhutilRainbowSyntaxHighlighter.php',
+    'PhutilInvisibleSyntaxHighlighter' => 'markup/syntax/highlighter/PhutilInvisibleSyntaxHighlighter.php',
     'PhutilReadableSerializer' => 'readableserializer/PhutilReadableSerializer.php',
     'PhutilReadableSerializerTestCase' => 'readableserializer/__tests__/PhutilReadableSerializerTestCase.php',
     'PhutilRealnameContextFreeGrammar' => 'grammar/PhutilRealnameContextFreeGrammar.php',
