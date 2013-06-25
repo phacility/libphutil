@@ -45,9 +45,9 @@ final class PhutilAsanaFuture extends FutureProxy {
 
       $uri = new PhutilURI('https://app.asana.com/');
       $uri->setPath('/api/1.0/'.ltrim($this->action, '/'));
-      $uri->setQueryParams($this->params);
 
       $future = new HTTPSFuture($uri);
+      $future->setData($this->params);
       $future->addHeader('Authorization', 'Bearer '.$this->accessToken);
       $future->setMethod($this->method);
 
