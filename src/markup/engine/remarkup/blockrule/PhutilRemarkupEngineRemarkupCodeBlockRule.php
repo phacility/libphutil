@@ -111,7 +111,6 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
       }
 
       $text = preg_replace('/^/m', '  ', $text);
-      $text = preg_replace('/^\s+$/m', '', $text);
       $out[] = $text;
 
       return implode("\n", $out);
