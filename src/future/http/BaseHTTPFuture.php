@@ -225,7 +225,7 @@ abstract class BaseHTTPFuture extends Future {
    * Exception-oriented resolve(). Throws if the status indicates an error
    * occurred.
    *
-   * @return tuple  HTTP request result <status, body, headers> tuple.
+   * @return tuple  HTTP request result <body, headers> tuple.
    * @task resolve
    */
   final public function resolvex() {
