@@ -1,0 +1,14 @@
+NOTE: a
+a
+
+b
+~~~~~~~~~~
+<div class="remarkup-note">NOTE: a
+a</div>
+
+<p>b</p>
+~~~~~~~~~~
+NOTE: a
+a
+
+b
