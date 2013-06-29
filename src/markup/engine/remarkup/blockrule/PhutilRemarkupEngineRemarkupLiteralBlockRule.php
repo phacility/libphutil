@@ -6,25 +6,25 @@
 final class PhutilRemarkupEngineRemarkupLiteralBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
-  public function getBlockPattern() {
-    return "/^%%%/";
-  }
+  public function getMatchingLineCount(array $lines, $cursor) {
+    $num_lines = 0;
 
-  public function shouldContinueWithBlock($block, $last_block) {
-    // If the first code block begins with %%%, we keep matching blocks until
-    // we hit a terminating %%%, regardless of their content.
-    if (preg_match($this->getBlockPattern(), $last_block)) {
-      if (preg_match('/%%%$/', $last_block)) {
-        return false;
+    if (preg_match("/^%%%/", $lines[$cursor])) {
+      $num_lines++;
+      $cursor++;
+
+      while (isset($lines[$cursor])) {
+        if (!preg_match("/^%%%$/", $lines[$cursor])) {
+          $num_lines++;
+          $cursor++;
+          continue;
+        }
+
+        break;
       }
-      return true;
     }
 
-    return false;
-  }
-
-  public function shouldMergeBlocks() {
-    return true;
+    return $num_lines;
   }
 
   public function markupText($text) {

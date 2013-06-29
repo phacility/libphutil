@@ -9,20 +9,21 @@ abstract class PhutilRemarkupEngineBlockRule {
   private $engine;
   private $rules = array();
 
-  abstract public function getBlockPattern();
-  abstract public function shouldMergeBlocks();
   abstract public function markupText($text);
+
+  /**
+   * This will get an array of unparsed lines and return the number of lines
+   * from the first array value that it can parse.
+   *
+   * @param array $lines
+   * @param int   $cursor
+   *
+   * @return int
+   */
+  abstract public function getMatchingLineCount(array $lines, $cursor);
 
   protected function didMarkupText() {
     return;
-  }
-
-  public function shouldMatchBlock($block) {
-    return preg_match($this->getBlockPattern(), $block);
-  }
-
-  public function shouldContinueWithBlock($block, $last_block) {
-    return false;
   }
 
   final public function setEngine(PhutilRemarkupEngine $engine) {

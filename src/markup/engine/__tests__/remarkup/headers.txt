@@ -17,14 +17,6 @@ Markdown-Style Small Header
 
 
 = ☃☃☃ UTF8 Header ☃☃☃ =
-
-This is not
-a header
-===
-
-This is also
-= 2 + 2
-not a header.
 ~~~~~~~~~~
 <p>@nolint (UTF8)</p>
 
@@ -41,14 +33,6 @@ not a header.
 <h4>Remarkup-Style Smaller Header</h4>
 
 <h2>☃☃☃ UTF8 Header ☃☃☃</h2>
-
-<p>This is not
-a header
-===</p>
-
-<p>This is also
-= 2 + 2
-not a header.</p>
 ~~~~~~~~~~
 @nolint (UTF8)
 
@@ -71,7 +55,3 @@ Remarkup-Style Smaller Header
 
 ☃☃☃ UTF8 Header ☃☃☃
 ===================
-
-This is not a header ===
-
-This is also = 2 + 2 not a header.

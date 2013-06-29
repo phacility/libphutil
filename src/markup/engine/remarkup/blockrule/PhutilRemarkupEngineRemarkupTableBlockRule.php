@@ -6,21 +6,23 @@
 final class PhutilRemarkupEngineRemarkupTableBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
-  public function getBlockPattern() {
-    return '/^<table>/i';
-  }
+  public function getMatchingLineCount(array $lines, $cursor) {
+    $num_lines = 0;
 
-  public function shouldContinueWithBlock($block, $last_block) {
-    // Until we consume a '</table>', keep merging blocks.
-    if (preg_match('@</table>$@i', $last_block)) {
-      return false;
+    if (preg_match('/^<table>/i', $lines[$cursor])) {
+      $num_lines++;
+      $cursor++;
+
+      while (isset($lines[$cursor])) {
+        $num_lines++;
+        if (preg_match('@</table>$@i', $lines[$cursor])) {
+          break;
+        }
+        $cursor++;
+      }
     }
 
-    return true;
-  }
-
-  public function shouldMergeBlocks() {
-    return true;
+    return $num_lines;
   }
 
   public function markupText($text) {

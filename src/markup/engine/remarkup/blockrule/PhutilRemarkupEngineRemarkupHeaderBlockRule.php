@@ -6,16 +6,32 @@
 final class PhutilRemarkupEngineRemarkupHeaderBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
+  public function getMatchingLineCount(array $lines, $cursor) {
+    $num_lines = 0;
+    if (preg_match('/^(={1,5}).*+$/', $lines[$cursor])) {
+      $num_lines = 1;
+    } else {
+      if (isset($lines[$cursor+1])) {
+        $line = $lines[$cursor] . $lines[$cursor+1];
+        if (preg_match('/^([^\n]+)\n[-=]{2,}\s*$/', $line)) {
+          $num_lines = 2;
+          $cursor++;
+        }
+      }
+    }
+
+    if ($num_lines) {
+      $cursor++;
+      while (isset($lines[$cursor]) && !strlen(trim($lines[$cursor]))) {
+        $num_lines++;
+        $cursor++;
+      }
+    }
+
+    return $num_lines;
+  }
+
   const KEY_HEADER_TOC = 'headers.toc';
-
-  public function getBlockPattern() {
-    // Acceptable styles are "=== Header" or "Header\n===".
-    return '/^(?:(={1,5})[^\n]+|([^\n]+)\n[-=]{2,}\s*)$/';
-  }
-
-  public function shouldMergeBlocks() {
-    return false;
-  }
 
   public function markupText($text) {
     $text = trim($text);

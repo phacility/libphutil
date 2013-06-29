@@ -6,16 +6,28 @@
 final class PhutilRemarkupEngineRemarkupNoteBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
-  public function getBlockPattern() {
-    return "/^NOTE: /";
-  }
+  public function getMatchingLineCount(array $lines, $cursor) {
+    $num_lines = 0;
 
-  public function shouldMergeBlocks() {
-    return false;
+    if (preg_match("/^NOTE: /", $lines[$cursor])) {
+      $num_lines++;
+      $cursor++;
+
+      while(isset($lines[$cursor])) {
+        if (trim($lines[$cursor])) {
+          $num_lines++;
+          $cursor++;
+          continue;
+        }
+        break;
+      }
+    }
+
+    return $num_lines;
   }
 
   public function markupText($text) {
-    $text = $this->applyRules($text);
+    $text = rtrim($this->applyRules($text));
 
     if ($this->getEngine()->isTextMode()) {
       return $text;

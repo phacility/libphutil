@@ -6,20 +6,39 @@
 final class PhutilRemarkupEngineRemarkupListBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
+  public function getMatchingLineCount(array $lines, $cursor) {
+    $num_lines = 0;
+
+    while (isset($lines[$cursor])) {
+      if (preg_match(self::BLOCK_PATTERN, $lines[$cursor])) {
+        $num_lines++;
+        $cursor++;
+        continue;
+      }
+
+      if ($num_lines && strlen(trim($lines[$cursor]))
+        && strlen($lines[$cursor]) !== strlen(ltrim($lines[$cursor]))) {
+        $num_lines++;
+        $cursor++;
+        continue;
+      }
+
+      if ($num_lines && !strlen(trim($lines[$cursor]))) {
+        $num_lines++;
+      }
+
+      break;
+    }
+
+    return $num_lines;
+  }
+
   /**
    * The maximum sub-list depth you can nest to. Avoids silliness and blowing
    * the stack.
    */
   const MAXIMUM_LIST_NESTING_DEPTH = 12;
-
-  public function getBlockPattern() {
-    // Support either "-" or "*" or "#" lists.
-    return '/^\s*[-*#]+\s+/';
-  }
-
-  public function shouldMergeBlocks() {
-    return false;
-  }
+  const BLOCK_PATTERN = '/^\s*[-*#]+\s+/';
 
   public function markupText($text) {
 
@@ -45,7 +64,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
     $min_space = PHP_INT_MAX;
     foreach ($lines as $line) {
       $matches = null;
-      if (preg_match($this->getBlockPattern(), $line)) {
+      if (preg_match(self::BLOCK_PATTERN, $line)) {
         if (preg_match('/^(\s+)/', $line, $matches)) {
           $space = strlen($matches[1]);
         } else {
@@ -56,7 +75,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
     }
     if ($min_space) {
       foreach ($lines as $key => $line) {
-        if (preg_match($this->getBlockPattern(), $line)) {
+        if (preg_match(self::BLOCK_PATTERN, $line)) {
           $lines[$key] = substr($line, $min_space);
         }
       }
@@ -84,7 +103,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
     $item = array();
     foreach ($lines as $line) {
-      if (preg_match($this->getBlockPattern(), $line)) {
+      if (preg_match(self::BLOCK_PATTERN, $line)) {
         if ($item) {
           $items[] = $item;
           $item = array();
@@ -145,7 +164,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
       // has typed only " " or " -"), treat the line as containing no text.
       // This prevents newly added items from rendering with a bullet and
       // the text "-", e.g.
-      $text = preg_replace($this->getBlockPattern(), '', $item);
+      $text = preg_replace(self::BLOCK_PATTERN, '', $item);
       if ($text == $item) {
         $text = '';
       }

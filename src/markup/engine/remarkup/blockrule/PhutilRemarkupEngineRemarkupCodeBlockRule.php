@@ -6,46 +6,44 @@
 final class PhutilRemarkupEngineRemarkupCodeBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
-  public function getBlockPattern() {
-    return "/^(\s{2,}|```)/";
-  }
-
-  public function shouldMatchBlock($block) {
-    if (!preg_match($this->getBlockPattern(), $block)) {
-      return false;
+  public function getMatchingLineCount(array $lines, $cursor) {
+    $num_lines = 0;
+    $match_ticks = null;
+    if (preg_match("/^(\s{2,}).+/", $lines[$cursor])) {
+      $match_ticks = false;
+    } else if(preg_match("/^(```)/", $lines[$cursor])) {
+      $match_ticks = true;
+    } else {
+      return $num_lines;
     }
 
-    if (preg_match('@^[a-z]+://\S+$@', trim($block))) {
-      return false;
+    $num_lines++;
+
+    if ($match_ticks && preg_match("/^(```)(.*)(```)$/", $lines[$cursor])) {
+      return $num_lines;
     }
 
-    return true;
-  }
+    $cursor++;
 
-  public function shouldContinueWithBlock($block, $last_block) {
-    // If the first code block begins with ```, we keep matching blocks until
-    // we hit a terminating ```, regardless of their content.
-    if (preg_match('/^```/', $last_block)) {
-      if (preg_match('/```$/', $last_block)) {
-        return false;
+    while (isset($lines[$cursor])) {
+      if ($match_ticks) {
+        if (preg_match('/```$/', $lines[$cursor])) {
+          $num_lines++;
+          break;
+        }
+        $num_lines++;
+      } else {
+        if (strlen(trim($lines[$cursor]))) {
+          if (!preg_match('/^\s{2,}/', $lines[$cursor])) {
+            break;
+          }
+        }
+        $num_lines++;
       }
-      return true;
+      $cursor++;
     }
 
-    // If we just matched a code block based on indentation, always match the
-    // next block if it is indented, too. This basically means that we'll treat
-    // lists after code blocks as more code, but usually the "-" is from a diff
-    // or from objective C or something; it is rare to intentionally follow a
-    // code block with a list.
-    if (preg_match('/^\s{2,}/', $block)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  public function shouldMergeBlocks() {
-    return true;
+    return $num_lines;
   }
 
   public function markupText($text) {
@@ -55,6 +53,9 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
     }
 
     $lines = explode("\n", $text);
+    while ($lines && !strlen(last($lines))) {
+      unset($lines[last_key($lines)]);
+    }
 
     $options = array(
       'counterexample'  => false,

@@ -6,12 +6,8 @@
 final class PhutilRemarkupEngineRemarkupInlineBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
-  public function getBlockPattern() {
-    return "/.*/";
-  }
-
-  public function shouldMergeBlocks() {
-    return true;
+  public function getMatchingLineCount(array $lines, $cursor) {
+    return 1;
   }
 
   public function markupText($text) {
