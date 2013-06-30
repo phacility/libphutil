@@ -34,6 +34,7 @@ final class AphrontWriteGuard {
 
   private static $instance;
   private static $allowUnguardedWrites = false;
+  private static $abruptExitlistenerIsInstalled = false;
 
   private $callback;
   private $allowDepth = 0;
@@ -75,6 +76,11 @@ final class AphrontWriteGuard {
         "unguarded writes unconditionally. This is not allowed and indicates ".
         "a serious error.");
     }
+    if (!self::$abruptExitlistenerIsInstalled) {
+      self::$abruptExitlistenerIsInstalled = true;
+      $event_listener = new AphrontWriteGuardExitEventListener();
+      $event_listener->register();
+    }
     $this->callback = $callback;
     self::$instance = $this;
   }
@@ -88,11 +94,26 @@ final class AphrontWriteGuard {
    * @task manage
    */
   public function dispose() {
+    if (!self::$instance) {
+      throw new Exception(
+        "Attempting to dispose of write guard, but no write guard is active!");
+    }
+
     if ($this->allowDepth > 0) {
       throw new Exception(
         "Imbalanced AphrontWriteGuard: more beginUnguardedWrites() calls than ".
         "endUnguardedWrites() calls.");
     }
+    self::$instance = null;
+  }
+
+  /**
+   * This is used for clearing the write guard without performing any checks.
+   * This is used in conjunction with phutil_exit for abrupt exits.
+   *
+   * @return void
+   */
+  public function disposeAbruptly() {
     self::$instance = null;
   }
 
@@ -105,6 +126,15 @@ final class AphrontWriteGuard {
    */
   public static function isGuardActive() {
     return (bool)self::$instance;
+  }
+
+  /**
+   * Return on instance of AphrontWriteGuard if it's active, or null
+   *
+   * @return AphrontWriteGuard|null
+   */
+  public static function getInstance() {
+    return self::$instance;
   }
 
 
@@ -251,7 +281,8 @@ final class AphrontWriteGuard {
     if (isset(self::$instance)) {
       throw new Exception(
         "AphrontWriteGuard was not properly disposed of! Call dispose() on ".
-        "every AphrontWriteGuard object you instantiate.");
+        "every AphrontWriteGuard object you instantiate or use phutil_exit() ".
+        "to exit abruptly while debugging.");
     }
   }
 }
