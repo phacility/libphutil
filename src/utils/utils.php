@@ -867,3 +867,19 @@ function phutil_is_windows() {
 function phutil_is_hiphop_runtime() {
   return (array_key_exists('HPHP', $_ENV) && $_ENV['HPHP'] === 1);
 }
+
+/**
+ * Fire an event allowing any listeners to clear up any outstanding requirements
+ * before the request completes abruptly.
+ *
+ * @param int|string $status
+ * @group library
+ */
+function phutil_exit($status = 0) {
+  $event = new PhutilEvent(
+    PhutilEventType::TYPE_WILLEXITABRUPTLY,
+    array("status" => $status));
+  PhutilEventEngine::dispatchEvent($event);
+
+  exit($status);
+}

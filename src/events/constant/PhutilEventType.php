@@ -6,6 +6,7 @@
  */
 class PhutilEventType extends PhutilEventConstants {
 
-  const TYPE_ALL                    = '*';
+  const TYPE_ALL              = '*';
+  const TYPE_WILLEXITABRUPTLY = 'willexitabruptly';
 
 }

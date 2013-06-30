@@ -319,6 +319,7 @@ phutil_register_library_map(array(
     'phutil_escape_html_newlines' => 'markup/render.php',
     'phutil_escape_uri' => 'markup/render.php',
     'phutil_escape_uri_path_component' => 'markup/render.php',
+    'phutil_exit' => 'utils/utils.php',
     'phutil_get_library_name_for_root' => 'moduleutils/moduleutils.php',
     'phutil_get_library_root' => 'moduleutils/moduleutils.php',
     'phutil_get_library_root_for_path' => 'moduleutils/moduleutils.php',
