@@ -18,6 +18,10 @@ abstract class PhutilRemarkupRule {
     return $this->engine;
   }
 
+  public function getPriority() {
+    return 500.0;
+  }
+
   abstract public function apply($text);
 
   public function getPostprocessKey() {

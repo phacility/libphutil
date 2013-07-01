@@ -6,6 +6,10 @@
 final class PhutilRemarkupRuleDocumentLink
   extends PhutilRemarkupRule {
 
+  public function getPriority() {
+    return 300.0;
+  }
+
   public function apply($text) {
 
     // Handle mediawiki-style links: [[ href | name ]]

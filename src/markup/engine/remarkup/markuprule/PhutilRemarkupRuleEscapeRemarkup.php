@@ -6,6 +6,10 @@
 final class PhutilRemarkupRuleEscapeRemarkup
   extends PhutilRemarkupRule {
 
+  public function getPriority() {
+    return 0;
+  }
+
   public function apply($text) {
     if (strpos($text, "\1") === false) {
       return $text;

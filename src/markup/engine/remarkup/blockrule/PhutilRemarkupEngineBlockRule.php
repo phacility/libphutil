@@ -46,6 +46,7 @@ abstract class PhutilRemarkupEngineBlockRule {
   private function updateRules() {
     $engine = $this->getEngine();
     if ($engine) {
+      $this->rules = msort($this->rules, 'getPriority');
       foreach ($this->rules as $rule) {
         $rule->setEngine($engine);
       }

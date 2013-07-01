@@ -7,6 +7,10 @@
 class PhutilRemarkupRuleHyperlink
   extends PhutilRemarkupRule {
 
+  public function getPriority() {
+    return 400.0;
+  }
+
   public function apply($text) {
 
     // Hyperlinks with explicit "<>" around them get linked exactly, without
