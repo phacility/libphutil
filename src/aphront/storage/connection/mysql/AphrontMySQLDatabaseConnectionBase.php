@@ -255,7 +255,10 @@ abstract class AphrontMySQLDatabaseConnectionBase
   }
 
   protected function checkWrite($raw_query) {
-    $is_write = !preg_match('/^(SELECT|SHOW|EXPLAIN)\s/', $raw_query);
+    // NOTE: The opening "(" allows queries in the form of:
+    //
+    //   (SELECT ...) UNION (SELECT ...)
+    $is_write = !preg_match('/^[(]*(SELECT|SHOW|EXPLAIN)\s/', $raw_query);
     if ($is_write) {
       AphrontWriteGuard::willWrite();
       return true;
