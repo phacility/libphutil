@@ -65,6 +65,12 @@ function phutil_passthru($cmd /* , ... */) {
   $spec  = array(STDIN, STDOUT, STDERR);
   $pipes = array();
 
+  if ($command instanceof PhutilCommandString) {
+    $unmasked_command = $command->getUnmaskedString();
+  } else {
+    $unmasked_command = $command;
+  }
+
   if (phutil_is_windows()) {
     // Without 'bypass_shell', things like launching vim don't work properly,
     // and we can't execute commands with spaces in them, and all commands
@@ -72,9 +78,9 @@ function phutil_passthru($cmd /* , ... */) {
     $options = array(
       'bypass_shell' => true,
     );
-    $proc = @proc_open($command, $spec, $pipes, null, null, $options);
+    $proc = @proc_open($unmasked_command, $spec, $pipes, null, null, $options);
   } else {
-    $proc = @proc_open($command, $spec, $pipes);
+    $proc = @proc_open($unmasked_command, $spec, $pipes);
   }
 
   if ($proc === false) {

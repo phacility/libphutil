@@ -496,9 +496,14 @@ final class ExecFuture extends Future {
         $this->start = microtime(true);
       }
 
+      $unmasked_command = $this->command;
+      if ($unmasked_command instanceof PhutilCommandString) {
+        $unmasked_command = $unmasked_command->getUnmaskedString();
+      }
+
       $pipes = array();
       $proc = proc_open(
-        $this->command,
+        $unmasked_command,
         self::$descriptorSpec,
         $pipes,
         $this->cwd);
