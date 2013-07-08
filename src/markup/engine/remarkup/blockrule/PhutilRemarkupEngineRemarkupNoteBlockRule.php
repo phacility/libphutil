@@ -27,12 +27,17 @@ final class PhutilRemarkupEngineRemarkupNoteBlockRule
   }
 
   public function markupText($text) {
-    $text = rtrim($this->applyRules($text));
+    $text = $this->applyRules(rtrim($text));
 
     if ($this->getEngine()->isTextMode()) {
       return $text;
     }
 
-    return hsprintf('<div class="remarkup-note">%s</div>', $text);
+    return phutil_tag(
+      'div',
+      array(
+        'class' => 'remarkup-note',
+      ),
+      $text);
   }
 }
