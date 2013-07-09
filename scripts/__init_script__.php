@@ -63,6 +63,8 @@ function __phutil_init_script__() {
 
   $root = dirname(dirname(__FILE__));
   require_once $root.'/src/__phutil_library_init__.php';
+
+  PhutilErrorHandler::initialize();
 }
 
 __phutil_init_script__();

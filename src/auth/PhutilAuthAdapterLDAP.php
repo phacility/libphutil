@@ -385,10 +385,6 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
 
     // NOTE: ldap_bind() dumps cleartext passwords into logs by default. Keep
     // it quiet.
-
-    // TODO: We should provide a way to disable PhutilErrorHandler for cases
-    // like this; for now, the log is disabled at the Phabricator level
-    // instead. See T3351.
     $ok = @ldap_bind($conn, $user, $pass->openEnvelope());
 
     if (!$ok) {

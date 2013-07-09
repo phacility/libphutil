@@ -15,4 +15,29 @@ final class PhutilErrorHandlerTestCase extends PhutilTestCase {
     $this->assertEqual($b, PhutilErrorHandler::getPreviousException($c));
   }
 
+  public function testSilenceHandler() {
+    // Errors should normally be logged.
+    $this->assertEqual(
+      true,
+      strlen($this->emitError()) > 0);
+
+    // The "@" operator should silence errors.
+    $this->assertEqual(
+      true,
+      @strlen($this->emitError()) === 0);
+  }
+
+  private function emitError() {
+    $temporary_log = new TempFile();
+
+    $old_log = ini_get('error_log');
+    ini_set('error_log', (string)$temporary_log);
+
+      trigger_error('(A synthetic error emitted during a unit test.)');
+
+    ini_set('error_log', $old_log);
+    return Filesystem::readFile($temporary_log);
+  }
+
+
 }
