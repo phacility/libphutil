@@ -23,33 +23,6 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
   private $ldapUserData;
   private $ldapConnection;
 
-  private $console;
-
-  public function printConfiguration() {
-    $console = $this->console;
-    unset($this->console);
-
-      $properties = (array)$this;
-
-      $pre = "\0PhutilAuthAdapterLDAP";
-      $pre_len = strlen($pre);
-      foreach ($properties as $key => $value) {
-        if (strncmp($key, $pre, $pre_len) === 0) {
-          unset($properties[$key]);
-          $properties[substr($key, $pre_len)] = $value;
-        }
-      }
-      $config = print_r($properties, true);
-
-    $this->console = $console;
-    $this->log("%s\n", $config);
-  }
-
-  public function setConsole(PhutilConsole $console) {
-    $this->console = $console;
-    return $this;
-  }
-
   public function getAdapterType() {
     return 'ldap';
   }
@@ -183,10 +156,6 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
   private function getLDAPUserData() {
     if ($this->ldapUserData === null) {
       $this->ldapUserData = $this->loadLDAPUserData();
-
-      $this->log(
-        "LDAP USER DATA\n\n%s\n\n",
-        print_r($this->ldapUserData, true));
     }
 
     return $this->ldapUserData;
@@ -257,7 +226,23 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
       $host = $this->hostname;
       $port = $this->port;
 
+      $profiler = PhutilServiceProfiler::getInstance();
+      $call_id = $profiler->beginServiceCall(
+        array(
+          'type' => 'ldap',
+          'call' => 'connect',
+          'host' => $host,
+          'port' => $this->port,
+        ));
+
       $conn = @ldap_connect($host, $this->port);
+
+      $profiler->endServiceCall(
+        $call_id,
+        array(
+          'ok' => (bool)$conn,
+        ));
+
       if (!$conn) {
         throw new Exception(
           "Unable to connect to LDAP server ({$host}:{$port}).");
@@ -281,7 +266,21 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
       }
 
       if ($this->ldapStartTLS) {
+        $profiler = PhutilServiceProfiler::getInstance();
+        $call_id = $profiler->beginServiceCall(
+          array(
+            'type' => 'ldap',
+            'call' => 'start-tls',
+          ));
+
+        // NOTE: This boils down to a function call to ldap_start_tls_s() in
+        // C, which is a service call.
         $ok = @ldap_start_tls($conn);
+
+        $profiler->endServiceCall(
+          $call_id,
+          array());
+
         if (!$ok) {
           $this->raiseConnectionException(
             $conn,
@@ -326,14 +325,19 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
 
     $conn = $this->establishConnection();
 
-    $this->log(
-      "%s\n",
-      pht(
-        "LDAP: Searching (%s), (%s)...",
-        $this->baseDistinguishedName,
-        $query));
+    $profiler = PhutilServiceProfiler::getInstance();
+    $call_id = $profiler->beginServiceCall(
+      array(
+        'type'  => 'ldap',
+        'call'  => 'search',
+        'dn'    => $this->baseDistinguishedName,
+        'query' => $query,
+      ));
 
     $result = @ldap_search($conn, $this->baseDistinguishedName, $query);
+
+    $profiler->endServiceCall($call_id, array());
+
     if (!$result) {
       $this->raiseConnectionException(
         $conn,
@@ -347,10 +351,6 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
         $conn,
         pht("Failed to get LDAP entries from search result."));
     }
-
-    $this->log(
-      "%s\n",
-      pht("LDAP: Found %s entries.", count($entries['count'])));
 
     $results = array();
     for ($ii = 0; $ii < $entries['count']; $ii++) {
@@ -380,12 +380,19 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
   }
 
   private function bindLDAP($conn, $user, PhutilOpaqueEnvelope $pass) {
-    $this->log("%s\n", pht("LDAP: Binding %s...", $user));
-
+    $profiler = PhutilServiceProfiler::getInstance();
+    $call_id = $profiler->beginServiceCall(
+      array(
+        'type' => 'ldap',
+        'call' => 'bind',
+        'user' => $user,
+      ));
 
     // NOTE: ldap_bind() dumps cleartext passwords into logs by default. Keep
     // it quiet.
     $ok = @ldap_bind($conn, $user, $pass->openEnvelope());
+
+    $profiler->endServiceCall($call_id, array());
 
     if (!$ok) {
       $this->raiseConnectionException(
@@ -394,16 +401,5 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
         $is_bind = true);
     }
   }
-
-  private function log($pattern) {
-    $args = func_get_args();
-    $console = $this->console;
-    if (!$console) {
-      return;
-    }
-
-    call_user_func_array(array($console, 'writeLog'), $args);
-  }
-
 
 }

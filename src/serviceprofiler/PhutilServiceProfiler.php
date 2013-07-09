@@ -121,6 +121,28 @@ final class PhutilServiceProfiler {
         case 'event':
           $desc = $data['kind'].' <listeners = '.$data['count'].'>';
           break;
+        case 'ldap':
+          $call = idx($data, 'call', '?');
+          $params = array();
+          switch ($call) {
+            case 'connect':
+              $params[] = $data['host'].':'.$data['port'];
+              break;
+            case 'start-tls':
+              break;
+            case 'bind':
+              $params[] = $data['user'];
+              break;
+            case 'search':
+              $params[] = $data['dn'];
+              $params[] = $data['query'];
+              break;
+            default:
+              $params[] = '?';
+              break;
+          }
+          $desc = "{$call} (".implode(', ', $params).")";
+          break;
       }
     } else if ($is_end) {
       $desc = number_format((int)(1000000 * $data['duration'])).' us';
