@@ -43,10 +43,8 @@ final class XHPASTNode extends AASTNode {
         } else if (preg_match('/^0\d+$/i', $value)) {
           // Octal
           return (int)base_convert(substr($value, 1),  8, 10);
-        } else if (preg_match('/^\d+$/', $value)) {
-          return (int)$value;
         } else {
-          return (double)$value;
+          return +$value;
         }
         break;
       case 'n_SYMBOL_NAME':
