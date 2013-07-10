@@ -33,8 +33,8 @@ final class XHPASTTree extends AASTTree {
       $future->resolve());
   }
 
-  public static function evalStaticString($string) {
-    $string = '<?php '.rtrim($string, ';').';';
+  public static function newStatementFromString($string) {
+    $string = '<?php '.rtrim($string, ';').";\n";
     $tree = XHPASTTree::newFromData($string);
     $statements = $tree->getRootNode()->selectDescendantsOfType('n_STATEMENT');
     if (count($statements) != 1) {
@@ -42,7 +42,7 @@ final class XHPASTTree extends AASTTree {
     }
     // Return the first one, trying to use reset() with iterators ends in tears.
     foreach ($statements as $statement) {
-      return $statement->evalStatic();
+      return $statement;
     }
   }
 

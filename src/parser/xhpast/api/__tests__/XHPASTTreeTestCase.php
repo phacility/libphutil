@@ -133,7 +133,7 @@ final class XHPASTTreeTestCase extends PhutilTestCase {
   private function assertEval($value, $string) {
     $this->assertEqual(
       $value,
-      XHPASTTree::evalStaticString($string),
+      XHPASTTree::newStatementFromString($string)->evalStatic(),
       $string);
   }
 

@@ -98,22 +98,10 @@ final class XHPASTNode extends AASTNode {
   }
 
   public function isConstantString() {
-    $value = $this->getConcreteString();
-
     switch ($this->getTypeName()) {
       case 'n_HEREDOC':
-        if ($value[3] == "'") { // Nowdoc: <<<'EOT'
-          return true;
-        }
-        $value = preg_replace('/^.+\n|\n.*$/', '', $value);
-        break;
-
       case 'n_STRING_SCALAR':
-        if ($value[0] == "'") {
-          return true;
-        }
-        $value = substr($value, 1, -1);
-        break;
+        return !$this->getStringVariables();
 
       case 'n_CONCATENATION_LIST':
         foreach ($this->getChildren() as $child) {
@@ -129,8 +117,33 @@ final class XHPASTNode extends AASTNode {
       default:
         return false;
     }
+  }
 
-    return preg_match('/^((?>[^$\\\\]*)|\\\\.)*$/s', $value);
+  public function getStringVariables() {
+    $value = $this->getConcreteString();
+
+    switch ($this->getTypeName()) {
+      case 'n_HEREDOC':
+        if (preg_match("/^<<<\s*'/", $value)) { // Nowdoc: <<<'EOT'
+          return array();
+        }
+        break;
+
+      case 'n_STRING_SCALAR':
+        if ($value[0] == "'") {
+          return array();
+        }
+        break;
+
+      default:
+        throw new Exception('Unexpected type '.$this->getTypeName().'.');
+    }
+
+    // We extract just the variable names and ignore properties and array keys.
+    $re = '/\\\\.|(\$|\{\$|\${)([a-z_\x7F-\xFF][a-z0-9_\x7F-\xFF]*)/i';
+    $matches = null;
+    preg_match_all($re, $value, $matches, PREG_OFFSET_CAPTURE);
+    return ipull(array_filter($matches[2]), 0, 1);
   }
 
   public function getStringLiteralValue() {
