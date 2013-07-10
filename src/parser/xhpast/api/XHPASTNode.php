@@ -39,14 +39,12 @@ final class XHPASTNode extends AASTNode {
         $value = $this->getSemanticString();
         if (preg_match('/^0x/i', $value)) {
           // Hex
-          return (int)base_convert(substr($value, 2), 16, 10);
+          $value = base_convert(substr($value, 2), 16, 10);
         } else if (preg_match('/^0\d+$/i', $value)) {
           // Octal
-          return (int)base_convert(substr($value, 1),  8, 10);
-        } else {
-          return +$value;
+          $value = base_convert(substr($value, 1),  8, 10);
         }
-        break;
+        return +$value;
       case 'n_SYMBOL_NAME':
         $value = $this->getSemanticString();
         if ($value == 'INF') {
