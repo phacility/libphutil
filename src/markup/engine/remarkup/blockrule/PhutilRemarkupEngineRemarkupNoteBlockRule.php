@@ -13,7 +13,7 @@ final class PhutilRemarkupEngineRemarkupNoteBlockRule
       $num_lines++;
       $cursor++;
 
-      while(isset($lines[$cursor])) {
+      while (isset($lines[$cursor])) {
         if (trim($lines[$cursor])) {
           $num_lines++;
           $cursor++;
