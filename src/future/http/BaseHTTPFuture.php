@@ -289,7 +289,7 @@ abstract class BaseHTTPFuture extends Future {
       }
     }
 
-    $status = new HTTPFutureResponseStatusHTTP($response_code, $body);
+    $status = new HTTPFutureResponseStatusHTTP($response_code, $body, $headers);
     return array($status, $body, $headers);
   }
 
@@ -320,6 +320,26 @@ abstract class BaseHTTPFuture extends Future {
     }
 
     return $headers;
+  }
+
+
+  /**
+   * Find value of the first header with given name.
+   *
+   * @param list List of headers from `resolve()`.
+   * @param string Case insensitive header name.
+   * @return string Value of the header or null if not found.
+   * @task resolve
+   */
+  public static function getHeader(array $headers, $search) {
+    assert_instances_of($headers, 'array');
+    foreach ($headers as $header) {
+      list($name, $value) = $header;
+      if (strcasecmp($name, $search) == 0) {
+        return $value;
+      }
+    }
+    return null;
   }
 
 
