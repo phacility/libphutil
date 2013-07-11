@@ -75,7 +75,8 @@ final class HTTPFutureResponseStatusCURL extends HTTPFutureResponseStatus {
     $default_message =
       "The cURL library raised an error while making a request. You may be ".
       "able to find more information about this error (error code: {$code}) ".
-      "on the cURL site: http://curl.haxx.se/libcurl/c/libcurl-errors.html";
+      "on the cURL site: http://curl.haxx.se/libcurl/c/libcurl-errors.html#".
+      preg_replace('/[^A-Z]/', '', $constant_name);
 
     $detailed_message = idx($map, $code, $default_message);
 
