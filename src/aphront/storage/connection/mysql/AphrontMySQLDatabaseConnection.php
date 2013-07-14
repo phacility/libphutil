@@ -37,7 +37,7 @@ final class AphrontMySQLDatabaseConnection
     $host = $this->getConfiguration('host');
     $port = $this->getConfiguration('port');
 
-    if (!empty($port)) {
+    if ($port) {
       $host .= ':'.$port;
     }
 

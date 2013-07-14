@@ -41,6 +41,14 @@ final class AphrontMySQLiDatabaseConnection
       $pass = $pass->openEnvelope();
     }
 
+    // If the host is "localhost", the port is ignored and mysqli attempts to
+    // connect over a socket.
+    if ($port) {
+      if ($host === 'localhost' || $host === null) {
+        $host = '127.0.0.1';
+      }
+    }
+
     $conn = @new mysqli(
       $host,
       $user,
