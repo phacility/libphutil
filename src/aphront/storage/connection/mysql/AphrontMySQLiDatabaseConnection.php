@@ -33,6 +33,7 @@ final class AphrontMySQLiDatabaseConnection
 
     $user = $this->getConfiguration('user');
     $host = $this->getConfiguration('host');
+    $port = $this->getConfiguration('port');
     $database = $this->getConfiguration('database');
 
     $pass = $this->getConfiguration('pass');
@@ -44,7 +45,8 @@ final class AphrontMySQLiDatabaseConnection
       $host,
       $user,
       $pass,
-      $database);
+      $database,
+      $port);
 
     $errno = $conn->connect_errno;
     if ($errno) {
