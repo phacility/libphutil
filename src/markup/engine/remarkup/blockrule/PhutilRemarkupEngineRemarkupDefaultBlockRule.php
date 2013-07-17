@@ -25,6 +25,10 @@ final class PhutilRemarkupEngineRemarkupDefaultBlockRule
       $text = phutil_escape_html_newlines($text);
     }
 
+    if (!strlen($text)) {
+      return null;
+    }
+
     return phutil_tag('p', array(), $text);
   }
 

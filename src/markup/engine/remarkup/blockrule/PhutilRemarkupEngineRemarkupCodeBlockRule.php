@@ -19,7 +19,7 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
 
     $num_lines++;
 
-    if ($match_ticks && preg_match("/^(```)(.*)(```)$/", $lines[$cursor])) {
+    if ($match_ticks && preg_match("/^(```)(.*)(```)\s*$/", $lines[$cursor])) {
       return $num_lines;
     }
 
@@ -27,7 +27,7 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
 
     while (isset($lines[$cursor])) {
       if ($match_ticks) {
-        if (preg_match('/```$/', $lines[$cursor])) {
+        if (preg_match('/```\s*$/', $lines[$cursor])) {
           $num_lines++;
           break;
         }
@@ -48,8 +48,10 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
 
   public function markupText($text) {
     if (preg_match('/^```/', $text)) {
-      // If this is a ```-style block, trim off the backticks.
-      $text = preg_replace('/```\s*$/', '', substr($text, 3));
+      // If this is a ```-style block, trim off the backticks and any leading
+      // blank line.
+      $text = preg_replace('/^```(\s*\n)?/', '', $text);
+      $text = preg_replace('/```\s*$/', '', $text);
     }
 
     $lines = explode("\n", $text);
@@ -181,7 +183,7 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
         'style' => $aux_style,
       ),
       PhutilSafeHTML::applyFunction(
-        'trim',
+        'rtrim',
         $engine->highlightSource($options['lang'], $text)));
   }
 
