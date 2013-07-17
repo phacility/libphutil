@@ -24,7 +24,11 @@ final class PhutilAuthAdapterOAuthAsana extends PhutilAuthAdapterOAuth {
 
   public function getAccountImageURI() {
     $photo = $this->getOAuthAccountData('photo', array());
-    return idx($photo, 'image_128x128');
+    if (is_array($photo)) {
+      return idx($photo, 'image_128x128');
+    } else {
+      return null;
+    }
   }
 
   public function getAccountURI() {
