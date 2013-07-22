@@ -43,12 +43,19 @@ final class PhutilRemarkupBlockStorage {
     return $key;
   }
 
-  public function restore($corpus) {
+  public function restore($corpus, $text_mode = false) {
     if ($this->map) {
-      $corpus = phutil_safe_html(str_replace(
-        array_reverse(array_keys($this->map)),
-        array_map('phutil_escape_html', array_reverse($this->map)),
-        phutil_escape_html($corpus)));
+      if ($text_mode) {
+        $corpus = str_replace(
+          array_reverse(array_keys($this->map)),
+          array_reverse($this->map),
+          $corpus);
+      } else {
+        $corpus = phutil_safe_html(str_replace(
+          array_reverse(array_keys($this->map)),
+          array_map('phutil_escape_html', array_reverse($this->map)),
+          phutil_escape_html($corpus)));
+      }
     }
     return $corpus;
   }
