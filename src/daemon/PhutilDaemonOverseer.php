@@ -7,6 +7,11 @@
  */
 final class PhutilDaemonOverseer {
 
+  const EVENT_DID_LAUNCH    = 'daemon.didLaunch';
+  const EVENT_DID_LOG       = 'daemon.didLogMessage';
+  const EVENT_DID_HEARTBEAT = 'daemon.didHeartbeat';
+  const EVENT_WILL_EXIT     = 'daemon.willExit';
+
   const HEARTBEAT_WAIT = 120;
 
   private $captureBufferSize = 65536;
@@ -30,6 +35,7 @@ final class PhutilDaemonOverseer {
   private $conduit;
   private $conduitURI;
   private $verbose;
+  private $daemonID;
 
   public function __construct(array $argv) {
     PhutilServiceProfiler::getInstance()->enableDiscardMode();
@@ -147,6 +153,11 @@ EOHELP
         json_encode($desc));
     }
 
+    $this->daemonID = $this->generateDaemonID();
+    $this->dispatchEvent(
+      self::EVENT_DID_LAUNCH,
+      array('argv' => array_slice($original_argv, 1)));
+
     if ($this->conduitURI) {
       $this->conduit = new ConduitClient($this->conduitURI);
       $this->daemonLogID = $this->conduit->callMethodSynchronous(
@@ -158,6 +169,7 @@ EOHELP
           'argv'    => json_encode(array_slice($original_argv, 1)),
         ));
     }
+
 
     declare(ticks = 1);
     pcntl_signal(SIGUSR1, array($this, 'didReceiveKeepaliveSignal'));
@@ -248,6 +260,7 @@ EOHELP
             break 2;
           }
           if ($this->heartbeat < time()) {
+            $this->dispatchEvent(self::EVENT_DID_HEARTBEAT);
             $this->heartbeat = time() + self::HEARTBEAT_WAIT;
             if ($this->conduitURI) {
               try {
@@ -302,13 +315,25 @@ EOHELP
       } catch (Exception $ex) {
       }
     }
+
+    $this->dispatchEvent(self::EVENT_WILL_EXIT);
+
     exit(128 + $signo);
   }
 
-  private function logMessage($type, $message, $remote = null) {
+  private function logMessage($type, $message, $context = null) {
     if (!$this->shouldRunSilently()) {
       echo date('Y-m-d g:i:s A').' ['.$type.'] '.$message."\n";
     }
+
+    $this->dispatchEvent(
+      self::EVENT_DID_LOG,
+      array(
+        'type' => $type,
+        'message' => $message,
+        'context' => $context,
+      ));
+
     if ($this->conduit) {
       // TODO: This is kind of sketchy to do without any timeouts since a
       // conduit server hang could throw a wrench into things.
@@ -318,7 +343,7 @@ EOHELP
           array(
             'daemonLogID'  => $this->daemonLogID,
             'type'         => $type,
-            'message'      => $remote,
+            'message'      => $context,
           ));
       } catch (Exception $ex) {
         // TOOD: Send this somewhere useful instead of eating it.
@@ -404,6 +429,40 @@ EOHELP
     }
 
     return $results;
+  }
+
+
+  /**
+   * Generate a unique ID for this daemon.
+   *
+   * @return string A unique daemon ID.
+   */
+  private function generateDaemonID() {
+    return substr(getmypid().':'.Filesystem::readRandomCharacters(12), 0, 12);
+  }
+
+
+  /**
+   * Dispatch an event to event listeners.
+   *
+   * @param  string Event type.
+   * @param  dict   Event parameters.
+   * @return void
+   */
+  private function dispatchEvent($type, array $params = array()) {
+    $data = array(
+      'id' => $this->daemonID,
+      'daemonClass' => $this->daemon,
+      'childPID' => $this->childPID,
+    ) + $params;
+
+    $event = new PhutilEvent($type, $data);
+
+    try {
+      PhutilEventEngine::dispatchEvent($event);
+    } catch (Exception $ex) {
+      phlog($ex);
+    }
   }
 
 }
