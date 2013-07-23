@@ -46,12 +46,9 @@ final class PhutilDaemonOverseer {
     Launch and oversee an instance of __daemon__.
 EOHELP
       );
+    $args->parseStandardArguments();
     $args->parsePartial(
       array(
-        array(
-          'name' => 'trace',
-          'help' => 'Enable debug tracing.',
-        ),
         array(
           'name' => 'trace-memory',
           'help' => 'Enable debug memory tracing.',
