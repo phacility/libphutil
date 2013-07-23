@@ -12,13 +12,13 @@ final class PhutilDaemonOverseer {
   const EVENT_DID_HEARTBEAT = 'daemon.didHeartbeat';
   const EVENT_WILL_EXIT     = 'daemon.willExit';
 
-  const HEARTBEAT_WAIT = 120;
+  const HEARTBEAT_WAIT      = 120;
+  const RESTART_WAIT        = 5;
 
   private $captureBufferSize = 65536;
 
   private $deadline;
   private $deadlineTimeout  = 86400;
-  private $restartDelay     = 60;
   private $killDelay        = 3;
   private $heartbeat;
 
@@ -246,7 +246,7 @@ EOHELP
       } while (false);
 
       $this->logMessage('WAIT', 'Waiting to restart process.');
-      sleep($this->restartDelay);
+      sleep(self::RESTART_WAIT);
     }
   }
 
