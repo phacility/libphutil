@@ -32,8 +32,6 @@ final class PhutilDaemonOverseer {
   private $traceMemory;
   private $daemonize;
   private $phddir;
-  private $conduit;
-  private $conduitURI;
   private $verbose;
   private $daemonID;
 
@@ -73,11 +71,6 @@ EOHELP
           'help'  => 'Write PID information to __dir__.',
         ),
         array(
-          'name'  => 'conduit-uri',
-          'param' => 'uri',
-          'help'  => 'Send logs to Conduit on __uri__.'
-        ),
-        array(
           'name'  => 'verbose',
           'help'  => 'Enable verbose activity logging.',
         ),
@@ -114,7 +107,6 @@ EOHELP
 
     $this->daemonize  = $args->getArg('daemonize');
     $this->phddir     = $args->getArg('phd');
-    $this->conduitURI = $args->getArg('conduit-uri');
     $this->argv       = $argv;
 
     error_log("Bringing daemon '{$this->daemon}' online...");
@@ -157,19 +149,6 @@ EOHELP
     $this->dispatchEvent(
       self::EVENT_DID_LAUNCH,
       array('argv' => array_slice($original_argv, 1)));
-
-    if ($this->conduitURI) {
-      $this->conduit = new ConduitClient($this->conduitURI);
-      $this->daemonLogID = $this->conduit->callMethodSynchronous(
-        'daemon.launched',
-        array(
-          'daemon'  => $this->daemon,
-          'host'    => php_uname('n'),
-          'pid'     => getmypid(),
-          'argv'    => json_encode(array_slice($original_argv, 1)),
-        ));
-    }
-
 
     declare(ticks = 1);
     pcntl_signal(SIGUSR1, array($this, 'didReceiveKeepaliveSignal'));
@@ -240,10 +219,10 @@ EOHELP
           $stdout = trim($stdout);
           $stderr = trim($stderr);
           if (strlen($stdout)) {
-            $this->logMessage('STDO', $stdout, $stdout);
+            $this->logMessage('STDO', $stdout);
           }
           if (strlen($stderr)) {
-            $this->logMessage('STDE', $stderr, $stderr);
+            $this->logMessage('STDE', $stderr);
           }
           $future->discardBuffers();
 
@@ -260,20 +239,8 @@ EOHELP
             break 2;
           }
           if ($this->heartbeat < time()) {
-            $this->dispatchEvent(self::EVENT_DID_HEARTBEAT);
             $this->heartbeat = time() + self::HEARTBEAT_WAIT;
-            if ($this->conduitURI) {
-              try {
-                $this->conduit = new ConduitClient($this->conduitURI);
-                $this->conduit->callMethodSynchronous(
-                  'daemon.setstatus',
-                  array(
-                    'daemonLogID'  => $this->daemonLogID,
-                    'status'       => 'run',
-                  ));
-              } catch (Exception $ex) {
-              }
-            }
+            $this->dispatchEvent(self::EVENT_DID_HEARTBEAT);
           }
         } while (time() < $this->deadline);
 
@@ -303,19 +270,6 @@ EOHELP
     $this->signaled = true;
     $this->annihilateProcessGroup();
 
-    if ($this->conduitURI) {
-      try {
-        $this->conduit = new ConduitClient($this->conduitURI);
-        $this->conduit->callMethodSynchronous(
-          'daemon.setstatus',
-          array(
-            'daemonLogID'  => $this->daemonLogID,
-            'status'       => 'exit',
-          ));
-      } catch (Exception $ex) {
-      }
-    }
-
     $this->dispatchEvent(self::EVENT_WILL_EXIT);
 
     exit(128 + $signo);
@@ -333,22 +287,6 @@ EOHELP
         'message' => $message,
         'context' => $context,
       ));
-
-    if ($this->conduit) {
-      // TODO: This is kind of sketchy to do without any timeouts since a
-      // conduit server hang could throw a wrench into things.
-      try {
-        $this->conduit->callMethodSynchronous(
-          'daemon.log',
-          array(
-            'daemonLogID'  => $this->daemonLogID,
-            'type'         => $type,
-            'message'      => $context,
-          ));
-      } catch (Exception $ex) {
-        // TOOD: Send this somewhere useful instead of eating it.
-      }
-    }
   }
 
   private function shouldRunSilently() {
