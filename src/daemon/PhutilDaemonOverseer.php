@@ -258,13 +258,21 @@ EOHELP
     if ($this->signaled) {
       exit(128 + $signo);
     }
+    $this->signaled = true;
 
-    echo "\n>>> Shutting down...\n";
+    $signame = phutil_get_signal_name($signo);
+    if ($signame) {
+      $sigmsg = "Shutting down in response to signal {$signo} ({$signame}).";
+    } else {
+      $sigmsg = "Shutting down in response to signal {$signo}.";
+    }
+
+    $this->logMessage('EXIT', $sigmsg, $signo);
+
     fflush(STDOUT);
     fflush(STDERR);
     fclose(STDOUT);
     fclose(STDERR);
-    $this->signaled = true;
     $this->annihilateProcessGroup();
 
     $this->dispatchEvent(self::EVENT_WILL_EXIT);
