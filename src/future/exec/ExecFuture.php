@@ -488,7 +488,7 @@ final class ExecFuture extends Future {
       $this->profilerCallID = $profiler->beginServiceCall(
         array(
           'type'    => 'exec',
-          'command' => $this->command,
+          'command' => (string)$this->command,
         ));
 
       if (!$this->start) {
