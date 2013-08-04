@@ -12,6 +12,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
   private static $multi;
   private static $results = array();
   private static $pool = array();
+  private static $globalCABundle;
 
   private $handle;
   private $profilerCallID;
@@ -57,6 +58,37 @@ final class HTTPSFuture extends BaseHTTPFuture {
     return $this->cabundle;
   }
 
+  /**
+   * Set the fallback CA certificate if one is not specified
+   * for the session, given a path.
+   *
+   * @param string The path to a valid SSL certificate
+   * @return void
+   */
+  public static function setGlobalCABundleFromPath($path) {
+    self::$globalCABundle = $path;
+  }
+  /**
+   * Set the fallback CA certificate if one is not specified
+   * for the session, given a string.
+   *
+   * @param string The certificate
+   * @return void
+   */
+  public static function setGlobalCABundleFromString($certificate) {
+    $temp = new TempFile();
+    Filesystem::writeFile($temp, $certificate);
+    self::$globalCABundle = $temp;
+  }
+
+  /**
+   * Get the fallback global CA certificate
+   *
+   * @return string
+   */
+  public static function getGlobalCABundle() {
+    return self::$globalCABundle;
+  }
   /**
    * Load contents of remote URI. Behaves pretty much like
    *  `@file_get_contents($uri)` but doesn't require `allow_url_fopen`.
@@ -210,11 +242,14 @@ final class HTTPSFuture extends BaseHTTPFuture {
       }
 
       // Try some decent fallbacks here:
-      // - First, check if a cabundle path is already set (e.g. externally).
+      // - First, check if a bundle is set explicit for this request, via
+      //   `setCABundle()` or similar.
+      // - Then, check if a global bundle is set explicitly for all requests,
+      //   via `setGlobalCABundle()` or similar.
       // - Then, if a local custom.pem exists, use that, because it probably
       //   means that the user wants to override everything (also because the
       //   user might not have access to change the box's php.ini to add
-      //   curl.cainfo.
+      //   curl.cainfo).
       // - Otherwise, try using curl.cainfo. If it's set explicitly, it's
       //   probably reasonable to try using it before we fall back to what
       //   libphutil ships with.
@@ -224,7 +259,9 @@ final class HTTPSFuture extends BaseHTTPFuture {
       if (!$this->getCABundle()) {
         $caroot = dirname(phutil_get_library_root('phutil')).'/resources/ssl/';
         $ini_val = ini_get('curl.cainfo');
-        if (Filesystem::pathExists($caroot.'custom.pem')) {
+        if (self::getGlobalCABundle()) {
+          $this->setCABundleFromPath(self::getGlobalCABundle());
+        } else if (Filesystem::pathExists($caroot.'custom.pem')) {
           $this->setCABundleFromPath($caroot.'custom.pem');
         } else if ($ini_val) {
           // TODO: We can probably do a pathExists() here, even.
