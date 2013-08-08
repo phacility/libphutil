@@ -9,6 +9,16 @@ abstract class PhutilAuthAdapterOAuth1 extends PhutilAuthAdapter {
   private $verifier;
   private $handshakeData;
   private $callbackURI;
+  private $privateKey;
+
+  public function setPrivateKey(PhutilOpaqueEnvelope $private_key) {
+    $this->privateKey = $private_key;
+    return $this;
+  }
+
+  public function getPrivateKey() {
+    return $this->privateKey;
+  }
 
   public function setCallbackURI($callback_uri) {
     $this->callbackURI = $callback_uri;
@@ -102,6 +112,10 @@ abstract class PhutilAuthAdapterOAuth1 extends PhutilAuthAdapter {
 
     if (strlen($this->getTokenSecret())) {
       $future->setToken($this->getTokenSecret());
+    }
+
+    if ($this->getPrivateKey()) {
+      $future->setPrivateKey($this->getPrivateKey());
     }
 
     return $future;
