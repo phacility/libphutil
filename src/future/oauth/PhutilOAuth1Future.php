@@ -20,8 +20,13 @@ final class PhutilOAuth1Future extends FutureProxy {
   private $tokenSecret;
   private $nonce;
   private $timestamp;
-  private $realm;
   private $hasConstructedFuture;
+  private $callbackURI;
+
+  public function setCallbackURI($callback_uri) {
+    $this->callbackURI = $callback_uri;
+    return $this;
+  }
 
   public function setTimestamp($timestamp) {
     $this->timestamp = $timestamp;
@@ -125,6 +130,10 @@ final class PhutilOAuth1Future extends FutureProxy {
       'oauth_version' => '1.0',
     );
 
+    if ($this->callbackURI) {
+      $oauth_headers['oauth_callback'] = (string)$this->callbackURI;
+    }
+
     if ($this->token) {
       $oauth_headers['oauth_token'] = $this->token;
     }
@@ -215,6 +224,11 @@ final class PhutilOAuth1Future extends FutureProxy {
       default:
         throw new Exception("Unknown signature method '{$string}'!");
     }
+  }
+
+  public function resolvex() {
+    $result = $this->getProxiedFuture()->resolvex();
+    return $this->didReceiveResult($result);
   }
 
 }
