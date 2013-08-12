@@ -24,6 +24,7 @@ final class PhutilDaemonOverseer {
 
   private $daemon;
   private $argv;
+  private $moreArgs;
   private $childPID;
   private $signaled;
   private static $instance;
@@ -71,40 +72,55 @@ EOHELP
           'name'  => 'verbose',
           'help'  => 'Enable verbose activity logging.',
         ),
+        array(
+          'name' => 'load-phutil-library',
+          'param' => 'library',
+          'repeat' => true,
+          'help' => 'Load __library__.',
+        ),
       ));
-    $argv = $args->getUnconsumedArgumentVector();
+    $argv = array();
 
-    $this->daemon = array_shift($argv);
+    $more = $args->getUnconsumedArgumentVector();
+
+    $this->daemon = array_shift($more);
     if (!$this->daemon) {
       $args->printHelpAndExit();
     }
 
     if ($args->getArg('trace')) {
       $this->traceMode = true;
-      array_unshift($argv, '--trace');
+      $argv[] = '--trace';
     }
 
     if ($args->getArg('trace-memory')) {
       $this->traceMode = true;
       $this->traceMemory = true;
-      array_unshift($argv, '--trace-memory');
+      $argv[] = '--trace-memory';
+    }
+
+    if ($args->getArg('load-phutil-library')) {
+      foreach ($args->getArg('load-phutil-library') as $library) {
+        $argv[] = '--load-phutil-library='.$library;
+      }
     }
 
     $log = $args->getArg('log');
     if ($log) {
       ini_set('error_log', $log);
-      array_unshift($argv, '--log='.$log);
+      $argv[] = '--log='.$log;
     }
 
     $verbose = $args->getArg('verbose');
     if ($verbose) {
       $this->verbose = true;
-      array_unshift($argv, '--verbose');
+      $argv[] = '--verbose';
     }
 
     $this->daemonize  = $args->getArg('daemonize');
     $this->phddir     = $args->getArg('phd');
     $this->argv       = $argv;
+    $this->moreArgs   = $more;
 
     error_log("Bringing daemon '{$this->daemon}' online...");
 
@@ -178,13 +194,19 @@ EOHELP
     // the shell process won't properly posix_setsid() so the pgid of the child
     // won't be meaningful.
 
-    $exec_daemon = './exec_daemon.php';
-    $argv = $this->argv;
-    array_unshift($argv, 'exec', $exec_daemon, $this->daemon);
-    foreach ($argv as $k => $arg) {
-      $argv[$k] = escapeshellarg($arg);
-    }
+    // Format the exec command, which looks something like:
+    //
+    //   exec ./exec_daemon DaemonName --trace -- --no-discovery
 
+    $argv = array();
+    $argv[] = csprintf('exec ./exec_daemon.php %s', $this->daemon);
+    foreach ($this->argv as $k => $arg) {
+      $argv[] = csprintf('%s', $arg);
+    }
+    $argv[] = '--';
+    foreach ($this->moreArgs as $k => $arg) {
+      $argv[] = csprintf('%s', $arg);
+    }
     $command = implode(' ', $argv);
 
     while (true) {
