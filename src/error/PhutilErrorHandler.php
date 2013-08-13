@@ -26,6 +26,7 @@
  *
  * @task config   Configuring Error Dispatch
  * @task exutil   Exception Utilities
+ * @task trap     Error Traps
  * @task internal Internals
  * @group error
  */
@@ -33,6 +34,7 @@ final class PhutilErrorHandler {
 
   private static $errorListener = null;
   private static $initialized = false;
+  private static $traps = array();
 
   const EXCEPTION   = 'exception';
   const ERROR       = 'error';
@@ -111,6 +113,37 @@ final class PhutilErrorHandler {
   }
 
 
+/* -(  Trapping Errors  )---------------------------------------------------- */
+
+
+  /**
+   * Adds an error trap. Normally you should not invoke this directly;
+   * @{class:PhutilErrorTrap} registers itself on construction.
+   *
+   * @param PhutilErrorTrap Trap to add.
+   * @return void
+   * @task trap
+   */
+  public static function addErrorTrap(PhutilErrorTrap $trap) {
+    $key = $trap->getTrapKey();
+    self::$traps[$key] = $trap;
+  }
+
+
+  /**
+   * Removes an error trap. Normally you should not invoke this directly;
+   * @{class:PhutilErrorTrap} deregisters itself on destruction.
+   *
+   * @param PhutilErrorTrap Trap to remove.
+   * @return void
+   * @task trap
+   */
+  public static function removeErrorTrap(PhutilErrorTrap $trap) {
+    $key = $trap->getTrapKey();
+    unset(self::$traps[$key]);
+  }
+
+
 /* -(  Internals  )---------------------------------------------------------- */
 
 
@@ -149,6 +182,10 @@ final class PhutilErrorHandler {
    * @task internal
    */
   public static function handleError($num, $str, $file, $line, $ctx) {
+
+    foreach (self::$traps as $trap) {
+      $trap->addError($num, $str, $file, $line, $ctx);
+    }
 
     if ((error_reporting() & $num) == 0) {
       // Respect the use of "@" to silence warnings: if this error was
