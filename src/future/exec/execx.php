@@ -41,9 +41,7 @@ function exec_manual($cmd /* , ... */) {
 
 
 /**
- * Execute a command which takes over stdin, stdout and stderr, similar to
- * passthru(), but which preserves TTY semantics, escapes arguments, and is
- * traceable.
+ * Wrapper for @{class:PhutilExecPassthru}.
  *
  * @param  string  sprintf()-style command pattern to execute.
  * @param  ...     Arguments to sprintf pattern.
@@ -52,50 +50,7 @@ function exec_manual($cmd /* , ... */) {
  */
 function phutil_passthru($cmd /* , ... */) {
   $args = func_get_args();
-  $command = call_user_func_array('csprintf', $args);
-
-  $profiler = PhutilServiceProfiler::getInstance();
-  $call_id = $profiler->beginServiceCall(
-    array(
-      'type'    => 'exec',
-      'subtype' => 'passthru',
-      'command' => $command,
-    ));
-
-  $spec  = array(STDIN, STDOUT, STDERR);
-  $pipes = array();
-
-  if ($command instanceof PhutilCommandString) {
-    $unmasked_command = $command->getUnmaskedString();
-  } else {
-    $unmasked_command = $command;
-  }
-
-  if (phutil_is_windows()) {
-    // Without 'bypass_shell', things like launching vim don't work properly,
-    // and we can't execute commands with spaces in them, and all commands
-    // invoked from git bash fail horridly, and everything is a mess in general.
-    $options = array(
-      'bypass_shell' => true,
-    );
-    $proc = @proc_open($unmasked_command, $spec, $pipes, null, null, $options);
-  } else {
-    $proc = @proc_open($unmasked_command, $spec, $pipes);
-  }
-
-  if ($proc === false) {
-    $err = 1;
-  } else {
-    $err = proc_close($proc);
-  }
-
-  $profiler->endServiceCall(
-    $call_id,
-    array(
-      'err' => $err,
-    ));
-
-  return $err;
+  return newv('PhutilExecPassthru', $args)->execute();
 }
 
 
