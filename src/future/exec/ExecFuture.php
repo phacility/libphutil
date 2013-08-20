@@ -504,15 +504,17 @@ final class ExecFuture extends Future {
       $pipes = array();
 
       $trap = new PhutilErrorTrap();
-      $proc = @proc_open(
-        $unmasked_command,
-        self::$descriptorSpec,
-        $pipes,
-        $this->cwd);
+        $proc = @proc_open(
+          $unmasked_command,
+          self::$descriptorSpec,
+          $pipes,
+          $this->cwd);
+        $err = $trap->getErrorsAsString();
+      $trap->destroy();
+
       if (!is_resource($proc)) {
-        throw new Exception("Failed to proc_open(): {$trap}");
+        throw new Exception("Failed to proc_open(): {$err}");
       }
-      unset($trap);
 
       $this->pipes = $pipes;
       $this->proc  = $proc;

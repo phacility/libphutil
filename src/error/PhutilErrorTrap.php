@@ -15,11 +15,16 @@
  * You can trap errors while executing this code instead:
  *
  *   $trap = new PhutilErrorTrap();
- *   $res = proc_open(...);
+ *     $res = proc_open(...);
+ *     $err = $trap->getErrorsAsString();
+ *   $trap->destroy();
+ *
  *   if (!$res) {
- *     throw new Exception('proc_open() failed: '.$trap);
+ *     throw new Exception('proc_open() failed: '.$err);
  *   }
- *   unset($trap);
+ *
+ * NOTE: You must explicitly destroy traps because they register themselves with
+ * @{class:PhutilErrorHandler}, and thus will not be destroyed when `unset()`.
  *
  * Some notes on traps:
  *
@@ -68,10 +73,6 @@ final class PhutilErrorTrap extends Phobject {
 
   public function __construct() {
     PhutilErrorHandler::addErrorTrap($this);
-  }
-
-  public function __destruct() {
-    $this->destroy();
   }
 
   public function __toString() {
