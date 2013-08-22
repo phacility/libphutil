@@ -762,31 +762,64 @@ final class PhutilParserGenerator {
     $this->gotoTable = $goto;
   }
 
+  public function generateParserFunction($name) {
+    $out = array();
+    $out[] = 'function '.$name.'(array $tokens, $callback) {';
+    $out[] = '  return PhutilParserGenerator::parseTokensWithTables(';
+    $out[] = '    '.$this->formatAndIndent($this->actionTable, 4).',';
+    $out[] = '    '.$this->formatAndIndent($this->gotoTable, 4).',';
+    $out[] = '    '.$this->formatAndIndent($this->getEOFSymbol(), 4).',';
+    $out[] = '    $tokens,';
+    $out[] = '    $callback);';
+    $out[] = '}';
+    return implode("\n", $out);
+  }
+
+  private function formatAndIndent($var, $depth) {
+    $var = var_export($var, true);
+    $var = str_replace("\n", "\n".str_repeat(' ', $depth), $var);
+
+    return $var;
+  }
+
   public function parseTokens(array $tokens, $callback) {
+    return self::parseTokensWithTables(
+      $this->actionTable,
+      $this->gotoTable,
+      $this->getEOFSymbol(),
+      $tokens,
+      $callback);
+  }
+
+  public static function parseTokensWithTables(
+    $action_table,
+    $goto_table,
+    $eof_symbol,
+    array $tokens,
+    $callback) {
+
     $state_stack = array(0);
     $token_stack = array();
-
-    $eof = $this->getEOFSymbol();
 
     $tokens = array_reverse($tokens);
     while (true) {
       $state = end($state_stack);
 
       if (empty($tokens)) {
-        $next = $eof;
+        $next = $eof_symbol;
       } else {
         $next_token = end($tokens);
         $next = $next_token[0];
       }
 
-      if (!isset($this->actionTable[$state][$next])) {
-        $expected = implode(', ', array_keys($this->actionTable[$state]));
+      if (!isset($action_table[$state][$next])) {
+        $expected = implode(', ', array_keys($action_table[$state]));
         throw new Exception(
           "Unexpected '{$next}' in state {$state}! Expected: ".
           $expected);
       }
 
-      $action = $this->actionTable[$state][$next];
+      $action = $action_table[$state][$next];
 
       switch ($action[0]) {
         case 'S':
@@ -807,7 +840,7 @@ final class PhutilParserGenerator {
           $token_stack[] = call_user_func_array(
             $callback,
             array($r_rule, $r_prod, $token_v));
-          $goto = $this->gotoTable[end($state_stack)][$r_rule];
+          $goto = $goto_table[end($state_stack)][$r_rule];
           $state_stack[] = $goto;
           break;
         case 'A':
