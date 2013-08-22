@@ -44,7 +44,6 @@ final class PhagePHPAgentBootloader extends PhageAgentBootloader {
         'xsprintf/xsprintf.php',
         'xsprintf/csprintf.php',
         'xsprintf/PhutilCommandString.php',
-        'serviceprofiler/PhutilServiceProfiler.php',
         'future/Future.php',
         'future/FutureIterator.php',
         'future/exec/ExecFuture.php',

@@ -482,14 +482,22 @@ final class ExecFuture extends Future {
    */
   public function isReady() {
 
+    // NOTE: We have soft dependencies on PhutilServiceProfiler and
+    // PhutilErrorTrap here. These depencies are soft to avoid the need to
+    // build them into the Phage agent. Under normal circumstances, these
+    // classes are always available.
+
     if (!$this->pipes) {
 
-      $profiler = PhutilServiceProfiler::getInstance();
-      $this->profilerCallID = $profiler->beginServiceCall(
-        array(
-          'type'    => 'exec',
-          'command' => (string)$this->command,
-        ));
+      // NOTE: See note above about Phage.
+      if (class_exists('PhutilServiceProfiler')) {
+        $profiler = PhutilServiceProfiler::getInstance();
+        $this->profilerCallID = $profiler->beginServiceCall(
+          array(
+            'type'    => 'exec',
+            'command' => (string)$this->command,
+          ));
+      }
 
       if (!$this->start) {
         // We might already have started the timer via initating resolution.
@@ -503,14 +511,25 @@ final class ExecFuture extends Future {
 
       $pipes = array();
 
-      $trap = new PhutilErrorTrap();
-        $proc = @proc_open(
-          $unmasked_command,
-          self::$descriptorSpec,
-          $pipes,
-          $this->cwd);
+      // NOTE: See note above about Phage.
+      if (class_exists('PhutilErrorTrap')) {
+        $trap = new PhutilErrorTrap();
+      } else {
+        $trap = null;
+      }
+
+      $proc = @proc_open(
+        $unmasked_command,
+        self::$descriptorSpec,
+        $pipes,
+        $this->cwd);
+
+      if ($trap) {
         $err = $trap->getErrorsAsString();
-      $trap->destroy();
+        $trap->destroy();
+      } else {
+        $err = error_get_last();
+      }
 
       if (!is_resource($proc)) {
         throw new Exception("Failed to proc_open(): {$err}");
