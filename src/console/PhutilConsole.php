@@ -247,5 +247,47 @@ final class PhutilConsole {
     return $this->enableMessageType(PhutilConsoleMessage::TYPE_OUT);
   }
 
+  public function isLogEnabled() {
+    $message = id(new PhutilConsoleMessage())
+      ->setType(PhutilConsoleMessage::TYPE_ENABLED)
+      ->setData(
+        array(
+          'which' => PhutilConsoleMessage::TYPE_LOG,
+        ));
+
+    $this->writeMessage($message);
+    $response = $this->waitForMessage();
+
+    return $response->getData();
+  }
+
+  public function isErrATTY() {
+    $message = id(new PhutilConsoleMessage())
+      ->setType(PhutilConsoleMessage::TYPE_TTY)
+      ->setData(
+        array(
+          'which' => PhutilConsoleMessage::TYPE_ERR,
+        ));
+
+    $this->writeMessage($message);
+    $response = $this->waitForMessage();
+
+    return $response->getData();
+  }
+
+  public function getErrCols() {
+    $message = id(new PhutilConsoleMessage())
+      ->setType(PhutilConsoleMessage::TYPE_COLS)
+      ->setData(
+        array(
+          'which' => PhutilConsoleMessage::TYPE_ERR,
+        ));
+
+    $this->writeMessage($message);
+    $response = $this->waitForMessage();
+
+    return $response->getData();
+  }
+
 
 }

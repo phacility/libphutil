@@ -8,6 +8,12 @@ final class PhutilConsoleMessage {
   const TYPE_OUT        = 'phutil:out';
   const TYPE_ERR        = 'phutil:err';
   const TYPE_LOG        = 'phutil:log';
+  const TYPE_TTY        = 'phutil:tty?';
+  const TYPE_IS_TTY     = 'phutil:tty!';
+  const TYPE_COLS       = 'phutil:cols?';
+  const TYPE_COL_WIDTH  = 'phutil:cols!';
+  const TYPE_ENABLED    = 'phutil:enabled?';
+  const TYPE_IS_ENABLED = 'phutil:enabled!';
 
   private $type;
   private $data;

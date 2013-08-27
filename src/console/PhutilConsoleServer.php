@@ -43,6 +43,49 @@ final class PhutilConsoleServer {
         }
         return null;
 
+      case PhutilConsoleMessage::TYPE_ENABLED:
+        switch ($data['which']) {
+          case PhutilConsoleMessage::TYPE_LOG:
+            $enabled = $this->enableLog;
+            break;
+          default:
+            $enabled = true;
+            break;
+        }
+        return $this->buildMessage(
+          PhutilConsoleMessage::TYPE_IS_ENABLED,
+          $enabled);
+
+      case PhutilConsoleMessage::TYPE_TTY:
+      case PhutilConsoleMessage::TYPE_COLS:
+        switch ($data['which']) {
+          case PhutilConsoleMessage::TYPE_OUT:
+            $which = STDOUT;
+            break;
+          case PhutilConsoleMessage::TYPE_ERR:
+            $which = STDERR;
+            break;
+        }
+        switch ($type) {
+          case PhutilConsoleMessage::TYPE_TTY:
+            if (function_exists('posix_isatty')) {
+              $is_a_tty = posix_isatty($which);
+            } else {
+              $is_a_tty = null;
+            }
+            return $this->buildMessage(
+              PhutilConsoleMessage::TYPE_IS_TTY,
+              $is_a_tty);
+          case PhutilConsoleMessage::TYPE_COLS:
+            // TODO: This is an approximation which might not be perfectly
+            // accurate.
+            $width = phutil_console_get_terminal_width();
+            return $this->buildMessage(
+              PhutilConsoleMessage::TYPE_COL_WIDTH,
+              $width);
+        }
+        break;
+
       default:
         if ($this->handler) {
           return call_user_func($this->handler, $message);
