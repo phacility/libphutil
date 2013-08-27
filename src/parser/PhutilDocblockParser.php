@@ -54,15 +54,32 @@ final class PhutilDocblockParser {
     $lines = explode("\n", $docblock);
     $last = false;
     foreach ($lines as $k => $line) {
-      if (preg_match('/^\s?@\w/i', $line)) {
+
+      // NOTE: We allow "@specials" to be preceded by up to two whitespace
+      // characters; more than that and we assume the block is a code block.
+      // Broadly, there's ambiguity between a special like:
+      //
+      //     <... lots of indentation ...> @author alincoln
+      //
+      // ...and a code block like:
+      //
+      //     <... lots of indentation ...> @def square(x, y):
+      //
+      // Because standard practice is to indent the entire block one level,
+      // we allow that and one additional space before assuming something is
+      // a code block.
+
+      if (preg_match('/^\s{0,2}@\w/i', $line)) {
         $last = $k;
+        $lines[$last] = trim($line);
       } else if (preg_match('/^\s*$/', $line)) {
         $last = false;
       } else if ($last !== false) {
-        $lines[$last] = rtrim($lines[$last]).' '.trim($line);
+        $lines[$last] = $lines[$last].' '.trim($line);
         unset($lines[$k]);
       }
     }
+
     $docblock = implode("\n", $lines);
 
     $special = array();
@@ -70,14 +87,14 @@ final class PhutilDocblockParser {
     // Parse @specials.
     $matches = null;
     $have_specials = preg_match_all(
-      '/^\s?@([\w-]+)[ \t]*([^\n]*)/m',
+      '/^@([\w-]+)[ \t]*([^\n]*)/m',
       $docblock,
       $matches,
       PREG_SET_ORDER);
 
     if ($have_specials) {
       $docblock = preg_replace(
-        '/^\s?@([\w-]+)[ \t]*([^\n]*)?\n*/m',
+        '/^@([\w-]+)[ \t]*([^\n]*)?\n*/m',
         '',
         $docblock);
       foreach ($matches as $match) {

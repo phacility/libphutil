@@ -95,6 +95,7 @@ final class PhutilDocblockParserTestCase extends PhutilTestCase {
         $this->assertEqual(
           array(
             'title' => 'sendmail',
+            'special' => 'only a little bit indented',
           ),
           $specials);
         break;
