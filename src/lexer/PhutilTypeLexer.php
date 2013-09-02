@@ -20,7 +20,7 @@ final class PhutilTypeLexer extends PhutilLexer {
         array('optional', 'opt'),
         array('map', 'map'),
         array('list', 'list'),
-        array('int|float|bool|string|null|callable|wild', 'k'),
+        array('int|float|bool|string|null|callable|wild|regex', 'k'),
         array('[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*', 'k'),
         array('\\(', '(', 'comment')
       ),

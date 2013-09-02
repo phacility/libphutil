@@ -10,6 +10,7 @@
  *    string
  *    null
  *    callable
+ *    regex
  *    wild
  *    AnyClassOrInterfaceName
  *
@@ -49,6 +50,10 @@ final class PhutilTypeSpec {
 
   }
 
+  public function getType() {
+    return $this->type;
+  }
+
   public function check($value, $name = null) {
     switch ($this->type) {
       case 'int':
@@ -69,6 +74,16 @@ final class PhutilTypeSpec {
       case 'string':
         if (!is_string($value)) {
           throw new PhutilTypeCheckException($this, $value, $name);
+        }
+        break;
+      case 'regex':
+        $trap = new PhutilErrorTrap();
+          $ok = @preg_match($value, '');
+          $err = $trap->getErrorsAsString();
+        $trap->destroy();
+
+        if ($ok === false) {
+          throw new PhutilTypeCheckException($this, $value, $name, $err);
         }
         break;
       case 'null':

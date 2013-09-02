@@ -191,4 +191,63 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       ($ex instanceof PhutilTypeExtraParametersException));
   }
 
+  public function testRegexValidation() {
+    PhutilTypeSpec::checkMap(
+      array(
+        'regex' => '/.*/',
+      ),
+      array(
+        'regex' => 'regex',
+      ));
+
+    $caught = null;
+    try {
+      PhutilTypeSpec::checkMap(
+        array(
+          'regex' => '.*',
+        ),
+        array(
+          'regex' => 'regex',
+        ));
+    } catch (PhutilTypeCheckException $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertEqual(true, ($ex instanceof PhutilTypeCheckException));
+  }
+
+  public function testScalarOrListRegexp() {
+    PhutilTypeSpec::checkMap(
+      array(
+        'regex' => '/.*/',
+      ),
+      array(
+        'regex' => 'regex | list<regex>',
+      ));
+
+    PhutilTypeSpec::checkMap(
+      array(
+        'regex' => array('/.*/'),
+      ),
+      array(
+        'regex' => 'regex | list<regex>',
+      ));
+
+    PhutilTypeSpec::checkMap(
+      array(
+        'regex' => '/.*/',
+      ),
+      array(
+        'regex' => 'list<regex> | regex',
+      ));
+
+    PhutilTypeSpec::checkMap(
+      array(
+        'regex' => array('/.*/'),
+      ),
+      array(
+        'regex' => 'list<regex> | regex',
+      ));
+  }
+
 }
