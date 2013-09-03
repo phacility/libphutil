@@ -87,6 +87,11 @@ final class PhutilOAuth1Future extends FutureProxy {
     return $this->sign($params);
   }
 
+  public function addHeader($name, $value) {
+    $this->getProxiedFuture()->addHeader($name, $value);
+    return $this;
+  }
+
   public function getProxiedFuture() {
     $future = parent::getProxiedFuture();
 
@@ -234,5 +239,17 @@ final class PhutilOAuth1Future extends FutureProxy {
     $result = $this->getProxiedFuture()->resolvex();
     return $this->didReceiveResult($result);
   }
+
+  public function resolveJSON() {
+    $result = $this->getProxiedFuture()->resolvex();
+    $result = $this->didReceiveResult($result);
+    list($body) = $result;
+    $data = json_decode($body, true);
+    if (!is_array($data)) {
+      throw new Exception("Expected JSON, got: {$body}!");
+    }
+    return $data;
+  }
+
 
 }
