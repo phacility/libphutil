@@ -12,7 +12,7 @@ final class PhutilOAuth1FutureTestCase extends PhutilTestCase {
       ->setTimestamp(1191242090)
       ->setNonce('hsu94j3884jdopsl')
       ->setConsumerKey('dpf43f3p2l4k3l03')
-      ->setConsumerSecret('kd94hf93k423kf44')
+      ->setConsumerSecret(new PhutilOpaqueEnvelope('kd94hf93k423kf44'))
       ->setSignatureMethod('PLAINTEXT');
 
     $this->assertEqual('kd94hf93k423kf44&', $future->getSignature());
@@ -29,7 +29,7 @@ final class PhutilOAuth1FutureTestCase extends PhutilTestCase {
       ->setTimestamp(1191242096)
       ->setNonce('kllo9940pd9333jh')
       ->setConsumerKey('dpf43f3p2l4k3l03')
-      ->setConsumerSecret('kd94hf93k423kf44')
+      ->setConsumerSecret(new PhutilOpaqueEnvelope('kd94hf93k423kf44'))
       ->setSignatureMethod('HMAC-SHA1')
       ->setToken('nnch734d00sl2jdk')
       ->setTokenSecret('pfkkdhi9sl3r4s00');
@@ -51,7 +51,8 @@ final class PhutilOAuth1FutureTestCase extends PhutilTestCase {
     $future = id(new PhutilOAuth1Future($uri, $data))
       ->setMethod('POST')
       ->setConsumerKey('xvz1evFS4wEEPTGEFPHBog')
-      ->setConsumerSecret('kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw')
+      ->setConsumerSecret(
+        new PhutilOpaqueEnvelope('kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw'))
       ->setNonce('kYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg')
       ->setSignatureMethod('HMAC-SHA1')
       ->setTimestamp(1318622958)

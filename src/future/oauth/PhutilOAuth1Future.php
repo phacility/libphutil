@@ -63,7 +63,7 @@ final class PhutilOAuth1Future extends FutureProxy {
     return $this;
   }
 
-  public function setConsumerSecret($consumer_secret) {
+  public function setConsumerSecret(PhutilOpaqueEnvelope $consumer_secret) {
     $this->consumerSecret = $consumer_secret;
     return $this;
   }
@@ -174,12 +174,16 @@ final class PhutilOAuth1Future extends FutureProxy {
     $pstr = rawurlencode($pstr);
 
     $sign_input = "{$method}&{$sign_uri}&{$pstr}";
-
     return $this->signString($sign_input);
   }
 
   private function signString($string) {
-    $key = urlencode($this->consumerSecret).'&'.urlencode($this->tokenSecret);
+    $consumer_secret = null;
+    if ($this->consumerSecret) {
+      $consumer_secret = $this->consumerSecret->openEnvelope();
+    }
+
+    $key = urlencode($consumer_secret).'&'.urlencode($this->tokenSecret);
 
     switch ($this->signatureMethod) {
       case 'HMAC-SHA1':
