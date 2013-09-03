@@ -148,6 +148,8 @@ abstract class PhutilAuthAdapterOAuth1 extends PhutilAuthAdapter {
   }
 
   protected function finishOAuthHandshake() {
+    $this->willFinishOAuthHandshake();
+
     if (!$this->getToken()) {
       throw new Exception("Expected token to finish OAuth handshake!");
     }
@@ -183,6 +185,14 @@ abstract class PhutilAuthAdapterOAuth1 extends PhutilAuthAdapter {
     $this->setTokenSecret($token_secret);
 
     return $this;
+  }
+
+  /**
+   * Hook that allows subclasses to take actions before the OAuth handshake
+   * is completed.
+   */
+  protected function willFinishOAuthHandshake() {
+    return;
   }
 
 }

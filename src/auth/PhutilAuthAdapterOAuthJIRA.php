@@ -5,10 +5,6 @@ final class PhutilAuthAdapterOAuthJIRA extends PhutilAuthAdapterOAuth1 {
   // TODO: JIRA tokens expire (after 5 years) and we could surface and store
   // that.
 
-  // TODO: If a user clicks "Deny" on the JIRA auth dialog, they get sent to
-  // the callback URI with `oauth_verifier=denied`. We should handle this
-  // better.
-
   private $jiraBaseURI;
   private $adapterDomain;
   private $currentSession;
@@ -139,6 +135,18 @@ final class PhutilAuthAdapterOAuthJIRA extends PhutilAuthAdapterOAuth1 {
     $public_key = $public_key['key'];
 
     return array($public_key, $private_key);
+  }
+
+
+  /**
+   * JIRA indicates that the user has clicked the "Deny" button by passing a
+   * well known `oauth_verifier` value ("denied"), which we check for here.
+   */
+  protected function willFinishOAuthHandshake() {
+    $jira_magic_word = "denied";
+    if ($this->getVerifier() == $jira_magic_word) {
+      throw new PhutilAuthUserAbortedException();
+    }
   }
 
 
