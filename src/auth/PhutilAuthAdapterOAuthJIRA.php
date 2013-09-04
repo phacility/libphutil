@@ -82,29 +82,18 @@ final class PhutilAuthAdapterOAuthJIRA extends PhutilAuthAdapterOAuth1 {
 
   private function getUserInfo() {
     if ($this->userInfo === null) {
-      $uri = $this->getJIRAURI('rest/auth/1/session');
-      $data = $this->newOAuth1Future($uri)
-        ->setMethod('GET')
-        ->addHeader('Content-Type', 'application/json')
+      $this->currentSession = $this->newJIRAFuture('rest/auth/1/session', 'GET')
         ->resolveJSON();
-
-      $this->currentSession = $data;
 
       // The session call gives us the username, but not the user key or other
       // information. Make a second call to get additional information.
 
-      $uri = new PhutilURI($this->getJIRAURI('rest/api/2/user'));
-      $uri->setQueryParams(
-        array(
-          'username' => $this->currentSession['name'],
-        ));
+      $params = array(
+        'username' => $this->currentSession['name'],
+      );
 
-      $data = $this->newOAuth1Future($uri)
-        ->setMethod('GET')
-        ->addHeader('Content-Type', 'application/json')
+      $this->userInfo = $this->newJIRAFuture('rest/api/2/user', 'GET', $params)
         ->resolveJSON();
-
-      $this->userInfo = $data;
     }
 
     return $this->userInfo;
@@ -149,5 +138,18 @@ final class PhutilAuthAdapterOAuthJIRA extends PhutilAuthAdapterOAuth1 {
     }
   }
 
+  public function newJIRAFuture($path, $method, $params = array()) {
+    $uri = new PhutilURI($this->getJIRAURI($path));
+    if ($method == 'GET') {
+      $uri->setQueryParams($params);
+      $params = array();
+    }
+
+    // JIRA returns a 415 error if we don't provide a Content-Type header.
+
+    return $this->newOAuth1Future($uri, $params)
+      ->setMethod($method)
+      ->addHeader('Content-Type', 'application/json');
+  }
 
 }
