@@ -1,0 +1,5 @@
+%%%[[http://hello | world]] **bold**%%%
+~~~~~~~~~~
+[[http://hello | world]] **bold**
+~~~~~~~~~~
+[[http://hello | world]] **bold**
