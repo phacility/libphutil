@@ -143,6 +143,10 @@ final class PhutilAuthAdapterOAuthJIRA extends PhutilAuthAdapterOAuth1 {
     if ($method == 'GET') {
       $uri->setQueryParams($params);
       $params = array();
+    } else {
+      // For other types of requests, JIRA expects the request body to be
+      // JSON encoded.
+      $params = json_encode($params);
     }
 
     // JIRA returns a 415 error if we don't provide a Content-Type header.

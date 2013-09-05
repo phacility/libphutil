@@ -81,7 +81,19 @@ final class PhutilOAuth1Future extends FutureProxy {
   }
 
   public function getSignature() {
-    $params = $this->data
+    $params = array();
+
+    // NOTE: The JIRA API uses JSON-encoded request bodies which are not
+    // signed, and OAuth1 provides no real way to sign a nonparameterized
+    // request body. Possibly we should split this apart into flags which
+    // control which data is signed, but for now this rule seems to cover
+    // all the use cases.
+
+    if (is_array($this->data)) {
+      $params = $this->data;
+    }
+
+    $params = $params
             + $this->uri->getQueryParams()
             + $this->getOAuth1Headers();
 
