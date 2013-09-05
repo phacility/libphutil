@@ -38,6 +38,9 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
   public function setBlockRules(array $rules) {
     assert_instances_of($rules, 'PhutilRemarkupEngineBlockRule');
+
+    $rules = msort($rules, 'getPriority');
+
     $this->blockRules = $rules;
     foreach ($this->blockRules as $rule) {
       $rule->setEngine($this);

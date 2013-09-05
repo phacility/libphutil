@@ -9,6 +9,21 @@ abstract class PhutilRemarkupEngineBlockRule {
   private $engine;
   private $rules = array();
 
+  /**
+   * Determine the order in which blocks execute. Blocks with smaller priority
+   * numbers execute sooner than blocks with larger priority numbers. The
+   * default priority for blocks is `500`.
+   *
+   * Priorities are used to disambiguate syntax which can match multiple
+   * patterns. For example, `  - Lorem ipsum...` may be a code block or a
+   * list.
+   *
+   * @return float  Priority at which this block should execute.
+   */
+  public function getPriority() {
+    return 500.0;
+  }
+
   abstract public function markupText($text);
 
   /**

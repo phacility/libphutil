@@ -6,6 +6,14 @@
 final class PhutilRemarkupEngineRemarkupListBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
+  /**
+   * This rule must apply before the Code block rule because it needs to
+   * win blocks which begin `  - Lorem ipsum`.
+   */
+  public function getPriority() {
+    return 400;
+  }
+
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
 

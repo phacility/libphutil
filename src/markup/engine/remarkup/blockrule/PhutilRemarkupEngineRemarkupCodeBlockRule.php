@@ -4,10 +4,46 @@
  * @group markup
  */
 final class PhutilRemarkupEngineRemarkupCodeBlockRule
-  extends PhutilRemarkupEngineMultiLineEnclosedBlockRule {
+  extends PhutilRemarkupEngineBlockRule {
 
-  public function getBlockSpecifier() {
-    return '```';
+  public function getMatchingLineCount(array $lines, $cursor) {
+    $num_lines = 0;
+    $match_ticks = null;
+    if (preg_match("/^(\s{2,}).+/", $lines[$cursor])) {
+      $match_ticks = false;
+    } else if (preg_match("/^(```)/", $lines[$cursor])) {
+      $match_ticks = true;
+    } else {
+      return $num_lines;
+    }
+
+    $num_lines++;
+
+    if ($match_ticks && preg_match("/^(```)(.*)(```)\s*$/", $lines[$cursor])) {
+      return $num_lines;
+    }
+
+    $cursor++;
+
+    while (isset($lines[$cursor])) {
+      if ($match_ticks) {
+        if (preg_match('/```\s*$/', $lines[$cursor])) {
+          $num_lines++;
+          break;
+        }
+        $num_lines++;
+      } else {
+        if (strlen(trim($lines[$cursor]))) {
+          if (!preg_match('/^\s{2,}/', $lines[$cursor])) {
+            break;
+          }
+        }
+        $num_lines++;
+      }
+      $cursor++;
+    }
+
+    return $num_lines;
   }
 
   public function markupText($text) {

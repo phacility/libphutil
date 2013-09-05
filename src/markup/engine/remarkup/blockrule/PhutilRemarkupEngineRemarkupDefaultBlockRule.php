@@ -6,6 +6,10 @@
 final class PhutilRemarkupEngineRemarkupDefaultBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
+  public function getPriority() {
+    return 750;
+  }
+
   public function getMatchingLineCount(array $lines, $cursor) {
     return 1;
   }
