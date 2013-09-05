@@ -17,6 +17,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
   private $handle;
   private $profilerCallID;
   private $cabundle;
+  private $followLocation = true;
 
   /**
    * Create a temp file containing an SSL cert, and use it for this session.
@@ -59,6 +60,28 @@ final class HTTPSFuture extends BaseHTTPFuture {
   }
 
   /**
+   * Set whether Location headers in the response will be respected.
+   * The default is true.
+   *
+   * @param boolean true to follow any Location header present in the response,
+   *                false to return the request directly
+   * @return this
+   */
+  public function setFollowLocation($follow) {
+    $this->followLocation = $follow;
+    return $this;
+  }
+
+  /**
+   * Get whether Location headers in the response will be respected.
+   *
+   * @return boolean
+   */
+  public function getFollowLocation() {
+    return $this->followLocation;
+  }
+
+  /**
    * Set the fallback CA certificate if one is not specified
    * for the session, given a path.
    *
@@ -89,6 +112,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
   public static function getGlobalCABundle() {
     return self::$globalCABundle;
   }
+
   /**
    * Load contents of remote URI. Behaves pretty much like
    *  `@file_get_contents($uri)` but doesn't require `allow_url_fopen`.
@@ -228,8 +252,11 @@ final class HTTPSFuture extends BaseHTTPFuture {
       // Make sure we get the headers and data back.
       curl_setopt($curl, CURLOPT_HEADER, true);
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-      curl_setopt($curl, CURLOPT_MAXREDIRS, 20);
+
+      if ($this->followLocation) {
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_MAXREDIRS, 20);
+      }
 
       if (defined('CURLOPT_TIMEOUT_MS')) {
         // If CURLOPT_TIMEOUT_MS is available, use the higher-precision timeout.
