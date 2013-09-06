@@ -6,8 +6,13 @@
 final class HTTPFutureResponseStatusHTTP extends HTTPFutureResponseStatus {
 
   private $excerpt;
+  private $expect;
 
-  public function __construct($status_code, $body, array $headers) {
+  public function __construct(
+    $status_code,
+    $body,
+    array $headers,
+    $expect = null) {
     // NOTE: Avoiding phutil_utf8_shorten() here because this isn't lazy
     // and responses may be large.
     if (strlen($body) > 512) {
@@ -27,6 +32,7 @@ final class HTTPFutureResponseStatusHTTP extends HTTPFutureResponseStatus {
     }
 
     $this->excerpt = phutil_utf8ize($excerpt);
+    $this->expect = $expect;
 
     parent::__construct($status_code);
   }
@@ -36,7 +42,11 @@ final class HTTPFutureResponseStatusHTTP extends HTTPFutureResponseStatus {
   }
 
   public function isError() {
-    return ($this->getStatusCode() < 200) || ($this->getStatusCode() > 299);
+    if ($this->expect === null) {
+        return ($this->getStatusCode() < 200) || ($this->getStatusCode() > 299);
+    }
+
+    return !in_array($this->getStatusCode(), $this->expect, true);
   }
 
   public function isTimeout() {

@@ -26,6 +26,7 @@ abstract class BaseHTTPFuture extends Future {
   private $headers  = array();
   private $uri;
   private $data;
+  private $expect;
 
 
 /* -(  Creating a New Request  )--------------------------------------------- */
@@ -217,6 +218,32 @@ abstract class BaseHTTPFuture extends Future {
     return $result;
   }
 
+  /**
+   * Set the status codes that are expected in the response.
+   * If set, isError on the status object will return true for status codes
+   * that are not in the input array. Otherise, isError will be true for any
+   * HTTP status code outside the 2xx range (notwithstanding other errors such
+   * as connection or transport issues).
+   *
+   * @param array|null List of expected HTTP status codes.
+   *
+   * @return this
+   * @task config
+   */
+  public function setExpectStatus($status_codes) {
+    $this->expect = $status_codes;
+    return $this;
+  }
+
+  /**
+   * Return list of expected status codes, or null if not set.
+   *
+   * @return array|null List of expected status codes.
+   */
+  public function getExpectStatus() {
+    return $this->expect;
+  }
+
 
 /* -(  Resolving the Request  )---------------------------------------------- */
 
@@ -289,7 +316,12 @@ abstract class BaseHTTPFuture extends Future {
       }
     }
 
-    $status = new HTTPFutureResponseStatusHTTP($response_code, $body, $headers);
+    $status = new HTTPFutureResponseStatusHTTP(
+      $response_code,
+      $body,
+      $headers,
+      $this->expect);
+
     return array($status, $body, $headers);
   }
 
