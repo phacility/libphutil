@@ -13,6 +13,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
   private static $results = array();
   private static $pool = array();
   private static $globalCABundle;
+  private static $blindTrustDomains = array();
 
   private $handle;
   private $profilerCallID;
@@ -111,6 +112,17 @@ final class HTTPSFuture extends BaseHTTPFuture {
    */
   public static function getGlobalCABundle() {
     return self::$globalCABundle;
+  }
+
+  /**
+   * Set a list of domains to blindly trust. Certificates for these domains
+   * will not be validated.
+   *
+   * @param list<string> List of domain names to trust blindly.
+   * @return void
+   */
+  public static function setBlindlyTrustDomains(array $domains) {
+    self::$blindTrustDomains = array_fuse($domains);
   }
 
   /**
@@ -299,7 +311,15 @@ final class HTTPSFuture extends BaseHTTPFuture {
       }
 
       curl_setopt($curl, CURLOPT_CAINFO, $this->getCABundle());
-      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+
+      $domain = id(new PhutilURI($uri))->getDomain();
+      if (!empty(self::$blindTrustDomains[$domain])) {
+        // Disable peer verification for domains that we blindly trust.
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+      } else {
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+      }
+
       curl_setopt($curl, CURLOPT_SSLVERSION, 0);
     } else {
       $curl = $this->handle;
