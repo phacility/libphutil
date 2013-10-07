@@ -47,4 +47,17 @@ final class FilesystemTestCase extends PhutilTestCase {
       Filesystem::resolveBinary('halting-problem-decider'));
   }
 
+  public function testWriteUniqueFile() {
+    $tmp = new TempFile();
+    $dir = dirname($tmp);
+
+    // Writing an empty file should work.
+    $f = Filesystem::writeUniqueFile($dir, '');
+    $this->assertEqual('', Filesystem::readFile($f));
+
+    // File name should be unique.
+    $g = Filesystem::writeUniqueFile($dir, 'quack');
+    $this->assertEqual(true, ($f != $g));
+  }
+
 }

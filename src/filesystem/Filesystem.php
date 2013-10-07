@@ -187,12 +187,19 @@ final class Filesystem {
       $handle = @fopen($try_path, 'x');
       if ($handle) {
         $ok = fwrite($handle, $data);
-        fclose($handle);
+        if ($ok === false) {
+          throw new FilesystemException(
+            $try_path,
+            pht("Failed to write file data."));
+        }
+
+        $ok = fclose($handle);
         if (!$ok) {
           throw new FilesystemException(
             $try_path,
-            "Failed to write file data.");
+            pht("Failed to close file handle."));
         }
+
         return $try_path;
       }
 
