@@ -78,11 +78,13 @@ final class PhutilSimpleOptionsLexer extends PhutilLexer {
         array('[^\'\\\\]+', 'word'),
         array("'", "'", '!pop'),
         array('\\\\.', 'esc'),
+        array('\\\\$', '!pop'),
       ),
       'string2' => array(
         array('[^"\\\\]+', 'word'),
         array('"', '"', '!pop'),
         array('\\\\.', 'esc'),
+        array('\\\\$', '!pop'),
       ),
     );
   }

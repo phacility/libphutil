@@ -226,6 +226,7 @@ abstract class PhutilLexer {
     while ($position < $length) {
       $state_rules = idx($rules, end($states), array());
       foreach ($state_rules as $rule) {
+
         $matches = null;
         if (!preg_match($rule[0], $input, $matches, 0, $position)) {
           continue;
