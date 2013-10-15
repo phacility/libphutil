@@ -86,6 +86,63 @@ abstract class AbstractDirectedGraph {
     return $this;
   }
 
+  final public function getNodes() {
+    return $this->knownNodes;
+  }
+
+  /**
+   * Utility function to get a list of topographically sorted nodes out of a
+   * graph.
+   *
+   * This could be useful for example to figure out what order you can safely
+   * apply dependencies.
+   *
+   * Note this will loop indefinitely if the graph has a cycle.
+   */
+  final public function getTopographicallySortedNodes() {
+    $sorted = array();
+    $nodes = $this->getNodes();
+
+    $inverse_map = array();
+    foreach ($nodes as $node => $edges) {
+      if (!isset($inverse_map[$node])) {
+        $inverse_map[$node] = array();
+      }
+      foreach ($edges as $edge) {
+        if (!isset($inverse_map[$edge])) {
+          $inverse_map[$edge] = array();
+        }
+        $inverse_map[$edge][$node] = $node;
+      }
+    }
+
+    $end_nodes = array();
+    foreach ($inverse_map as $node => $edges) {
+      if (empty($edges)) {
+        $end_nodes[] = $node;
+      }
+    }
+
+    while (!empty($end_nodes)) {
+      $current_node = array_pop($end_nodes);
+      $sorted[] = $current_node;
+      $current_edges = $nodes[$current_node];
+      foreach ($current_edges as $index => $current_edge) {
+        // delete the edge from the normal map
+        unset($nodes[$current_node][$index]);
+        // and from the inverse map which is modestly trickier
+        $inverse_nodes = $inverse_map[$current_edge];
+        unset($inverse_nodes[$current_node]);
+        $inverse_map[$current_edge] = $inverse_nodes;
+        // no more edges means this is an "end node" now
+        if (empty($inverse_map[$current_edge])) {
+          $end_nodes[] = $current_edge;
+        }
+      }
+    }
+
+    return $sorted;
+  }
 
   /**
    * Load the graph, building it out so operations can be performed on it. This
