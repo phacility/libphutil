@@ -49,6 +49,10 @@ final class PhutilRemarkupEngineRemarkupInterpreterRule
       ->setAncestorClass('PhutilRemarkupBlockInterpreter')
       ->loadObjects();
 
+    foreach ($interpreters as $interpreter) {
+      $interpreter->setEngine($this->getEngine());
+    }
+
     $lines[$first_key] = preg_replace(
       self::START_BLOCK_PATTERN,
       "",
@@ -73,13 +77,18 @@ final class PhutilRemarkupEngineRemarkupInterpreterRule
       return $interpreters[$matches[1]]->markupContent($content, $argv);
     }
 
-    $message = sprintf('No interpreter found: %s', $matches[1]);
+    $message = pht('No interpreter found: %s', $matches[1]);
 
     if ($this->getEngine()->isTextMode()) {
       return '('.$message.')';
     }
 
-    return hsprintf('<div style="color: red;">%s</div>', $message);
+    return phutil_tag(
+      'div',
+      array(
+        'class' => 'remarkup-interpreter-error',
+      ),
+      $message);
   }
 
 }

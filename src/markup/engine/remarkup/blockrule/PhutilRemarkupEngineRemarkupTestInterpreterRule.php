@@ -12,7 +12,7 @@ final class PhutilRemarkupEngineRemarkupTestInterpreterRule
 
   public function markupContent($content, array $argv) {
     return sprintf(
-      "Content: %s\nArgv: %s",
+      "Content: (%s)\nArgv: (%s)",
       $content,
       http_build_query($argv));
   }

@@ -1,7 +1,7 @@
 phutil_test_block_interpreter (foo=bar) {{{
 content
 }}}
- 
+
 phutil_test_block_interpreter {{{ content
 content }}}
 
@@ -9,37 +9,37 @@ phutil_test_block_interpreter {{{ content }}}
 
 phutil_fake_test_block_interpreter {{{ content }}}
 ~~~~~~~~~~
-Content: content
-Argv: foo=bar
+Content: (content)
+Argv: (foo=bar)
 
 
 
-Content:  content
-content 
-Argv: 
+Content: ( content
+content )
+Argv: ()
 
 
 
-Content:  content 
-Argv: 
+Content: ( content )
+Argv: ()
 
 
 
-<div style="color: red;">No interpreter found: phutil_fake_test_block_interpreter</div>
+<div class="remarkup-interpreter-error">No interpreter found: phutil_fake_test_block_interpreter</div>
 ~~~~~~~~~~
-Content: content
-Argv: foo=bar
+Content: (content)
+Argv: (foo=bar)
 
 
 
-Content:  content
-content 
-Argv: 
+Content: ( content
+content )
+Argv: ()
 
 
 
-Content:  content 
-Argv: 
+Content: ( content )
+Argv: ()
 
 
 
