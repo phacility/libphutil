@@ -7,6 +7,8 @@ content }}}
 
 phutil_test_block_interpreter {{{ content }}}
 
+phutil_test_block_interpreter(x=y){{{content}}}
+
 phutil_fake_test_block_interpreter {{{ content }}}
 ~~~~~~~~~~
 Content: (content)
@@ -25,6 +27,11 @@ Argv: ()
 
 
 
+Content: (content)
+Argv: (x=y)
+
+
+
 <div class="remarkup-interpreter-error">No interpreter found: phutil_fake_test_block_interpreter</div>
 ~~~~~~~~~~
 Content: (content)
@@ -40,6 +47,11 @@ Argv: ()
 
 Content: ( content )
 Argv: ()
+
+
+
+Content: (content)
+Argv: (x=y)
 
 
 

@@ -6,7 +6,7 @@
 final class PhutilRemarkupEngineRemarkupInterpreterRule
   extends PhutilRemarkupEngineBlockRule {
 
-  const START_BLOCK_PATTERN = '/^([\w]+)\s(?:\(([^)]+)\)\s)?{{{/';
+  const START_BLOCK_PATTERN = '/^([\w]+)\s*(?:\(([^)]+)\)\s*)?{{{/';
   const END_BLOCK_PATTERN = '/}}}\s*$/';
 
   public function getMatchingLineCount(array $lines, $cursor) {
