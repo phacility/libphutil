@@ -30,4 +30,15 @@ final class PhutilSafeHTML {
     return new PhutilSafeHTML(call_user_func_array($function, $args));
   }
 
+// Requires http://pecl.php.net/operator.
+
+  public function __concat($html) {
+    $clone = clone $this;
+    return $clone->appendHTML($html);
+  }
+
+  public function __assign_concat($html) {
+    return $this->appendHTML($html);
+  }
+
 }
