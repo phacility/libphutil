@@ -36,6 +36,7 @@ final class ExecFuture extends Future {
   protected $stdoutPos    = 0;
   protected $stderrPos    = 0;
   protected $command      = null;
+  protected $env          = null;
   protected $cwd;
 
   protected $stdoutSizeLimit = PHP_INT_MAX;
@@ -164,6 +165,23 @@ final class ExecFuture extends Future {
    */
   public function setCWD($cwd) {
     $this->cwd = $cwd;
+    return $this;
+  }
+
+
+  /**
+   * Set the environment variables to use when executing the command.
+   *
+   * @param array Environment variables to use when executing the command.
+   * @return this
+   * @task config
+   */
+  public function setEnv($env, $wipe_process_env = false) {
+    if ($wipe_process_env) {
+      $this->env = $env;
+    } else {
+      $this->env = $env + $_ENV;
+    }
     return $this;
   }
 
@@ -522,7 +540,8 @@ final class ExecFuture extends Future {
         $unmasked_command,
         self::$descriptorSpec,
         $pipes,
-        $this->cwd);
+        $this->cwd,
+        $this->env);
 
       if ($trap) {
         $err = $trap->getErrorsAsString();
