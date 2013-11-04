@@ -143,6 +143,9 @@ final class PhutilServiceProfiler {
           }
           $desc = "{$call} (".implode(', ', $params).")";
           break;
+        case 'conduit':
+          $desc = $data['method'];
+          break;
       }
     } else if ($is_end) {
       $desc = number_format((int)(1000000 * $data['duration'])).' us';
