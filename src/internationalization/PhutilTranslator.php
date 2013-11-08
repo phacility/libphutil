@@ -68,6 +68,12 @@ final class PhutilTranslator {
     }
     array_shift($args);
 
+    foreach ($args as $k => $arg) {
+      if ($arg instanceof PhutilNumber) {
+        $args[$k] = $this->formatNumber($arg->getNumber(), $arg->getDecimals());
+      }
+    }
+
     // Check if any arguments are PhutilSafeHTML. If they are, we will apply
     // any escaping necessary and output HTML.
     $is_html = false;
@@ -81,12 +87,6 @@ final class PhutilTranslator {
     if ($is_html) {
       foreach ($args as $k => $arg) {
         $args[$k] = (string)phutil_escape_html($arg);
-      }
-    }
-
-    foreach ($args as $k => $arg) {
-      if ($arg instanceof PhutilNumber) {
-        $args[$k] = $this->formatNumber($arg->getNumber(), $arg->getDecimals());
       }
     }
 
@@ -178,7 +178,7 @@ final class PhutilTranslator {
   /**
    * Format number with grouped thousands and optional decimal part. Requires
    * translations of '.' (decimal point) and ',' (thousands separator). Both
-   * these translations must be 1 byte long.
+   * these translations must be 1 byte long with PHP < 5.4.0.
    *
    * @param float
    * @param int
