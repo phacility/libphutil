@@ -299,6 +299,7 @@ phutil_register_library_map(array(
     'PhutilXHPASTSyntaxHighlighterFuture' => 'markup/syntax/highlighter/xhpast/PhutilXHPASTSyntaxHighlighterFuture.php',
     'PhutilXHPASTSyntaxHighlighterTestCase' => 'markup/syntax/highlighter/__tests__/PhutilXHPASTSyntaxHighlighterTestCase.php',
     'PhutilcsprintfTestCase' => 'xsprintf/__tests__/PhutilcsprintfTestCase.php',
+    'PhutilurisprintfTestCase' => 'xsprintf/__tests__/PhutilurisprintfTestCase.php',
     'PhutilxsprintfTestCase' => 'xsprintf/__tests__/PhutilxsprintfTestCase.php',
     'QueryFuture' => 'future/query/QueryFuture.php',
     'TempFile' => 'filesystem/TempFile.php',
@@ -393,6 +394,7 @@ phutil_register_library_map(array(
     'queryfx' => 'xsprintf/queryfx.php',
     'queryfx_all' => 'xsprintf/queryfx.php',
     'queryfx_one' => 'xsprintf/queryfx.php',
+    'urisprintf' => 'xsprintf/urisprintf.php',
     'vcsprintf' => 'xsprintf/csprintf.php',
     'vjsprintf' => 'xsprintf/jsprintf.php',
     'vqsprintf' => 'xsprintf/qsprintf.php',
@@ -411,6 +413,7 @@ phutil_register_library_map(array(
     'xsprintf_ldap' => 'xsprintf/ldapsprintf.php',
     'xsprintf_mercurial' => 'xsprintf/hgsprintf.php',
     'xsprintf_query' => 'xsprintf/qsprintf.php',
+    'xsprintf_uri' => 'xsprintf/urisprintf.php',
   ),
   'xmap' =>
   array(
@@ -632,6 +635,7 @@ phutil_register_library_map(array(
     'PhutilXHPASTSyntaxHighlighterFuture' => 'FutureProxy',
     'PhutilXHPASTSyntaxHighlighterTestCase' => 'PhutilTestCase',
     'PhutilcsprintfTestCase' => 'ArcanistTestCase',
+    'PhutilurisprintfTestCase' => 'ArcanistTestCase',
     'PhutilxsprintfTestCase' => 'ArcanistTestCase',
     'QueryFuture' => 'Future',
     'TestAbstractDirectedGraph' => 'AbstractDirectedGraph',
