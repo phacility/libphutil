@@ -70,6 +70,13 @@ function phutil_tag($tag, array $attributes = array(), $content = null) {
 /**
  * @group markup
  */
+function phutil_tag_div($class, $content = null) {
+  return phutil_tag('div', array('class' => $class), $content);
+}
+
+/**
+ * @group markup
+ */
 function phutil_escape_html($string) {
   if ($string instanceof PhutilSafeHTML) {
     return $string;
