@@ -33,6 +33,7 @@ function phutil_tag($tag, array $attributes = array(), $content = null) {
     'col'     => true,
     'command' => true,
     'embed'   => true,
+    'frame'   => true,
     'hr'      => true,
     'img'     => true,
     'input'   => true,
