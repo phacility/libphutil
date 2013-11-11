@@ -121,11 +121,17 @@ abstract class PhutilProtocolChannel extends PhutilChannelChannel {
    * @task wait
    */
   public function waitForMessage() {
-    while ($this->update()) {
+    while (true) {
+      $is_open = $this->update();
       $message = $this->read();
       if ($message !== null) {
         return $message;
       }
+
+      if (!$is_open) {
+        break;
+      }
+
       self::waitForAny(array($this));
     }
 

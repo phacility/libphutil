@@ -173,6 +173,10 @@ final class PhutilSocketChannel extends PhutilChannel {
     }
   }
 
+  public function closeWriteChannel() {
+    $this->closeWriteSocket();
+  }
+
   private function closeOneSocket($socket) {
     if (!$socket) {
       return;

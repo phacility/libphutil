@@ -231,6 +231,14 @@ abstract class PhutilChannel {
 
 
   /**
+   * Close the channel for writing.
+   *
+   * @return void
+   * @task impl
+   */
+  abstract public function closeWriteChannel();
+
+  /**
    * Test if the channel is open for reading.
    *
    * @return bool True if the channel is open for reading.

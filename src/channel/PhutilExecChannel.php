@@ -108,6 +108,10 @@ final class PhutilExecChannel extends PhutilChannel {
     $this->future->write($bytes, $keep_pipe = true);
   }
 
+  public function closeWriteChannel() {
+    $this->future->write('', $keep_pipe = false);
+  }
+
   protected function writeBytes($bytes) {
     throw new Exception("ExecFuture can not write bytes directly!");
   }

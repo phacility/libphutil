@@ -40,6 +40,10 @@ abstract class PhutilChannelChannel extends PhutilChannel {
     return $this->channel->isOpen();
   }
 
+  public function closeWriteChannel() {
+    return $this->channel->closeWriteChannel();
+  }
+
   public function isOpenForReading() {
     return $this->channel->isOpenForReading();
   }
