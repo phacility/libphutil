@@ -104,7 +104,11 @@ final class PhutilServiceProfiler {
           $desc = '$ '.$data['command'];
           break;
         case 'conduit':
-          $desc = $data['method'].'() <bytes = '.$data['size'].'>';
+          if (isset($data['size'])) {
+            $desc = $data['method'].'() <bytes = '.$data['size'].'>';
+          } else {
+            $desc = $data['method'].'()';
+          }
           break;
         case 'http':
           $desc = $data['uri'];
@@ -142,9 +146,6 @@ final class PhutilServiceProfiler {
               break;
           }
           $desc = "{$call} (".implode(', ', $params).")";
-          break;
-        case 'conduit':
-          $desc = $data['method'];
           break;
       }
     } else if ($is_end) {
