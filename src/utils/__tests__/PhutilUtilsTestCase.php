@@ -443,6 +443,24 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
   }
 
+  public function testLoggableString() {
+    $this->assertEqual(
+      "",
+      phutil_loggable_string(""));
+
+    $this->assertEqual(
+      "a\\nb",
+      phutil_loggable_string("a\nb"));
+
+    $this->assertEqual(
+      "a\\x01b",
+      phutil_loggable_string("a\x01b"));
+
+    $this->assertEqual(
+      "a\\x1Fb",
+      phutil_loggable_string("a\x1Fb"));
+  }
+
 
 
 }

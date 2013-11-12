@@ -883,3 +883,37 @@ function phutil_exit($status = 0) {
 
   exit($status);
 }
+
+/**
+ * Converts a string to a loggable one, with unprintables and newlines escaped.
+ *
+ * @param string  Any string.
+ * @return string String with control and newline characters escaped, suitable
+ *                for printing on a single log line.
+ */
+function phutil_loggable_string($string) {
+  $result = '';
+
+  static $c_map = array(
+    "\\" => '\\\\',
+    "\n" => '\\n',
+    "\r" => '\\r',
+    "\t" => '\\t',
+  );
+
+  for ($ii = 0; $ii < strlen($string); $ii++) {
+    $c = $string[$ii];
+    if (isset($c_map[$c])) {
+      $result .= $c_map[$c];
+    } else {
+      $o = ord($c);
+      if ($o < 0x20 || $o == 0x7F) {
+        $result .= '\\x'.sprintf('%02X', $o);
+      } else {
+        $result .= $c;
+      }
+    }
+  }
+
+  return $result;
+}
