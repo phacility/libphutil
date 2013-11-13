@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 FLEX=`which flex35 2>/dev/null || which flex 2>/dev/null`
 if [ $? -ne 0 ]
