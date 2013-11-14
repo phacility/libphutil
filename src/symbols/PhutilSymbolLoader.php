@@ -169,6 +169,13 @@ final class PhutilSymbolLoader {
       );
     }
 
+    $names = null;
+    if ($this->base) {
+      $names = $this->selectDescendantsOf(
+        $bootloader->getClassTree(),
+        $this->base);
+    }
+
     $symbols = array();
     foreach ($libraries as $library) {
       $map = $bootloader->getLibraryMap($library);
@@ -198,6 +205,13 @@ final class PhutilSymbolLoader {
           } else {
             $filtered_map = array();
           }
+        } else if ($names !== null) {
+          $filtered_map = array();
+          foreach ($names as $name => $ignored) {
+            if (isset($lookup_map[$name])) {
+              $filtered_map[$name] = $lookup_map[$name];
+            }
+          }
         } else {
           // Otherwise, start with everything.
           $filtered_map = $lookup_map;
@@ -220,22 +234,6 @@ final class PhutilSymbolLoader {
             'where'       => $where,
           );
         }
-      }
-    }
-
-    if ($this->base) {
-      $names = $this->selectDescendantsOf(
-        $bootloader->getClassTree(),
-        $this->base);
-
-      foreach ($symbols as $symbol_key => $symbol) {
-        $type = $symbol['type'];
-        if ($type == 'class' || $type == 'interface') {
-          if (isset($names[$symbol['name']])) {
-            continue;
-          }
-        }
-        unset($symbols[$symbol_key]);
       }
     }
 
@@ -319,6 +317,7 @@ final class PhutilSymbolLoader {
 
     return $objects;
   }
+
 
 /* -(  Internals  )---------------------------------------------------------- */
 
