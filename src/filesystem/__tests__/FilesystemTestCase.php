@@ -64,6 +64,19 @@ final class FilesystemTestCase extends PhutilTestCase {
     $number_of_bytes = 1024;
     $data = Filesystem::readRandomBytes($number_of_bytes);
     $this->assertEqual(true, (strlen($data) == $number_of_bytes));
+
+    $data1 = Filesystem::readRandomBytes(128);
+    $data2 = Filesystem::readRandomBytes(128);
+    $this->assertEqual(false, $data1 == $data2);
+
+    $caught = null;
+    try {
+      Filesystem::readRandomBytes(0);
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+    $this->assertEqual(true, ($caught instanceof Exception));
+
   }
 
 }
