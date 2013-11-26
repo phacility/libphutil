@@ -892,6 +892,10 @@ function phutil_exit($status = 0) {
  *                for printing on a single log line.
  */
 function phutil_loggable_string($string) {
+  if (preg_match('/^[\x20-\x7E]+$/', $string)) {
+    return $string;
+  }
+
   $result = '';
 
   static $c_map = array(
@@ -901,7 +905,8 @@ function phutil_loggable_string($string) {
     "\t" => '\\t',
   );
 
-  for ($ii = 0; $ii < strlen($string); $ii++) {
+  $len = strlen($string);
+  for ($ii = 0; $ii < $len; $ii++) {
     $c = $string[$ii];
     if (isset($c_map[$c])) {
       $result .= $c_map[$c];
