@@ -149,7 +149,7 @@ final class XHPASTNode extends AASTNode {
 
     $value = $this->getSemanticString();
     $type  = $value[0];
-    $value = substr($value, 1, -1);
+    $value = preg_replace('/^b?[\'"]|[\'"]$/i', '', $value);
     $esc   = false;
     $len   = strlen($value);
     $out   = '';
