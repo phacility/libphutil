@@ -291,10 +291,10 @@ EOHELP
 
     $this->logMessage('EXIT', $sigmsg, $signo);
 
-    fflush(STDOUT);
-    fflush(STDERR);
-    fclose(STDOUT);
-    fclose(STDERR);
+    @fflush(STDOUT);
+    @fflush(STDERR);
+    @fclose(STDOUT);
+    @fclose(STDERR);
     $this->annihilateProcessGroup();
 
     $this->dispatchEvent(self::EVENT_WILL_EXIT);
