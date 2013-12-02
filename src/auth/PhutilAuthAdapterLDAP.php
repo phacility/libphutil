@@ -218,7 +218,45 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
 
     $this->bindLDAP($conn, $distinguished_name, $login_pass);
 
-    return $this->searchLDAPForUser($this->searchAttribute, $login_user);
+    $result = $this->searchLDAPForUser($this->searchAttribute, $login_user);
+    if (!$result) {
+      // This is unusual (since the bind succeeded) but we've seen it at least
+      // once in the wild, where the anonymous user is allowed to search but
+      // the credentialed user is not.
+
+      // If we don't have anonymous credentials, raise an explicit exception
+      // here since we'll fail a typehint if we don't return an array anyway
+      // and this is a more useful error.
+
+      // If we do have anonymous credentials, we'll rebind and try the search
+      // again below. Doing this automatically means things work correctly more
+      // often without requiring additional configuration.
+      if (!strlen($this->anonymousUsername)) {
+        // No anonymous credentials, so we just fail here.
+        throw new Exception(
+          pht(
+            'LDAP: Failed to retrieve record for user "%s" when searching. '.
+            'Credentialed users may not be able to search your LDAP server. '.
+            'Try configuring anonymous credentials.',
+            $login_user));
+      } else {
+        // Rebind as anonymous and try the search again.
+        $user = $this->anonymousUsername;
+        $pass = $this->anonymousPassword;
+        $this->bindLDAP($conn, $user, $pass);
+
+        $result = $this->searchLDAPForUser($this->searchAttribute, $login_user);
+        if (!$result) {
+          throw new Exception(
+            pht(
+              'LDAP: Failed to retrieve record for user "%s" when searching '.
+              'with both user and anonymous credentials.',
+              $login_user));
+        }
+      }
+    }
+
+    return $result;
   }
 
   private function establishConnection() {
@@ -360,7 +398,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
     return $results;
   }
 
-  private function raiseConnectionException($conn, $message, $is_bind = false) {
+  private function raiseConnectionException($conn, $message) {
     $errno = @ldap_errno($conn);
     $error = @ldap_error($conn);
 
@@ -397,8 +435,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
     if (!$ok) {
       $this->raiseConnectionException(
         $conn,
-        pht("Failed to bind to LDAP server (as user '%s').", $user),
-        $is_bind = true);
+        pht("Failed to bind to LDAP server (as user '%s').", $user));
     }
   }
 
