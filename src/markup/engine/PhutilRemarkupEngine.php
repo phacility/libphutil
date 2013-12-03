@@ -139,13 +139,17 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
           }
 
           $curr_block = array(
-            "block" => implode("", array_slice($text, $cursor, $num_lines)),
+            "start" => $cursor,
+            "num_lines" => $num_lines,
             "rule" => $block_rule,
+            "is_empty" => self::isEmptyBlock($text, $cursor, $num_lines),
           );
 
           if ($prev_block
-            && $this->shouldMergeBlocks($prev_block, $curr_block)) {
-            $blocks[last_key($blocks)]["block"] .= $curr_block["block"];
+            && self::shouldMergeBlocks($text, $prev_block, $curr_block)) {
+            $blocks[last_key($blocks)]["num_lines"] += $curr_block["num_lines"];
+            $blocks[last_key($blocks)]["is_empty"] =
+              $blocks[last_key($blocks)]["is_empty"] && $curr_block["is_empty"];
           } else {
             $blocks[] = $curr_block;
           }
@@ -162,7 +166,8 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
     $output = array();
     foreach ($blocks as $block) {
-      $output[] = $block['rule']->markupText($block['block']);
+      $output[] = $block['rule']->markupText(
+        implode('', array_slice($text, $block['start'], $block['num_lines'])));
     }
 
     $map = $this->storage->getMap();
@@ -182,7 +187,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     );
   }
 
-  public function shouldMergeBlocks($prev_block, $curr_block) {
+  private static function shouldMergeBlocks($text, $prev_block, $curr_block) {
     $block_rules = ipull(array($prev_block, $curr_block), "rule");
 
     $default_rule = "PhutilRemarkupEngineRemarkupDefaultBlockRule";
@@ -190,20 +195,18 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
       assert_instances_of($block_rules, $default_rule);
 
       // If the last block was empty keep merging
-      if (!strlen(trim($prev_block["block"]))) {
+      if ($prev_block['is_empty']) {
         return true;
       }
 
       // If this line is blank keep merging
-      if (!strlen(trim($curr_block["block"]))) {
+      if ($curr_block['is_empty']) {
         return true;
       }
 
-      $prev_lines = phutil_split_lines($prev_block["block"], true);
-
       // If the current line and the last line have content, keep merging
-      if (strlen(trim(last($prev_lines)))) {
-        if (strlen(trim($curr_block["block"]))) {
+      if (strlen(trim($text[$curr_block["start"] - 1]))) {
+        if (strlen(trim($text[$curr_block["start"]]))) {
           return true;
         }
       }
@@ -212,6 +215,15 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     }
 
     return false;
+  }
+
+  private static function isEmptyBlock($text, $start, $num_lines) {
+    for ($cursor = $start; $cursor < $start + $num_lines; $cursor++) {
+      if (strlen(trim($text[$cursor]))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public function postprocessText(array $dict) {
