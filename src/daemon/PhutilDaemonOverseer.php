@@ -165,6 +165,7 @@ EOHELP
 
     declare(ticks = 1);
     pcntl_signal(SIGUSR1, array($this, 'didReceiveKeepaliveSignal'));
+    pcntl_signal(SIGUSR2, array($this, 'didReceiveNotifySignal'));
 
     pcntl_signal(SIGINT,  array($this, 'didReceiveTerminalSignal'));
     pcntl_signal(SIGTERM, array($this, 'didReceiveTerminalSignal'));
@@ -269,6 +270,13 @@ EOHELP
 
       $this->logMessage('WAIT', 'Waiting to restart process.');
       sleep(self::RESTART_WAIT);
+    }
+  }
+
+  public function didReceiveNotifySignal($signo) {
+    $pid = $this->childPID;
+    if ($pid) {
+      posix_kill($pid, $signo);
     }
   }
 

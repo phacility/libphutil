@@ -12,6 +12,7 @@ abstract class PhutilDaemon {
   private $traceMode;
   private $traceMemory;
   private $verbose;
+  private $notifyReceived;
 
   final public function setVerbose($verbose) {
     $this->verbose = $verbose;
@@ -35,6 +36,8 @@ abstract class PhutilDaemon {
       pcntl_signal(SIGTERM, __CLASS__.'::exitOnSignal');
     }
 
+    pcntl_signal(SIGUSR2, array($this, 'onNotifySignal'));
+
     // Without discard mode, this consumes unbounded amounts of memory. Keep
     // memory bounded.
     PhutilServiceProfiler::getInstance()->enableDiscardMode();
@@ -52,9 +55,10 @@ abstract class PhutilDaemon {
   }
 
   final protected function sleep($duration) {
+    $this->notifyReceived = false;
     $this->willSleep($duration);
     $this->stillWorking();
-    while ($duration > 0) {
+    while ($duration > 0 && !$this->notifyReceived) {
       sleep(min($duration, 60));
       $duration -= 60;
       $this->stillWorking();
@@ -102,6 +106,15 @@ abstract class PhutilDaemon {
 
   final public function getTraceMode() {
     return $this->traceMode;
+  }
+
+  public final function onNotifySignal($signo) {
+    $this->notifyReceived = true;
+    $this->onNotify($signo);
+  }
+
+  protected function onNotify($signo) {
+    // This is a hook for subclasses.
   }
 
   protected function willRun() {
