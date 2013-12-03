@@ -400,18 +400,20 @@ final class ExecFuture extends Future {
    * @task resolve
    */
   public function resolveKill() {
-    if (defined('SIGKILL')) {
-      $signal = SIGKILL;
-    } else {
-      $signal = 9;
-    }
+    if (!$this->result) {
+      if (defined('SIGKILL')) {
+        $signal = SIGKILL;
+      } else {
+        $signal = 9;
+      }
 
-    proc_terminate($this->proc, $signal);
-    $this->result = array(
-      128 + $signal,
-      $this->stdout,
-      $this->stderr);
-    $this->closeProcess();
+      proc_terminate($this->proc, $signal);
+      $this->result = array(
+        128 + $signal,
+        $this->stdout,
+        $this->stderr);
+      $this->closeProcess();
+    }
 
     return $this->result;
   }

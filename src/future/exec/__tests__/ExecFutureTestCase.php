@@ -109,4 +109,16 @@ final class ExecFutureTestCase extends PhutilTestCase {
     $this->assertEqual(true, ($end - $start) < 5);
   }
 
+  public function testMultipleResolves() {
+    // It should be safe to call resolve(), resolvex(), resolveKill(), etc.,
+    // as many times as you want on the same process.
+
+    $future = new ExecFuture('echo quack');
+    $future->resolve();
+    $future->resolvex();
+    list($err) = $future->resolveKill();
+
+    $this->assertEqual(0, $err);
+  }
+
 }
