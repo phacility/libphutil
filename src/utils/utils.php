@@ -922,3 +922,69 @@ function phutil_loggable_string($string) {
 
   return $result;
 }
+
+
+/**
+ * Perform an `fwrite()` which distinguishes between EAGAIN and EPIPE.
+ *
+ * PHP's `fwrite()` is broken, and never returns `false` for writes to broken
+ * nonblocking pipes: it always returns 0, and provides no straightforward
+ * mechanism for distinguishing between EAGAIN (buffer is full, can't write any
+ * more right now) and EPIPE or similar (no write will ever succeed).
+ *
+ * See: https://bugs.php.net/bug.php?id=39598
+ *
+ * If you call this method instead of `fwrite()`, it will attempt to detect
+ * when a zero-length write is caused by EAGAIN and return `0` only if the
+ * write really should be retried.
+ *
+ * @param resource  Socket or pipe stream.
+ * @param string    Bytes to write.
+ * @return bool|int Number of bytes written, or `false` on any error (including
+ *                  errors which `fpipe()` can not detect, like a broken pipe).
+ */
+function phutil_fwrite_nonblocking_stream($stream, $bytes) {
+  if (!strlen($bytes)) {
+    return 0;
+  }
+
+  $result = @fwrite($stream, $bytes);
+  if ($result !== 0) {
+    // In cases where some bytes are witten (`$result > 0`) or
+    // an error occurs (`$result === false`), the behavior of fwrite() is
+    // correct. We can return the value as-is.
+    return $result;
+  }
+
+  // If we make it here, we performed a 0-length write. Try to distinguish
+  // between EAGAIN and EPIPE. To do this, we're going to `stream_select()`
+  // the stream, write to it again if PHP claims that it's writable, and
+  // consider the pipe broken if the write fails.
+
+  $read = array();
+  $write = array($stream);
+  $except = array();
+
+  @stream_select($read, $write, $except, 0);
+
+  if (!$write) {
+    // The stream isn't writable, so we conclude that it probably really is
+    // blocked and the underlying error was EAGAIN. Return 0 to indicate that
+    // no data could be written yet.
+    return 0;
+  }
+
+  // If we make it here, PHP **just** claimed that this stream is writable, so
+  // perform a write. If the write also fails, conclude that these failures are
+  // EPIPE or some other permanent failure.
+  $result = @fwrite($stream, $bytes);
+  if ($result !== 0) {
+    // The write worked or failed explicitly. This value is fine to return.
+    return $result;
+  }
+
+  // We performed a 0-length write, were told that the stream was writable, and
+  // then immediately performed another 0-length write. Conclude that the pipe
+  // is broken and return `false`.
+  return false;
+}

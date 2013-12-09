@@ -132,7 +132,7 @@ final class PhutilSocketChannel extends PhutilChannel {
       return 0;
     }
 
-    $len = @fwrite($socket, $bytes);
+    $len = phutil_fwrite_nonblocking_stream($socket, $bytes);
     if ($len === false) {
       $this->closeWriteSocket();
       return 0;
