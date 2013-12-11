@@ -25,7 +25,8 @@ final class PhutilConsoleFormatter {
 
   public static function getDisableANSI() {
     if (self::$disableANSI === null) {
-      if (phutil_is_windows()) {
+      $term = phutil_utf8_strtolower(getenv("TERM"));
+      if (phutil_is_windows() && $term !== "cygwin" && $term !== "ansi") {
         self::$disableANSI = true;
       } else if (function_exists('posix_isatty') && !posix_isatty(STDOUT)) {
         self::$disableANSI = true;
