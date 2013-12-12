@@ -3,8 +3,6 @@
 /**
  * Very basic HTTPS future.
  *
- * TODO: This class is extremely limited.
- *
  * @group futures
  */
 final class HTTPSFuture extends BaseHTTPFuture {
@@ -19,6 +17,8 @@ final class HTTPSFuture extends BaseHTTPFuture {
   private $profilerCallID;
   private $cabundle;
   private $followLocation = true;
+  private $responseBuffer = '';
+  private $responseBufferPos;
 
   /**
    * Create a temp file containing an SSL cert, and use it for this session.
@@ -263,7 +263,8 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
       // Make sure we get the headers and data back.
       curl_setopt($curl, CURLOPT_HEADER, true);
-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($curl, CURLOPT_WRITEFUNCTION,
+        array($this, 'didReceiveDataCallback'));
 
       if ($this->followLocation) {
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -354,7 +355,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
     }
 
     $info = self::$results[(int)$curl];
-    $result = curl_multi_getcontent($curl);
+    $result = $this->responseBuffer;
     $err_code = $info['result'];
 
     if ($err_code) {
@@ -380,5 +381,45 @@ final class HTTPSFuture extends BaseHTTPFuture {
     $profiler->endServiceCall($this->profilerCallID, array());
 
     return true;
+  }
+
+
+  /**
+   * Callback invoked by cURL as it reads HTTP data from the response. We save
+   * the data to a buffer.
+   */
+  public function didReceiveDataCallback($handle, $data) {
+    $this->responseBuffer .= $data;
+    return strlen($data);
+  }
+
+
+  /**
+   * Read data from the response buffer.
+   *
+   * NOTE: Like @{class:ExecFuture}, this method advances a read cursor but
+   * does not discard the data. The data will still be buffered, and it will
+   * all be returned when the future resolves. To discard the data after
+   * reading it, call @{method:discardBuffers}.
+   *
+   * @return string Response data, if available.
+   */
+  public function read() {
+    $result = substr($this->responseBuffer, $this->responseBufferPos);
+    $this->responseBufferPos = strlen($this->responseBuffer);
+    return $result;
+  }
+
+
+  /**
+   * Discard any buffered data. Normally, you call this after reading the
+   * data with @{method:read}.
+   *
+   * @return this
+   */
+  public function discardBuffers() {
+    $this->responseBuffer = '';
+    $this->responseBufferPos = 0;
+    return $this;
   }
 }

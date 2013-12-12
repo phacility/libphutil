@@ -233,17 +233,19 @@ final class FutureIterator implements Iterator {
         }
       }
       if ($resolve === null) {
-        if ($can_use_sockets) {
-          if ($timeout !== null) {
-            $elapsed = microtime(true) - $start;
-            if ($elapsed > $timeout) {
-              $this->isTimeout = true;
-              return;
-            } else {
-              $wait_time = $timeout - $elapsed;
-            }
-          }
 
+        // Check for a setUpdateInterval() timeout.
+        if ($timeout !== null) {
+          $elapsed = microtime(true) - $start;
+          if ($elapsed > $timeout) {
+            $this->isTimeout = true;
+            return;
+          } else {
+            $wait_time = $timeout - $elapsed;
+          }
+        }
+
+        if ($can_use_sockets) {
           Future::waitForSockets($read_sockets, $write_sockets, $wait_time);
         } else {
           usleep(1000);
