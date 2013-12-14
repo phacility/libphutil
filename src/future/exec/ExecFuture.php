@@ -186,6 +186,29 @@ final class ExecFuture extends Future {
   }
 
 
+  /**
+   * Set the value of a specific environmental variable for this command.
+   *
+   * @param string Environmental variable name.
+   * @param string|null New value, or null to remove this variable.
+   * @return this
+   * @task config
+   */
+  public function updateEnv($key, $value) {
+    if (!is_array($this->env)) {
+      $this->env = $_ENV;
+    }
+
+    if ($value === null) {
+      unset($this->env[$key]);
+    } else {
+      $this->env[$key] = $value;
+    }
+
+    return $this;
+  }
+
+
 /* -(  Interacting With Commands  )------------------------------------------ */
 
 
