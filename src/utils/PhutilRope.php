@@ -11,6 +11,11 @@ final class PhutilRope extends Phobject {
 
   private $length = 0;
   private $buffers = array();
+
+  // This is is arbitrary, it's just the maximum size I'm reliably able to
+  // fwrite() to a pipe on OSX. In theory, we could tune this slightly based
+  // on the pipe buffer size, but any value similar to this shouldn't affect
+  // performance much.
   private $segmentSize = 16384;
 
   /**

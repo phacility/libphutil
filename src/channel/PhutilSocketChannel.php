@@ -148,9 +148,7 @@ final class PhutilSocketChannel extends PhutilChannel {
   }
 
   protected function getWriteSockets() {
-    if ($this->isWriteBufferEmpty()) {
-      return array();
-    } else if ($this->writeSocket) {
+    if ($this->writeSocket) {
       return array($this->writeSocket);
     } else {
       return array();

@@ -124,6 +124,9 @@ final class PhutilExecChannel extends PhutilChannel {
     return $this->future->getWriteSockets();
   }
 
+  protected function isWriteBufferEmpty() {
+    return $this->future->isWriteBufferEmpty();
+  }
 
   /**
    * If the wrapped @{class:ExecFuture} outputs data to stderr, we normally

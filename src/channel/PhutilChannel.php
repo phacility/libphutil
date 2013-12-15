@@ -131,7 +131,13 @@ abstract class PhutilChannel {
       // busy wait).
 
       if (!$r_sockets && !$w_sockets) {
-        return;
+        return false;
+      }
+
+      if ($channel->isWriteBufferEmpty()) {
+        // If the channel's write buffer is empty, don't select the write
+        // sockets, since they're writable immediately.
+        $w_sockets = array();
       }
 
       foreach ($r_sockets as $socket) {

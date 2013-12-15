@@ -487,6 +487,17 @@ final class ExecFuture extends Future {
 
 
   /**
+   * Determine if the write buffer is empty.
+   *
+   * @return bool True if the write buffer is empty.
+   * @task internal
+   */
+  public function isWriteBufferEmpty() {
+    return !($this->stdin && $this->stdin->getByteLength());
+  }
+
+
+  /**
    * Reads some bytes from a stream, discarding output once a certain amount
    * has been accumulated.
    *
