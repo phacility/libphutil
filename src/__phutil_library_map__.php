@@ -15,6 +15,7 @@ phutil_register_library_map(array(
     'AASTToken' => 'parser/aast/api/AASTToken.php',
     'AASTTree' => 'parser/aast/api/AASTTree.php',
     'AbstractDirectedGraph' => 'utils/AbstractDirectedGraph.php',
+    'PhutilRope' => 'utils/PhutilRope.php',
     'AbstractDirectedGraphTestCase' => 'utils/__tests__/AbstractDirectedGraphTestCase.php',
     'AphrontDatabaseConnection' => 'aphront/storage/connection/AphrontDatabaseConnection.php',
     'AphrontDatabaseTransactionState' => 'aphront/storage/connection/AphrontDatabaseTransactionState.php',

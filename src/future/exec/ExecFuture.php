@@ -69,6 +69,7 @@ final class ExecFuture extends Future {
   public function __construct($command) {
     $argv = func_get_args();
     $this->command = call_user_func_array('csprintf', $argv);
+    $this->stdin = new PhutilRope();
   }
 
 
@@ -275,7 +276,12 @@ final class ExecFuture extends Future {
    * @task interact
    */
   public function write($data, $keep_pipe = false) {
-    $this->stdin .= $data;
+    if (strlen($data)) {
+      if (!$this->stdin) {
+        throw new Exception(pht('Writing to a closed pipe!'));
+      }
+      $this->stdin->append($data);
+    }
     $this->closePipe = !$keep_pipe;
 
     return $this;
@@ -473,7 +479,7 @@ final class ExecFuture extends Future {
   public function getWriteSockets() {
     list($stdin, $stdout, $stderr) = $this->pipes;
     $sockets = array();
-    if (isset($stdin) && strlen($this->stdin) && !feof($stdin)) {
+    if (isset($stdin) && $this->stdin->getByteLength() && !feof($stdin)) {
       $sockets[] = $stdin;
     }
     return $sockets;
@@ -609,19 +615,24 @@ final class ExecFuture extends Future {
 
     list($stdin, $stdout, $stderr) = $this->pipes;
 
-    if (isset($this->stdin) && strlen($this->stdin)) {
-      $bytes = fwrite($stdin, $this->stdin);
+    while (isset($this->stdin) && $this->stdin->getByteLength()) {
+      $write_segment = $this->stdin->getAnyPrefix();
+
+      $bytes = fwrite($stdin, $write_segment);
       if ($bytes === false) {
         throw new Exception('Unable to write to stdin!');
       } else if ($bytes) {
-        $this->stdin = substr($this->stdin, $bytes);
+        $this->stdin->removeBytesFromHead($bytes);
+      } else {
+        // Writes are blocked for now.
+        break;
       }
     }
 
     $this->tryToCloseStdin();
 
-    //  Read status before reading pipes so that we can never miss data that
-    //  arrives between our last read and the process exiting.
+    // Read status before reading pipes so that we can never miss data that
+    // arrives between our last read and the process exiting.
     $status = $this->procGetStatus();
 
     $this->stdout .= $this->readAndDiscard(
@@ -737,7 +748,7 @@ final class ExecFuture extends Future {
       return;
     }
 
-    if (strlen($this->stdin)) {
+    if ($this->stdin->getByteLength()) {
       // We still have bytes to write.
       return;
     }
