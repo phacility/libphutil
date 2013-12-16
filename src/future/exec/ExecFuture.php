@@ -22,31 +22,31 @@
  */
 final class ExecFuture extends Future {
 
-  protected $pipes        = array();
-  protected $proc         = null;
-  protected $start        = null;
-  protected $timeout      = null;
-  protected $procStatus   = null;
+  private $pipes        = array();
+  private $proc         = null;
+  private $start        = null;
+  private $timeout      = null;
+  private $procStatus   = null;
 
-  protected $stdout       = null;
-  protected $stderr       = null;
-  protected $stdin        = null;
-  protected $closePipe    = true;
+  private $stdout       = null;
+  private $stderr       = null;
+  private $stdin        = null;
+  private $closePipe    = true;
 
-  protected $stdoutPos    = 0;
-  protected $stderrPos    = 0;
-  protected $command      = null;
-  protected $env          = null;
-  protected $cwd;
+  private $stdoutPos    = 0;
+  private $stderrPos    = 0;
+  private $command      = null;
+  private $env          = null;
+  private $cwd;
 
   private $readBufferSize;
-  protected $stdoutSizeLimit = PHP_INT_MAX;
-  protected $stderrSizeLimit = PHP_INT_MAX;
+  private $stdoutSizeLimit = PHP_INT_MAX;
+  private $stderrSizeLimit = PHP_INT_MAX;
 
   private $profilerCallID;
   private $killedByTimeout;
 
-  protected static $descriptorSpec = array(
+  private static $descriptorSpec = array(
     0 => array('pipe', 'r'),  // stdin
     1 => array('pipe', 'w'),  // stdout
     2 => array('pipe', 'w'),  // stderr
@@ -556,7 +556,7 @@ final class ExecFuture extends Future {
    * @return string   The data read from the stream.
    * @task internal
    */
-  protected function readAndDiscard($stream, $limit, $description, $length) {
+  private function readAndDiscard($stream, $limit, $description, $length) {
     $output = '';
 
     if ($length <= 0) {
