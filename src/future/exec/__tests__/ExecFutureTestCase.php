@@ -121,4 +121,44 @@ final class ExecFutureTestCase extends PhutilTestCase {
     $this->assertEqual(0, $err);
   }
 
+  public function testReadBuffering() {
+    $str_len_8 = 'abcdefgh';
+    $str_len_4 = 'abcd';
+
+    // This is a write/read with no read buffer.
+    $future = new ExecFuture('cat');
+    $future->write($str_len_8);
+
+    do {
+      $future->isReady();
+      list($read) = $future->read();
+      if (strlen($read)) {
+        break;
+      }
+    } while (true);
+
+    // We expect to get the entire string back in the read.
+    $this->assertEqual($str_len_8, $read);
+    $future->resolve();
+
+
+    // This is a write/read with a read buffer.
+    $future = new ExecFuture('cat');
+    $future->write($str_len_8);
+
+    // Set the read buffer size.
+    $future->setReadBufferSize(4);
+    do {
+      $future->isReady();
+      list($read) = $future->read();
+      if (strlen($read)) {
+        break;
+      }
+    } while (true);
+
+    // We expect to get the entire string back in the read.
+    $this->assertEqual($str_len_4, $read);
+    $future->resolve();
+  }
+
 }
