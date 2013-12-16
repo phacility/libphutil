@@ -103,13 +103,13 @@ final class PhutilSocketChannel extends PhutilChannel {
     return (bool)$this->writeSocket;
   }
 
-  protected function readBytes() {
+  protected function readBytes($length) {
     $socket = $this->readSocket;
     if (!$socket) {
       return '';
     }
 
-    $data = @fread($socket, 4096);
+    $data = @fread($socket, min($length, 64 * 1024));
 
     if ($data === false) {
       $this->closeReadSocket();

@@ -90,7 +90,7 @@ final class PhutilExecChannel extends PhutilChannel {
     return !$this->future->isReady();
   }
 
-  protected function readBytes() {
+  protected function readBytes($length) {
     list($stdout, $stderr) = $this->future->read();
     $this->future->discardBuffers();
 
@@ -124,6 +124,15 @@ final class PhutilExecChannel extends PhutilChannel {
 
   protected function getWriteSockets() {
     return $this->future->getWriteSockets();
+  }
+
+  public function setReadBufferSize($size) {
+    // NOTE: We may end up using 2x the buffer size here, one inside
+    // ExecFuture and one inside the Channel. We could tune this eventually, but
+    // it should be fine for now.
+    parent::setReadBufferSize($size);
+    $this->future->setReadBufferSize($size);
+    return $this;
   }
 
   public function isWriteBufferEmpty() {

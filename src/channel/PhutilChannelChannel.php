@@ -53,7 +53,7 @@ abstract class PhutilChannelChannel extends PhutilChannel {
     return $this->channel->isOpenForWriting();
   }
 
-  protected function readBytes() {
+  protected function readBytes($length) {
     $this->throwOnRawByteOperations();
   }
 
@@ -67,6 +67,11 @@ abstract class PhutilChannelChannel extends PhutilChannel {
 
   protected function getWriteSockets() {
     return $this->channel->getWriteSockets();
+  }
+
+  public function setReadBufferSize($size) {
+    $this->channel->setReadBufferSize($size);
+    return $this;
   }
 
   public function isReadBufferEmpty() {

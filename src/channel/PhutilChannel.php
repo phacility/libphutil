@@ -34,6 +34,7 @@ abstract class PhutilChannel {
   private $ibuf = '';
   private $obuf;
   private $name;
+  private $readBufferSize;
 
   public function __construct() {
     $this->obuf = new PhutilRope();
@@ -178,13 +179,19 @@ abstract class PhutilChannel {
    * @task update
    */
   public function update() {
-    while (true) {
-      $in = $this->readBytes();
+    $maximum_read = PHP_INT_MAX;
+    if ($this->readBufferSize !== null) {
+      $maximum_read = ($this->readBufferSize - strlen($this->ibuf));
+    }
+
+    while ($maximum_read > 0) {
+      $in = $this->readBytes($maximum_read);
       if (!strlen($in)) {
         // Reading is blocked for now.
         break;
       }
       $this->ibuf .= $in;
+      $maximum_read -= strlen($in);
     }
 
     while ($this->obuf->getByteLength()) {
@@ -275,11 +282,12 @@ abstract class PhutilChannel {
   /**
    * Read from the channel's underlying I/O.
    *
+   * @param int Maximum number of bytes to read.
    * @return string Bytes, if available.
    *
    * @task impl
    */
-  abstract protected function readBytes();
+  abstract protected function readBytes($length);
 
 
   /**
@@ -314,6 +322,21 @@ abstract class PhutilChannel {
    */
   protected function getWriteSockets() {
     return array();
+  }
+
+
+  /**
+   * Set the maximum size of the channel's read buffer. Reads will artificially
+   * block once the buffer reaches this size until the in-process buffer is
+   * consumed.
+   *
+   * @param int|null Maximum read buffer size, or `null` for a limitless buffer.
+   * @return this
+   * @task impl
+   */
+  public function setReadBufferSize($size) {
+    $this->readBufferSize = $size;
+    return $this;
   }
 
 
