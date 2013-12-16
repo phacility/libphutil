@@ -63,6 +63,8 @@ final class PhutilExecChannel extends PhutilChannel {
    * @task construct
    */
   public function __construct(ExecFuture $future) {
+    parent::__construct();
+
     // Make an empty write to keep the stdin pipe open. By default, futures
     // close this pipe when they start.
     $future->write('', $keep_pipe = true);
@@ -124,8 +126,12 @@ final class PhutilExecChannel extends PhutilChannel {
     return $this->future->getWriteSockets();
   }
 
-  protected function isWriteBufferEmpty() {
+  public function isWriteBufferEmpty() {
     return $this->future->isWriteBufferEmpty();
+  }
+
+  public function getWriteBufferSize() {
+    return $this->future->getWriteBufferSize();
   }
 
   /**

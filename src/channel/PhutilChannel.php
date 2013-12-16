@@ -32,8 +32,12 @@
 abstract class PhutilChannel {
 
   private $ibuf = '';
-  private $obuf = '';
+  private $obuf;
   private $name;
+
+  public function __construct() {
+    $this->obuf = new PhutilRope();
+  }
 
 
 /* -(  Reading and Writing  )------------------------------------------------ */
@@ -72,7 +76,7 @@ abstract class PhutilChannel {
       throw new Exception("PhutilChannel->write() may only write strings!");
     }
 
-    $this->obuf .= $bytes;
+    $this->obuf->append($bytes);
     return $this;
   }
 
@@ -183,13 +187,13 @@ abstract class PhutilChannel {
       $this->ibuf .= $in;
     }
 
-    while (strlen($this->obuf)) {
-      $len = $this->writeBytes($this->obuf);
+    while ($this->obuf->getByteLength()) {
+      $len = $this->writeBytes($this->obuf->getAnyPrefix());
       if (!$len) {
         // Writing is blocked for now.
         break;
       }
-      $this->obuf = substr($this->obuf, $len);
+      $this->obuf->removeBytesFromHead($len);
     }
 
     return $this->isOpen();
@@ -320,7 +324,7 @@ abstract class PhutilChannel {
    *
    * @task impl
    */
-  protected function isReadBufferEmpty() {
+  public function isReadBufferEmpty() {
     return (strlen($this->ibuf) == 0);
   }
 
@@ -332,8 +336,20 @@ abstract class PhutilChannel {
    *
    * @task impl
    */
-  protected function isWriteBufferEmpty() {
-    return (strlen($this->obuf) == 0);
+  public function isWriteBufferEmpty() {
+    return !$this->getWriteBufferSize();
+  }
+
+
+  /**
+   * Get the number of bytes we're currently waiting to write.
+   *
+   * @return int Number of waiting bytes.
+   *
+   * @task impl
+   */
+  public function getWriteBufferSize() {
+    return $this->obuf->getByteLength();
   }
 
 

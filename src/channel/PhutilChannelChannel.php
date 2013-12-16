@@ -15,6 +15,7 @@ abstract class PhutilChannelChannel extends PhutilChannel {
   private $channel;
 
   public function __construct(PhutilChannel $channel) {
+    parent::__construct();
     $this->channel = $channel;
     $this->didConstruct();
   }
@@ -68,12 +69,16 @@ abstract class PhutilChannelChannel extends PhutilChannel {
     return $this->channel->getWriteSockets();
   }
 
-  protected function isReadBufferEmpty() {
+  public function isReadBufferEmpty() {
     return $this->channel->isReadBufferEmpty();
   }
 
-  protected function isWriteBufferEmpty() {
+  public function isWriteBufferEmpty() {
     return $this->channel->isWriteBufferEmpty();
+  }
+
+  public function getWriteBufferSize() {
+    return $this->channel->getWriteBufferSize();
   }
 
   public function flush() {

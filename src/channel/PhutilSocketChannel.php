@@ -42,6 +42,7 @@ final class PhutilSocketChannel extends PhutilChannel {
    * @task construct
    */
   public function __construct($read_socket, $write_socket = null) {
+    parent::__construct();
 
     foreach (array($read_socket, $write_socket) as $socket) {
       if (!$socket) {

@@ -513,7 +513,21 @@ final class ExecFuture extends Future {
    * @task internal
    */
   public function isWriteBufferEmpty() {
-    return !($this->stdin && $this->stdin->getByteLength());
+    return !$this->getWriteBufferSize();
+  }
+
+
+  /**
+   * Determine the number of bytes in the write buffer.
+   *
+   * @return int Number of bytes in the write buffer.
+   * @task internal
+   */
+  public function getWriteBufferSize() {
+    if (!$this->stdin) {
+      return 0;
+    }
+    return $this->stdin->getByteLength();
   }
 
 
