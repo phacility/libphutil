@@ -126,6 +126,12 @@ final class PhutilExecChannel extends PhutilChannel {
     return $this->future->getWriteSockets();
   }
 
+  public function isReadBufferEmpty() {
+    // Check both the channel and future read buffers, since either could have
+    // data.
+    return parent::isReadBufferEmpty() && $this->future->isReadBufferEmpty();
+  }
+
   public function setReadBufferSize($size) {
     // NOTE: We may end up using 2x the buffer size here, one inside
     // ExecFuture and one inside the Channel. We could tune this eventually, but

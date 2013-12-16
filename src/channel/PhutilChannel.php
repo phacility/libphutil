@@ -86,8 +86,23 @@ abstract class PhutilChannel {
 
 
   /**
-   * Wait (using select()) for activity on any channel. This method blocks until
-   * some channel is ready to be updated.
+   * Wait for any activity on a list of channels. Convenience wrapper around
+   * @{method:waitForActivity}.
+   *
+   * @param   list<PhutilChannel>   A list of channels to wait for.
+   * @param   dict                  Options, see above.
+   * @return  void
+   *
+   * @task wait
+   */
+  public static function waitForAny(array $channels, array $options = array()) {
+    return self::waitForActivity($channels, $channels, $options);
+  }
+
+
+  /**
+   * Wait (using select()) for channels to become ready for reads or writes.
+   * This method blocks until some channel is ready to be updated.
    *
    * It does not provide a way to determine which channels are ready to be
    * updated. The expectation is that you'll just update every channel. This
@@ -103,51 +118,66 @@ abstract class PhutilChannel {
    * NOTE: Extra streams must be //streams//, not //sockets//, because this
    * method uses `stream_select()`, not `socket_select()`.
    *
-   * @param   list<PhutilChannel>   A list of channels to wait for.
-   * @param   dict                  Options, see above.
-   * @return  void
+   * @param list<PhutilChannel> List of channels to wait for reads on.
+   * @param list<PhutilChannel> List of channels to wait for writes on.
+   * @return void
    *
    * @task wait
    */
-  public static function waitForAny(array $channels, array $options = array()) {
-    assert_instances_of($channels, 'PhutilChannel');
+  public static function waitForActivity(
+    array $reads,
+    array $writes,
+    array $options = array()) {
+
+    assert_instances_of($reads, 'PhutilChannel');
+    assert_instances_of($writes, 'PhutilChannel');
 
     $read   = idx($options, 'read',     array());
     $write  = idx($options, 'write',    array());
     $except = idx($options, 'except',   array());
     $wait   = idx($options, 'timeout',  1);
 
-    foreach ($channels as $channel) {
+    // TODO: It would be nice to just be able to categorically reject these as
+    // unselectable.
+    foreach (array($reads, $writes) as $channels) {
+      foreach ($channels as $channel) {
+        $r_sockets = $channel->getReadSockets();
+        $w_sockets = $channel->getWriteSockets();
 
-      // If any of the channels have data in read buffers, return immediately.
-      // If we don't, we risk running select() on a bunch of sockets which won't
-      // become readable because the data the application expects is already
-      // in a read buffer.
+        // If any channel has no read sockets and no write sockets, assume it
+        // isn't selectable and return immediately (effectively degrading to a
+        // busy wait).
+
+        if (!$r_sockets && !$w_sockets) {
+          return false;
+        }
+      }
+    }
+
+    foreach ($reads as $channel) {
+      // If any of the read channels have data in read buffers, return
+      // immediately. If we don't, we risk running select() on a bunch of
+      // sockets which won't  become readable because the data the application
+      // expects is already in a read buffer.
 
       if (!$channel->isReadBufferEmpty()) {
         return;
       }
 
       $r_sockets = $channel->getReadSockets();
-      $w_sockets = $channel->getWriteSockets();
-
-      // If any channel has no read sockets and no write sockets, assume it
-      // isn't selectable and return immediately (effectively degrading to a
-      // busy wait).
-
-      if (!$r_sockets && !$w_sockets) {
-        return false;
+      foreach ($r_sockets as $socket) {
+        $read[] = $socket;
+        $except[] = $socket;
       }
+    }
 
+    foreach ($writes as $channel) {
       if ($channel->isWriteBufferEmpty()) {
         // If the channel's write buffer is empty, don't select the write
         // sockets, since they're writable immediately.
         $w_sockets = array();
-      }
-
-      foreach ($r_sockets as $socket) {
-        $read[] = $socket;
-        $except[] = $socket;
+      } else {
+        $w_sockets = $channel->getWriteSockets();
       }
 
       foreach ($w_sockets as $socket) {

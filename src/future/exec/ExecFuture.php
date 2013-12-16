@@ -507,6 +507,17 @@ final class ExecFuture extends Future {
 
 
   /**
+   * Determine if the read buffer is empty.
+   *
+   * @return bool True if the read buffer is empty.
+   * @task internal
+   */
+  public function isReadBufferEmpty() {
+    return !strlen($this->stdout);
+  }
+
+
+  /**
    * Determine if the write buffer is empty.
    *
    * @return bool True if the write buffer is empty.
