@@ -73,8 +73,8 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
       $type = 's';
 
       // Check that the value is a non-empty array.
-      if (!is_array($value) || !$value) {
-        throw new Exception("Expected a non-empty array for %Ls conversion.");
+      if (!is_array($value)) {
+        throw new Exception("Expected an array for %Ls conversion.");
       }
 
       // Convert the list of strings to a single string.
