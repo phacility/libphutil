@@ -87,6 +87,37 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
     }
   }
 
+  public function testGetCommonParentClass() {
+    $map = array(
+      'stdClass'  => array(
+        array('stdClass', 'stdClass'),
+      ),
+      false       => array(
+        array('Exception', 'stdClass'),
+      ),
+      'Exception' => array(
+        array('Exception', 'RuntimeException'),
+        array('LogicException', 'RuntimeException'),
+        array('BadMethodCallException', 'OutOfBoundsException'),
+      ),
+    );
+
+    foreach ($map as $expect => $tests) {
+      if (is_int($expect)) {
+        $expect = (bool) $expect;
+      }
+
+      foreach ($tests as $input) {
+        list($class_a, $class_b) = $input;
+
+        $this->assertEqual(
+          $expect,
+          PhutilTypeSpec::getCommonParentClass($class_a, $class_b),
+          print_r($input, true));
+      }
+    }
+  }
+
   public function testGetTypeOf() {
     $map = array(
       'int'                     => 1,
@@ -99,6 +130,12 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       'list<int>'               => array(1, 2, 3),
       'map<string, int>'        => array("x" => 3),
       'map<int, list<string>>'  => array(1 => array("x", "y")),
+      'stdClass'                => new stdClass(),
+      'list<Exception>'         => array(
+                                     new Exception(),
+                                     new LogicException(),
+                                     new RuntimeException()),
+      'map<string, stdClass>'   => array("x" => new stdClass()),
     );
 
     foreach ($map as $expect => $input) {
@@ -120,6 +157,8 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       'map<wild, wild>'         => 16,
       'list<string>'            => array('y' => 'z'),
       'int|null'                => 'ducks',
+      'stdClass'                => new Exception(),
+      'list<RuntimeException>'  => array(new Exception()),
     );
 
     foreach ($map as $type => $value) {

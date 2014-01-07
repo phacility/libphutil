@@ -132,6 +132,16 @@ final class PhutilTypeSpec {
       case 'wild':
         return;
       default:
+        if (class_exists($this->type, false)) {
+          if ($value instanceof $this->type) {
+            return;
+          }
+        } else if (interface_exists($this->type, false)) {
+          if ($value instanceof $this->type) {
+            return;
+          }
+        }
+
         throw new PhutilTypeCheckException($this, $value, $name);
     }
   }
@@ -161,6 +171,20 @@ final class PhutilTypeSpec {
         $type->check($values[$key]);
       }
     }
+  }
+
+  public static function getCommonParentClass($class_a, $class_b) {
+    $ancestors_a = array();
+    do {
+      $ancestors_a[] = $class_a;
+    } while ($class_a = get_parent_class($class_a));
+
+    $ancestors_b = array();
+    do {
+      $ancestors_b[] = $class_b;
+    } while ($class_b = get_parent_class($class_b));
+
+    return head(array_intersect($ancestors_a, $ancestors_b));
   }
 
   public static function getTypeOf($value) {
@@ -202,7 +226,12 @@ final class PhutilTypeSpec {
       } else if ($type === $vtype) {
         continue;
       } else {
-        return 'wild';
+        $parent = self::getCommonParentClass($type, $vtype);
+        if ($parent) {
+          $type = $parent;
+        } else {
+          return 'wild';
+        }
       }
     }
 
