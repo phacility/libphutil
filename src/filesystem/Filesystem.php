@@ -667,15 +667,16 @@ final class Filesystem {
     } while (--$tries);
 
     if (!$tries) {
-
       $df = disk_free_space($tmp);
       if ($df !== false && $df < 1024 * 1024) {
         throw new FilesystemException(
-          $dir, "Failed to create a temporary directory: the disk is full.");
+          $dir,
+          pht("Failed to create a temporary directory: the disk is full."));
       }
 
       throw new FilesystemException(
-        $dir, "Failed to create a temporary directory.");
+        $dir,
+        pht("Failed to create a temporary directory in '%s'.", $tmp));
     }
 
     return $dir;
