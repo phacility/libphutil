@@ -1,5 +1,5 @@
-<http://www.zany.com/omg/space url/>
+<http://www.zany.com/omg/weird_url,,,>
 ~~~~~~~~~~
-<p><a href="http://www.zany.com/omg/space url/" target="_blank">http://www.zany.com/omg/space url/</a></p>
+<p><a href="http://www.zany.com/omg/weird_url,,," target="_blank">http://www.zany.com/omg/weird_url,,,</a></p>
 ~~~~~~~~~~
-http://www.zany.com/omg/space url/
+http://www.zany.com/omg/weird_url,,,

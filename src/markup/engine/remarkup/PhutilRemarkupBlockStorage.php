@@ -34,11 +34,13 @@
  */
 final class PhutilRemarkupBlockStorage {
 
+  const MAGIC_BYTE = "\1";
+
   private $map = array();
   private $index;
 
   public function store($text) {
-    $key = "\1".(++$this->index)."Z";
+    $key = self::MAGIC_BYTE.(++$this->index)."Z";
     $this->map[$key] = $text;
     return $key;
   }

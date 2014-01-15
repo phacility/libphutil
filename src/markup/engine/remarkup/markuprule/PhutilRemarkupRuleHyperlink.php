@@ -18,7 +18,7 @@ class PhutilRemarkupRuleHyperlink
     // with weird characters". This is assumed to be reasonable because they
     // don't appear in normal text or normal URLs.
     $text = preg_replace_callback(
-      '@<(\w{3,}://.+?)>@',
+      '@<(\w{3,}://[^\s'.PhutilRemarkupBlockStorage::MAGIC_BYTE.']+?)>@',
       array($this, 'markupHyperlink'),
       $text);
 
@@ -26,8 +26,11 @@ class PhutilRemarkupRuleHyperlink
     // stuff that's probably puncutation or otherwise not part of the URL and
     // not link it. This lets someone write "QuicK! Go to
     // http://www.example.com/!". We also apply some paren balancing rules.
+
+    // NOTE: We're explicitly avoiding capturing stored blocks, so text like
+    // `http://www.example.com/[[x | y]]` doesn't get aggressively captured.
     $text = preg_replace_callback(
-      '@(\w{3,}://\S+)@',
+      '@(\w{3,}://[^\s'.PhutilRemarkupBlockStorage::MAGIC_BYTE.']+)@',
       array($this, 'markupHyperlinkUngreedy'),
       $text);
 
