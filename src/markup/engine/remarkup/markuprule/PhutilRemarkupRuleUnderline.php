@@ -13,7 +13,7 @@ final class PhutilRemarkupRuleUnderline
     }
 
     return $this->replaceHTML(
-      '@(?<!_)__([^\s_].*?_*)__@s',
+      '@(?<!_|/)__([^\s_/].*?_*)__(?!/|\.\S)@s',
       array($this, 'applyCallback'),
       $text);
   }
