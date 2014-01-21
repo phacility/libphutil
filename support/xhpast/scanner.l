@@ -266,6 +266,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
   trait tok(T_TRAIT);
   __trait__ tok(T_TRAIT_C);
   yield tok(T_YIELD);
+  finally tok(T_FINALLY);
 }
 
  /* Operators */

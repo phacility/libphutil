@@ -1,4 +1,4 @@
-# fail-syntax, comment="Temporarily fails until parser is updated."
+# pass
 <?php
 
 function f(callable $c) {}

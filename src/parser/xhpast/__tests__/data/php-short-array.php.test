@@ -1,2 +1,2 @@
-# fail-syntax, comment="Wrong, supported in PHP 5.4, see T4334."
+# pass
 <?php [];

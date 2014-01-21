@@ -134,5 +134,11 @@ function xhpast_parser_token_constants() {
     385 => 'T_NS_C',
     386 => 'T_DIR',
     387 => 'T_NS_SEPARATOR',
+    388 => 'T_INSTEADOF',
+    389 => 'T_CALLABLE',
+    390 => 'T_TRAIT',
+    391 => 'T_TRAIT_C',
+    392 => 'T_YIELD',
+    393 => 'T_FINALLY',
   );
 }

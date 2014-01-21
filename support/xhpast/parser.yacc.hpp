@@ -173,7 +173,8 @@
      T_CALLABLE = 389,
      T_TRAIT = 390,
      T_TRAIT_C = 391,
-     T_YIELD = 392
+     T_YIELD = 392,
+     T_FINALLY = 393
    };
 #endif
 /* Tokens.  */
@@ -312,6 +313,7 @@
 #define T_TRAIT 390
 #define T_TRAIT_C 391
 #define T_YIELD 392
+#define T_FINALLY 393
 
 
 

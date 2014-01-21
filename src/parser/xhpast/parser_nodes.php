@@ -109,5 +109,13 @@ function xhp_parser_node_constants() {
     9102 => 'n_METHOD_CALL',
     9103 => 'n_CONCATENATION_LIST',
     9104 => 'n_PARENTHETICAL_EXPRESSION',
+    9105 => 'n_TRAIT_USE',
+    9106 => 'n_TRAIT_USE_LIST',
+    9107 => 'n_TRAIT_ADAPTATION_LIST',
+    9108 => 'n_TRAIT_INSTEADOF',
+    9109 => 'n_TRAIT_REFERENCE_LIST',
+    9110 => 'n_TRAIT_METHOD_REFERENCE',
+    9111 => 'n_TRAIT_AS',
+    9112 => 'n_YIELD',
   );
 }
