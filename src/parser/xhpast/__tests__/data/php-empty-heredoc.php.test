@@ -1,0 +1,5 @@
+# fail-syntax, comment="Wrong, should pass, see T3512."
+<?php
+
+$a = <<<EODOC
+EODOC;
