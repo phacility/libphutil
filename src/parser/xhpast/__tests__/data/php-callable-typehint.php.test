@@ -1,0 +1,4 @@
+# pass
+<?php
+
+function f(callable $c) {}
