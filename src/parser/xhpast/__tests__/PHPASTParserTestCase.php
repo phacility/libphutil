@@ -56,6 +56,10 @@ final class PHPASTParserTestCase extends PhutilTestCase {
         case 'comment':
           // Human readable comment providing test case information.
           break;
+        case 'rtrim':
+          // Allows construction of tests which rely on EOF without newlines.
+          $body = rtrim($body);
+          break;
         default:
           throw new Exception(
             pht(

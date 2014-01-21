@@ -1,0 +1,2 @@
+# fail-syntax, comment="Wrong, supported in PHP 5.5, see T4334."
+<?php foreach ($x as list($y, $z)) {}
