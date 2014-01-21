@@ -1,4 +1,4 @@
-# fail-syntax, rtrim, comment="Wrong, supported in PHP 5.5, see T4334."
+# fail-parse, rtrim
 <?php
 <<<HEREDOC
 HEREDOC;

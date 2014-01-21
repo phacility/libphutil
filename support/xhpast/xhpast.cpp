@@ -16,14 +16,12 @@ int main(int argc, char* argv[]) {
 
   if (argc != 1) {
     //coupling: modify also libphutil/src/parser/xhpast/bin/xhpast_parse.php
-    cout << "xhpast version 0.62\n";
+    cout << "xhpast version 5.5.8/1a\n";
     return 0;
   }
 
   ifstream inputFile;
   istream *inputStream;
-//  inputFile.open(argv[1]);
-//  inputStream = &inputFile;
   inputStream = &cin;
 
   std::stringbuf sb;

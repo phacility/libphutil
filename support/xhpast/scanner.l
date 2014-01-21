@@ -55,7 +55,6 @@ static void yy_scan_newlines(const char* text, struct yyguts_t* yyg);
 %s PHP_HEREDOC_START
 %s PHP_HEREDOC_NSTART
 %s PHP_HEREDOC_NEWLINE
-%s PHP_HEREDOC_DATA
 %s PHP_NO_RESERVED_WORDS
 %s PHP_NO_RESERVED_WORDS_PERSIST
 %s PHP_
@@ -64,6 +63,7 @@ LNUM [0-9]+
 DNUM ([0-9]*"."[0-9]+)|([0-9]+"."[0-9]*)
 EXPONENT_DNUM (({LNUM}|{DNUM})[eE][+-]?{LNUM})
 HNUM "0x"[0-9a-fA-F]+
+BNUM "0b"[01]+
 
 LABEL [a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*
 BYTE (.|\n)
@@ -261,6 +261,11 @@ NEWLINE ("\r\n"|"\n"|"\r")
   namespace tok(T_NAMESPACE);
   __namespace__ tok(T_NS_C);
   __dir__ tok(T_DIR);
+  insteadof tok(T_INSTEADOF);
+  callable tok(T_CALLABLE);
+  trait tok(T_TRAIT);
+  __trait__ tok(T_TRAIT_C);
+  yield tok(T_YIELD);
 }
 
  /* Operators */
@@ -298,9 +303,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
 <PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>{
   "("{TABS_AND_SPACES}(int|integer){TABS_AND_SPACES}")" tok(T_INT_CAST);
   "("{TABS_AND_SPACES}(real|double|float){TABS_AND_SPACES}")" tok(T_DOUBLE_CAST);
-  "("{TABS_AND_SPACES}string{TABS_AND_SPACES}")" tok(T_STRING_CAST);
-  "("{TABS_AND_SPACES}unicode{TABS_AND_SPACES}")" tok(T_UNICODE_CAST);
-  "("{TABS_AND_SPACES}binary{TABS_AND_SPACES}")" tok(T_BINARY_CAST);
+  "("{TABS_AND_SPACES}(string|binary){TABS_AND_SPACES}")" tok(T_STRING_CAST);
   "("{TABS_AND_SPACES}array{TABS_AND_SPACES}")" tok(T_ARRAY_CAST);
   "("{TABS_AND_SPACES}object{TABS_AND_SPACES}")" tok(T_OBJECT_CAST);
   "("{TABS_AND_SPACES}(bool|boolean){TABS_AND_SPACES}")" tok(T_BOOL_CAST);
@@ -309,7 +312,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
 
  /* Scalars (parsing these doesn't really matter since we just pass them through literally) */
 <PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>{
-  {LNUM}|{HNUM} tok(T_LNUMBER);
+  {LNUM}|{HNUM}|{BNUM} tok(T_LNUMBER);
   {DNUM}|{EXPONENT_DNUM} tok(T_DNUMBER);
   {LABEL} tok(T_STRING);
   "$"{LABEL} tok(T_VARIABLE);
@@ -348,18 +351,9 @@ NEWLINE ("\r\n"|"\n"|"\r")
   }
 }
 <PHP_HEREDOC_NSTART>{NEWLINE} {
-  ++yyextra->lineno;
-  yyextra->heredoc_data = yytext + yyleng;
-  set_state(PHP_HEREDOC_DATA);
+  yyextra->heredoc_yyleng = yyleng;
+  set_state(PHP_HEREDOC_NEWLINE);
   yymore();
-}
-<PHP_HEREDOC_DATA>{
-  [^\r\n]*{NEWLINE} {
-    ++yyextra->lineno;
-    set_state(PHP_HEREDOC_NEWLINE);
-    yyextra->heredoc_yyleng = yyleng;
-    yymore();
-  }
 }
 <PHP_HEREDOC_NEWLINE>{
   {LABEL};?{NEWLINE} {
@@ -376,7 +370,6 @@ NEWLINE ("\r\n"|"\n"|"\r")
     yymore();
   }
   [^\r\n]+ {
-    set_state(PHP_HEREDOC_DATA);
     yyextra->heredoc_yyleng = yyleng;
     yymore();
   }
@@ -416,8 +409,6 @@ static const char* yy_state_name(int state) {
       return "PHP_HEREDOC_NSTART";
     case PHP_HEREDOC_NEWLINE:
       return "PHP_HEREDOC_NEWLINE";
-    case PHP_HEREDOC_DATA:
-      return "PHP_HEREDOC_DATA";
     case PHP_NO_RESERVED_WORDS:
       return "PHP_NO_RESERVED_WORDS";
     case PHP_NO_RESERVED_WORDS_PERSIST:

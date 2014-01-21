@@ -184,6 +184,11 @@ static void replacestr(string &source, const string &find, const string &rep) {
 %token T_NS_C
 %token T_DIR
 %token T_NS_SEPARATOR
+%token T_INSTEADOF
+%token T_CALLABLE
+%token T_TRAIT
+%token T_TRAIT_C
+%token T_YIELD
 
 %%
 
@@ -1624,16 +1629,6 @@ expr_without_variable:
     $$->appendChild($2);
   }
 | T_STRING_CAST expr {
-    $$ = NNEW(n_CAST_EXPRESSION);
-    $$->appendChild(NTYPE($1, n_CAST));
-    $$->appendChild($2);
-  }
-| T_UNICODE_CAST expr {
-    $$ = NNEW(n_CAST_EXPRESSION);
-    $$->appendChild(NTYPE($1, n_CAST));
-    $$->appendChild($2);
-  }
-| T_BINARY_CAST expr {
     $$ = NNEW(n_CAST_EXPRESSION);
     $$->appendChild(NTYPE($1, n_CAST));
     $$->appendChild($2);

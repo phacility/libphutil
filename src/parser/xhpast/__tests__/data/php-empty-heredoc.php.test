@@ -1,4 +1,4 @@
-# fail-syntax, comment="Wrong, should pass, see T3512."
+# pass
 <?php
 
 $a = <<<EODOC
