@@ -1,0 +1,219 @@
+# pass
+<?php
+
+1;
+array(1);
+
+function f() {}
+function f1($x) {}
+function &f2($x) {}
+function f3(&$x) {}
+function &f4(&$x) {}
+function f5(C $x) {}
+function f6(array $x) {}
+function f7(array $x = array()) {}
+function f8($x = null) {}
+function f9(C $x = null) {}
+
+class A {}
+class B extends C {}
+class D extends E implements F {}
+class G extends H implements J, K {}
+final class L {}
+abstract class M {}
+
+final class T {
+  const C = 1;
+  const D = 1, E = 1;
+
+  var $f;
+  var $g, $h;
+  public $i;
+  protected $j, $k;
+  private $l = 3;
+  public static $m = 4, $n = 5;
+
+
+  function m() {}
+  public function m2() {}
+  protected function m3() {}
+  private function m4() {}
+  function &n() {}
+  static function n1() {}
+}
+
+abstract class U {
+  abstract function v();
+}
+
+interface N {}
+interface O extends P {}
+interface Q extends R, S {}
+
+use z;
+use aa, ab;
+use qq as rr, mm as nn, \oo, \pp as qq;
+const F = 1;
+const G = 2, H = 3;
+lbl:
+
+if (1) {}
+if (1) {} else {}
+if (1) {} elseif (2) {} else {}
+if (1) {} elseif (2) {} elseif (3) {}
+
+if (1):
+endif;
+
+if (1):
+else:
+endif;
+
+if (1):
+elseif (2):
+endif;
+
+if (1):
+elseif (2):
+elseif (3):
+endif;
+
+while (1) {}
+
+while (1):
+endwhile;
+
+do {} while (1);
+
+
+for (;;) {}
+
+for (;;):
+endfor;
+
+switch (1) {
+  case 1:
+    break;
+  case 2;
+    break;
+  default:
+    continue;
+}
+
+switch(1) {;}
+switch(1):
+endswitch;
+
+break;
+break 1;
+continue;
+continue 1;
+return;
+return 1;
+return $x;
+
+global $x;
+global $x, $y;
+global $$q;
+global ${$z.$z};
+static $x;
+static $x, $y;
+
+echo 1;
+echo 1, 2;
+
+unset($a, $b);
+
+foreach ($x as $y) {}
+foreach ($x as $k => $y) {}
+foreach ($x as $k => &$y) {}
+
+foreach (array() as $x) {}
+foreach (array() as $k => $y) {}
+
+foreach ($x as $y):
+endforeach;
+
+declare(x=1);
+
+declare(y=1) {
+}
+
+declare(z=1):
+enddeclare;
+
+try {} catch (C $x) {}
+try {} catch (C $x) {} catch (D $x) {}
+
+throw 1;
+
+clone $q;
+$x + $x;
+$x - $x;
+$x * $x;
+$x / $x;
+$x . $x;
+$x % $x;
+$x & $x;
+$x | $x;
+$x ^ $x;
+$x << $x;
+$x >> $x;
+$x++;
+++$x;
+$x--;
+--$x;
++$x;
+-$x;
+!$x;
+~$x;
+$x == $x;
+$x === $x;
+$x != $x;
+$x !== $x;
+$x = $x;
+$x < $x;
+$x <= $x;
+$x > $x;
+$x >= $x;
+$x instanceof $x;
+($x);
+($x ? $x : $x);
+($x ?: $x);
+$x || $x;
+$x && $x;
+$x and $x;
+$x or $x;
+$x xor $x;
+$x += $x;
+$x -= $x;
+$x *= $x;
+$x /= $x;
+$x .= $x;
+$x %= $x;
+$x &= $x;
+$x |= $x;
+$x ^= $x;
+$x <<= $x;
+$x >>= $x;
+(int)$x;
+(double)$x;
+(string)$x;
+(binary)$x;
+(array)$x;
+(object)$x;
+(bool)$x;
+(unset)$x;
+$x[] = $x;
+
+@$x;
+
+__LINE__;
+__FILE__;
+__DIR__;
+__CLASS__;
+__METHOD__;
+__FUNCTION__;
+__NAMESPACE__;
+
+goto lbl;
