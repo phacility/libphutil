@@ -53,6 +53,9 @@ final class PHPASTParserTestCase extends PhutilTestCase {
           }
           $type = $key;
           break;
+        case 'comment':
+          // Human readable comment providing test case information.
+          break;
         default:
           throw new Exception(
             pht(
