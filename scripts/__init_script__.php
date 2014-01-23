@@ -59,6 +59,11 @@ function __phutil_init_script__() {
     date_default_timezone_set('UTC');
   }
 
+  // Disable the insanely dangerous XML entity loader by default.
+  if (function_exists('libxml_disable_entity_loader')) {
+    libxml_disable_entity_loader(true);
+  }
+
   // Now, load libphutil.
 
   $root = dirname(dirname(__FILE__));
