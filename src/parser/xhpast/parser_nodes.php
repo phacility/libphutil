@@ -117,5 +117,6 @@ function xhp_parser_node_constants() {
     9110 => 'n_TRAIT_METHOD_REFERENCE',
     9111 => 'n_TRAIT_AS',
     9112 => 'n_YIELD',
+    9113 => 'n_FINALLY',
   );
 }
