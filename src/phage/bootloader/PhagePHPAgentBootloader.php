@@ -41,6 +41,7 @@ final class PhagePHPAgentBootloader extends PhageAgentBootloader {
       $files = array(
         'utils/utils.php',
         'object/Phobject.php',
+        'utils/PhutilRope.php',
         'xsprintf/xsprintf.php',
         'xsprintf/csprintf.php',
         'xsprintf/PhutilCommandString.php',
