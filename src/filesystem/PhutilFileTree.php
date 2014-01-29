@@ -101,7 +101,7 @@ final class PhutilFileTree {
       if ($found) {
         return $node;
       }
-      if ($this->name == $node->name) {
+      if ($this->name === $node->name) {
         $found = true;
       }
     }
