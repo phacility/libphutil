@@ -2,6 +2,20 @@
 
 final class PhutilcsprintfTestCase extends ArcanistTestCase {
 
+  public function testCommandReadableEscapes() {
+    // For arguments comprised of only characters which are safe in any context,
+    // %R this should avoid adding quotes.
+    $this->assertEqual(
+      true,
+      ('ab' === (string)csprintf('%R', 'ab')));
+
+    // For arguments which have any characters which are not safe in some
+    // context, %R should apply standard escaping.
+    $this->assertEqual(
+      false,
+      ('a b' === (string)csprintf('%R', 'a b')));
+  }
+
   public function testPasswords() {
 
     // Normal "%s" doesn't do anything special.
@@ -9,7 +23,6 @@ final class PhutilcsprintfTestCase extends ArcanistTestCase {
     $this->assertEqual(
       true,
       strpos($command, 'hunter2trustno1') !== false);
-
 
     // "%P" takes a PhutilOpaqueEnvelope.
     $caught = null;
