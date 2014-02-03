@@ -461,6 +461,47 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       phutil_loggable_string("a\x1Fb"));
   }
 
+  public function testPhutilUnits() {
+    $cases = array(
+      '0 seconds in seconds' => 0,
+      '1 second in seconds' => 1,
+      '2 seconds in seconds' => 2,
+      '100 seconds in seconds' => 100,
+      '2 minutes in seconds' => 120,
+      '1 hour in seconds' => 3600,
+      '1 day in seconds' => 86400,
+      '3 days in seconds' => 259200,
+    );
 
+    foreach ($cases as $input => $expect) {
+      $this->assertEqual(
+        $expect,
+        phutil_units($input),
+        'phutil_units("'.$input.'")');
+    }
+
+    $bad_cases = array(
+      'quack',
+      '3 years in seconds',
+      '1 minute in milliseconds',
+      '1 day in days',
+      '-1 minutes in seconds',
+      '1.5 minutes in seconds',
+    );
+
+    foreach ($bad_cases as $input) {
+      $caught = null;
+      try {
+        phutil_units($input);
+      } catch (InvalidArgumentException $ex) {
+        $caught = $ex;
+      }
+
+      $this->assertEqual(
+        true,
+        ($caught instanceof InvalidArgumentException),
+        'phutil_units("'.$input.'")');
+    }
+  }
 
 }

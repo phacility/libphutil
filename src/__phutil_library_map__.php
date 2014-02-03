@@ -384,6 +384,7 @@ phutil_register_library_map(array(
     'phutil_tag' => 'markup/render.php',
     'phutil_tag_div' => 'markup/render.php',
     'phutil_unescape_uri_path_component' => 'markup/render.php',
+    'phutil_units' => 'utils/utils.php',
     'phutil_utf8_console_strlen' => 'utils/utf8.php',
     'phutil_utf8_convert' => 'utils/utf8.php',
     'phutil_utf8_hard_wrap' => 'utils/utf8.php',

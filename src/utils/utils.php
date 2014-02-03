@@ -988,3 +988,71 @@ function phutil_fwrite_nonblocking_stream($stream, $bytes) {
   // is broken and return `false`.
   return false;
 }
+
+
+/**
+ * Convert a human-readable unit description into a numeric one. This function
+ * allows you to replace this:
+ *
+ *   COUNTEREXAMPLE
+ *   $ttl = (60 * 60 * 24 * 30); // 30 days
+ *
+ * ...with this:
+ *
+ *   $ttl = phutil_units('30 days in seconds');
+ *
+ * ...which is self-documenting and difficult to make a mistake with.
+ *
+ * @param   string  Human readable description of a unit quantity.
+ * @return  int     Quantity of specified unit.
+ */
+function phutil_units($description) {
+
+  $matches = null;
+  if (!preg_match('/^(\d+) (\w+) in (\w+)$/', $description, $matches)) {
+    throw new InvalidArgumentException(
+      pht(
+        'Unable to parse unit specification (expected a specification in the '.
+        'form "5 days in seconds"): %s',
+        $description));
+  }
+
+  $quantity = (int)$matches[1];
+  $src_unit = $matches[2];
+  $dst_unit = $matches[3];
+
+  switch ($dst_unit) {
+    case 'seconds':
+      switch ($src_unit) {
+        case 'second':
+        case 'seconds':
+          $factor = 1;
+          break;
+        case 'minute':
+        case 'minutes':
+          $factor = 60;
+          break;
+        case 'hour':
+        case 'hours':
+          $factor = 60 * 60;
+          break;
+        case 'day':
+        case 'days':
+          $factor = 60 * 60 * 24;
+          break;
+        default:
+          throw new InvalidArgumentException(
+            pht(
+              'This function can not convert from the unit "%s".',
+              $src_unit));
+      }
+      break;
+    default:
+      throw new InvalidArgumentException(
+        pht(
+          'This function can not convert into the unit "%s".',
+          $dst_unit));
+  }
+
+  return $quantity * $factor;
+}
