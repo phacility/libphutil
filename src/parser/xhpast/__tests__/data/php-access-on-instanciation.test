@@ -1,0 +1,16 @@
+# pass
+<?php
+
+class a {
+ public $b;
+
+ public function c() { }
+}
+
+$d = (new a)->b;
+
+$e = (new a)->c();
+
+(new a)->b;
+
+(new a)->c();

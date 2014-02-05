@@ -69,6 +69,7 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
+typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -465,7 +466,7 @@ extern int xhpastlex \
 #line 392 "scanner.l"
 
 
-#line 469 "scanner.lex.hpp"
+#line 470 "scanner.lex.hpp"
 #undef xhpastIN_HEADER
 #endif /* xhpastHEADER_H */
 /* @generated */

@@ -71,6 +71,7 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
+typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -428,7 +429,7 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 	yyg->yytext_ptr = yy_bp; \
 /* %% [2.0] code to fiddle yytext and yyleng for yymore() goes here \ */\
 	yyg->yytext_ptr -= yyg->yy_more_len; \
-	yyleng = (size_t) (yy_cp - yyg->yytext_ptr); \
+	yyleng = (yy_size_t) (yy_cp - yyg->yytext_ptr); \
 	yyg->yy_hold_char = *yy_cp; \
 	*yy_cp = '\0'; \
 /* %% [3.0] code to copy yytext_ptr to yytext[] goes here, if %array \ */\
@@ -3534,7 +3535,7 @@ static void yy_scan_newlines(const char* text, struct yyguts_t* yyg);
 
 
 
-#line 3538 "scanner.lex.cpp"
+#line 3539 "scanner.lex.cpp"
 
 #define INITIAL 0
 #define PHP 1
@@ -3852,7 +3853,7 @@ YY_DECL
 
 
  /* Open / close PHP + inline HTML */
-#line 3856 "scanner.lex.cpp"
+#line 3857 "scanner.lex.cpp"
 
     yylval = yylval_param;
 
@@ -4872,7 +4873,7 @@ YY_RULE_SETUP
 #line 392 "scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 4876 "scanner.lex.cpp"
+#line 4877 "scanner.lex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(PHP):
 case YY_STATE_EOF(PHP_HEREDOC_START):
