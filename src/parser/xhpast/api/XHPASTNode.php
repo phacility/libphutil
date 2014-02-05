@@ -88,8 +88,20 @@ final class XHPASTNode extends AASTNode {
           }
         }
         return $result;
+      case 'n_CONCATENATION_LIST':
+        $result = '';
+        foreach ($this->getChildren() as $child) {
+          if ($child->getTypeName() == 'n_OPERATOR') {
+            continue;
+          }
+          $result .= $child->evalStatic();
+        }
+        return $result;
       default:
-        throw new Exception("Unexpected node.");
+        throw new Exception(
+          pht(
+            'Unexpected node during static evaluation, of type: %s',
+            $this->getTypeName()));
     }
   }
 
