@@ -43,6 +43,26 @@ final class PhutilURITestCase extends PhutilTestCase {
       'ssh://git@example.com/example/example.git',
       (string)$uri,
       'uri');
+
+
+    $uri = new PhutilURI('http://0@domain.com/');
+    $this->assertEqual('0', $uri->getUser());
+    $this->assertEqual('http://0@domain.com/', (string)$uri);
+
+    $uri = new PhutilURI('http://0:0@domain.com/');
+    $this->assertEqual('0', $uri->getUser());
+    $this->assertEqual('0', $uri->getPass());
+    $this->assertEqual('http://0:0@domain.com/', (string)$uri);
+
+    $uri = new PhutilURI('http://%20:%20@domain.com/');
+    $this->assertEqual(' ', $uri->getUser());
+    $this->assertEqual(' ', $uri->getPass());
+    $this->assertEqual('http://%20:%20@domain.com/', (string)$uri);
+
+    $uri = new PhutilURI('http://%40:%40@domain.com/');
+    $this->assertEqual('@', $uri->getUser());
+    $this->assertEqual('@', $uri->getPass());
+    $this->assertEqual('http://%40:%40@domain.com/', (string)$uri);
   }
 
   public function testURIGeneration() {
