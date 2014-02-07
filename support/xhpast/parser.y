@@ -69,7 +69,7 @@ static void replacestr(string &source, const string &find, const string &rep) {
 
 %}
 
-%expect 13
+%expect 5
 // 2: PHP's if/else grammar
 // 7: expr '[' dim_offset ']' -- shift will default to first grammar
 %name-prefix = "xhpast"
@@ -1806,6 +1806,7 @@ expr_without_variable:
     $$ = $1;
   }
 | scalar
+| combined_scalar_offset
 | combined_scalar
 | T_PRINT expr {
     $$ = NNEW(n_UNARY_PREFIX_EXPRESSION);
@@ -2301,8 +2302,24 @@ variable_class_name:
   reference_variable
 ;
 
+array_function_dereference:
+  array_function_dereference '[' dim_offset ']' {
+    $$ = NNEW(n_INDEX_ACCESS);
+    $$->appendChild($1);
+    $$->appendChild($3);
+    NMORE($$, $4);
+  }
+| function_call '[' dim_offset ']' {
+    $$ = NNEW(n_INDEX_ACCESS);
+    $$->appendChild($1);
+    $$->appendChild($3);
+    NMORE($$, $4);
+  }
+;
+
 base_variable_with_function_calls:
   base_variable
+| array_function_dereference
 | function_call
 ;
 
@@ -2567,6 +2584,27 @@ parenthesis_expr:
   }
 ;
 
+combined_scalar_offset:
+  combined_scalar '[' dim_offset ']' {
+    $$ = NNEW(n_INDEX_ACCESS);
+    $$->appendChild($1);
+    $$->appendChild($3);
+    NMORE($$, $4);
+  }
+| combined_scalar_offset '[' dim_offset ']' {
+    $$ = NNEW(n_INDEX_ACCESS);
+    $$->appendChild($1);
+    $$->appendChild($3);
+    NMORE($$, $4);
+  }
+| T_CONSTANT_ENCAPSED_STRING '[' dim_offset ']' {
+    $$ = NNEW(n_INDEX_ACCESS);
+    $$->appendChild(NTYPE($1, n_STRING_SCALAR));
+    $$->appendChild($3);
+    NMORE($$, $4);
+  }
+;
+
 combined_scalar:
   T_ARRAY '(' array_pair_list ')' {
     NTYPE($1, n_ARRAY_LITERAL);
@@ -2603,24 +2641,6 @@ class_constant:
     $$->appendChild(NTYPE($3, n_STRING));
   }
 ;
-
-// Fix the "bug" in PHP's grammar where you can't chain the [] operator on a
-// function call.
-// This introduces some shift/reduce conflicts. We want the shift here to fall
-// back to regular PHP grammar. In the case where it's an extension of the PHP
-// grammar our code gets picked up.
-expr_without_variable:
-  expr '[' dim_offset ']' {
-    if (yyextra->idx_expr) {
-      yyextra->used = true;
-    }
-    $$ = NNEW(n_INDEX_ACCESS);
-    $$->appendChild($1);
-    $$->appendChild($3);
-    NMORE($$, $4);
-  }
-;
-
 
 %%
 

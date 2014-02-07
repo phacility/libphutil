@@ -1,0 +1,14 @@
+# pass
+<?php
+
+function foo() {
+  return [1,2,3];
+}
+
+$i = 1;
+$x = foo()[2];
+
+$y = foo()[$i];
+
+if (isset(foo()[0])) { }
+

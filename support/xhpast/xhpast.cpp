@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
 
   if (argc != 1) {
     //coupling: modify also libphutil/src/parser/xhpast/bin/xhpast_parse.php
-    cout << "xhpast version 5.5.8/1c\n";
+    cout << "xhpast version 5.5.8/1d\n";
     return 0;
   }
 
