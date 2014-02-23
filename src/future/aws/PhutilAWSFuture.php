@@ -8,10 +8,11 @@ abstract class PhutilAWSFuture extends FutureProxy {
   private $future;
   private $awsAccessKey;
   private $awsPrivateKey;
+  private $awsRegion;
   private $builtRequest;
   private $params;
 
-  abstract public function getHost();
+  abstract public function getServiceName();
 
   public function __construct() {
     parent::__construct(null);
@@ -31,14 +32,24 @@ abstract class PhutilAWSFuture extends FutureProxy {
     return $this->awsPrivateKey;
   }
 
+  public function getAWSRegion() {
+    return $this->awsRegion;
+  }
+
+  public function setAWSRegion($region) {
+    $this->awsRegion = $region;
+    return $this;
+  }
+
+  public function getHost() {
+    $host = $this->getServiceName().'.'.$this->awsRegion.'.amazonaws.com';
+    return $host;
+  }
+
   public function setRawAWSQuery($action, array $params = array()) {
     $this->params = $params;
     $this->params['Action'] = $action;
     return $this;
-  }
-
-  public function getAWSKeys() {
-    return $this->AWSKeys;
   }
 
   protected function getProxiedFuture() {
