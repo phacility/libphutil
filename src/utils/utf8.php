@@ -58,13 +58,40 @@ function phutil_utf8ize($string) {
  * @return bool   True if the string is valid UTF-8 with only BMP characters.
  */
 function phutil_is_utf8_with_only_bmp_characters($string) {
-  $regex =
-    "/^(".
-      "[\x01-\x7F]+".
-    "|([\xC2-\xDF][\x80-\xBF])".
-    "|([\xE0-\xEF][\x80-\xBF][\x80-\xBF]))*\$/";
 
-  return (bool)preg_match($regex, $string);
+  // NOTE: By default, PCRE segfaults on patterns like the one we would need
+  // to use here at very small input sizes, at least on some systems (like
+  // OS X). This is apparently because the internal implementation is recursive
+  // and it blows the stack. See <https://bugs.php.net/bug.php?id=45735> for
+  // some discussion. Since the input limit is extremely low (less than 50KB on
+  // my system), do this check very very slowly in PHP instead.
+
+  $len = strlen($string);
+  for ($ii = 0; $ii < $len; $ii++) {
+    $chr = ord($string[$ii]);
+    if ($chr >= 0x01 && $chr <= 0x7F) {
+      continue;
+    } else if ($chr >= 0xC2 && $chr <= 0xDF) {
+      $chr = ord($string[++$ii]);
+      if ($chr >= 0x80 && $chr <= 0xBF) {
+        continue;
+      }
+      return false;
+    } else if ($chr >= 0xE0 && $chr <= 0xEF) {
+      $chr = ord($string[++$ii]);
+      if ($chr >= 0x80 && $chr <= 0xBF) {
+        $chr = ord($string[++$ii]);
+        if ($chr >= 0x80 && $chr <= 0xBF) {
+          continue;
+        }
+      }
+      return false;
+    }
+
+    return false;
+  }
+
+  return true;
 }
 
 

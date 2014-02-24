@@ -430,6 +430,13 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
   }
 
+  public function testUTF8BMPSegfaults() {
+    // This test case fails by segfaulting, or passes by not segfaulting. See
+    // the function implementation for details.
+    $input = str_repeat("\xEF\xBF\xBF", 1024 * 32);
+    phutil_is_utf8_with_only_bmp_characters($input);
+  }
+
   public function testUTF8BMP() {
     $tests = array(
       ""  => array(true, true, "empty string"),
