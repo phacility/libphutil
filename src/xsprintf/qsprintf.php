@@ -5,8 +5,8 @@
  * all the normal conversions (like %s) will be properly escaped, and
  * additional conversions are supported:
  *
- *   %nd, %ns, %nf
- *     "Nullable" versions of %d, %s and %f. Will produce 'NULL' if the
+ *   %nd, %ns, %nf, %nB
+ *     "Nullable" versions of %d, %s, %f and %B. Will produce 'NULL' if the
  *     argument is a strict null.
  *
  *   %=d, %=s, %=f
@@ -16,11 +16,15 @@
  *
  *       qsprintf($escaper, 'WHERE hatID %=d', $hat);
  *
- *   %Ld, %Ls, %Lf
- *     "List" versions of %d, %s and %f. These are appropriate for use in
+ *   %Ld, %Ls, %Lf, %LB
+ *     "List" versions of %d, %s, %f and %B. These are appropriate for use in
  *     an "IN" clause. For example:
  *
  *       qsprintf($escaper, 'WHERE hatID IN(%Ld)', $list_of_hats);
+ *
+ *   %B ("Binary String")
+ *     Escapes a string for insertion into a pure binary column, ignoring
+ *     tests for characters outside of the basic multilingual plane.
  *
  *   %T ("Table")
  *     Escapes a table name.
@@ -116,6 +120,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         case 'd': //  ...integer.
         case 'f': //  ...float.
         case 's': //  ...string.
+        case 'B': //  ...binary string.
           $pattern = substr_replace($pattern, '', $pos, 1);
           $length = strlen($pattern);
           $type = $next;
@@ -139,7 +144,13 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
           break;
         case 's': // ...strings.
           foreach ($value as $k => $v) {
-            $value[$k] = "'".$escaper->escapeString($v)."'";
+            $value[$k] = "'".$escaper->escapeUTF8String((string)$v)."'";
+          }
+          $value = implode(', ', $value);
+          break;
+        case 'B': // ...binary strings.
+          foreach ($value as $k => $v) {
+            $value[$k] = "'".$escaper->escapeBinaryString((string)$v)."'";
           }
           $value = implode(', ', $value);
           break;
@@ -162,7 +173,16 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         if ($nullable && $value === null) {
           $value = 'NULL';
         } else {
-          $value = "'".$escaper->escapeString($value)."'";
+          $value = "'".$escaper->escapeUTF8String((string)$value)."'";
+        }
+        $type = 's';
+        break;
+
+      case 'B': // Binary String
+        if ($nullable && $value === null) {
+          $value = 'NULL';
+        } else {
+          $value = "'".$escaper->escapeBinaryString((string)$value)."'";
         }
         $type = 's';
         break;
@@ -230,7 +250,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
  */
 function _qsprintf_check_type($value, $type, $query) {
   switch ($type) {
-    case 'Ld': case 'Ls': case 'LC': case 'LA': case 'LO':
+    case 'Ld': case 'Ls': case 'LC': case 'LB':
       if (!is_array($value)) {
         throw new AphrontQueryParameterException(
           $query,
@@ -274,7 +294,7 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
       }
       break;
 
-    case 'Ls': case 's':
+    case 'Ls': case 's': case 'LB': case 'B':
     case '~': case '>': case '<': case 'K':
       if (!is_null($value) && !is_scalar($value)) {
         throw new AphrontQueryParameterException(
@@ -283,15 +303,6 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
       }
       break;
 
-    case 'LA': case 'LO':
-      if (!is_null($value) && !is_scalar($value) &&
-          !(is_array($value) && !empty($value))) {
-        throw new AphrontQueryParameterException(
-          $query,
-          "Expected a scalar or null or non-empty array for ".
-          "%{$type} conversion.");
-      }
-      break;
     default:
       throw new Exception("Unknown conversion '{$type}'.");
   }

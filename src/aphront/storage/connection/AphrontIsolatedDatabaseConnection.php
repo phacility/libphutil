@@ -26,8 +26,12 @@ final class AphrontIsolatedDatabaseConnection
     return;
   }
 
-  public function escapeString($string) {
+  public function escapeUTF8String($string) {
     return '<S>';
+  }
+
+  public function escapeBinaryString($string) {
+    return '<B>';
   }
 
   public function escapeColumnName($name) {
