@@ -456,6 +456,8 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
       "musical \xF0\x9D\x84\x9E g-clef" => array(true, false, "gclef text"),
       "\xF0\x9D\x84" => array(false, false, "Invalid, truncated."),
+
+      "\xE0\x80\x80" => array(false, false, "Nonminimal 3-byte character."),
     );
 
     foreach ($tests as $input => $test) {

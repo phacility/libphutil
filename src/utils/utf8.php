@@ -77,9 +77,23 @@ function phutil_is_utf8_with_only_bmp_characters($string) {
         continue;
       }
       return false;
-    } else if ($chr >= 0xE0 && $chr <= 0xEF) {
+    } else if ($chr > 0xE0 && $chr <= 0xEF) {
       $chr = ord($string[++$ii]);
       if ($chr >= 0x80 && $chr <= 0xBF) {
+        $chr = ord($string[++$ii]);
+        if ($chr >= 0x80 && $chr <= 0xBF) {
+          continue;
+        }
+      }
+      return false;
+    } else if ($chr == 0xE0) {
+      $chr = ord($string[++$ii]);
+
+      // NOTE: This range starts at 0xA0, not 0x80. The values 0x80-0xA0 are
+      // "valid", but not minimal representations, and MySQL rejects them. We're
+      // special casing this part of the range.
+
+      if ($chr >= 0xA0 && $chr <= 0xBF) {
         $chr = ord($string[++$ii]);
         if ($chr >= 0x80 && $chr <= 0xBF) {
           continue;
@@ -109,6 +123,9 @@ function phutil_is_utf8($string) {
     return mb_check_encoding($string, 'UTF-8');
   }
 
+  // NOTE: This incorrectly accepts characters like \xE0\x80\x80, but should
+  // not. The MB version works correctly.
+
   $regex =
     "/^(".
       "[\x01-\x7F]+".
@@ -116,7 +133,7 @@ function phutil_is_utf8($string) {
     "|([\xE0-\xEF][\x80-\xBF][\x80-\xBF])".
     "|([\xF0-\xF4][\x80-\xBF][\x80-\xBF][\x80-\xBF]))*\$/";
 
-  return preg_match($regex, $string);
+  return (bool)preg_match($regex, $string);
 }
 
 
