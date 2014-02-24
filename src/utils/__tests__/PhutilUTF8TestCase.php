@@ -458,6 +458,11 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       "\xF0\x9D\x84" => array(false, false, "Invalid, truncated."),
 
       "\xE0\x80\x80" => array(false, false, "Nonminimal 3-byte character."),
+
+      // Partial BMP characters.
+      "\xCD" => array(false, false, "Partial 2-byte character."),
+      "\xE0\xA0" => array(false, false, "Partial BMP 0xE0 character."),
+      "\xE2\x98" => array(false, false, "Partial BMP cahracter."),
     );
 
     foreach ($tests as $input => $test) {
