@@ -21,9 +21,8 @@ abstract class PhutilAuthAdapterOAuth extends PhutilAuthAdapter {
     $uri->setQueryParam('client_id', $this->getClientID());
     $uri->setQueryParam('scope', $this->getScope());
     $uri->setQueryParam('redirect_uri', $this->getRedirectURI());
-    if ($this->supportsStateParameter()) {
-      $uri->setQueryParam('state', $this->getState());
-    }
+    $uri->setQueryParam('state', $this->getState());
+
     foreach ($this->getExtraAuthenticateParameters() as $key => $value) {
       $uri->setQueryParam($key, $value);
     }
@@ -35,10 +34,6 @@ abstract class PhutilAuthAdapterOAuth extends PhutilAuthAdapter {
     $this_class = get_class($this);
     $type_name = str_replace('PhutilAuthAdapterOAuth', '', $this_class);
     return strtolower($type_name);
-  }
-
-  public function supportsStateParameter() {
-    return true;
   }
 
   public function setState($state) {
