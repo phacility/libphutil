@@ -48,6 +48,27 @@ function phutil_utf8ize($string) {
 
 
 /**
+ * Determine if a string is valid UTF-8, with only basic multilingual plane
+ * characters. This is particularly important because MySQL's `utf8` column
+ * types silently truncate strings which contain characters outside of this
+ * set.
+ *
+ * @param string  String to test for being valid UTF-8 with only characters in
+ *                the basic multilingual plane.
+ * @return bool   True if the string is valid UTF-8 with only BMP characters.
+ */
+function phutil_is_utf8_with_only_bmp_characters($string) {
+  $regex =
+    "/^(".
+      "[\x01-\x7F]+".
+    "|([\xC2-\xDF][\x80-\xBF])".
+    "|([\xE0-\xEF][\x80-\xBF][\x80-\xBF]))*\$/";
+
+  return (bool)preg_match($regex, $string);
+}
+
+
+/**
  * Determine if a string is valid UTF-8.
  *
  * @param string  Some string which may or may not be valid UTF-8.

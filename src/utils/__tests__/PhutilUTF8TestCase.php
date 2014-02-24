@@ -430,4 +430,40 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
   }
 
+  public function testUTF8BMP() {
+    $tests = array(
+      ""  => array(true, true, "empty string"),
+      "a" => array(true, true, "a"),
+      "a\xCD\xA0\xCD\xA0" => array(true, true, "a with combining"),
+      "\xE2\x98\x83" => array(true, true, "snowman"),
+
+      // This is the last character in BMP, U+FFFF.
+      "\xEF\xBF\xBF" => array(true, true, "U+FFFF"),
+
+      // This isn't valid.
+      "\xEF\xBF\xC0" => array(false, false, "Invalid, byte range."),
+
+      // This is the first character above BMP, U+10000.
+      "\xF0\x90\x80\x80" => array(true, false, "U+10000"),
+      "\xF0\x9D\x84\x9E" => array(true, false, "gclef"),
+
+      "musical \xF0\x9D\x84\x9E g-clef" => array(true, false, "gclef text"),
+      "\xF0\x9D\x84" => array(false, false, "Invalid, truncated."),
+    );
+
+    foreach ($tests as $input => $test) {
+      list($expect_utf8, $expect_bmp, $test_name) = $test;
+
+      $this->assertEqual(
+        $expect_utf8,
+        phutil_is_utf8($input),
+        pht('is_utf(%s)', $test_name));
+
+      $this->assertEqual(
+        $expect_bmp,
+        phutil_is_utf8_with_only_bmp_characters($input),
+        pht('is_utf_bmp(%s)', $test_name));
+    }
+  }
+
 }
