@@ -1,6 +1,6 @@
 {
-  "project_id" : "libphutil",
-  "conduit_uri" : "https://secure.phabricator.com/api/",
+  "project.name" : "libphutil",
+  "phabricator.uri" : "https://secure.phabricator.com/",
   "lint.engine" : "PhutilLintEngine",
   "unit.engine" : "PhutilUnitTestEngine"
 }
