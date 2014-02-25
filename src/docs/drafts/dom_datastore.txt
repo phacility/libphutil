@@ -1,4 +1,3 @@
-
 This document describes what you should put in the DOM (display) and what you shouldn't (data). It is adapted from an e-mail to javascript@lists.
 
 =The DOM is Not a Datastore. Don't Store Application State in the DOM.=
@@ -63,11 +62,10 @@ You should generally acquire references to nodes either by using $() or by using
 Second, it's way way less bad to use non-DOM properties of DOM objects to hold appropriate state. For instance, code like this (related to the earlier bug) is inherently fragile:
 
 <code>  COUNTEREXAMPLE
-  if (container.childNodes[i].className == 'friends_'+entity) 
+  if (container.childNodes[i].className == 'friends_'+entity)
 
 </code>It relies on unchanging DOM relationships, it relies on nothing and no one ever touching className, and it constructs a classname programmatically which makes it more difficult to debug when it breaks or find when it you're changing things. A far less bad implementation might use :DOMStorage:
 
 <code>  if (DOMStorage.getData(container.childNodes[i], 'privacyType') == entity)
 
 </code>This is still kind of nasty and I'd argue that a better design would see the code iterating over objects instead of over DOM nodes, using getters, and calling rendering methods to make changes reflect in the DOM. But, at the least, this is much less fragile and usually a practical alternative which doesn't require all that time-consuming "software engineering" associated with using classes and objects.
-

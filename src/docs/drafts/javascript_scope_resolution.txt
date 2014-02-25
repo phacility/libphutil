@@ -146,4 +146,3 @@ Function.call() takes one or more arguments; the first is the object to inject a
   add.apply(3, [5]);
 
 </code>But, there's generally an easier way than <tt>call</tt> or <tt>apply</tt>: bind() (which you should probably read next).
-

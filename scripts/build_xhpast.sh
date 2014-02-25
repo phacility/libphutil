@@ -13,9 +13,9 @@ echo
 
 cd $ROOT
 if [ $USE_GMAKE -eq 1 ]; then
-	gmake clean all install
+    gmake clean all install
 else
-	make clean all install
+    make clean all install
 fi
 
 echo

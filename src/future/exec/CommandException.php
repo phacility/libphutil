@@ -75,4 +75,3 @@ final class CommandException extends Exception {
   }
 
 }
-

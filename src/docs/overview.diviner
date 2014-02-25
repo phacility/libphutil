@@ -32,7 +32,7 @@ This loads global functions and registers an autoload function with
 
 The major components of libphutil are:
 
-  - **Core Utilties**: a collection of useful functions like @{function:ipull}
+  - **Core Utilities**: a collection of useful functions like @{function:ipull}
   which simplify common data manipulation;
   - **Filesystem**: classes like @{class:Filesystem} which provide a strict API
   for filesystem access and throw exceptions on failure, making it easier to

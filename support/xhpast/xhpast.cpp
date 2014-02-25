@@ -126,4 +126,3 @@ void print_node(xhpast::Node *node) {
     printf("]");
   }
 }
-

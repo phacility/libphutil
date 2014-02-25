@@ -63,4 +63,3 @@ final class HTTPFutureResponseStatusHTTP extends HTTPFutureResponseStatus {
   }
 
 }
-

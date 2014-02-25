@@ -144,6 +144,3 @@ $php .= "  );\n";
 $php .= "}\n";
 file_put_contents('parser_nodes.php', $php);
 echo "Wrote PHP definition.\n";
-
-
-

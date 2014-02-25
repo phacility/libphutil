@@ -200,4 +200,3 @@ function map_directory($dir) {
 
   return $map;
 }
-

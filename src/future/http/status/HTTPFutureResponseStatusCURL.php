@@ -84,4 +84,3 @@ final class HTTPFutureResponseStatusCURL extends HTTPFutureResponseStatus {
   }
 
 }
-

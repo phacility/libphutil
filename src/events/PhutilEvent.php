@@ -38,8 +38,3 @@ class PhutilEvent {
   }
 
 }
-
-
-
-
-

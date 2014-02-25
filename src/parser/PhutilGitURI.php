@@ -86,4 +86,3 @@ final class PhutilGitURI {
   }
 
 }
-

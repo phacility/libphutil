@@ -31,4 +31,3 @@ final class HTTPFutureResponseStatusParse extends HTTPFutureResponseStatus {
   }
 
 }
-

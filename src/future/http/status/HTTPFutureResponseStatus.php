@@ -41,4 +41,3 @@ abstract class HTTPFutureResponseStatus extends Exception {
   abstract protected function getErrorCodeDescription($code);
 
 }
-

@@ -772,4 +772,3 @@ function phutil_utf8v_combined($string) {
 
   return $components;
 }
-

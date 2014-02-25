@@ -10,4 +10,3 @@ interface PhutilQsprintfInterface {
   public function escapeMultilineComment($string);
   public function escapeStringForLikeClause($string);
 }
-

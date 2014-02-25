@@ -8,4 +8,3 @@ $f = fopen('php://stdin', 'r');
 while (($line = fgets($f)) !== false) {
   echo stripcslashes($line);
 }
-
