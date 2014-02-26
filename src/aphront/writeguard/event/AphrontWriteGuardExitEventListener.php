@@ -5,7 +5,7 @@
  *
  * @group aphront
  */
-class AphrontWriteGuardExitEventListener extends PhutilEventListener{
+final class AphrontWriteGuardExitEventListener extends PhutilEventListener {
 
   public function register() {
     $this->listen(PhutilEventType::TYPE_WILLEXITABRUPTLY);
