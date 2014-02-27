@@ -504,4 +504,26 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
   }
 
+  public function testPhutilJSONDecode() {
+    $default = (object)array();
+
+    $cases = array(
+      '{}' => array(),
+      '[]' => array(),
+      '' => $default,
+      '"a"' => $default,
+      '{,}' => $default,
+      'null' => $default,
+      '"null"' => $default,
+      '[1, 2]' => array(1, 2),
+      '{"a":"b"}' => array('a' => 'b'),
+    );
+
+    foreach ($cases as $input => $expect) {
+      $result = phutil_json_decode($input, $default);
+      $this->assertEqual($expect, $result, 'phutil_json_decode('.$input.')');
+    }
+  }
+
+
 }

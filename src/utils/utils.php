@@ -1056,3 +1056,23 @@ function phutil_units($description) {
 
   return $quantity * $factor;
 }
+
+
+/**
+ * Decode a JSON dictionary, or return a default value if the input does not
+ * decode or does not decode into a dictionary.
+ *
+ * @param   string    A string which ostensibly contains a JSON-encoded list or
+ *                    dictionary.
+ * @param   default?  Optional default value to return if the string does not
+ *                    decode, or does not decode into a list or dictionary.
+ * @return  mixed     Decoded list/dictionary, or default value if string
+ *                    failed to decode.
+ */
+function phutil_json_decode($string, $default = array()) {
+  $result = @json_decode($string, true);
+  if (!is_array($result)) {
+    return $default;
+  }
+  return $result;
+}
