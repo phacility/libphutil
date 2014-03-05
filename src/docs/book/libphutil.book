@@ -1,0 +1,24 @@
+{
+  "name" : "libphutil",
+  "title" : "libphutil Technical Documentation",
+  "short" : "libphutil Tech Docs",
+  "preface" : "Technical documentation for developers using libphutil.",
+  "root" : "../../../",
+  "uri.source" :
+    "https://secure.phabricator.com/diffusion/PHU/browse/master/%f$%l",
+  "rules" : {
+    "(\\.php$)" : "DivinerPHPAtomizer",
+    "(\\.diviner$)" : "DivinerArticleAtomizer"
+  },
+  "exclude" : [
+    "(^externals/)",
+    "(^scripts/)",
+    "(^support/)",
+    "(^resources/)"
+  ],
+  "groups" : {
+    "overview" : {
+      "name" : "libphutil Overview"
+    }
+  }
+}

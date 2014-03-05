@@ -379,6 +379,7 @@ phutil_register_library_map(array(
     'phutil_is_utf8' => 'utils/utf8.php',
     'phutil_is_utf8_with_only_bmp_characters' => 'utils/utf8.php',
     'phutil_is_windows' => 'utils/utils.php',
+    'phutil_json_decode' => 'utils/utils.php',
     'phutil_loggable_string' => 'utils/utils.php',
     'phutil_passthru' => 'future/exec/execx.php',
     'phutil_safe_html' => 'markup/render.php',
