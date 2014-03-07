@@ -8,5 +8,6 @@ final class PhutilInfrastructureTestCase extends PhutilTestCase {
    */
   public function testEverythingImplemented() {
     id(new PhutilSymbolLoader())->selectAndLoadSymbols();
+    $this->assertEqual(true, true);
   }
 }

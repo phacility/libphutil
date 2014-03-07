@@ -435,6 +435,8 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     // the function implementation for details.
     $input = str_repeat("\xEF\xBF\xBF", 1024 * 32);
     phutil_is_utf8_with_only_bmp_characters($input);
+
+    $this->assertEqual(true, true);
   }
 
   public function testUTF8BMP() {

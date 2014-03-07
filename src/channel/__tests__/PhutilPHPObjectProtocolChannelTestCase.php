@@ -60,6 +60,8 @@ final class PhutilPHPObjectProtocolChannelTestCase extends PhutilTestCase {
     // echo "quack" and exit with no error code. If the channel did not close,
     // this will time out after 5 seconds and throw.
     $future->resolvex();
+
+    $this->assertEqual(true, true);
   }
 
 

@@ -235,6 +235,8 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
           ),
         ))
       ->processGrammar();
+
+    $this->assertEqual(true, true);
   }
 
   public function testETParser() {

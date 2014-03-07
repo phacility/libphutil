@@ -287,6 +287,8 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       array(
         'regex' => 'list<regex> | regex',
       ));
+
+    $this->assertEqual(true, true);
   }
 
 }
