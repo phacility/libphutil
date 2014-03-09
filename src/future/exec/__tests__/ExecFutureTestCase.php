@@ -79,8 +79,8 @@ final class ExecFutureTestCase extends PhutilTestCase {
     $future = new ExecFuture('sleep 32000');
     list($err) = $future->setTimeout(0.01)->resolve();
 
-    $this->assertEqual(true, $err > 0);
-    $this->assertEqual(true, $future->getWasKilledByTimeout());
+    $this->assertTrue($err > 0);
+    $this->assertTrue($future->getWasKilledByTimeout());
   }
 
   public function testMultipleTimeoutsTestShouldRunLessThan1Sec() {
@@ -92,8 +92,8 @@ final class ExecFutureTestCase extends PhutilTestCase {
     foreach (Futures($futures) as $future) {
       list ($err) = $future->resolve();
 
-      $this->assertEqual(true, $err > 0);
-      $this->assertEqual(true, $future->getWasKilledByTimeout());
+      $this->assertTrue($err > 0);
+      $this->assertTrue($future->getWasKilledByTimeout());
     }
   }
 
@@ -106,7 +106,7 @@ final class ExecFutureTestCase extends PhutilTestCase {
 
     // If ExecFuture::__destruct() hangs until the child closes, we won't make
     // it here in time.
-    $this->assertEqual(true, ($end - $start) < 5);
+    $this->assertTrue(($end - $start) < 5);
   }
 
   public function testMultipleResolves() {

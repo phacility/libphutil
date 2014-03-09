@@ -75,8 +75,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
       $raised = $ex;
     }
 
-    $this->assertEqual(
-      true,
+    $this->assertTrue(
       (bool)$raised,
       'Exception raised by unloadable edges.');
   }

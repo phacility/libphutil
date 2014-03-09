@@ -5,24 +5,18 @@ final class PhutilcsprintfTestCase extends ArcanistTestCase {
   public function testCommandReadableEscapes() {
     // For arguments comprised of only characters which are safe in any context,
     // %R this should avoid adding quotes.
-    $this->assertEqual(
-      true,
-      ('ab' === (string)csprintf('%R', 'ab')));
+    $this->assertTrue(('ab' === (string)csprintf('%R', 'ab')));
 
     // For arguments which have any characters which are not safe in some
     // context, %R should apply standard escaping.
-    $this->assertEqual(
-      false,
-      ('a b' === (string)csprintf('%R', 'a b')));
+    $this->assertFalse(('a b' === (string)csprintf('%R', 'a b')));
   }
 
   public function testPasswords() {
 
     // Normal "%s" doesn't do anything special.
     $command = csprintf('echo %s', 'hunter2trustno1');
-    $this->assertEqual(
-      true,
-      strpos($command, 'hunter2trustno1') !== false);
+    $this->assertTrue(strpos($command, 'hunter2trustno1') !== false);
 
     // "%P" takes a PhutilOpaqueEnvelope.
     $caught = null;
@@ -31,23 +25,17 @@ final class PhutilcsprintfTestCase extends ArcanistTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertEqual(
-      true,
-      ($caught instanceof Exception));
+    $this->assertTrue($caught instanceof Exception);
 
 
     // "%P" masks the provided value.
     $command = csprintf('echo %P', new PhutilOpaqueEnvelope('hunter2trustno1'));
-    $this->assertEqual(
-      false,
-      strpos($command, 'hunter2trustno1'));
+    $this->assertFalse(strpos($command, 'hunter2trustno1'));
 
 
     // Executing the command works as expected.
     list($out) = execx('%C', $command);
-    $this->assertEqual(
-      true,
-      strpos($out, 'hunter2trustno1') !== false);
+    $this->assertTrue(strpos($out, 'hunter2trustno1') !== false);
 
 
     // Escaping should be robust even when used to escape commands which take
@@ -62,9 +50,7 @@ final class PhutilcsprintfTestCase extends ArcanistTestCase {
             csprintf(
               'echo %P',
               new PhutilOpaqueEnvelope('!@#$%^&*()')))));
-      $this->assertEqual(
-        true,
-        strpos($out, '!@#$%^&*()') !== false);
+      $this->assertTrue(strpos($out, '!@#$%^&*()') !== false);
     }
 
   }

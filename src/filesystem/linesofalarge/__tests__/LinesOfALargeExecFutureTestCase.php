@@ -42,7 +42,7 @@ final class LinesOfALargeExecFutureTestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertEqual(true, $caught instanceof CommandException);
+    $this->assertTrue($caught instanceof CommandException);
   }
 
   private function writeAndRead($write, $read) {

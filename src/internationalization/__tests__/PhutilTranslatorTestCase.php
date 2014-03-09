@@ -232,9 +232,7 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
       $string,
       $who,
       $when);
-    $this->assertEqual(
-      true,
-      ($translation instanceof PhutilSafeHTML));
+    $this->assertTrue($translation instanceof PhutilSafeHTML);
     $this->assertEqual(
       '<span>Abraham</span> awoke <strong>suddenly</strong> at &lt;4 AM&gt;.',
       $translation->getHTMLContent());

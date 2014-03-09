@@ -71,8 +71,7 @@ final class PhutilKeyValueCacheTestCase extends ArcanistPhutilTestCase {
     foreach ($keys as $key => $value) {
       $cached_key = $namespace.':'.$key;
 
-      $this->assertEqual(
-        true,
+      $this->assertTrue(
         isset($cached_keys[$cached_key]),
         $test_info);
 

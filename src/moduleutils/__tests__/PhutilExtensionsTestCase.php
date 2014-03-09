@@ -12,9 +12,9 @@ final class PhutilExtensionsTestCase extends PhutilTestCase {
     $path = implode(DIRECTORY_SEPARATOR, $path);
     phutil_load_library($path);
 
-    $this->assertEqual(true, class_exists('PhutilTestClassA'));
-    $this->assertEqual(true, class_exists('PhutilTestClassB'));
-    $this->assertEqual(true, class_exists('PhutilTestClassC'));
+    $this->assertTrue(class_exists('PhutilTestClassA'));
+    $this->assertTrue(class_exists('PhutilTestClassB'));
+    $this->assertTrue(class_exists('PhutilTestClassC'));
 
     $symbols = id(new PhutilSymbolLoader())
       ->setAncestorClass('PhutilTestClassA')

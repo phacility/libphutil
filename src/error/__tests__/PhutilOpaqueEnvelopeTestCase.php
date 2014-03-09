@@ -13,35 +13,25 @@ final class PhutilOpaqueEnvelopeTestCase extends PhutilTestCase {
 
     $envelope = new PhutilOpaqueEnvelope($secret);
 
-    $this->assertEqual(
-      false,
-      strpos(var_export($envelope, true), $secret));
+    $this->assertFalse(strpos(var_export($envelope, true), $secret));
 
-    $this->assertEqual(
-      false,
-      strpos(print_r($envelope, true), $secret));
+    $this->assertFalse(strpos(print_r($envelope, true), $secret));
 
     ob_start();
     var_dump($envelope);
     $dump = ob_get_clean();
 
-    $this->assertEqual(
-      false,
-      strpos($dump, $secret));
+    $this->assertFalse(strpos($dump, $secret));
 
     try {
       $this->throwTrace($envelope);
     } catch (Exception $ex) {
       $trace = $ex->getTrace();
-      $this->assertEqual(
-        false,
-        strpos(print_r($trace, true), $secret));
+      $this->assertFalse(strpos(print_r($trace, true), $secret));
     }
 
     $backtrace = $this->getBacktrace($envelope);
-    $this->assertEqual(
-      false,
-      strpos(print_r($backtrace, true), $secret));
+    $this->assertFalse(strpos(print_r($backtrace, true), $secret));
 
     $this->assertEqual($secret, $envelope->openEnvelope());
   }

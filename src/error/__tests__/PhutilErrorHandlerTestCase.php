@@ -17,14 +17,10 @@ final class PhutilErrorHandlerTestCase extends PhutilTestCase {
 
   public function testSilenceHandler() {
     // Errors should normally be logged.
-    $this->assertEqual(
-      true,
-      strlen($this->emitError()) > 0);
+    $this->assertTrue(strlen($this->emitError()) > 0);
 
     // The "@" operator should silence errors.
-    $this->assertEqual(
-      true,
-      @strlen($this->emitError()) === 0);
+    $this->assertTrue(@strlen($this->emitError()) === 0);
   }
 
   private function emitError() {

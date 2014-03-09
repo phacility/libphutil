@@ -119,16 +119,14 @@ final class PHPASTParserTestCase extends PhutilTestCase {
             $stdout_nice,
             pht('Parser output for "%s".', $name));
         } else {
-          $this->assertEqual(
-            false,
+          $this->assertFalse(
             ($expect_nice == $stdout_nice),
             pht('Expected parser to parse "%s" incorrectly.', $name));
         }
         break;
       case 'fail-syntax':
         $this->assertEqual(1, $err, pht('Exit code for "%s".', $name));
-        $this->assertEqual(
-          true,
+        $this->assertTrue(
           (bool)preg_match('/syntax error/', $stderr),
           pht('Expect "syntax error" in stderr or "%s".', $name));
         break;

@@ -21,7 +21,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     // For some reason my laptop is segfaulting on long inputs inside
     // preg_match(). Forestall this craziness in the common case, at least.
     phutil_utf8ize(str_repeat('x', 1024 * 1024));
-    $this->assertEqual(true, true);
+    $this->assertTrue(true);
   }
 
   public function testUTF8izeInvalidUTF8Fixed() {
@@ -277,7 +277,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertEqual(true, (bool)$caught, 'Requires source encoding.');
+    $this->assertTrue((bool)$caught, 'Requires source encoding.');
 
     $caught = null;
     try {
@@ -285,7 +285,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertEqual(true, (bool)$caught, 'Requires target encoding.');
+    $this->assertTrue((bool)$caught, 'Requires target encoding.');
   }
 
 
@@ -309,7 +309,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(true, (bool)$caught, 'Conversion with bogus encoding.');
+    $this->assertTrue((bool)$caught, 'Conversion with bogus encoding.');
   }
 
 
@@ -436,7 +436,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     $input = str_repeat("\xEF\xBF\xBF", 1024 * 32);
     phutil_is_utf8_with_only_bmp_characters($input);
 
-    $this->assertEqual(true, true);
+    $this->assertTrue(true);
   }
 
   public function testUTF8BMP() {

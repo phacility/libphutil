@@ -15,13 +15,11 @@ final class PhutilPHPObjectProtocolChannelTestCase extends PhutilTestCase {
     $xp->flush();
     $result = $yp->waitForMessage();
 
-    $this->assertEqual(
-      true,
+    $this->assertTrue(
       (array)$object === (array)$result,
       "Values are identical.");
 
-    $this->assertEqual(
-      false,
+    $this->assertFalse(
       $object === $result,
       "Objects are not the same.");
   }
@@ -43,7 +41,7 @@ final class PhutilPHPObjectProtocolChannelTestCase extends PhutilTestCase {
     // returning, which would be hard to diagnose. Since the current
     // implementation shuts down the entire channel, just test for that.
 
-    $this->assertEqual(false, $xp->update(), 'Expected channel to close.');
+    $this->assertFalse($xp->update(), 'Expected channel to close.');
   }
 
   public function testCloseExecWriteChannel() {
@@ -61,7 +59,7 @@ final class PhutilPHPObjectProtocolChannelTestCase extends PhutilTestCase {
     // this will time out after 5 seconds and throw.
     $future->resolvex();
 
-    $this->assertEqual(true, true);
+    $this->assertTrue(true);
   }
 
 

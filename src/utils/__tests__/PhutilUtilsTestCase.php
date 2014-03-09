@@ -15,9 +15,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(
-      true,
-      ($caught instanceof InvalidArgumentException));
+    $this->assertTrue($caught instanceof InvalidArgumentException);
   }
 
 
@@ -70,9 +68,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(
-      true,
-      ($caught instanceof InvalidArgumentException));
+    $this->assertTrue($caught instanceof InvalidArgumentException);
   }
 
 
@@ -261,9 +257,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(
-      true,
-      ($caught instanceof InvalidArgumentException));
+    $this->assertTrue($caught instanceof InvalidArgumentException);
 
     $array = array(
              "foo" => "bar",
@@ -276,9 +270,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(
-      true,
-      ($caught instanceof InvalidArgumentException));
+    $this->assertTrue($caught instanceof InvalidArgumentException);
 
     $tmp = new TempFile();
     $resource = fopen($tmp, 'r');
@@ -291,9 +283,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
 
     fclose($resource);
 
-    $this->assertEqual(
-      true,
-      ($caught instanceof InvalidArgumentException));
+    $this->assertTrue($caught instanceof InvalidArgumentException);
 
   }
 
@@ -497,8 +487,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
         $caught = $ex;
       }
 
-      $this->assertEqual(
-        true,
+      $this->assertTrue(
         ($caught instanceof InvalidArgumentException),
         'phutil_units("'.$input.'")');
     }

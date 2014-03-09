@@ -24,24 +24,18 @@ final class FileFinderTestCase extends PhutilTestCase {
       $files = $this->findFiles($root, true, 'f', '*', $mode);
 
       // Test whether correct files were found.
-      $this->assertEqual(true,
-          array_key_exists('test.txt', $files));
-      $this->assertEqual(true,
-          array_key_exists('file.txt', $files));
-      $this->assertEqual(true,
+      $this->assertTrue(array_key_exists('test.txt', $files));
+      $this->assertTrue(array_key_exists('file.txt', $files));
+      $this->assertTrue(
           array_key_exists('include_dir.txt/subdir.txt/alsoinclude.txt',
               $files));
-      $this->assertEqual(false,
-          array_key_exists('test', $files));
-      $this->assertEqual(true,
-          array_key_exists('.hidden.txt', $files));
-      $this->assertEqual(false,
-          array_key_exists('exclude/file.txt', $files));
-      $this->assertEqual(false,
-          array_key_exists('include_dir.txt', $files));
+      $this->assertFalse(array_key_exists('test', $files));
+      $this->assertTrue(array_key_exists('.hidden.txt', $files));
+      $this->assertFalse(array_key_exists('exclude/file.txt', $files));
+      $this->assertFalse(array_key_exists('include_dir.txt', $files));
 
       foreach ($files as $file => $checksum) {
-        $this->assertEqual(false, is_dir($file));
+        $this->assertFalse(is_dir($file));
       }
 
       // Test checksums.
@@ -62,17 +56,17 @@ final class FileFinderTestCase extends PhutilTestCase {
       $files = $this->findFiles($root, false, 'f', '*', $mode);
 
       // Test whether correct files were found.
-      $this->assertEqual(true, in_array('test.txt', $files));
-      $this->assertEqual(true, in_array('file.txt', $files));
-      $this->assertEqual(true, in_array('.hidden.txt', $files));
-      $this->assertEqual(true,
+      $this->assertTrue(in_array('test.txt', $files));
+      $this->assertTrue(in_array('file.txt', $files));
+      $this->assertTrue(in_array('.hidden.txt', $files));
+      $this->assertTrue(
           in_array('include_dir.txt/subdir.txt/alsoinclude.txt', $files));
-      $this->assertEqual(false, in_array('test', $files));
-      $this->assertEqual(false, in_array('exclude/file.txt', $files));
-      $this->assertEqual(false, in_array('include_dir.txt', $files));
+      $this->assertFalse(in_array('test', $files));
+      $this->assertFalse(in_array('exclude/file.txt', $files));
+      $this->assertFalse(in_array('include_dir.txt', $files));
 
       foreach ($files as $file => $checksum) {
-        $this->assertEqual(false, is_dir($file));
+        $this->assertFalse(is_dir($file));
       }
     }
   }
@@ -83,21 +77,15 @@ final class FileFinderTestCase extends PhutilTestCase {
       $files = $this->findFiles($root, true, '', '*', $mode);
 
       // Test whether the correct files were found.
-      $this->assertEqual(true,
-          array_key_exists('test.txt', $files));
-      $this->assertEqual(true,
-          array_key_exists('file.txt', $files));
-      $this->assertEqual(true,
+      $this->assertTrue(array_key_exists('test.txt', $files));
+      $this->assertTrue(array_key_exists('file.txt', $files));
+      $this->assertTrue(
           array_key_exists('include_dir.txt/subdir.txt/alsoinclude.txt',
               $files));
-      $this->assertEqual(false,
-          array_key_exists('test', $files));
-      $this->assertEqual(true,
-          array_key_exists('.hidden.txt', $files));
-      $this->assertEqual(false,
-          array_key_exists('exclude/file.txt', $files));
-      $this->assertEqual(true,
-          array_key_exists('include_dir.txt', $files));
+      $this->assertFalse(array_key_exists('test', $files));
+      $this->assertTrue(array_key_exists('.hidden.txt', $files));
+      $this->assertFalse(array_key_exists('exclude/file.txt', $files));
+      $this->assertTrue(array_key_exists('include_dir.txt', $files));
 
       // Test checksums.
       $this->assertEqual($files['test.txt'],
@@ -113,7 +101,7 @@ final class FileFinderTestCase extends PhutilTestCase {
           '*/include_dir.txt/subdir.txt/alsoinclude.txt', $mode);
 
       // Test whether the correct files were found.
-      $this->assertEqual(true,
+      $this->assertTrue(
           array_key_exists('include_dir.txt/subdir.txt/alsoinclude.txt',
               $files));
       // Ensure that only the one file was found.

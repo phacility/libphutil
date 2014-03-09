@@ -131,8 +131,7 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
       } catch (Exception $ex) {
         $caught = $ex;
       }
-      $this->assertEqual(
-        true,
+      $this->assertTrue(
         $caught instanceof Exception,
         "Correct throw on unparse of bad input.");
     }

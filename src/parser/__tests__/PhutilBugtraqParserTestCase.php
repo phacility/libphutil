@@ -44,9 +44,7 @@ final class PhutilBugtraqParserTestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertEqual(
-      true,
-      ($caught instanceof PhutilTypeCheckException));
+    $this->assertTrue($caught instanceof PhutilTypeCheckException);
 
 
     $caught = null;
@@ -56,9 +54,7 @@ final class PhutilBugtraqParserTestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertEqual(
-      true,
-      ($caught instanceof PhutilTypeCheckException));
+    $this->assertTrue($caught instanceof PhutilTypeCheckException);
   }
 
 

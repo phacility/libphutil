@@ -77,7 +77,7 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(true, $caught instanceof $ex);
+    $this->assertTrue($caught instanceof $ex);
   }
 
   public function testLineFilter() {

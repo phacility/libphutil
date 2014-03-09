@@ -11,13 +11,9 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
 
     $file = new TempFile();
 
-    $this->assertEqual(
-      true,
-      $this->lockTest($file));
+    $this->assertTrue($this->lockTest($file));
 
-    $this->assertEqual(
-      true,
-      $this->lockTest($file));
+    $this->assertTrue($this->lockTest($file));
   }
 
   public function testLockHolding() {
@@ -28,15 +24,11 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
     $file = new TempFile();
     $hold = $this->holdLock($file);
 
-    $this->assertEqual(
-      false,
-      $this->lockTest($file));
+    $this->assertFalse($this->lockTest($file));
 
     $hold->resolveKill();
 
-    $this->assertEqual(
-      true,
-      $this->lockTest($file));
+    $this->assertTrue($this->lockTest($file));
   }
 
   public function testInProcessLocking() {
@@ -48,15 +40,11 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
     $lock = PhutilFileLock::newForPath($file);
     $lock->lock();
 
-    $this->assertEqual(
-      false,
-      $this->lockTest($file));
+    $this->assertFalse($this->lockTest($file));
 
     $lock->unlock();
 
-    $this->assertEqual(
-      true,
-      $this->lockTest($file));
+    $this->assertTrue($this->lockTest($file));
   }
 
   public function testInProcessHolding() {
@@ -74,15 +62,11 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(
-      true,
-      ($caught instanceof PhutilLockException));
+    $this->assertTrue($caught instanceof PhutilLockException);
 
     $hold->resolveKill();
 
-    $this->assertEqual(
-      true,
-      $this->lockTest($file));
+    $this->assertTrue($this->lockTest($file));
 
     $lock->lock();
     $lock->unlock();
@@ -103,9 +87,7 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(
-      true,
-      ($caught instanceof Exception));
+    $this->assertTrue($caught instanceof Exception);
   }
 
   public function testExcessiveUnlock() {
@@ -125,9 +107,7 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(
-      true,
-      ($caught instanceof Exception));
+    $this->assertTrue($caught instanceof Exception);
   }
 
   public function testUnlockAll() {
@@ -139,16 +119,16 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
 
     $lock->lock();
 
-    $this->assertEqual(false, $this->lockTest($file));
+    $this->assertFalse($this->lockTest($file));
 
     PhutilFileLock::unlockAll();
 
-    $this->assertEqual(true, $this->lockTest($file));
+    $this->assertTrue($this->lockTest($file));
 
     // Calling this again shouldn't do anything bad.
     PhutilFileLock::unlockAll();
 
-    $this->assertEqual(true, $this->lockTest($file));
+    $this->assertTrue($this->lockTest($file));
 
     $lock->lock();
     $lock->unlock();
@@ -161,15 +141,15 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
     $file = new TempFile();
     $lock = PhutilFileLock::newForPath($file);
 
-    $this->assertEqual(false, $lock->isLocked());
+    $this->assertFalse($lock->isLocked());
 
     $lock->lock();
 
-    $this->assertEqual(true, $lock->isLocked());
+    $this->assertTrue($lock->isLocked());
 
     $lock->unlock();
 
-    $this->assertEqual(false, $lock->isLocked());
+    $this->assertFalse($lock->isLocked());
   }
 
   private function lockTest($file) {

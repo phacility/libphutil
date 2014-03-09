@@ -19,7 +19,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(true, ($caught instanceof Exception));
+    $this->assertTrue($caught instanceof Exception);
   }
 
   public function testBadStartRule() {
@@ -39,7 +39,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(true, ($caught instanceof Exception));
+    $this->assertTrue($caught instanceof Exception);
   }
 
   public function testMessySymbols() {
@@ -70,10 +70,10 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
     $epsilon = $generator->getEpsilonSymbol();
     $end = $generator->getEndSymbol();
 
-    $this->assertEqual(false, ($init == '(init)'));
-    $this->assertEqual(false, ($eof == '(end-of-file)'));
-    $this->assertEqual(false, ($epsilon == '(epsilon)'));
-    $this->assertEqual(false, ($end == '(end)'));
+    $this->assertFalse($init == '(init)');
+    $this->assertFalse($eof == '(end-of-file)');
+    $this->assertFalse($epsilon == '(epsilon)');
+    $this->assertFalse($end == '(end)');
 
     $keys = array_keys($rules);
     $expect = array('(end-of-file)', '(epsilon)', 's p a c e s', $init);
@@ -111,7 +111,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(true, ($caught instanceof Exception));
+    $this->assertTrue($caught instanceof Exception);
   }
 
   public function testUnreachableRule() {
@@ -132,7 +132,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(true, ($caught instanceof Exception));
+    $this->assertTrue($caught instanceof Exception);
   }
 
   public function testIrreducibleGrammars() {
@@ -236,7 +236,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
         ))
       ->processGrammar();
 
-    $this->assertEqual(true, true);
+    $this->assertTrue(true);
   }
 
   public function testETParser() {

@@ -39,9 +39,9 @@ final class FilesystemTestCase extends PhutilTestCase {
     }
 
     $path = Filesystem::resolveBinary($binary);
-    $this->assertEqual(false, null === $path);
-    $this->assertEqual(true, file_exists($path));
-    $this->assertEqual(false, is_dir($path));
+    $this->assertFalse(null === $path);
+    $this->assertTrue(file_exists($path));
+    $this->assertFalse(is_dir($path));
 
     $this->assertEqual(null,
       Filesystem::resolveBinary('halting-problem-decider'));
@@ -57,17 +57,17 @@ final class FilesystemTestCase extends PhutilTestCase {
 
     // File name should be unique.
     $g = Filesystem::writeUniqueFile($dir, 'quack');
-    $this->assertEqual(true, ($f != $g));
+    $this->assertTrue($f != $g);
   }
 
   public function testReadRandomBytes() {
     $number_of_bytes = 1024;
     $data = Filesystem::readRandomBytes($number_of_bytes);
-    $this->assertEqual(true, (strlen($data) == $number_of_bytes));
+    $this->assertTrue(strlen($data) == $number_of_bytes);
 
     $data1 = Filesystem::readRandomBytes(128);
     $data2 = Filesystem::readRandomBytes(128);
-    $this->assertEqual(false, $data1 == $data2);
+    $this->assertFalse($data1 == $data2);
 
     $caught = null;
     try {
@@ -75,7 +75,7 @@ final class FilesystemTestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertEqual(true, ($caught instanceof Exception));
+    $this->assertTrue($caught instanceof Exception);
 
   }
 

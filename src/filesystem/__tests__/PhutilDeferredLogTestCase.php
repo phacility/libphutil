@@ -95,7 +95,7 @@ final class PhutilDeferredLogTestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertEqual(true, $caught instanceof Exception);
+    $this->assertTrue($caught instanceof Exception);
   }
 
   public function testManyWriters() {
@@ -154,7 +154,7 @@ final class PhutilDeferredLogTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertEqual(true, ($caught instanceof Exception), 'Set After Write');
+    $this->assertTrue($caught instanceof Exception, 'Set After Write');
   }
 
   private function checkLog($expect, $format, $data) {
