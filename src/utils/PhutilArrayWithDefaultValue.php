@@ -25,8 +25,6 @@
  * Normally, the default value is `0` to allow the object to be used to count
  * things or build bitmasks. You can change the default with
  * @{method:setDefaultValue}.
- *
- * @group util
  */
 final class PhutilArrayWithDefaultValue extends PhutilArray {
 

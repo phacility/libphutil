@@ -1,11 +1,10 @@
 <?php
+
 /**
  * Parses a request string leaving all characters intact.
  *
  * http://php.net/manual/en/language.variables.external.php#language.variables.external.dot-in-names
  * http://php.net/manual/en/language.variables.external.php#81080
- *
- * @group util
  */
 final class PhutilQueryStringParser {
 

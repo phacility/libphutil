@@ -3,8 +3,6 @@
 /**
  * Very simple class to guess the languages of source files which we failed to
  * determine by examining file name/extension rules.
- *
- * @group util
  */
 final class PhutilLanguageGuesser {
 

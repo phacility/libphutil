@@ -13,8 +13,6 @@
  * Note that these URIs can not be transformed into normal URIs because the
  * path is interpreted as relative on the remote, rather than absolute (as with
  * normal URIs).
- *
- * @group util
  */
 final class PhutilGitURI {
 

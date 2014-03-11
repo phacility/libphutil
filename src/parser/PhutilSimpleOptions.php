@@ -10,8 +10,6 @@
  * @task unparse  Unparsing Simple Options
  * @task config   Parser Configuration
  * @task internal Internals
- *
- * @group util
  */
 final class PhutilSimpleOptions {
 

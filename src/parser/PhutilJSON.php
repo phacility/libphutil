@@ -5,8 +5,6 @@
  *
  * @task pretty Formatting JSON Objects
  * @task internal Internals
- *
- * @group util
  */
 final class PhutilJSON {
 

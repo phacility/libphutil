@@ -3,8 +3,6 @@
 /**
  * Simple event store for service calls, so they can be printed to stdout or
  * displayed in a debug console.
- *
- * @group util
  */
 final class PhutilServiceProfiler {
 

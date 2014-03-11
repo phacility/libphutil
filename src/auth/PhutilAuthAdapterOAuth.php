@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Abstract adapter for OAuth2 providers.
+ */
 abstract class PhutilAuthAdapterOAuth extends PhutilAuthAdapter {
 
   private $clientID;

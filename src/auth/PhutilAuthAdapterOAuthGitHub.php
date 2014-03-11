@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Authentication adapter for Github OAuth2.
+ */
 final class PhutilAuthAdapterOAuthGitHub extends PhutilAuthAdapterOAuth {
 
   public function getAdapterType() {

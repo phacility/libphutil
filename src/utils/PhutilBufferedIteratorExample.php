@@ -2,8 +2,6 @@
 
 /**
  * Example implementation and test case for @{class:PhutilBufferedIterator}.
- *
- * @group util
  */
 final class PhutilBufferedIteratorExample extends PhutilBufferedIterator {
 

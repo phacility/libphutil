@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Authentication adapter for JIRA OAuth1.
+ */
 final class PhutilAuthAdapterOAuthJIRA extends PhutilAuthAdapterOAuth1 {
 
   // TODO: JIRA tokens expire (after 5 years) and we could surface and store

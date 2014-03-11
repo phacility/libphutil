@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Adapter for Mozilla's Persona.
+ * Authentication adapter for Mozilla's Persona.
  */
 final class PhutilAuthAdapterPersona extends PhutilAuthAdapter {
 

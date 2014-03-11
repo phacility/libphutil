@@ -4,8 +4,6 @@
  * String-like object which reduces the cost of managing large strings. This
  * is particularly useful for buffering large amounts of data that is being
  * passed to `fwrite()`.
- *
- * @group util
  */
 final class PhutilRope extends Phobject {
 

@@ -19,6 +19,21 @@
   "groups" : {
     "overview" : {
       "name" : "libphutil Overview"
+    },
+    "util" : {
+      "name" : "Core Utilities",
+      "include": "(^src/utils/)"
+    },
+    "library" : {
+      "name": "libphutil Library System",
+      "include": "(^src/moduleutils/)"
+    },
+    "auth" : {
+      "name": "Authentication",
+      "include": "(^src/auth/)"
+    },
+    "utf8" : {
+      "name": "Handling Unicode and UTF-8"
     }
   }
 }

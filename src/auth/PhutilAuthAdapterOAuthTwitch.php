@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Authentication adapter for Twitch.tv OAuth2.
+ */
 final class PhutilAuthAdapterOAuthTwitch extends PhutilAuthAdapterOAuth {
 
   public function getAdapterType() {

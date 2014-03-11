@@ -15,7 +15,6 @@
  *
  * @param   wild Anything.
  * @return  wild Unmodified argument.
- * @group   util
  */
 function id($x) {
   return $x;
@@ -33,7 +32,6 @@ function id($x) {
  *                  array.
  * @return  wild    If $array[$key] exists, that value is returned. If not,
  *                  $default is returned without raising a warning.
- * @group   util
  */
 function idx(array $array, $key, $default = null) {
   // isset() is a micro-optimization - it is fast but fails for null values.
@@ -105,7 +103,6 @@ function idx(array $array, $key, $default = null) {
  *                        ##null## to preserve the original keys.
  * @return  dict          A dictionary with keys and values derived according
  *                        to whatever you passed as $method and $key_method.
- * @group   util
  */
 function mpull(array $list, $method, $key_method = null) {
   $result = array();
@@ -179,7 +176,6 @@ function mpull(array $list, $method, $key_method = null) {
  *                        ##null## to preserve the original keys.
  * @return  dict          A dictionary with keys and values derived according
  *                        to whatever you passed as $property and $key_property.
- * @group   util
  */
 function ppull(array $list, $property, $key_property = null) {
   $result = array();
@@ -228,7 +224,6 @@ function ppull(array $list, $property, $key_property = null) {
  *                        array, or null to preserve the array keys.
  * @return  dict          A dictionary with keys and values derived according
  *                        to whatever you passed for $index and $key_index.
- * @group   util
  */
 function ipull(array $list, $index, $key_index = null) {
   $result = array();
@@ -277,7 +272,6 @@ function ipull(array $list, $index, $key_index = null) {
  *                  groups.
  * @return  dict    Dictionary mapping distinct method returns to lists of
  *                  all objects which returned that value.
- * @group   util
  */
 function mgroup(array $list, $by /* , ... */) {
   $map = mpull($list, $by);
@@ -318,7 +312,6 @@ function mgroup(array $list, $by /* , ... */) {
  *                  groups.
  * @return  dict    Dictionary mapping distinct index values to lists of
  *                  all objects which had that value at the index.
- * @group   util
  */
 function igroup(array $list, $by /* , ... */) {
   $map = ipull($list, $by);
@@ -363,7 +356,6 @@ function igroup(array $list, $by /* , ... */) {
  * @param   string  Name of a method to call on each object; the return values
  *                  will be used to sort the list.
  * @return  list    Objects ordered by the return values of the method calls.
- * @group   util
  */
 function msort(array $list, $method) {
   $surrogate = mpull($list, $method);
@@ -388,7 +380,6 @@ function msort(array $list, $method) {
  * @param   string  Index to access on each object; the return values
  *                  will be used to sort the list.
  * @return  list    Arrays ordered by the index values.
- * @group   util
  */
 function isort(array $list, $index) {
   $surrogate = ipull($list, $index);
@@ -426,7 +417,6 @@ function isort(array $list, $index) {
  *                      filter instead of keeping them.
  *
  * @return array   List of objects which pass the filter.
- * @group  util
  */
 function mfilter(array $list, $method, $negate = false) {
   if (!is_string($method)) {
@@ -473,7 +463,6 @@ function mfilter(array $list, $method, $negate = false) {
  *                      filter instead of keeping them.
  *
  * @return array   List of arrays which pass the filter.
- * @group  util
  */
 function ifilter(array $list, $index, $negate = false) {
   if (!is_scalar($index)) {
@@ -513,7 +502,6 @@ function ifilter(array $list, $index, $negate = false) {
  * @return dict    Dictionary of only those key-value pairs where the key was
  *                 present in the list of keys to select. Ordering is
  *                 determined by the list order.
- * @group   util
  */
 function array_select_keys(array $dict, array $keys) {
   $result = array();
@@ -533,7 +521,6 @@ function array_select_keys(array $dict, array $keys) {
  * @param  array
  * @param  string  Name of the class or 'array' to check arrays.
  * @return array   Returns passed array.
- * @group   util
  */
 function assert_instances_of(array $arr, $class) {
   $is_array = !strcasecmp($class, 'array');
@@ -599,7 +586,6 @@ function assert_stringlike($parameter) {
  *
  * @param  ...         Zero or more arguments of any type.
  * @return mixed       First non-##null## arg, or null if no such arg exists.
- * @group  util
  */
 function coalesce(/* ... */) {
   $args = func_get_args();
@@ -623,7 +609,6 @@ function coalesce(/* ... */) {
  * @param  ...         Zero or more arguments of any type.
  * @return mixed       First non-##empty()## arg, or last arg if no such arg
  *                     exists, or null if you passed in zero args.
- * @group  util
  */
 function nonempty(/* ... */) {
   $args = func_get_args();
@@ -671,7 +656,6 @@ function nonempty(/* ... */) {
  * @param  list    Array of arguments to pass to its constructor.
  * @return obj     A new object of the specified class, constructed by passing
  *                 the argument vector to its constructor.
- * @group util
  */
 function newv($class_name, array $argv) {
   $reflector = new ReflectionClass($class_name);
@@ -690,7 +674,6 @@ function newv($class_name, array $argv) {
  *
  * @param    array Array to retrieve the first element from.
  * @return   wild  The first value of the array.
- * @group util
  */
 function head(array $arr) {
   return reset($arr);
@@ -703,7 +686,6 @@ function head(array $arr) {
  *
  * @param    array Array to retrieve the last element from.
  * @return   wild  The last value of the array.
- * @group util
  */
 function last(array $arr) {
   return end($arr);
@@ -714,7 +696,6 @@ function last(array $arr) {
  *
  * @param    array       Array to retrieve the first key from.
  * @return   int|string  The first key of the array.
- * @group util
  */
 function head_key(array $arr) {
   reset($arr);
@@ -726,7 +707,6 @@ function head_key(array $arr) {
  *
  * @param    array       Array to retrieve the last key from.
  * @return   int|string  The last key of the array.
- * @group util
  */
 function last_key(array $arr) {
   end($arr);
@@ -746,7 +726,6 @@ function last_key(array $arr) {
  *
  * @param list Vector of arrays to merge.
  * @return list Arrays, merged with array_merge() semantics.
- * @group util
  */
 function array_mergev(array $arrayv) {
   if (!$arrayv) {
@@ -767,7 +746,6 @@ function array_mergev(array $arrayv) {
  * @param string Block of text to be split into lines.
  * @param bool If true, retain line endings in result strings.
  * @return list List of lines.
- * @group util
  */
 function phutil_split_lines($corpus, $retain_endings = true) {
   if (!strlen($corpus)) {
@@ -812,7 +790,6 @@ function phutil_split_lines($corpus, $retain_endings = true) {
  *
  * @param   list  List of scalars.
  * @return  dict  Dictionary with inputs mapped to themselves.
- * @group util
  */
 function array_fuse(array $list) {
   if ($list) {
@@ -839,7 +816,6 @@ function array_fuse(array $list) {
  * @param wild  Element to interleave.
  * @param list  List of elements to be interleaved.
  * @return list Original list with the new element interleaved.
- * @group util
  */
 function array_interleave($interleave, array $array) {
   $result = array();

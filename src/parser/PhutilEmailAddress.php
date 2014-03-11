@@ -5,8 +5,6 @@
  * to be fully RFC-compliant, because trying to do so is a crazy mess. However,
  * it should parse all reasonable addresses which are actually in use on the
  * internet today.
- *
- * @group util
  */
 final class PhutilEmailAddress {
 

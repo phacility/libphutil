@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Retrieve identify information from LDAP accounts.
+ */
 final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
 
   private $hostname;

@@ -14,6 +14,12 @@ grammar and implementation limitations.
 
 You can efficiently merge a vector of arrays with @{function:array_mergev}.
 
+Functions @{function:head}, @{function:last}, @{function:head_key} and
+@{function:last_key} let you access the first or last elements of an array
+without raising warnings.
+
+You can combine an array with itself safely with @{function:array_fuse}.
+
 = Default Value Selection =
 
 Functions @{function:idx}, @{function:nonempty} and @{function:coalesce} help
@@ -32,12 +38,7 @@ for lists of objects.
 @{function:array_select_keys} allows you to choose or reorder keys from a
 dictionary.
 
-= UTF-8 =
+= Lunar Phases =
 
-You can test a string for being valid UTF-8 with @{function:phutil_is_utf8},
-and sanitize strings to UTF-8 with @{function:phutil_utf8ize}.
-
-= xsprintf =
-
-@{function:xsprintf} allows you to define ##sprintf()##-style functions with
-custom conversions.
+@{class:PhutilLunarPhase} calculates lunar phases, allowing you to harden an
+application against threats from werewolves, werebears, and other werecreatures.

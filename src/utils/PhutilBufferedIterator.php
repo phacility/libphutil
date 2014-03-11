@@ -11,8 +11,6 @@
  * @task impl     Methods to Implement
  * @task config   Configuration
  * @task iterator Iterator Implementation
- *
- * @group util
  */
 abstract class PhutilBufferedIterator implements Iterator {
 

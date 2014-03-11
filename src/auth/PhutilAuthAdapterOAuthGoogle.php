@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Authentication adapter for Google OAuth2.
+ */
 final class PhutilAuthAdapterOAuthGoogle extends PhutilAuthAdapterOAuth {
 
   public function getAdapterType() {

@@ -27,9 +27,6 @@
  * @task build Graph Construction
  * @task cycle Cycle Detection
  * @task explore Graph Exploration
- *
- * @group util
- * @stable
  */
 abstract class AbstractDirectedGraph {
 

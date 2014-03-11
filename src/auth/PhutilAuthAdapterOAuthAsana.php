@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Authentication adapter for Asana OAuth2.
+ */
 final class PhutilAuthAdapterOAuthAsana extends PhutilAuthAdapterOAuth {
 
   public function getAdapterType() {

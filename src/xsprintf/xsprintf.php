@@ -32,7 +32,6 @@
  * @param   list    List of arguments, with the sprintf() pattern in position 0.
  * @return  string  Formatted string.
  *
- * @group util
  */
 function xsprintf($callback, $userdata, $argv) {
   $argc = count($argv);
@@ -105,8 +104,6 @@ function xsprintf($callback, $userdata, $argv) {
  * @param   int     The current character position in the string.
  * @param   wild    The value to convert.
  * @param   int     The string length.
- *
- * @group util
  */
 function xsprintf_callback_example(
   $userdata,

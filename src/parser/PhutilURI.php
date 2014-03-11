@@ -2,8 +2,6 @@
 
 /**
  * Basic URI parser object.
- *
- * @group util
  */
 final class PhutilURI {
 

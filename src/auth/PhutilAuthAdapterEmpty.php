@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Empty authentication adapter with no logic.
+ *
+ * This adapter can be used when you need an adapter for some technical reason
+ * but it doesn't make sense to put logic inside it.
+ */
 final class PhutilAuthAdapterEmpty extends PhutilAuthAdapter {
 
   private $accountID;
@@ -14,7 +20,6 @@ final class PhutilAuthAdapterEmpty extends PhutilAuthAdapter {
   public function getAdapterDomain() {
     return $this->adapterDomain;
   }
-
 
   public function setAdapterType($adapter_type) {
     $this->adapterType = $adapter_type;

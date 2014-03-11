@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Abstract adapter for OAuth1 providers.
+ */
 abstract class PhutilAuthAdapterOAuth1 extends PhutilAuthAdapter {
 
   private $consumerKey;

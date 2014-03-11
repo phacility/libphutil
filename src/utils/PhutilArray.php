@@ -5,8 +5,6 @@
  * class wraps a basic array and provides trivial implementations for
  * `Countable`, `ArrayAccess` and `Iterator`, so subclasses need only implement
  * specializations.
- *
- * @group util
  */
 abstract class PhutilArray
   extends Phobject

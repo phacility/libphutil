@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Authentication adapter for Facebook OAuth2.
+ */
 final class PhutilAuthAdapterOAuthFacebook extends PhutilAuthAdapterOAuth {
 
   private $requireSecureBrowsing;

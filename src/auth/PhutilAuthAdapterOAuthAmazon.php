@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Authentication adapter for Amazon OAuth2.
+ */
 final class PhutilAuthAdapterOAuthAmazon extends PhutilAuthAdapterOAuth {
 
   public function getAdapterType() {

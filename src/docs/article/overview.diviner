@@ -6,17 +6,19 @@ This document provides a high-level introduction to libphutil.
 = Overview =
 
 **libphutil** (pronounced as "lib-futile", like the English word //futile//) is
-a collection of PHP utility classes and functions which provide powerful
-extensions to the standard library.
+a collection of PHP utility classes and functions. Most code in the library is
+general-purpose, and makes it easier to build applications in PHP.
 
-This code was originally developed at Facebook and parts of it appear in the
-core libraries for <http://www.facebook.com/>.
+libphutil is principally the shared library for
+[[ http://www.phabricator.org | Phabricator ]] and its CLI **Arcanist**, but is
+suitable for inclusion in other projects. In particular, some of the classes
+provided in this library vastly improve the state of common operations in PHP,
+like executing system commands.
 
-libphutil is principally the shared library for **Arcanist** and
-**Phabricator** (see <http://www.phabricator.org/>), but is suitable for
-inclusion in other projects. In particular, some of the classes provided in this
-library vastly improve the state of common operations in PHP, like executing
-system commands.
+libphutil is developed and maintained by
+[[ http://www.phacility.com/ | Phacility ]]. Some of the code in this library
+was originally developed at Facebook, and parts of it appear in the core
+libraries for <http://www.facebook.com/>.
 
 = Loading libphutil =
 
@@ -30,7 +32,7 @@ This loads global functions and registers an autoload function with
 
 = Major Components =
 
-The major components of libphutil are:
+Some of the major components of libphutil are:
 
   - **Core Utilities**: a collection of useful functions like @{function:ipull}
   which simplify common data manipulation;
@@ -51,5 +53,5 @@ The major components of libphutil are:
 Information on extending and contributing to libphutil is available in the
 Phabricator documentation:
 
-  - to get started as a contributor, see @{article@phabricator:Contributor
+  - to get started as a contributor, see @{article@phabcontrib:Contributor
     Introduction}.

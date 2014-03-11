@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Authentication adapter for Twitter OAuth1.
+ */
 final class PhutilAuthAdapterOAuthTwitter extends PhutilAuthAdapterOAuth1 {
 
   private $userInfo;

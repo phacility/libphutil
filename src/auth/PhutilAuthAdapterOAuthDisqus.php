@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Authentication adapter for Disqus OAuth2.
+ */
 final class PhutilAuthAdapterOAuthDisqus extends PhutilAuthAdapterOAuth {
 
   public function getAdapterType() {

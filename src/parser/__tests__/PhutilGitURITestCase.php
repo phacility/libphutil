@@ -1,9 +1,7 @@
 <?php
 
 /**
- * Test cases for @{class:PhutilGitURI} parser.
- *
- * @group util
+ * @covers PhutilGitURI
  */
 final class PhutilGitURITestCase extends PhutilTestCase {
 
