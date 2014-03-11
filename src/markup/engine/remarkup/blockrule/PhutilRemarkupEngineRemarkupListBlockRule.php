@@ -54,8 +54,8 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
    * the stack.
    */
   const MAXIMUM_LIST_NESTING_DEPTH = 12;
-  const START_BLOCK_PATTERN = '@^\s*(?:[-*#]+|1[./)])\s+@';
-  const CONT_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[./)])\s+@';
+  const START_BLOCK_PATTERN = '@^\s*(?:[-*#]+|1[.)])\s+@';
+  const CONT_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)])\s+@';
 
   public function markupText($text) {
 

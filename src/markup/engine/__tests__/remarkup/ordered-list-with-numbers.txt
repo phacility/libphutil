@@ -3,12 +3,14 @@
 
 1. asa
  # asdf
-234/ asdf
+234) asdf
 
 234) asd
 
 1. asd
 234) asd
+
+1/ This explicitly should not be formatted as a list.
 ~~~~~~~~~~
 <ol>
 <li>aasdx</li>
@@ -28,6 +30,8 @@
 <li>asd</li>
 <li>asd</li>
 </ol>
+
+<p>1/ This explicitly should not be formatted as a list.</p>
 ~~~~~~~~~~
 1. aasdx
 2. asdf
@@ -40,3 +44,5 @@
 
 1. asd
 2. asd
+
+1/ This explicitly should not be formatted as a list.
