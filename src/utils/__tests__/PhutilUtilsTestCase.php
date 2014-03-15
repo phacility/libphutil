@@ -514,5 +514,35 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
   }
 
+  public function testCensorCredentials() {
+    $cases = array(
+      '' => '',
+      'abc' => 'abc',
+
+      // NOTE: We're liberal about censoring here, since we can't tell
+      // if this is a truncated password at the end of an input string
+      // or a domain name. The version with a "/" isn't censored.
+      'http://example.com' => 'http://xxxxx',
+      'http://example.com/' => 'http://example.com/',
+
+      'http://username@example.com' => 'http://xxxxx@example.com',
+      'http://user:pass@example.com' => 'http://xxxxx@example.com',
+
+      // We censor these because they might be truncated credentials at the end
+      // of the string.
+      'http://user' => 'http://xxxxx',
+      "http://user\n" => "http://xxxxx\n",
+
+      'svn+ssh://user:pass@example.com' => 'svn+ssh://xxxxx@example.com',
+    );
+
+    foreach ($cases as $input => $expect) {
+      $this->assertEqual(
+        $expect,
+        phutil_censor_credentials($input),
+        pht('Credential censoring for: %s', $input));
+    }
+  }
+
 
 }

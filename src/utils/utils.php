@@ -1052,3 +1052,19 @@ function phutil_json_decode($string, $default = array()) {
   }
   return $result;
 }
+
+
+/**
+ * Attempt to censor any plaintext credentials from a string.
+ *
+ * The major use case here is to censor usernames and passwords from command
+ * output. For example, when `git fetch` fails, the output includes credentials
+ * for authenticated HTTP remotes.
+ *
+ * @param   string  Some block of text.
+ * @return  string  A similar block of text, but with credentials that could
+ *                  be identified censored.
+ */
+function phutil_censor_credentials($string) {
+  return preg_replace(',(?<=://)([^/@\s]+)(?=@|$),', 'xxxxx', $string);
+}

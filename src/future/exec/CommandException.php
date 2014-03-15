@@ -60,18 +60,20 @@ final class CommandException extends Exception {
     $limit = 1000;
 
     $len = strlen($string);
-    if ($len <= $limit) {
-      return $string;
+    if ($len > $limit) {
+      $cut = $len - $limit;
+      $suffix = "... (".number_format($cut)." more bytes) ...";
+      if ($cut > strlen($suffix)) {
+        $string = substr($string, 0, $limit).$suffix;
+      }
     }
 
-    $cut = $len - $limit;
-    $suffix = "... (".number_format($cut)." more bytes) ...";
+    // Strip out any credentials for the purpose of building a human readable
+    // summary of the exception, since these are rarely-if-ever useful when
+    // debugging, but can expose otherwise sensitive information.
+    $string = phutil_censor_credentials($string);
 
-    if ($cut > strlen($suffix)) {
-      return substr($string, 0, $limit).$suffix;
-    } else {
-      return $string;
-    }
+    return $string;
   }
 
 }
