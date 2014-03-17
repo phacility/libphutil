@@ -68,13 +68,42 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
   public function testTagJavascriptProtocolRejection() {
     $hrefs = array(
       'javascript:alert(1)'         => true,
-      'JAVASCRIPT:alert(1)'         => true,
-      '     javascript:alert(1)'    => true,
+      'JAVASCRIPT:alert(2)'         => true,
+      '     javascript:alert(3)'    => true,
       '/'                           => false,
       '/path/to/stuff/'             => false,
       ''                            => false,
       'http://example.com/'         => false,
       '#'                           => false,
+      'javascript://anything'       => true,
+
+      // Chrome 33 and IE11, at a minimum, treat this as Javascript.
+      "javascript\n:alert(4)"       => true,
+
+      // Opera currently accepts a variety of unicode spaces. This test case
+      // has a smattering of them.
+      "\xE2\x80\x89javascript:"     => true,
+      "javascript\xE2\x80\x89:"     => true,
+      "\xE2\x80\x84javascript:"     => true,
+      "javascript\xE2\x80\x84:"     => true,
+
+      // Because we're aggressive, all of unicode should trigger detection
+      // by default.
+      "\xE2\x98\x83javascript:"     => true,
+      "javascript\xE2\x98\x83:"     => true,
+      "\xE2\x98\x83javascript\xE2\x98\x83:" => true,
+
+      // We're aggressive about this, so we'll intentionally raise false
+      // positives in these cases.
+      'javascript~:alert(5)'        => true,
+      '!!!javascript!!!!:alert(6)'  => true,
+
+      // However, we should raise true negatives in these slightly more
+      // reasonable cases.
+      'javascript/:docs.html'       => false,
+      'javascripts:x.png'           => false,
+      'COOLjavascript:page'         => false,
+      '/javascript:alert(1)'        => false,
     );
 
     foreach (array(true, false) as $use_uri) {
