@@ -143,7 +143,7 @@ abstract class Future {
       $read_list,
       $write_list,
       $exceptfds,
-      $timeout,
+      $timeout_sec,
       $timeout_usec);
 
     if ($ok === false) {
