@@ -3,7 +3,7 @@ a
 
 b
 ~~~~~~~~~~
-<div class="remarkup-note">NOTE: a
+<div class="remarkup-note"><span class="remarkup-note-word">NOTE:</span> a
 a</div>
 
 <p>b</p>

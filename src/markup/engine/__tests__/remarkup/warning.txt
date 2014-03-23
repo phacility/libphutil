@@ -2,7 +2,7 @@ WARNING: interesting **stuff**
 
 (WARNING) interesting **stuff**
 ~~~~~~~~~~
-<div class="remarkup-warning">WARNING: interesting <strong>stuff</strong></div>
+<div class="remarkup-warning"><span class="remarkup-note-word">WARNING:</span> interesting <strong>stuff</strong></div>
 
 
 

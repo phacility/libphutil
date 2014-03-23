@@ -2,7 +2,7 @@ NOTE: interesting **stuff**
 
 (NOTE) interesting **stuff**
 ~~~~~~~~~~
-<div class="remarkup-note">NOTE: interesting <strong>stuff</strong></div>
+<div class="remarkup-note"><span class="remarkup-note-word">NOTE:</span> interesting <strong>stuff</strong></div>
 
 
 
