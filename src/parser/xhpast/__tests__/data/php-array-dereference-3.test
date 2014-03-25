@@ -1,0 +1,3 @@
+# pass
+<?php
+if (isset(self::getSearchStates()[$state])) { }

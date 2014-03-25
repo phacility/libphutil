@@ -2260,10 +2260,30 @@ variable_property:
   }
 ;
 
-method_or_not:
+array_method_dereference:
+  array_method_dereference '[' dim_offset ']' {
+    $$ = NNEW(n_INDEX_ACCESS);
+    $$->appendChild($1);
+    $$->appendChild($3);
+    NMORE($$, $4);
+  }
+| method '[' dim_offset ']' {
+    $$ = NNEW(n_INDEX_ACCESS);
+    $$->appendChild($1);
+    $$->appendChild($3);
+    NMORE($$, $4);
+  }
+;
+
+method:
   '(' function_call_parameter_list ')' {
     $$ = NEXPAND($1, $2, $3);
   }
+;
+
+method_or_not:
+  method
+| array_method_dereference
 | /* empty */ {
     $$ = NNEW(n_EMPTY);
   }
@@ -2650,3 +2670,8 @@ const char* yytokname(int tok) {
   }
   return yytname[YYTRANSLATE(tok)];
 }
+
+
+/*
+ * vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2
+ */
