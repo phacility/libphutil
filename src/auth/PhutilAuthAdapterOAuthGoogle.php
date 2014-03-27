@@ -145,12 +145,24 @@ final class PhutilAuthAdapterOAuthGoogle extends PhutilAuthAdapterOAuth {
           'under "APIs".'.
           "\n\n".
           'Around March 2014, Google made some API changes which require this '.
-          'configuration adjustment. (If you are unable to log into '.
-          'Phabricator, use "bin/auth recover" to recover access to an '.
-          'administrator account.)'.
+          'configuration adjustment.'.
+          "\n\n".
+          'Normally, you can resolve this issue by going to %s, then '.
+          'clicking "API Project", then "APIs & auth", then turning the '.
+          '"Google+ API" on. The names you see on the console may be '.
+          'different depending on how your integration is set up. If you '.
+          'are not sure, you can hunt through the projects until you find '.
+          'the one associated with the right Application ID under '.
+          '"Credentials". The Application ID this install is using is "%s".'.
+          "\n\n".
+          '(If you are unable to log into Phabricator, you can use '.
+          '"bin/auth recover" to recover access to an administrator '.
+          'account.)'.
           "\n\n".
           'Full HTTP Response'.
           "\n\n%s",
+          'https://console.developers.google.com/',
+          $this->getClientID(),
           $raw_body));
     }
   }
