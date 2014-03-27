@@ -9,7 +9,8 @@ final class ConduitClient {
   private $connectionID;
   private $sessionKey;
   private $timeout = 300.0;
-  private $basicAuthCredentials;
+  private $username;
+  private $password;
 
   public function getConnectionID() {
     return $this->connectionID;
@@ -83,10 +84,11 @@ final class ConduitClient {
 
     $core_future->setMethod('POST');
     $core_future->setTimeout($this->timeout);
-    if ($this->basicAuthCredentials !== null) {
-      $core_future->addHeader(
-        'Authorization',
-        'Basic '.$this->basicAuthCredentials);
+
+    if ($this->username !== null) {
+      $core_future->setHTTPBasicAuthCredentials(
+        $this->username,
+        $this->password);
     }
 
     $conduit_future = new ConduitFuture($core_future);
@@ -98,7 +100,8 @@ final class ConduitClient {
   }
 
   public function setBasicAuthCredentials($username, $password) {
-    $this->basicAuthCredentials = base64_encode($username.':'.$password);
+    $this->username = $username;
+    $this->password = new PhutilOpaqueEnvelope($password);
     return $this;
   }
 

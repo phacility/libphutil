@@ -245,6 +245,25 @@ abstract class BaseHTTPFuture extends Future {
   }
 
 
+  /**
+   * Add a HTTP basic authentication header to the request.
+   *
+   * @param string                Username to authenticate with.
+   * @param PhutilOpaqueEnvelope  Password to authenticate with.
+   * @return this
+   * @task config
+   */
+  public function setHTTPBasicAuthCredentials(
+    $username,
+    PhutilOpaqueEnvelope $password) {
+
+    $password_plaintext = $password->openEnvelope();
+    $credentials = base64_encode($username.':'.$password_plaintext);
+
+    return $this->addHeader('Authorization', 'Basic '.$credentials);
+  }
+
+
 /* -(  Resolving the Request  )---------------------------------------------- */
 
 
