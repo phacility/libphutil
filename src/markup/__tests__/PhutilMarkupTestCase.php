@@ -65,6 +65,56 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
       (string)phutil_tag('br', array('y' => null)));
   }
 
+  public function testDefaultRelNoreferrer() {
+    $map = array(
+      // These should not have rel="nofollow" inserted implicitly.
+      '/' => false,
+      '/path/to/local.html' => false,
+      '#example' => false,
+      '' => false,
+
+      // These should get the implicit insertion.
+      'http://www.example.org/' => true,
+      '///evil.com/' => true,
+      '  http://www.example.org/' => true,
+      'ftp://filez.com' => true,
+      'mailto:santa@northpole.com' => true,
+    );
+
+    foreach ($map as $input => $expect) {
+      $tag = phutil_tag(
+        'a',
+        array(
+          'href' => $input,
+        ),
+        'link');
+      $tag = (string)$tag;
+      $this->assertEqual($expect, (bool)preg_match('/noreferrer/', $tag));
+    }
+
+    // With an explicit `rel` present, we should not override it.
+    $tag = phutil_tag(
+      'a',
+      array(
+        'href' => 'http://www.example.org/',
+        'rel' => 'nofollow',
+      ),
+      'link');
+
+    $this->assertFalse((bool)preg_match('/noreferrer/', (string)$tag));
+
+    // For tags other than `a`, we should not insert `rel`.
+    $tag = phutil_tag(
+      'link',
+      array(
+        'href' => 'http://www.example.org/',
+      ),
+      'link');
+
+    $this->assertFalse((bool)preg_match('/noreferrer/', (string)$tag));
+  }
+
+
   public function testTagJavascriptProtocolRejection() {
     $hrefs = array(
       'javascript:alert(1)'         => true,
