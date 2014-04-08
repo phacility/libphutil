@@ -18,6 +18,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
   private $anonymousUsername;
   private $anonymousPassword;
   private $activeDirectoryDomain;
+  private $alwaysSearch;
 
   private $loginUsername;
   private $loginPassword;
@@ -101,6 +102,11 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
 
   public function setActiveDirectoryDomain($domain) {
     $this->activeDirectoryDomain = $domain;
+    return $this;
+  }
+
+  public function setAlwaysSearch($always_search) {
+    $this->alwaysSearch = $always_search;
     return $this;
   }
 
@@ -209,7 +215,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
     $login_user = $this->loginUsername;
     $login_pass = $this->loginPassword;
 
-    if ($this->anonymousUsername) {
+    if ($this->shouldBindWithoutIdentity()) {
       $distinguished_name = null;
       $search_query = null;
       foreach ($this->searchAttributes as $attribute) {
@@ -257,13 +263,13 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
       // If we do have anonymous credentials, we'll rebind and try the search
       // again below. Doing this automatically means things work correctly more
       // often without requiring additional configuration.
-      if (!strlen($this->anonymousUsername)) {
+      if (!$this->shouldBindWithoutIdentity()) {
         // No anonymous credentials, so we just fail here.
         throw new Exception(
           pht(
             'LDAP: Failed to retrieve record for user "%s" when searching. '.
             'Credentialed users may not be able to search your LDAP server. '.
-            'Try configuring anonymous credentials.',
+            'Try configuring anonymous credentials or fully anonymous binds.',
             $login_user));
       } else {
         // Rebind as anonymous and try the search again.
@@ -352,7 +358,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
         }
       }
 
-      if (strlen($this->anonymousUsername)) {
+      if ($this->shouldBindWithoutIdentity()) {
         $user = $this->anonymousUsername;
         $pass = $this->anonymousPassword;
         $this->bindLDAP($conn, $user, $pass);
@@ -460,15 +466,40 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
 
     // NOTE: ldap_bind() dumps cleartext passwords into logs by default. Keep
     // it quiet.
-    $ok = @ldap_bind($conn, $user, $pass->openEnvelope());
+    if (strlen($user)) {
+      $ok = @ldap_bind($conn, $user, $pass->openEnvelope());
+    } else {
+      $ok = @ldap_bind($conn);
+    }
 
     $profiler->endServiceCall($call_id, array());
 
     if (!$ok) {
-      $this->raiseConnectionException(
-        $conn,
-        pht("Failed to bind to LDAP server (as user '%s').", $user));
+      if (strlen($user)) {
+        $this->raiseConnectionException(
+          $conn,
+          pht('Failed to bind to LDAP server (as user "%s").', $user));
+      } else {
+        $this->raiseConnectionException(
+          $conn,
+          pht('Failed to bind to LDAP server (without username).'));
+      }
     }
+  }
+
+
+  /**
+   * Determine if this adapter should attempt to bind to the LDAP server
+   * without a user identity.
+   *
+   * Generally, we can bind directly if we have a username/password, or if the
+   * "Always Search" flag is set, indicating that the empty username and
+   * password are sufficient.
+   *
+   * @return bool True if the adapter should perform binds without identity.
+   */
+  private function shouldBindWithoutIdentity() {
+    return $this->alwaysSearch || strlen($this->anonymousUsername);
   }
 
 }
