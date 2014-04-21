@@ -9,6 +9,11 @@ $args->parseStandardArguments();
 $args->parse(
   array(
     array(
+      'name'      => 'attach',
+      'param'     => 'file',
+      'help'      => pht('Attach a file to the request.'),
+    ),
+    array(
       'name'      => 'url',
       'wildcard'  => true,
     ),
@@ -25,14 +30,17 @@ $method   = 'GET';
 $data     = '';
 $timeout  = 30;
 
-$parsed = new PhutilURI($uri);
-if ($parsed->getProtocol() == 'https') {
-  $future = new HTTPSFuture($uri, $data);
-} else {
-  $future = new HTTPFuture($uri, $data);
-}
-
+$future = new HTTPSFuture($uri, $data);
 $future->setMethod($method);
 $future->setTimeout($timeout);
+
+$attach_file = $args->getArg('attach');
+if ($attach_file !== null) {
+  $future->attachFileData(
+    'file',
+    Filesystem::readFile($attach_file),
+    basename($attach_file),
+    Filesystem::getMimeType($attach_file));
+}
 
 print_r($future->resolve());

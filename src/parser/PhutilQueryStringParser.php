@@ -1,44 +1,101 @@
 <?php
 
 /**
- * Parses a request string leaving all characters intact.
+ * Utilities for parsing HTTP query strings.
  *
- * http://php.net/manual/en/language.variables.external.php#language.variables.external.dot-in-names
- * http://php.net/manual/en/language.variables.external.php#81080
+ * The builtin functions in PHP (notably, `parse_str()` and automatic parsing
+ * prior to request handling) are not suitable in the general case because they
+ * silently convert some characters in parameter names into underscores.
+ *
+ * For example, if you call `parse_str()` with input like this:
+ *
+ *   x.y=z
+ *
+ * ...the output is this:
+ *
+ *   array(
+ *     'x_y' => 'z',
+ *   );
+ *
+ * ...with the `.` replaced with an underscore, `_`. Other characters converted
+ * in this way include space and unmatched opening brackets.
+ *
+ * Broadly, this is part of the terrible legacy of `register_globals`. Since
+ * we'd like to be able to parse all valid query strings without destroying any
+ * data, this class implements a less-encumbered parser.
  */
 final class PhutilQueryStringParser {
 
+
+  /**
+   * Parses a query string into a dictionary, applying PHP rules for handling
+   * array nomenclature (like `a[]=1`) in parameter names.
+   *
+   * For a more basic parse, see @{method:parseQueryStringToPairList}.
+   *
+   * @param   string              Query string.
+   * @return  map<string, wild>   Parsed dictionary.
+   */
   public function parseQueryString($query_string) {
-    $parsed_arr  = array();
-    $query_arr   = array();
+    $result = array();
 
-    if (strlen($query_string)) {
-      $query_pairs = explode("&", $query_string);
-
-      foreach ($query_pairs as $query) {
-        $query_part_arr = explode("=", $query, 2);
-        if (strlen($query_part_arr[0])) {
-          $query_arr[] = array(
-            "key" => $query_part_arr[0],
-            "val" => isset($query_part_arr[1]) ? $query_part_arr[1] : "",
-          );
-        }
+    $list = $this->parseQueryStringToPairList($query_string);
+    foreach ($list as $parts) {
+      list($key, $value) = $parts;
+      if (!strlen($key)) {
+        continue;
       }
-
-      foreach ($query_arr as $query_parts) {
-        $decoded_key = urldecode($query_parts["key"]);
-        $decoded_val = urldecode($query_parts["val"]);
-
-        $this->parseQueryKeyToArr(
-          $decoded_key,
-          $decoded_val,
-          $parsed_arr);
-      }
-
+      $this->parseQueryKeyToArr($key, $value, $result);
     }
 
-    return $parsed_arr;
+    return $result;
   }
+
+
+  /**
+   * Parses a query string into a basic list of pairs, without handling any
+   * array information in the keys. For example:
+   *
+   *   a[]=1&a[]=2
+   *
+   * ...will parse into:
+   *
+   *   array(
+   *     array('a[]', '1'),
+   *     array('a[]', '2'),
+   *   );
+   *
+   * Use @{method:parseQueryString} to produce a more sophisticated parse which
+   * applies array rules and returns a dictionary.
+   *
+   * @param   string                      Query string.
+   * @return  list<pair<string, string>>  List of parsed parameters.
+   */
+  public function parseQueryStringToPairList($query_string) {
+    $list = array();
+
+    if (!strlen($query_string)) {
+      return $list;
+    }
+
+    $pairs = explode('&', $query_string);
+    foreach ($pairs as $pair) {
+      if (!strlen($pair)) {
+        continue;
+      }
+      $parts = explode('=', $pair, 2);
+      if (count($parts) < 2) {
+        $parts[] = '';
+      }
+      $list[] = array(
+        urldecode($parts[0]),
+        urldecode($parts[1]),
+      );
+    }
+
+    return $list;
+  }
+
 
   /**
    * Treats the key as a flat query that potentially has square brackets. If

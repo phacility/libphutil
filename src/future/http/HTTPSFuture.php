@@ -19,6 +19,8 @@ final class HTTPSFuture extends BaseHTTPFuture {
   private $followLocation = true;
   private $responseBuffer = '';
   private $responseBufferPos;
+  private $files = array();
+  private $temporaryFiles = array();
 
   /**
    * Create a temp file containing an SSL cert, and use it for this session.
@@ -146,6 +148,34 @@ final class HTTPSFuture extends BaseHTTPFuture {
     }
   }
 
+  /**
+   * Attach a file to the request.
+   *
+   * @param string  HTTP parameter name.
+   * @param string  File content.
+   * @param string  File name.
+   * @param string  File mime type.
+   * @return this
+   */
+  public function attachFileData($key, $data, $name, $mime_type) {
+    if (isset($this->files[$key])) {
+      throw new Exception(
+        pht(
+          'HTTPSFuture currently supports only one file attachment for each '.
+          'parameter name. You are trying to attach two different files with '.
+          'the same parameter, "%s".',
+          $key));
+    }
+
+    $this->files[$key] = array(
+      'data' => $data,
+      'name' => $name,
+      'mime' => $mime_type,
+    );
+
+    return $this;
+  }
+
   public function isReady() {
     if (isset($this->result)) {
       return true;
@@ -197,39 +227,8 @@ final class HTTPSFuture extends BaseHTTPFuture {
         curl_setopt($curl, CURLOPT_REDIR_PROTOCOLS, $allowed_protocols);
       }
 
-      $data = $this->getData();
-      if ($data) {
-
-        // NOTE: PHP's cURL implementation has a piece of magic which treats
-        // parameters as file paths if they begin with '@'. This means that
-        // an array like "array('name' => '@/usr/local/secret')" will attempt to
-        // read that file off disk and send it to the remote server. This
-        // behavior is pretty surprising, and it can easily become a relatively
-        // severe security vulnerability which allows an attacker to read any
-        // file the HTTP process has access to. Since this feature is very
-        // dangerous and not particularly useful, we prevent its use.
-        //
-        // After PHP 5.2.0, it is sufficient to pass a string to avoid this
-        // "feature" (it is only invoked in the array version). Prior to
-        // PHP 5.2.0, we block any request which have string data beginning with
-        // '@' (they would not work anyway).
-
-        if (is_array($data)) {
-          // Explicitly build a query string to prevent "@" security problems.
-          $data = http_build_query($data, '', '&');
-        }
-
-        if ($data[0] == '@' && version_compare(phpversion(), '5.2.0', '<')) {
-          throw new Exception(
-            "Attempting to make an HTTP request including string data that ".
-            "begins with '@'. Prior to PHP 5.2.0, this reads files off disk, ".
-            "which creates a wide attack window for security vulnerabilities. ".
-            "Upgrade PHP or avoid making cURL requests which begin with '@'.");
-        }
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-      } else {
-        curl_setopt($curl, CURLOPT_POSTFIELDS, null);
-      }
+      $data = $this->formatRequestDataForCURL();
+      curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 
       $headers = $this->getHeaders();
 
@@ -354,6 +353,10 @@ final class HTTPSFuture extends BaseHTTPFuture {
       return false;
     }
 
+    // The request is complete, so release any temporary files we wrote
+    // earlier.
+    $this->temporaryFiles = array();
+
     $info = self::$results[(int)$curl];
     $result = $this->responseBuffer;
     $err_code = $info['result'];
@@ -422,4 +425,159 @@ final class HTTPSFuture extends BaseHTTPFuture {
     $this->responseBufferPos = 0;
     return $this;
   }
+
+
+  /**
+   * Produces a value safe to pass to `CURLOPT_POSTFIELDS`.
+   *
+   * @return wild   Some value, suitable for use in `CURLOPT_POSTFIELDS`.
+   */
+  private function formatRequestDataForCURL() {
+    // We're generating a value to hand to cURL as CURLOPT_POSTFIELDS. The way
+    // cURL handles this value has some tricky caveats.
+
+    // First, we can return either an array or a query string. If we return
+    // an array, we get a "multipart/form-data" request. If we return a
+    // query string, we get an "application/x-www-form-urlencoded" request.
+
+    // Second, if we return an array we can't duplicate keys. The user might
+    // want to send the same parameter multiple times.
+
+    // Third, if we return an array and any of the values start with "@",
+    // cURL includes arbitrary files off disk and sends them to an untrusted
+    // remote server. For example, an array like:
+    //
+    //   array('name' => '@/usr/local/secret')
+    //
+    // ...will attempt to read that file off disk and transmit its contents with
+    // the request. This behavior is pretty surprising, and it can easily
+    // become a relatively severe security vulnerability which allows an
+    // attacker to read any file the HTTP process has access to. Since this
+    // feature is very dangerous and not particularly useful, we prevent its
+    // use. Broadly, this means we must reject some requests because they
+    // contain an "@" in an inconvenient place.
+
+    // Generally, to avoid the "@" case and because most servers usually
+    // expect "application/x-www-form-urlencoded" data, we try to return a
+    // string unless there are files attached to this request.
+
+    $data = $this->getData();
+    $files = $this->files;
+
+    $any_data = ($data || (is_string($data) && strlen($data)));
+    $any_files = (bool)$this->files;
+
+    if (!$any_data && !$any_files) {
+      // No files or data, so just bail.
+      return null;
+    }
+
+    if (!$any_files) {
+      // If we don't have any files, just encode the data as a query string,
+      // make sure it's not including any files, and we're good to go.
+      if (is_array($data)) {
+        $data = http_build_query($data, '', '&');
+      }
+
+      $this->checkForDangerousCURLMagic($data, $is_query_string = true);
+
+      return $data;
+    }
+
+    // If we've made it this far, we have some files, so we need to return
+    // an array. First, convert the other data into an array if it isn't one
+    // already.
+
+    if (is_string($data)) {
+      // NOTE: We explicitly don't want fancy array parsing here, so just
+      // do a basic parse and then convert it into a dictionary ourselves.
+      $parser = new PhutilQueryStringParser();
+      $pairs = $parser->parseQueryStringToPairList($data);
+
+      $map = array();
+      foreach ($pairs as $pair) {
+        list($key, $value) = $pair;
+        if (array_key_exists($key, $map)) {
+          throw new Exception(
+            pht(
+              'Request specifies two values for key "%s", but parameter '.
+              'names must be unique if you are posting file data due to '.
+              'limitations with cURL.'));
+        }
+        $map[$key] = $value;
+      }
+
+      $data = $map;
+    }
+
+    foreach ($data as $key => $value) {
+      $this->checkForDangerousCURLMagic($value, $is_query_string = false);
+    }
+
+    foreach ($this->files as $name => $info) {
+      if (array_key_exists($name, $data)) {
+        throw new Exception(
+          pht(
+            'Request specifies a file with key "%s", but that key is '.
+            'also defined by normal request data. Due to limitations '.
+            'with cURL, requests that post file data must use unique '.
+            'keys.'));
+      }
+
+      $tmp = new TempFile($info['name']);
+      Filesystem::writeFile($tmp, $info['data']);
+      $this->temporaryFiles[] = $tmp;
+
+      // In 5.5.0 and later, we can use CURLFile. Prior to that, we have to
+      // use this "@" stuff.
+
+      if (class_exists('CURLFile')) {
+        $file_value = new CURLFile((string)$tmp, $info['mime'], $info['name']);
+      } else {
+        $file_value = '@'.(string)$tmp;
+      }
+
+      $data[$name] = $file_value;
+    }
+
+    return $data;
+  }
+
+
+  /**
+   * Detect strings which will cause cURL to do horrible, insecure things.
+   *
+   * @param string  Possibly dangerous string.
+   * @param bool    True if this string is being used as part of a query string.
+   * @return void
+   */
+  private function checkForDangerousCURLMagic($string, $is_query_string) {
+    if (empty($string[0]) || ($string[0] != '@')) {
+      // This isn't an "@..." string, so it's fine.
+      return;
+    }
+
+    if ($is_query_string) {
+      if (version_compare(phpversion(), '5.2.0', '<')) {
+        throw new Exception(
+          pht(
+            'Attempting to make an HTTP request, but query string data begins '.
+            'with "@". Prior to PHP 5.2.0 this reads files off disk, which '.
+            'creates a wide attack window for security vulnerabilities. '.
+            'Upgrade PHP or avoid making cURL requests which begin with "@".'));
+      }
+
+      // This is safe if we're on PHP 5.2.0 or newer.
+      return;
+    }
+
+    throw new Exception(
+      pht(
+        'Attempting to make an HTTP request which includes file data, but '.
+        'the value of a query parameter begins with "@". PHP interprets '.
+        'these values to mean that it should read arbitrary files off disk '.
+        'and transmit them to remote servers. Declining to make this '.
+        'request.'));
+  }
+
 }

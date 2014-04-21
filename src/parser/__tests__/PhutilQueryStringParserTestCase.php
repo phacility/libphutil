@@ -82,8 +82,62 @@ final class PhutilQueryStringParserTestCase extends PhutilTestCase {
 
     foreach ($map as $query_string => $expected) {
       $this->assertEqual(
-        $expected, $parser->parseQueryString($query_string));
+        $expected,
+        $parser->parseQueryString($query_string));
     }
   }
+
+  public function testQueryStringListParsing() {
+    $map = array(
+      '' => array(),
+      '&' => array(),
+      '=' => array(
+        array('', ''),
+      ),
+      '=&' => array(
+        array('', ''),
+      ),
+      'a=b' => array(
+        array('a', 'b'),
+      ),
+      'a[]=b' => array(
+        array('a[]', 'b'),
+      ),
+      'a=' => array(
+        array('a', ''),
+      ),
+      '. [=1' => array(
+        array('. [', '1'),
+      ),
+      'a=b&c=d' => array(
+        array('a', 'b'),
+        array('c', 'd'),
+      ),
+      'a=b&a=c' => array(
+        array('a', 'b'),
+        array('a', 'c'),
+      ),
+      '&a=b&' => array(
+        array('a', 'b'),
+      ),
+      '=a' => array(
+        array('', 'a'),
+      ),
+      '&&&' => array(
+      ),
+      'a%20b=c%20d' => array(
+        array('a b', 'c d'),
+      ),
+    );
+
+    $parser = new PhutilQueryStringParser();
+
+    foreach ($map as $query_string => $expected) {
+      $this->assertEqual(
+        $expected,
+        $parser->parseQueryStringToPairList($query_string));
+    }
+  }
+
 
 }
