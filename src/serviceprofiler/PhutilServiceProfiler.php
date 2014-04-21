@@ -109,7 +109,7 @@ final class PhutilServiceProfiler {
           }
           break;
         case 'http':
-          $desc = $data['uri'];
+          $desc = phutil_censor_credentials($data['uri']);
           break;
         case 'lint':
           $desc = $data['linter'];
