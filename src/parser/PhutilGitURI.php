@@ -30,6 +30,12 @@ final class PhutilGitURI {
   }
 
   private static function parseURI($uri) {
+    // See T4913. Fail the parse if there is leading whitespace; stricter
+    // systems will not accept these URIs.
+    if (ltrim($uri) !== $uri) {
+      return null;
+    }
+
     $user   = '(?:([^@]+)@)?';
     $domain = '([^:]+)';
     $path   = ':(.*)';

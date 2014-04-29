@@ -19,5 +19,10 @@ final class PhutilGitURITestCase extends PhutilTestCase {
     $this->assertEqual('host.com:path/to/something', (string)$uri);
   }
 
+  public function testStrictGitURIParsingOfLeadingWhitespace() {
+    $uri = new PhutilURI(' user@example.com');
+    $this->assertEqual('', $uri->getDomain());
+  }
+
 
 }

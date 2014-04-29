@@ -76,4 +76,9 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('', $uri->getDomain());
   }
 
+  public function testStrictURIParsingOfLeadingWhitespace() {
+    $uri = new PhutilURI(' http://example.com/');
+    $this->assertEqual('', $uri->getDomain());
+  }
+
 }

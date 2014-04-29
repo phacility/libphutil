@@ -17,6 +17,15 @@ final class PhutilURI {
   public function __construct($uri) {
     $parts = parse_url($uri);
 
+    // The parse_url() call will accept URIs with leading whitespace, but many
+    // other tools (like git) will not. See T4913 for a specific example. If
+    // the input string has leading whitespace, fail the parse.
+    if ($parts) {
+      if (ltrim($uri) != $uri) {
+        $parts = false;
+      }
+    }
+
     // NOTE: `parse_url()` is very liberal about host names; fail the parse if
     // the host looks like garbage.
     if ($parts) {
