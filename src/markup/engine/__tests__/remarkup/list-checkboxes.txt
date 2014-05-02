@@ -1,0 +1,35 @@
+- [] a
+- [ ] b
+- [X] c
+- d
+
+[ ] A
+[X] B
+  [ ] C
+  [ ] D
+
+~~~~~~~~~~
+<ul class="remarkup-list-with-checkmarks">
+<li class="remarkup-unchecked-item"><input type="checkbox" disabled="disabled" /> a</li>
+<li class="remarkup-unchecked-item"><input type="checkbox" disabled="disabled" /> b</li>
+<li class="remarkup-checked-item"><input type="checkbox" checked="checked" disabled="disabled" /> c</li>
+<li>d</li>
+</ul>
+
+<ul class="remarkup-list-with-checkmarks">
+<li class="remarkup-unchecked-item"><input type="checkbox" disabled="disabled" /> A</li>
+<li class="remarkup-checked-item"><input type="checkbox" checked="checked" disabled="disabled" /> B<ul class="remarkup-list-with-checkmarks">
+<li class="remarkup-unchecked-item"><input type="checkbox" disabled="disabled" /> C</li>
+<li class="remarkup-unchecked-item"><input type="checkbox" disabled="disabled" /> D</li>
+</ul></li>
+</ul>
+~~~~~~~~~~
+[ ] a
+[ ] b
+[X] c
+- d
+
+[ ] A
+[X] B
+  [ ] C
+  [ ] D

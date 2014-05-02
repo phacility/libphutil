@@ -119,7 +119,10 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
     $hrefs = array(
       'javascript:alert(1)'         => true,
       'JAVASCRIPT:alert(2)'         => true,
-      '     javascript:alert(3)'    => true,
+
+      // NOTE: When interpreted as a URI, this is dropped because of leading
+      // whitespace.
+      '     javascript:alert(3)'    => array(true, false),
       '/'                           => false,
       '/path/to/stuff/'             => false,
       ''                            => false,
@@ -158,6 +161,10 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
 
     foreach (array(true, false) as $use_uri) {
       foreach ($hrefs as $href => $expect) {
+        if (is_array($expect)) {
+          $expect = ($use_uri ? $expect[1] : $expect[0]);
+        }
+
         if ($use_uri) {
           $href = new PhutilURI($href);
         }

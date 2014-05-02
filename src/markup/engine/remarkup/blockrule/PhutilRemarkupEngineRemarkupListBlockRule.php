@@ -54,8 +54,9 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
    * the stack.
    */
   const MAXIMUM_LIST_NESTING_DEPTH = 12;
-  const START_BLOCK_PATTERN = '@^\s*(?:[-*#]+|1[.)])\s+@';
-  const CONT_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)])\s+@';
+  const START_BLOCK_PATTERN = '@^\s*(?:[-*#]+|1[.)]|\[.?\])\s+@';
+  const CONT_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)]|\[.?\])\s+@';
+  const STRIP_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)])\s*@';
 
   public function markupText($text) {
 
@@ -158,6 +159,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
     //     ),
     //   );
 
+    $has_marks = false;
     foreach ($items as $key => $item) {
       $item = preg_replace('/\s*\n\s*/', ' ', implode("\n", $item));
       $item = rtrim($item);
@@ -184,19 +186,28 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
         $style = '-';
       }
 
-      // If we don't match the block pattern (for example, because the user
-      // has typed only " " or " -"), treat the line as containing no text.
-      // This prevents newly added items from rendering with a bullet and
-      // the text "-", e.g.
-      $text = preg_replace(self::CONT_BLOCK_PATTERN, '', $item);
-      if ($text == $item) {
-        $text = '';
+      // Strip leading indicators off the item.
+      $text = preg_replace(self::STRIP_BLOCK_PATTERN, '', $item);
+
+      // Look for "[]", "[ ]", "[*]", "[x]", etc., which we render as a
+      // checkbox.
+      $mark = null;
+      $matches = null;
+      if (preg_match('/^\s*\[(.?)\]\s*/', $text, $matches)) {
+        if (strlen(trim($matches[1]))) {
+          $mark = true;
+        } else {
+          $mark = false;
+        }
+        $has_marks = true;
+        $text = substr($text, strlen($matches[0]));
       }
 
       $items[$key] = array(
         'text'  => $text,
         'depth' => $depth,
         'style' => $style,
+        'mark'  => $mark,
       );
     }
     $items = array_values($items);
@@ -267,7 +278,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
     // Finally, we have enough information to render the tree.
 
-    $out = $this->renderTree($tree);
+    $out = $this->renderTree($tree, 0, $has_marks);
 
     if ($this->getEngine()->isTextMode()) {
       $out = implode('', $out);
@@ -317,6 +328,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
         'text'    => null,
         'level'   => $cur_level,
         'style'   => null,
+        'mark'    => null,
         'items'   => $this->buildTree($items, $l, $min, $cur_level + 1),
       );
     }
@@ -369,7 +381,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
   /**
    * See additional notes in markupText().
    */
-  private function renderTree(array $tree, $level = 0) {
+  private function renderTree(array $tree, $level, $has_marks) {
     $style = idx(head($tree), 'style');
 
     $out = array();
@@ -377,36 +389,70 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
     if (!$this->getEngine()->isTextMode()) {
       switch ($style) {
         case '#':
-          $out[] = hsprintf("<ol>\n");
+          $tag = 'ol';
           break;
         case '-':
-          $out[] = hsprintf("<ul>\n");
+          $tag = 'ul';
           break;
       }
+
+      if ($has_marks) {
+        $out[] = hsprintf('<%s class="remarkup-list-with-checkmarks">', $tag);
+      } else {
+        $out[] = hsprintf('<%s>', $tag);
+      }
+
+      $out[] = "\n";
     }
 
     $number = 1;
     foreach ($tree as $item) {
       if ($this->getEngine()->isTextMode()) {
         $out[] = str_repeat(' ', 2 * $level);
-        switch ($style) {
-          case '#':
-            $out[] = $number.'. ';
-            $number++;
-            break;
-          case '-':
-            $out[] = '- ';
-            break;
+        if ($item['mark'] !== null) {
+          if ($item['mark']) {
+            $out[] = '[X] ';
+          } else {
+            $out[] = '[ ] ';
+          }
+        } else {
+          switch ($style) {
+            case '#':
+              $out[] = $number.'. ';
+              $number++;
+              break;
+            case '-':
+              $out[] = '- ';
+              break;
+          }
         }
         $out[] = $this->applyRules($item['text'])."\n";
       } else if ($item['text'] === null) {
         $out[] = hsprintf('<li class="phantom-item">');
       } else {
-        $out[] = hsprintf('<li>');
+        if ($item['mark'] !== null) {
+          if ($item['mark'] == true) {
+            $out[] = hsprintf('<li class="remarkup-checked-item">');
+          } else {
+            $out[] = hsprintf('<li class="remarkup-unchecked-item">');
+          }
+          $out[] = phutil_tag(
+            'input',
+            array(
+              'type' => 'checkbox',
+              'checked' => ($item['mark'] ? 'checked' : null),
+              'disabled' => 'disabled',
+            ));
+          $out[] = ' ';
+        } else {
+          $out[] = hsprintf('<li>');
+        }
+
         $out[] = $this->applyRules($item['text']);
       }
       if ($item['items']) {
-        foreach ($this->renderTree($item['items'], $level + 1) as $i) {
+        $subitems = $this->renderTree($item['items'], $level + 1, $has_marks);
+        foreach ($subitems as $i) {
           $out[] = $i;
         }
       }
