@@ -75,6 +75,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
       'uri.allowed-protocols',
       array(
         'http' => true,
+        'mailto' => true,
       ));
 
     $rules = array();

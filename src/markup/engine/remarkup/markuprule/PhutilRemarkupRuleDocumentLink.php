@@ -37,6 +37,10 @@ final class PhutilRemarkupRuleDocumentLink
         }
         $text = $base.$text;
       }
+
+      // If present, strip off "mailto:".
+      $text = preg_replace('/^mailto:/', '', $text);
+
       if ($link == $name) {
         return $text;
       }
@@ -49,6 +53,8 @@ final class PhutilRemarkupRuleDocumentLink
     if (strncmp($link, '#', 1) == 0) {
       $target = null;
     }
+
+    $name = preg_replace('/^mailto:/', '', $name);
 
     if ($this->getEngine()->getState('toc')) {
       return $name;
@@ -71,14 +77,15 @@ final class PhutilRemarkupRuleDocumentLink
     // discussion about C source code into a link. To this end, we:
     //
     //   - Don't match at word boundaries;
-    //   - require the URI to contain a "/" character; and
+    //   - require the URI to contain a "/" character or "@" character; and
     //   - reject URIs which being with a quote character.
 
     if ($uri[0] == '"' || $uri[0] == "'" || $uri[0] == '`') {
       return $matches[0];
     }
 
-    if (strpos($uri, '/') === false) {
+    if (strpos($uri, '/') === false &&
+        strpos($uri, '@') === false) {
       return $matches[0];
     }
 
@@ -95,8 +102,8 @@ final class PhutilRemarkupRuleDocumentLink
     $name = trim(idx($matches, 2, $uri));
 
     // If whatever is being linked to begins with "/" or "#", or has "://",
-    // treat it as a URI instead of a wiki page.
-    $is_uri = preg_match('@(^/)|(://)|(^#)@', $uri);
+    // or is "mailto:", treat it as a URI instead of a wiki page.
+    $is_uri = preg_match('@(^/)|(://)|(^#)|(^mailto:)@', $uri);
 
     if ($is_uri && strncmp('/', $uri, 1) && strncmp('#', $uri, 1)) {
       $protocols = $this->getEngine()->getConfig(
