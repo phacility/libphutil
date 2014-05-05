@@ -33,7 +33,7 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
 
   const KEY_HEADER_TOC = 'headers.toc';
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
     $text = trim($text);
 
     $lines = phutil_split_lines($text);

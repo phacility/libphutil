@@ -20,7 +20,7 @@ final class PhutilRemarkupEngineRemarkupSimpleTableBlockRule
     return $num_lines;
   }
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
     $matches = array();
 
     $rows = array();

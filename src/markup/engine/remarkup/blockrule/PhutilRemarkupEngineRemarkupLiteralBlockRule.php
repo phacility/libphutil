@@ -24,7 +24,7 @@ final class PhutilRemarkupEngineRemarkupLiteralBlockRule
     return $num_lines;
   }
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
     $text = preg_replace('/%%%\s*$/', '', substr($text, 3));
     if ($this->getEngine()->isTextMode()) {
       return $text;

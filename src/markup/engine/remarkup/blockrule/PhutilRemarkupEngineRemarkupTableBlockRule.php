@@ -25,7 +25,7 @@ final class PhutilRemarkupEngineRemarkupTableBlockRule
     return $num_lines;
   }
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
     $matches = array();
 
     if (!preg_match('@^<table>(.*)</table>$@si', $text, $matches)) {

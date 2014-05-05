@@ -27,7 +27,7 @@ final class PhutilRemarkupEngineRemarkupInterpreterRule
     return $num_lines;
   }
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
 
     $lines = explode("\n", $text);
     $first_key = head_key($lines);

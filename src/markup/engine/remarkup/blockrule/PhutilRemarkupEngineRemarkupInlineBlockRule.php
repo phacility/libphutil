@@ -10,7 +10,7 @@ final class PhutilRemarkupEngineRemarkupInlineBlockRule
     return 1;
   }
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
     return $this->applyRules($text);
   }
 

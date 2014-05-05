@@ -1,16 +1,12 @@
 <?php
 
-/**
- * @group markup
- */
 final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
   const MODE_DEFAULT = 0;
   const MODE_TEXT = 1;
 
-  /**
-   * @var PhutilRemarkupEngineBlockRule[]
-   */
+  const MAX_CHILD_DEPTH = 8;
+
   private $blockRules = array();
   private $config = array();
   private $mode;
@@ -119,14 +115,35 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     $this->metadata = array();
     $this->storage = new PhutilRemarkupBlockStorage();
 
+    $blocks = $this->splitTextIntoBlocks($text);
+
+    $output = array();
+    foreach ($blocks as $block) {
+      $output[] = $this->markupBlock($block);
+    }
+    $output = $this->flattenOutput($output);
+
+    $map = $this->storage->getMap();
+    unset($this->storage);
+    $metadata = $this->metadata;
+
+
+    return array(
+      'output'    => $output,
+      'storage'   => $map,
+      'metadata'  => $metadata,
+    );
+  }
+
+  private function splitTextIntoBlocks($text, $depth = 0) {
     // Apply basic block and paragraph normalization to the text. NOTE: We don't
     // strip trailing whitespace because it is semantic in some contexts,
     // notably inlined diffs that the author intends to show as a code block.
-    $text        = phutil_split_lines($text, true);
+    $text = phutil_split_lines($text, true);
     $block_rules = $this->blockRules;
-    $blocks      = array();
-    $cursor      = 0;
-    $prev_block  = array();
+    $blocks = array();
+    $cursor = 0;
+    $prev_block = array();
 
     while (isset($text[$cursor])) {
       $starting_cursor = $cursor;
@@ -139,10 +156,11 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
           }
 
           $curr_block = array(
-            "start" => $cursor,
-            "num_lines" => $num_lines,
-            "rule" => $block_rule,
-            "is_empty" => self::isEmptyBlock($text, $cursor, $num_lines),
+            'start' => $cursor,
+            'num_lines' => $num_lines,
+            'rule' => $block_rule,
+            'is_empty' => self::isEmptyBlock($text, $cursor, $num_lines),
+            'children' => array(),
           );
 
           if ($prev_block
@@ -164,27 +182,58 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
       }
     }
 
-    $output = array();
-    foreach ($blocks as $block) {
-      $output[] = $block['rule']->markupText(
-        implode('', array_slice($text, $block['start'], $block['num_lines'])));
+    foreach ($blocks as $key => $block) {
+      $lines = array_slice($text, $block['start'], $block['num_lines']);
+      $blocks[$key]['text'] = implode('', $lines);
     }
 
-    $map = $this->storage->getMap();
-    unset($this->storage);
-    $metadata = $this->metadata;
+    // Stop splitting child blocks apart if we get too deep. This arrests
+    // any blocks which have looping child rules, and stops the stack from
+    // exploding if someone writes a hilarious comment with 5,000 levels of
+    // quoted text.
 
+    if ($depth < self::MAX_CHILD_DEPTH) {
+      foreach ($blocks as $key => $block) {
+        $rule = $block['rule'];
+        if (!$rule->supportsChildBlocks()) {
+          continue;
+        }
+
+        list($parent_text, $child_text) = $rule->extractChildText(
+          $block['text']);
+        $blocks[$key]['text'] = $parent_text;
+        $blocks[$key]['children'] = $this->splitTextIntoBlocks(
+          $child_text,
+          $depth + 1);
+      }
+    }
+
+    return $blocks;
+  }
+
+  private function markupBlock(array $block) {
+    $children = array();
+    foreach ($block['children'] as $child) {
+      $children[] = $this->markupBlock($child);
+    }
+
+    if ($children) {
+      $children = $this->flattenOutput($children);
+    } else {
+      $children = null;
+    }
+
+    return $block['rule']->markupText($block['text'], $children);
+  }
+
+  private function flattenOutput(array $output) {
     if ($this->isTextMode()) {
       $output = implode("\n\n", $output)."\n";
     } else {
       $output = phutil_implode_html("\n\n", $output);
     }
 
-    return array(
-      'output'    => $output,
-      'storage'   => $map,
-      'metadata'  => $metadata,
-    );
+    return $output;
   }
 
   private static function shouldMergeBlocks($text, $prev_block, $curr_block) {

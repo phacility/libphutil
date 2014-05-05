@@ -14,7 +14,7 @@ final class PhutilRemarkupEngineRemarkupDefaultBlockRule
     return 1;
   }
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
     $text = trim($text);
     $text = $this->applyRules($text);
 

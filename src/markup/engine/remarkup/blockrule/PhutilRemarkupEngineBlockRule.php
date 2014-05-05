@@ -24,7 +24,7 @@ abstract class PhutilRemarkupEngineBlockRule {
     return 500.0;
   }
 
-  abstract public function markupText($text);
+  abstract public function markupText($text, $children);
 
   /**
    * This will get an array of unparsed lines and return the number of lines
@@ -82,6 +82,14 @@ abstract class PhutilRemarkupEngineBlockRule {
       $text = $rule->apply($text);
     }
     return $text;
+  }
+
+  public function supportsChildBlocks() {
+    return false;
+  }
+
+  public function extractChildText($text) {
+    throw new Exception(pht('Not implemnted!'));
   }
 
   protected function renderRemarkupTable(array $out_rows) {

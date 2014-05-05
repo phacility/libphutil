@@ -27,7 +27,7 @@ final class PhutilRemarkupEngineRemarkupQuotesBlockRule
     return $num_lines;
   }
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
     $lines = array();
     foreach (explode("\n", $text) as $line) {
       $lines[] = $this->applyRules(preg_replace('/^>\s*/', '', $line));

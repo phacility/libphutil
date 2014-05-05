@@ -90,6 +90,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
 
     $blocks = array();
     $blocks[] = new PhutilRemarkupEngineRemarkupQuotesBlockRule();
+    $blocks[] = new PhutilRemarkupEngineRemarkupReplyBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupHeaderBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupHorizontalRuleBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupCodeBlockRule();

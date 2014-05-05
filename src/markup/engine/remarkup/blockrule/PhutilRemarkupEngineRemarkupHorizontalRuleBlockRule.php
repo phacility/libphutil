@@ -29,7 +29,7 @@ final class PhutilRemarkupEngineRemarkupHorizontalRuleBlockRule
     return $num_lines;
   }
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
     return phutil_tag('hr', array());
   }
 

@@ -46,7 +46,7 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
     return $num_lines;
   }
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
     if (preg_match('/^```/', $text)) {
       // If this is a ```-style block, trim off the backticks and any leading
       // blank line.

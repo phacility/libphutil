@@ -58,7 +58,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
   const CONT_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)]|\[.?\])\s+@';
   const STRIP_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)])\s*@';
 
-  public function markupText($text) {
+  public function markupText($text, $children) {
 
     $items = array();
     $lines = explode("\n", $text);
