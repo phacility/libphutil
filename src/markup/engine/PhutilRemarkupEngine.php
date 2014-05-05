@@ -5,7 +5,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   const MODE_DEFAULT = 0;
   const MODE_TEXT = 1;
 
-  const MAX_CHILD_DEPTH = 8;
+  const MAX_CHILD_DEPTH = 32;
 
   private $blockRules = array();
   private $config = array();

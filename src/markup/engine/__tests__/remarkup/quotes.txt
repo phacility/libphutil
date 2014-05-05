@@ -2,8 +2,9 @@
 > I am utterly disgusted with the quality
 > of your inflight food service.
 ~~~~~~~~~~
-<blockquote><p>Dear Sir,<br />I am utterly disgusted with the quality<br />of your inflight food service.</p></blockquote>
+<blockquote><p>Dear Sir,
+ I am utterly disgusted with the quality
+ of your inflight food service.</p></blockquote>
 ~~~~~~~~~~
-> Dear Sir,
-> I am utterly disgusted with the quality
-> of your inflight food service.
+> Dear Sir, I am utterly disgusted with the quality of your inflight food service.
+
