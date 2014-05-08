@@ -670,6 +670,7 @@ phutil_register_library_map(array(
     'PhutilURITestCase' => 'PhutilTestCase',
     'PhutilUTF8TestCase' => 'PhutilTestCase',
     'PhutilUtilsTestCase' => 'PhutilTestCase',
+    'PhutilWordPressFuture' => 'FutureProxy',
     'PhutilXHPASTSyntaxHighlighterFuture' => 'FutureProxy',
     'PhutilXHPASTSyntaxHighlighterTestCase' => 'PhutilTestCase',
     'PhutilcsprintfTestCase' => 'ArcanistTestCase',
