@@ -8,6 +8,37 @@ final class PhutilKeyValueCacheTestCase extends ArcanistPhutilTestCase {
     $cache->destroyCache();
   }
 
+  public function testInRequestCacheLimit() {
+    $cache = new PhutilKeyValueCacheInRequest();
+    $cache->setLimit(4);
+
+    $cache->setKey(1, 1);
+    $cache->setKey(2, 2);
+    $cache->setKey(3, 3);
+    $cache->setKey(4, 4);
+
+    $this->assertEqual(
+      array(
+        1 => 1,
+        2 => 2,
+        3 => 3,
+        4 => 4,
+      ),
+      $cache->getAllKeys());
+
+
+    $cache->setKey(5, 5);
+
+    $this->assertEqual(
+      array(
+        2 => 2,
+        3 => 3,
+        4 => 4,
+        5 => 5,
+      ),
+      $cache->getAllKeys());
+  }
+
   public function testOnDiskCache() {
     $cache = new PhutilKeyValueCacheOnDisk();
     $cache->setCacheFile(new TempFile());
