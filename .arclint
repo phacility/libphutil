@@ -1,0 +1,41 @@
+{
+  "exclude": [
+    "(^externals/)",
+    "(\\.lint-test$)"
+  ],
+  "linters": {
+    "filename": {
+      "type": "filename"
+    },
+    "generated": {
+      "type": "generated"
+    },
+    "merge-conflict": {
+      "type": "merge-conflict"
+    },
+    "nolint": {
+      "type": "nolint"
+    },
+    "phutil-xhpast": {
+      "type": "phutil-xhpast",
+      "include": "(\\.php$)"
+    },
+    "text": {
+      "type": "text"
+    },
+    "spelling": {
+      "type": "spelling"
+    },
+    "xhpast": {
+      "type": "xhpast",
+      "include": "(\\.php$)",
+      "severity": {
+        "16": "advice",
+        "29": "warning",
+        "31": "error",
+        "34": "error",
+        "35": "error"
+      }
+    }
+  }
+}
