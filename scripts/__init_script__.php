@@ -37,7 +37,11 @@ function __phutil_init_script__() {
     // includes (and in other cases, like recursive filesystem operations
     // applied to 100+ levels of directory nesting). Stop it from triggering:
     // we explicitly limit recursive algorithms which should be limited.
-    'xdebug.max_nesting_level'    => null,
+
+    // After Feb 2014, XDebug inteprets a value of 0 to mean "do not allow any
+    // function calls". Previously, 0 effectively disabled this check. For
+    // context, see T5027.
+    'xdebug.max_nesting_level'    => PHP_INT_MAX,
 
     // Don't limit memory, doing so just generally just prevents us from
     // processing large inputs without many tangible benefits.
