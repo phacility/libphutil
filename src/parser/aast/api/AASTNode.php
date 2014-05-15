@@ -151,16 +151,21 @@ abstract class AASTNode {
   }
 
   public function selectDescendantsOfType($type_name) {
-    $type = $this->getTypeIDFromTypeName($type_name);
+    return $this->selectDescendantsOfTypes(array($type_name));
+  }
 
-    if (isset($this->selectCache)) {
-      if (isset($this->selectCache[$type])) {
-        $nodes = $this->selectCache[$type];
+  public function selectDescendantsOfTypes(array $type_names) {
+    $nodes = array();
+    foreach ($type_names as $type_name) {
+      $type = $this->getTypeIDFromTypeName($type_name);
+
+      if (isset($this->selectCache)) {
+        if (isset($this->selectCache[$type])) {
+          $nodes = $nodes + $this->selectCache[$type];
+        }
       } else {
-        $nodes = array();
+        $nodes = $nodes + $this->executeSelectDescendantsOfType($this, $type);
       }
-    } else {
-      $nodes = $this->executeSelectDescendantsOfType($this, $type);
     }
 
     return AASTNodeList::newFromTreeAndNodes($this->tree, $nodes);
