@@ -7,9 +7,9 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
 
   public function testBasics() {
     $this->writeAndRead(
-      "abcd",
+      'abcd',
       array(
-        "abcd",
+        'abcd',
       ));
   }
 
@@ -17,9 +17,9 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
     $this->writeAndRead(
       "bat\ncat\ndog\n",
       array(
-        "bat",
-        "cat",
-        "dog",
+        'bat',
+        'cat',
+        'dog',
       ));
   }
 
@@ -27,9 +27,9 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
     $this->writeAndRead(
       "bat\ncat\ndog",
       array(
-        "bat",
-        "cat",
-        "dog",
+        'bat',
+        'cat',
+        'dog',
       ));
   }
 
@@ -37,9 +37,9 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
     $this->writeAndRead(
       "bat\1cat\1dog\1",
       array(
-        "bat",
-        "cat",
-        "dog",
+        'bat',
+        'cat',
+        'dog',
       ),
       "\1");
   }
@@ -55,7 +55,7 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
   }
 
   public function testLargeFile() {
-    $line = "The quick brown fox jumps over the lazy dog.";
+    $line = 'The quick brown fox jumps over the lazy dog.';
     $n    = 100;
 
     $this->writeAndRead(
@@ -83,8 +83,8 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
   public function testLineFilter() {
     $write = "bat\ncat\ndog\nBat\nCat\nDog\n";
     $read = array(
-      1 => "cat",
-      4 => "Cat",
+      1 => 'cat',
+      4 => 'Cat',
     );
 
     $tmp = new TempFile();
@@ -101,12 +101,12 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
     $this->assertEqual(
       $read,
       $lines,
-      "Write: ".phutil_utf8_shorten($write, 32));
+      'Write: '.phutil_utf8_shorten($write, 32));
   }
 
   public function allowCatsOnly($line) {
     $line = strtoupper($line);
-    if ($line != "CAT") {
+    if ($line != 'CAT') {
       return null;
     }
     return $line;
@@ -125,7 +125,7 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
     $this->assertEqual(
       $read,
       $lines,
-      "Write: ".phutil_utf8_shorten($write, 32));
+      'Write: '.phutil_utf8_shorten($write, 32));
   }
 
 }

@@ -75,8 +75,8 @@ abstract class AbstractDirectedGraph {
   final public function addNodes(array $nodes) {
     if ($this->graphLoaded) {
       throw new Exception(
-        "Call addNodes() before calling loadGraph(). You can not add more ".
-        "nodes once you have loaded the graph.");
+        'Call addNodes() before calling loadGraph(). You can not add more '.
+        'nodes once you have loaded the graph.');
     }
 
     $this->knownNodes += $nodes;
@@ -172,8 +172,8 @@ abstract class AbstractDirectedGraph {
       foreach ($load as $node) {
         if (!isset($new_nodes[$node]) || !is_array($new_nodes[$node])) {
           throw new Exception(
-            "loadEdges() must return an edge list array for each provided ".
-            "node, or the cycle detection algorithm may not terminate.");
+            'loadEdges() must return an edge list array for each provided '.
+            'node, or the cycle detection algorithm may not terminate.');
         }
       }
 
@@ -216,8 +216,8 @@ abstract class AbstractDirectedGraph {
   final public function detectCycles($node) {
     if (!$this->graphLoaded) {
       throw new Exception(
-        "Call loadGraph() to build the graph out before calling ".
-        "detectCycles().");
+        'Call loadGraph() to build the graph out before calling '.
+        'detectCycles().');
     }
     if (!isset($this->knownNodes[$node])) {
       throw new Exception(

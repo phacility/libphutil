@@ -107,12 +107,12 @@ final class PhutilFileLock extends PhutilLock {
   protected function doUnlock() {
     $ok = flock($this->handle, LOCK_UN | LOCK_NB);
     if (!$ok) {
-      throw new Exception("Unable to unlock file!");
+      throw new Exception('Unable to unlock file!');
     }
 
     $ok = fclose($this->handle);
     if (!$ok) {
-      throw new Exception("Unable to close file!");
+      throw new Exception('Unable to close file!');
     }
 
     $this->handle = null;

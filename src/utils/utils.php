@@ -577,7 +577,7 @@ function assert_stringlike($parameter) {
   }
 
   throw new InvalidArgumentException(
-    "Argument must be scalar or object which implements __toString()!");
+    'Argument must be scalar or object which implements __toString()!');
 }
 
 /**
@@ -854,7 +854,7 @@ function phutil_is_hiphop_runtime() {
 function phutil_exit($status = 0) {
   $event = new PhutilEvent(
     PhutilEventType::TYPE_WILLEXITABRUPTLY,
-    array("status" => $status));
+    array('status' => $status));
   PhutilEventEngine::dispatchEvent($event);
 
   exit($status);
@@ -875,7 +875,7 @@ function phutil_loggable_string($string) {
   $result = '';
 
   static $c_map = array(
-    "\\" => '\\\\',
+    '\\' => '\\\\',
     "\n" => '\\n',
     "\r" => '\\r',
     "\t" => '\\t',

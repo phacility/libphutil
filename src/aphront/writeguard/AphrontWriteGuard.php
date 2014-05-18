@@ -67,14 +67,14 @@ final class AphrontWriteGuard {
   public function __construct($callback) {
     if (self::$instance) {
       throw new Exception(
-        "An AphrontWriteGuard already exists. Dispose of the previous guard ".
-        "before creating a new one.");
+        'An AphrontWriteGuard already exists. Dispose of the previous guard '.
+        'before creating a new one.');
     }
     if (self::$allowUnguardedWrites) {
       throw new Exception(
-        "An AphrontWriteGuard is being created in a context which permits ".
-        "unguarded writes unconditionally. This is not allowed and indicates ".
-        "a serious error.");
+        'An AphrontWriteGuard is being created in a context which permits '.
+        'unguarded writes unconditionally. This is not allowed and indicates '.
+        'a serious error.');
     }
     if (!self::$abruptExitlistenerIsInstalled) {
       self::$abruptExitlistenerIsInstalled = true;
@@ -96,13 +96,13 @@ final class AphrontWriteGuard {
   public function dispose() {
     if (!self::$instance) {
       throw new Exception(
-        "Attempting to dispose of write guard, but no write guard is active!");
+        'Attempting to dispose of write guard, but no write guard is active!');
     }
 
     if ($this->allowDepth > 0) {
       throw new Exception(
-        "Imbalanced AphrontWriteGuard: more beginUnguardedWrites() calls than ".
-        "endUnguardedWrites() calls.");
+        'Imbalanced AphrontWriteGuard: more beginUnguardedWrites() calls than '.
+        'endUnguardedWrites() calls.');
     }
     self::$instance = null;
   }
@@ -164,8 +164,8 @@ final class AphrontWriteGuard {
     if (!self::$instance) {
       if (!self::$allowUnguardedWrites) {
         throw new Exception(
-          "Unguarded write! There must be an active AphrontWriteGuard to ".
-          "perform writes.");
+          'Unguarded write! There must be an active AphrontWriteGuard to '.
+          'perform writes.');
       } else {
         // Unguarded writes are being allowed unconditionally.
         return;
@@ -239,8 +239,8 @@ final class AphrontWriteGuard {
     }
     if (self::$instance->allowDepth <= 0) {
       throw new Exception(
-        "Imbalanced AphrontWriteGuard: more endUnguardedWrites() calls than ".
-        "beginUnguardedWrites() calls.");
+        'Imbalanced AphrontWriteGuard: more endUnguardedWrites() calls than '.
+        'beginUnguardedWrites() calls.');
     }
     self::$instance->allowDepth--;
   }
@@ -261,9 +261,9 @@ final class AphrontWriteGuard {
   public static function allowDangerousUnguardedWrites($allow) {
     if (self::$instance) {
       throw new Exception(
-        "You can not unconditionally disable AphrontWriteGuard by calling ".
-        "allowDangerousUnguardedWrites() while a write guard is active. Use ".
-        "beginUnguardedWrites() to temporarily allow unguarded writes.");
+        'You can not unconditionally disable AphrontWriteGuard by calling '.
+        'allowDangerousUnguardedWrites() while a write guard is active. Use '.
+        'beginUnguardedWrites() to temporarily allow unguarded writes.');
     }
     self::$allowUnguardedWrites = true;
   }
@@ -280,9 +280,9 @@ final class AphrontWriteGuard {
   public function __destruct() {
     if (isset(self::$instance)) {
       throw new Exception(
-        "AphrontWriteGuard was not properly disposed of! Call dispose() on ".
-        "every AphrontWriteGuard object you instantiate or use phutil_exit() ".
-        "to exit abruptly while debugging.");
+        'AphrontWriteGuard was not properly disposed of! Call dispose() on '.
+        'every AphrontWriteGuard object you instantiate or use phutil_exit() '.
+        'to exit abruptly while debugging.');
     }
   }
 }

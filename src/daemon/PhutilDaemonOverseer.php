@@ -126,7 +126,7 @@ EOHELP
 
     if (self::$instance) {
       throw new Exception(
-        "You may not instantiate more than one Overseer per process.");
+        'You may not instantiate more than one Overseer per process.');
     }
 
     self::$instance = $this;
@@ -141,7 +141,7 @@ EOHELP
 
       $pid = pcntl_fork();
       if ($pid === -1) {
-        throw new Exception("Unable to fork!");
+        throw new Exception('Unable to fork!');
       } else if ($pid) {
         exit(0);
       }

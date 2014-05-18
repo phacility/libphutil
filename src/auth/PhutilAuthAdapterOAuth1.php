@@ -101,7 +101,7 @@ abstract class PhutilAuthAdapterOAuth1 extends PhutilAuthAdapter {
     if (strlen($consumer_key)) {
       $future->setConsumerKey($consumer_key);
     } else {
-      throw new Exception("setConsumerKey() is required!");
+      throw new Exception('setConsumerKey() is required!');
     }
 
     $consumer_secret = $this->getConsumerSecret();
@@ -137,7 +137,7 @@ abstract class PhutilAuthAdapterOAuth1 extends PhutilAuthAdapter {
 
     // NOTE: Per the spec, this value MUST be the string 'true'.
     $confirmed = idx($data, 'oauth_callback_confirmed');
-    if ($confirmed !== "true") {
+    if ($confirmed !== 'true') {
       throw new Exception(
         "Expected 'oauth_callback_confirmed' to be 'true'!");
     }
@@ -154,10 +154,10 @@ abstract class PhutilAuthAdapterOAuth1 extends PhutilAuthAdapter {
     $this->willFinishOAuthHandshake();
 
     if (!$this->getToken()) {
-      throw new Exception("Expected token to finish OAuth handshake!");
+      throw new Exception('Expected token to finish OAuth handshake!');
     }
     if (!$this->getVerifier()) {
-      throw new Exception("Expected verifier to finish OAuth handshake!");
+      throw new Exception('Expected verifier to finish OAuth handshake!');
     }
 
     $validate_uri = $this->getValidateTokenURI();

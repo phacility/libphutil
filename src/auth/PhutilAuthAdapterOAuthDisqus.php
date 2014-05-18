@@ -74,8 +74,8 @@ final class PhutilAuthAdapterOAuthDisqus extends PhutilAuthAdapterOAuth {
     $data = json_decode($body, true);
     if (!is_array($data)) {
       throw new Exception(
-        "Expected valid JSON response from Disqus account data request, ".
-        "got: ".$body);
+        'Expected valid JSON response from Disqus account data request, '.
+        'got: '.$body);
     }
 
     return $data['response'];

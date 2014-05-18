@@ -8,8 +8,8 @@ final class FileFinderTestCase extends PhutilTestCase {
   protected function findFiles($root, $checksums, $type, $path, $mode) {
     $finder = new FileFinder($root);
     $finder->setGenerateChecksums($checksums)
-           ->excludePath("./exclude")
-           ->excludePath("subdir.txt")
+           ->excludePath('./exclude')
+           ->excludePath('subdir.txt')
            ->withType($type)
            ->withPath($path)
            ->withSuffix('txt')
@@ -20,7 +20,7 @@ final class FileFinderTestCase extends PhutilTestCase {
 
   public function testFinderWithChecksums() {
     $root = dirname(__FILE__) . '/data';
-    foreach (array("php", "shell") as $mode) {
+    foreach (array('php', 'shell') as $mode) {
       $files = $this->findFiles($root, true, 'f', '*', $mode);
 
       // Test whether correct files were found.
@@ -52,7 +52,7 @@ final class FileFinderTestCase extends PhutilTestCase {
 
   public function testFinderWithoutChecksums() {
     $root = dirname(__FILE__) . '/data';
-    foreach (array("php", "shell") as $mode) {
+    foreach (array('php', 'shell') as $mode) {
       $files = $this->findFiles($root, false, 'f', '*', $mode);
 
       // Test whether correct files were found.
@@ -73,7 +73,7 @@ final class FileFinderTestCase extends PhutilTestCase {
 
   public function testFinderWithDirectories() {
     $root = dirname(__FILE__) . '/data';
-    foreach (array("php", "shell") as $mode) {
+    foreach (array('php', 'shell') as $mode) {
       $files = $this->findFiles($root, true, '', '*', $mode);
 
       // Test whether the correct files were found.
@@ -96,7 +96,7 @@ final class FileFinderTestCase extends PhutilTestCase {
 
   public function testFinderWithPath() {
     $root = dirname(__FILE__) . '/data';
-    foreach (array("php", "shell") as $mode) {
+    foreach (array('php', 'shell') as $mode) {
       $files = $this->findFiles($root, true, 'f',
           '*/include_dir.txt/subdir.txt/alsoinclude.txt', $mode);
 

@@ -43,9 +43,9 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
     // Misc.
     $this->assertDistance(
       13,
-      "The quick brown fox jumped over the lazy dog!",
+      'The quick brown fox jumped over the lazy dog!',
       //   dddddd          r            ii         i iii
-      "The brown fox pumped over those lazy dogs!~~~");
+      'The brown fox pumped over those lazy dogs!~~~');
   }
 
   public function testDamerauEditDistance() {

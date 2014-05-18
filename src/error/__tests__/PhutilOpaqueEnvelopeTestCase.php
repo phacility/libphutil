@@ -37,7 +37,7 @@ final class PhutilOpaqueEnvelopeTestCase extends PhutilTestCase {
   }
 
   private function throwTrace($v) {
-    throw new Exception("!");
+    throw new Exception('!');
   }
 
   private function getBacktrace($v) {

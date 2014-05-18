@@ -11,7 +11,7 @@
 final class PhutilConsoleStdinNotInteractiveException extends Exception {
   public function __construct() {
     parent::__construct(
-      "The program is attempting to read user input, but stdin is being piped ".
-      "from some other source (not a TTY).");
+      'The program is attempting to read user input, but stdin is being piped '.
+      'from some other source (not a TTY).');
   }
 }

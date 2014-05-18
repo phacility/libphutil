@@ -135,7 +135,7 @@ final class PhutilAuthAdapterOAuthJIRA extends PhutilAuthAdapterOAuth1 {
    * well known `oauth_verifier` value ("denied"), which we check for here.
    */
   protected function willFinishOAuthHandshake() {
-    $jira_magic_word = "denied";
+    $jira_magic_word = 'denied';
     if ($this->getVerifier() == $jira_magic_word) {
       throw new PhutilAuthUserAbortedException();
     }

@@ -198,7 +198,7 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
     $translator = new PhutilTranslator();
     foreach ($tests as $original => $translations) {
       foreach ($translations as $translation => $expect) {
-        $valid = ($expect ? "valid" : "invalid");
+        $valid = ($expect ? 'valid' : 'invalid');
         $this->assertEqual(
           $expect,
           $translator->validateTranslation($original, $translation),

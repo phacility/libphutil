@@ -90,7 +90,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
   $prefix   = '';
 
   if (!($escaper instanceof PhutilQsprintfInterface)) {
-    throw new Exception("Invalid database escaper!");
+    throw new Exception('Invalid database escaper!');
   }
 
   switch ($type) {

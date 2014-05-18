@@ -50,7 +50,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       'x'               => 1,
       "\xEF\xBF\xBD"    => 1,
       "x\xe6\x9d\xb1y"  => 3,
-      "xyz"             => 3,
+      'xyz'             => 3,
       'quack'           => 5,
     );
     foreach ($strings as $str => $expect) {
@@ -66,7 +66,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       "x\xe6\x9d\xb1y"    => array('x', "\xe6\x9d\xb1", 'y'),
 
       // This is a combining character.
-      "x\xCD\xA0y"        => array("x", "\xCD\xA0", 'y'),
+      "x\xCD\xA0y"        => array('x', "\xCD\xA0", 'y'),
     );
     foreach ($strings as $str => $expect) {
       $this->assertEqual($expect, phutil_utf8v($str), 'Vector of '.$str);
@@ -98,9 +98,9 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
   public function testUTF8ConsoleStrlen() {
     $strings = array(
-      ""              => 0,
+      ''              => 0,
       "\0"            => 0,
-      "x"             => 1,
+      'x'             => 1,
 
       // Double-width chinese character.
       "\xe6\x9d\xb1"  => 2,
@@ -115,34 +115,34 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
   public function testUTF8shorten() {
     $inputs = array(
-      array("1erp derp derp", 9, "", "1erp derp"),
-      array("2erp derp derp", 12, "...", "2erp derp..."),
-      array("derpxderpxderp", 12, "...", "derpxderp..."),
-      array("derp\xE2\x99\x83derpderp", 12, "...", "derp\xE2\x99\x83derp..."),
-      array("", 12, "...", ""),
-      array("derp", 12, "...", "derp"),
-      array("11111", 5, "2222", "11111"),
-      array("111111", 5, "2222", "12222"),
+      array('1erp derp derp', 9, '', '1erp derp'),
+      array('2erp derp derp', 12, '...', '2erp derp...'),
+      array('derpxderpxderp', 12, '...', 'derpxderp...'),
+      array("derp\xE2\x99\x83derpderp", 12, '...', "derp\xE2\x99\x83derp..."),
+      array('', 12, '...', ''),
+      array('derp', 12, '...', 'derp'),
+      array('11111', 5, '2222', '11111'),
+      array('111111', 5, '2222', '12222'),
 
-      array("D1rp. Derp derp.", 7, "...", "D1rp."),
-      array("D2rp. Derp derp.", 5, "...", "D2rp."),
-      array("D3rp. Derp derp.", 4, "...", "D..."),
-      array("D4rp. Derp derp.", 14, "...", "D4rp. Derp..."),
-      array("D5rpderp, derp derp", 16, "...", "D5rpderp..."),
-      array("D6rpderp, derp derp", 17, "...", "D6rpderp, derp..."),
+      array('D1rp. Derp derp.', 7, '...', 'D1rp.'),
+      array('D2rp. Derp derp.', 5, '...', 'D2rp.'),
+      array('D3rp. Derp derp.', 4, '...', 'D...'),
+      array('D4rp. Derp derp.', 14, '...', 'D4rp. Derp...'),
+      array('D5rpderp, derp derp', 16, '...', 'D5rpderp...'),
+      array('D6rpderp, derp derp', 17, '...', 'D6rpderp, derp...'),
 
       // Strings with combining characters.
-      array("Gr\xCD\xA0mpyCatSmiles", 8, "...", "Gr\xCD\xA0mpy..."),
-      array("X\xCD\xA0\xCD\xA0\xCD\xA0Y", 1, "", "X\xCD\xA0\xCD\xA0\xCD\xA0"),
+      array("Gr\xCD\xA0mpyCatSmiles", 8, '...', "Gr\xCD\xA0mpy..."),
+      array("X\xCD\xA0\xCD\xA0\xCD\xA0Y", 1, '', "X\xCD\xA0\xCD\xA0\xCD\xA0"),
 
       // This behavior is maybe a little bad, but it seems mostly reasonable,
       // at least for latin languages.
-      array("Derp, supercalafragalisticexpialadoshus", 30, "...",
-              "Derp..."),
+      array('Derp, supercalafragalisticexpialadoshus', 30, '...',
+              'Derp...'),
 
       // If a string has only word-break characters in it, we should just cut
       // it, not produce only the terminal.
-      array("((((((((((", 8, '...', '(((((...'),
+      array('((((((((((', 8, '...', '(((((...'),
 
       // Terminal is longer than requested input.
       array('derp', 3, 'quack', 'quack'),
@@ -291,7 +291,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
   public function testUTF8Convert() {
     if (!function_exists('mb_convert_encoding')) {
-      $this->assertSkipped("Requires mbstring extension.");
+      $this->assertSkipped('Requires mbstring extension.');
     }
 
     // "[ae]gis se[n]or [(c)] 1970 [+/-] 1 [degree]"
@@ -441,30 +441,30 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
   public function testUTF8BMP() {
     $tests = array(
-      ""  => array(true, true, "empty string"),
-      "a" => array(true, true, "a"),
-      "a\xCD\xA0\xCD\xA0" => array(true, true, "a with combining"),
-      "\xE2\x98\x83" => array(true, true, "snowman"),
+      ''  => array(true, true, 'empty string'),
+      'a' => array(true, true, 'a'),
+      "a\xCD\xA0\xCD\xA0" => array(true, true, 'a with combining'),
+      "\xE2\x98\x83" => array(true, true, 'snowman'),
 
       // This is the last character in BMP, U+FFFF.
-      "\xEF\xBF\xBF" => array(true, true, "U+FFFF"),
+      "\xEF\xBF\xBF" => array(true, true, 'U+FFFF'),
 
       // This isn't valid.
-      "\xEF\xBF\xC0" => array(false, false, "Invalid, byte range."),
+      "\xEF\xBF\xC0" => array(false, false, 'Invalid, byte range.'),
 
       // This is the first character above BMP, U+10000.
-      "\xF0\x90\x80\x80" => array(true, false, "U+10000"),
-      "\xF0\x9D\x84\x9E" => array(true, false, "gclef"),
+      "\xF0\x90\x80\x80" => array(true, false, 'U+10000'),
+      "\xF0\x9D\x84\x9E" => array(true, false, 'gclef'),
 
-      "musical \xF0\x9D\x84\x9E g-clef" => array(true, false, "gclef text"),
-      "\xF0\x9D\x84" => array(false, false, "Invalid, truncated."),
+      "musical \xF0\x9D\x84\x9E g-clef" => array(true, false, 'gclef text'),
+      "\xF0\x9D\x84" => array(false, false, 'Invalid, truncated.'),
 
-      "\xE0\x80\x80" => array(false, false, "Nonminimal 3-byte character."),
+      "\xE0\x80\x80" => array(false, false, 'Nonminimal 3-byte character.'),
 
       // Partial BMP characters.
-      "\xCD" => array(false, false, "Partial 2-byte character."),
-      "\xE0\xA0" => array(false, false, "Partial BMP 0xE0 character."),
-      "\xE2\x98" => array(false, false, "Partial BMP cahracter."),
+      "\xCD" => array(false, false, 'Partial 2-byte character.'),
+      "\xE0\xA0" => array(false, false, 'Partial BMP 0xE0 character.'),
+      "\xE2\x98" => array(false, false, 'Partial BMP cahracter.'),
     );
 
     foreach ($tests as $input => $test) {

@@ -40,7 +40,7 @@ final class PhutilRemarkupBlockStorage {
   private $index;
 
   public function store($text) {
-    $key = self::MAGIC_BYTE.(++$this->index)."Z";
+    $key = self::MAGIC_BYTE.(++$this->index).'Z';
     $this->map[$key] = $text;
     return $key;
   }

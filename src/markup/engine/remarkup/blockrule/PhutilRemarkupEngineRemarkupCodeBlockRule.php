@@ -9,9 +9,9 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
     $match_ticks = null;
-    if (preg_match("/^(\s{2,}).+/", $lines[$cursor])) {
+    if (preg_match('/^(\s{2,}).+/', $lines[$cursor])) {
       $match_ticks = false;
-    } else if (preg_match("/^(```)/", $lines[$cursor])) {
+    } else if (preg_match('/^(```)/', $lines[$cursor])) {
       $match_ticks = true;
     } else {
       return $num_lines;
@@ -19,7 +19,7 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
 
     $num_lines++;
 
-    if ($match_ticks && preg_match("/^(```)(.*)(```)\s*$/", $lines[$cursor])) {
+    if ($match_ticks && preg_match('/^(```)(.*)(```)\s*$/', $lines[$cursor])) {
       return $num_lines;
     }
 

@@ -50,7 +50,7 @@ final class PhutilRemarkupEngineRemarkupTableBlockRule
     $row_regex = '@'.$row_fragment.'@Usi';
     if (!preg_match_all($row_regex, $body, $matches, PREG_SET_ORDER)) {
       throw new Exception(
-        "Bug in Remarkup tables, parsing fails for input: ".$text);
+        'Bug in Remarkup tables, parsing fails for input: '.$text);
     }
 
     $out_rows = array();
@@ -70,7 +70,7 @@ final class PhutilRemarkupEngineRemarkupTableBlockRule
       $cell_regex = '@'.$cell_fragment.'@Usi';
       if (!preg_match_all($cell_regex, $content, $matches, PREG_SET_ORDER)) {
         throw new Exception(
-          "Bug in Remarkup tables, parsing fails for input: ".$text);
+          'Bug in Remarkup tables, parsing fails for input: '.$text);
       }
 
       $out_cells = array();

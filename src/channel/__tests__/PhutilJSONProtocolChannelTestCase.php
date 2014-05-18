@@ -20,7 +20,7 @@ final class PhutilJSONProtocolChannelTestCase extends PhutilTestCase {
     $this->assertEqual(
       $dict,
       $result,
-      "Values are identical.");
+      'Values are identical.');
   }
 
 }

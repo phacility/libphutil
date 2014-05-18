@@ -59,7 +59,7 @@ abstract class LinesOfALarge implements Iterator {
    */
   final public function setDelimiter($character) {
     if (strlen($character) !== 1) {
-      throw new Exception("Delimiter character MUST be one byte in length.");
+      throw new Exception('Delimiter character MUST be one byte in length.');
     }
     $this->delimiter = $character;
     return $this;

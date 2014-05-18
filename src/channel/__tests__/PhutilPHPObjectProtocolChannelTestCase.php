@@ -17,11 +17,11 @@ final class PhutilPHPObjectProtocolChannelTestCase extends PhutilTestCase {
 
     $this->assertTrue(
       (array)$object === (array)$result,
-      "Values are identical.");
+      'Values are identical.');
 
     $this->assertFalse(
       $object === $result,
-      "Objects are not the same.");
+      'Objects are not the same.');
   }
 
   public function testCloseSocketWriteChannel() {
@@ -51,7 +51,7 @@ final class PhutilPHPObjectProtocolChannelTestCase extends PhutilTestCase {
     $future->setTimeout(5);
 
     $exec_channel = new PhutilExecChannel($future);
-    $exec_channel->write("quack");
+    $exec_channel->write('quack');
     $exec_channel->closeWriteChannel();
 
     // If `closeWriteChannel()` did what it is supposed to, this will just

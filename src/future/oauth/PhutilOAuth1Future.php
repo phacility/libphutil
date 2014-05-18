@@ -126,7 +126,7 @@ final class PhutilOAuth1Future extends FutureProxy {
       foreach ($oauth_headers as $header => $value) {
         $full_oauth_header[] = $header.'="'.urlencode($value).'"';
       }
-      $full_oauth_header = 'OAuth '.implode(", ", $full_oauth_header);
+      $full_oauth_header = 'OAuth '.implode(', ', $full_oauth_header);
 
       $future->addHeader('Authorization', $full_oauth_header);
 

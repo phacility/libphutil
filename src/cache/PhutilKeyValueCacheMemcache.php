@@ -115,7 +115,7 @@ final class PhutilKeyValueCacheMemcache extends PhutilKeyValueCache {
     $n = count($this->servers);
 
     if (!$n) {
-      throw new Exception("Call setServers() before using Memcache!");
+      throw new Exception('Call setServers() before using Memcache!');
     }
 
     foreach ($keys as $key) {

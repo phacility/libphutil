@@ -115,7 +115,7 @@ final class PhutilExecChannel extends PhutilChannel {
   }
 
   protected function writeBytes($bytes) {
-    throw new Exception("ExecFuture can not write bytes directly!");
+    throw new Exception('ExecFuture can not write bytes directly!');
   }
 
   protected function getReadSockets() {

@@ -65,7 +65,7 @@ if ($args->getArg('hold')) {
   }
 }
 
-while (!$console->confirm("Release lock?")) {
+while (!$console->confirm('Release lock?')) {
   // Keep asking until they say yes.
 }
 

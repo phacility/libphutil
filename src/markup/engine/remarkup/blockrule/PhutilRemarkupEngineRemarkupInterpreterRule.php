@@ -55,11 +55,11 @@ final class PhutilRemarkupEngineRemarkupInterpreterRule
 
     $lines[$first_key] = preg_replace(
       self::START_BLOCK_PATTERN,
-      "",
+      '',
       $lines[$first_key]);
     $lines[$last_key] = preg_replace(
       self::END_BLOCK_PATTERN,
-      "",
+      '',
       $lines[$last_key]);
 
     if (trim($lines[$first_key]) === '') {

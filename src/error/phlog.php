@@ -61,5 +61,5 @@ function phlog($value/* , ... */) {
  * @group error
  */
 function phutil_error_listener_example($event, $value, array $metadata) {
-  throw new Exception("This is just an example function!");
+  throw new Exception('This is just an example function!');
 }

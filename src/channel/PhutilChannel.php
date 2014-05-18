@@ -74,7 +74,7 @@ abstract class PhutilChannel {
    */
   public function write($bytes) {
     if (!is_scalar($bytes)) {
-      throw new Exception("PhutilChannel->write() may only write strings!");
+      throw new Exception('PhutilChannel->write() may only write strings!');
     }
 
     $this->obuf->append($bytes);
@@ -416,7 +416,7 @@ abstract class PhutilChannel {
     while (!$this->isWriteBufferEmpty()) {
       self::waitForAny(array($this));
       if (!$this->update()) {
-        throw new Exception("Channel closed while flushing output!");
+        throw new Exception('Channel closed while flushing output!');
       }
     }
     return $this;

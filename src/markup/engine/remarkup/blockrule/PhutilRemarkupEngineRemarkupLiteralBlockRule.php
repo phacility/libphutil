@@ -8,11 +8,11 @@ final class PhutilRemarkupEngineRemarkupLiteralBlockRule
 
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
-    if (preg_match("/^%%%/", $lines[$cursor])) {
+    if (preg_match('/^%%%/', $lines[$cursor])) {
       $num_lines++;
 
       while (isset($lines[$cursor])) {
-        if (!preg_match("/%%%\s*$/", $lines[$cursor])) {
+        if (!preg_match('/%%%\s*$/', $lines[$cursor])) {
           $num_lines++;
           $cursor++;
           continue;

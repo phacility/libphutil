@@ -71,8 +71,8 @@ final class PhutilAuthAdapterOAuthAmazon extends PhutilAuthAdapterOAuth {
     $data = json_decode($body, true);
     if (!is_array($data)) {
       throw new Exception(
-        "Expected valid JSON response from Amazon account data request, ".
-        "got: ".$body);
+        'Expected valid JSON response from Amazon account data request, '.
+        'got: '.$body);
     }
 
     return $data;

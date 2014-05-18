@@ -394,8 +394,8 @@ final class PhutilErrorHandler {
       static $handling_error;
       if ($handling_error) {
         error_log(
-          "Error handler was reentered, some errors were not passed to the ".
-          "listener.");
+          'Error handler was reentered, some errors were not passed to the '.
+          'listener.');
         return;
       }
       $handling_error = true;

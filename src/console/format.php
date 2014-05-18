@@ -148,7 +148,7 @@ function phutil_console_wrap($text, $indent = 0) {
       }
     }
 
-    if ($chr == " ") {
+    if ($chr == ' ') {
       $break_pos = count($line);
       $len_after_break = 0;
     }

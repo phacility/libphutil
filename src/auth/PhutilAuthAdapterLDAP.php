@@ -354,7 +354,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
         if (!$ok) {
           $this->raiseConnectionException(
             $conn,
-            pht("Unable to start TLS connection when connecting to LDAP."));
+            pht('Unable to start TLS connection when connecting to LDAP.'));
         }
       }
 
@@ -412,7 +412,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
     if (!$result) {
       $this->raiseConnectionException(
         $conn,
-        pht("LDAP search failed."));
+        pht('LDAP search failed.'));
     }
 
     $entries = @ldap_get_entries($conn, $result);
@@ -420,7 +420,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
     if (!$entries) {
       $this->raiseConnectionException(
         $conn,
-        pht("Failed to get LDAP entries from search result."));
+        pht('Failed to get LDAP entries from search result.'));
     }
 
     $results = array();
@@ -448,7 +448,7 @@ final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
         $error);
     } else {
       $full_message = pht(
-        "LDAP Exception: %s",
+        'LDAP Exception: %s',
         $message);
     }
 

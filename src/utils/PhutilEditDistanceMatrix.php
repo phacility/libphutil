@@ -166,7 +166,7 @@ final class PhutilEditDistanceMatrix {
   private function requireSequences() {
     if ($this->x === null) {
       throw new Exception(
-        "Call setSequences() before performing useful work!");
+        'Call setSequences() before performing useful work!');
     }
   }
 
@@ -293,7 +293,7 @@ final class PhutilEditDistanceMatrix {
   private function getTypeMatrix() {
     if (!$this->computeString) {
       throw new Exception(
-        "Call setComputeString() before getTypeMatrix().");
+        'Call setComputeString() before getTypeMatrix().');
     }
     if ($this->typeMatrix === null) {
       $this->computeMatrix($this->x, $this->y);
@@ -366,8 +366,8 @@ final class PhutilEditDistanceMatrix {
     $alt_cost = $this->getAlterCost();
     if ($alt_cost && !$use_types) {
       throw new Exception(
-        "If you provide an alter cost with setAlterCost(), you must enable ".
-        "type computation with setComputeStrings().");
+        'If you provide an alter cost with setAlterCost(), you must enable '.
+        'type computation with setComputeStrings().');
     }
 
     // Build the edit distance matrix.

@@ -8,8 +8,8 @@ final class PhutilDirectedScalarGraph extends AbstractDirectedGraph {
 
   protected function loadEdges(array $nodes) {
     throw new Exception(
-      "PhutilDirectedScalarGraph can not load additional nodes at runtime. ".
-      "Tried to load: ".implode(', ', $nodes));
+      'PhutilDirectedScalarGraph can not load additional nodes at runtime. '.
+      'Tried to load: '.implode(', ', $nodes));
   }
 
 }

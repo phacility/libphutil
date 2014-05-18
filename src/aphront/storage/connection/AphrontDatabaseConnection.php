@@ -38,11 +38,11 @@ abstract class AphrontDatabaseConnection
   }
 
   public function asyncQuery($raw_query) {
-    throw new Exception("Async queries are not supported.");
+    throw new Exception('Async queries are not supported.');
   }
 
   public static function resolveAsyncQueries(array $conns, array $asyncs) {
-    throw new Exception("Async queries are not supported.");
+    throw new Exception('Async queries are not supported.');
   }
 
 

@@ -137,7 +137,7 @@ final class PhutilArgumentSpecificationTestCase extends PhutilTestCase {
         $this->assertEqual(
           !$expect,
           $caught instanceof Exception,
-          "Spec validity for: ".print_r($spec, true));
+          'Spec validity for: '.print_r($spec, true));
       }
     }
   }

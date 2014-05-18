@@ -16,7 +16,7 @@ final class PhutilRemarkupEngineRemarkupHorizontalRuleBlockRule
 
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
-    $pattern = "/^_{3,}$|^\*\s?\*\s?\*(\s|\*)*$|^\-\s?\-\s?\-(\s|\-)*$/";
+    $pattern = '/^_{3,}$|^\*\s?\*\s?\*(\s|\*)*$|^\-\s?\-\s?\-(\s|\-)*$/';
     if (preg_match($pattern, rtrim($lines[$cursor], "\n\r"))) {
       $num_lines++;
       $cursor++;

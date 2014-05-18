@@ -72,7 +72,7 @@ final class XHPASTNode extends AASTNode {
             return $operand->evalStatic();
             break;
           default:
-            throw new Exception("Unexpected operator in static expression.");
+            throw new Exception('Unexpected operator in static expression.');
         }
         break;
       case 'n_ARRAY_LITERAL':

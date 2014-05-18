@@ -226,11 +226,11 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
 
     $this->assertEqual(
       null,
-      assert_stringlike(""));
+      assert_stringlike(''));
 
     $this->assertEqual(
       null,
-      assert_stringlike("Hello World"));
+      assert_stringlike('Hello World'));
 
     $this->assertEqual(
       null,
@@ -260,8 +260,8 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $this->assertTrue($caught instanceof InvalidArgumentException);
 
     $array = array(
-             "foo" => "bar",
-             "bar" => "foo",
+             'foo' => 'bar',
+             'bar' => 'foo',
              );
 
     try {
@@ -345,8 +345,8 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
 
   public function testSplitLines() {
     $retain_cases = array(
-      "" => array(""),
-      "x" => array("x"),
+      '' => array(''),
+      'x' => array('x'),
       "x\n" => array("x\n"),
       "\n" => array("\n"),
       "\n\n\n" => array("\n", "\n", "\n"),
@@ -364,15 +364,15 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
 
     $discard_cases = array(
-      "" => array(""),
-      "x" => array("x"),
-      "x\n" => array("x"),
-      "\n" => array(""),
-      "\n\n\n" => array("", "", ""),
-      "\r\n" => array(""),
-      "x\r\ny\n" => array("x", "y"),
-      "x\ry\nz\r\n" => array("x\ry", "z"),
-      "x\ry\nz\r\n\n" => array("x\ry", "z", ""),
+      '' => array(''),
+      'x' => array('x'),
+      "x\n" => array('x'),
+      "\n" => array(''),
+      "\n\n\n" => array('', '', ''),
+      "\r\n" => array(''),
+      "x\r\ny\n" => array('x', 'y'),
+      "x\ry\nz\r\n" => array("x\ry", 'z'),
+      "x\ry\nz\r\n\n" => array("x\ry", 'z', ''),
     );
 
     foreach ($discard_cases as $input => $expect) {
@@ -435,8 +435,8 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
 
   public function testLoggableString() {
     $this->assertEqual(
-      "",
-      phutil_loggable_string(""));
+      '',
+      phutil_loggable_string(''));
 
     $this->assertEqual(
       "a\\nb",

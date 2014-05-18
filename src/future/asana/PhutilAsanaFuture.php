@@ -36,11 +36,11 @@ final class PhutilAsanaFuture extends FutureProxy {
       $params = $this->params;
 
       if (!$this->action) {
-        throw new Exception("You must setRawAsanaQuery()!");
+        throw new Exception('You must setRawAsanaQuery()!');
       }
 
       if (!$this->accessToken) {
-        throw new Exception("You must setAccessToken()!");
+        throw new Exception('You must setAccessToken()!');
       }
 
       $uri = new PhutilURI('https://app.asana.com/');

@@ -110,7 +110,7 @@ final class PhutilConsoleProgressBar extends Phobject {
       sprintf('%.1f', 100 * $percent));
 
     $this->eraseLine();
-    $console->writeErr("%s", $out);
+    $console->writeErr('%s', $out);
   }
 
   public function done($clean_exit = true) {
@@ -118,7 +118,7 @@ final class PhutilConsoleProgressBar extends Phobject {
     if ($this->drawn) {
       $this->eraseLine();
       if ($clean_exit) {
-        $console->writeErr("%s\n", "Done.");
+        $console->writeErr("%s\n", 'Done.');
       }
     }
     $this->finished = true;

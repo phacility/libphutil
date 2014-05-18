@@ -196,7 +196,7 @@ final class PhutilKeyValueCacheOnDisk extends PhutilKeyValueCache {
    */
   private function getCacheFile() {
     if (!$this->cacheFile) {
-      throw new Exception("Call setCacheFile() before using a disk cache!");
+      throw new Exception('Call setCacheFile() before using a disk cache!');
     }
     return $this->cacheFile;
   }

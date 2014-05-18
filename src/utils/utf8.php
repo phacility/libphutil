@@ -238,7 +238,7 @@ function phutil_utf8v($string) {
       $ii += 1;
       continue;
     } else if ($byte < "\xC0") {
-      throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
+      throw new Exception('Invalid UTF-8 string passed to phutil_utf8v().');
     } else if ($byte <= "\xDF") {
       $seq_len = 2;
     } else if ($byte <= "\xEF") {
@@ -250,15 +250,15 @@ function phutil_utf8v($string) {
     } else if ($byte <= "\xFD") {
       $seq_len = 6;
     } else {
-      throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
+      throw new Exception('Invalid UTF-8 string passed to phutil_utf8v().');
     }
 
     if ($ii + $seq_len > $len) {
-      throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
+      throw new Exception('Invalid UTF-8 string passed to phutil_utf8v().');
     }
     for ($jj = 1; $jj < $seq_len; ++$jj) {
       if ($string[$ii + $jj] >= "\xC0") {
-        throw new Exception("Invalid UTF-8 string passed to phutil_utf8v().");
+        throw new Exception('Invalid UTF-8 string passed to phutil_utf8v().');
       }
     }
     $res[] = substr($string, $ii, $seq_len);
@@ -541,13 +541,13 @@ function phutil_utf8_hard_wrap($string, $width) {
 function phutil_utf8_convert($string, $to_encoding, $from_encoding) {
   if (!$from_encoding) {
     throw new InvalidArgumentException(
-      "Attempting to convert a string encoding, but no source encoding ".
-      "was provided. Explicitly provide the source encoding.");
+      'Attempting to convert a string encoding, but no source encoding '.
+      'was provided. Explicitly provide the source encoding.');
   }
   if (!$to_encoding) {
     throw new InvalidArgumentException(
-      "Attempting to convert a string encoding, but no target encoding ".
-      "was provided. Explicitly provide the target encoding.");
+      'Attempting to convert a string encoding, but no target encoding '.
+      'was provided. Explicitly provide the target encoding.');
   }
 
   // Normalize encoding names so we can no-op the very common case of UTF8
@@ -752,7 +752,7 @@ function phutil_utf8v_combined($string) {
   if (
     $array_length > 0 &&
     phutil_utf8_is_combining_character($components[0])) {
-    $string = " ".$string;
+    $string = ' '.$string;
     $components = phutil_utf8v($string);
     $array_length++;
   }

@@ -237,23 +237,23 @@ final class PhutilArgumentSpecification {
     if ($this->getWildcard()) {
       if ($this->getParamName()) {
         throw new PhutilArgumentSpecificationException(
-          "Wildcard arguments may not specify a parameter.");
+          'Wildcard arguments may not specify a parameter.');
       }
       if ($this->getRepeatable()) {
         throw new PhutilArgumentSpecificationException(
-          "Wildcard arguments may not be repeatable.");
+          'Wildcard arguments may not be repeatable.');
       }
     }
 
     if ($this->default !== null) {
       if ($this->getRepeatable()) {
         throw new PhutilArgumentSpecificationException(
-          "Repeatable arguments may not have a default (always array() for ".
-          "arguments which accept a parameter, or 0 for arguments which do ".
-          "not).");
+          'Repeatable arguments may not have a default (always array() for '.
+          'arguments which accept a parameter, or 0 for arguments which do '.
+          'not).');
       } else if ($this->getParamName() === null) {
         throw new PhutilArgumentSpecificationException(
-          "Flag arguments may not have a default (always false).");
+          'Flag arguments may not have a default (always false).');
       }
     }
   }

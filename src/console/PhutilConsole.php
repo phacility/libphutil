@@ -216,7 +216,7 @@ final class PhutilConsole {
     } else if ($this->messages) {
       $message = array_shift($this->messages);
     } else {
-      throw new Exception("waitForMessage() called with no messages!");
+      throw new Exception('waitForMessage() called with no messages!');
     }
 
     return $message;

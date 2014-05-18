@@ -177,7 +177,7 @@ final class PhutilSimpleOptions {
 
   private function normalizeKey($key) {
     if (!strlen($key)) {
-      throw new Exception("Empty key is invalid!");
+      throw new Exception('Empty key is invalid!');
     }
     if (!$this->caseSensitive) {
       $key = strtolower($key);

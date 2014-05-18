@@ -33,9 +33,9 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
         // test, "~" is used as a placeholder for "\1" since it's hard to type
         // "\1".
 
-        $input_remarkup = str_replace("~", "\1", $input_remarkup);
-        $expected_output = str_replace("~", "\1", $expected_output);
-        $expected_text = str_replace("~", "\1", $expected_text);
+        $input_remarkup = str_replace('~', "\1", $input_remarkup);
+        $expected_output = str_replace('~', "\1", $expected_output);
+        $expected_text = str_replace('~', "\1", $expected_text);
         break;
       case 'toc.txt':
         $engine->setConfig('header.generate-toc', true);

@@ -121,21 +121,21 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
   public function testGetTypeOf() {
     $map = array(
       'int'                     => 1,
-      'string'                  => "asdf",
+      'string'                  => 'asdf',
       'float'                   => 1.5,
       'bool'                    => true,
       'null'                    => null,
       'map<wild, wild>'         => array(),
-      'list<string>'            => array("a", "b"),
+      'list<string>'            => array('a', 'b'),
       'list<int>'               => array(1, 2, 3),
-      'map<string, int>'        => array("x" => 3),
-      'map<int, list<string>>'  => array(1 => array("x", "y")),
+      'map<string, int>'        => array('x' => 3),
+      'map<int, list<string>>'  => array(1 => array('x', 'y')),
       'stdClass'                => new stdClass(),
       'list<Exception>'         => array(
                                      new Exception(),
                                      new LogicException(),
                                      new RuntimeException()),
-      'map<string, stdClass>'   => array("x" => new stdClass()),
+      'map<string, stdClass>'   => array('x' => new stdClass()),
     );
 
     foreach ($map as $expect => $input) {

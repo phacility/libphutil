@@ -7,7 +7,7 @@ final class PhutilRemarkupEngineRemarkupTestInterpreterRule
   extends PhutilRemarkupBlockInterpreter {
 
   public function getInterpreterName() {
-    return "phutil_test_block_interpreter";
+    return 'phutil_test_block_interpreter';
   }
 
   public function markupContent($content, array $argv) {

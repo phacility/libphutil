@@ -48,7 +48,7 @@ abstract class PhutilCLikeCodeSnippetContextFreeGrammar
   protected function getFuncCallGrammarSet() {
     return $this->buildGrammarSet('funccall',
       array(
-        "[funcname]([funccallparam])",
+        '[funcname]([funccallparam])',
       ));
   }
 
@@ -101,8 +101,8 @@ abstract class PhutilCLikeCodeSnippetContextFreeGrammar
   protected function getClassDeclGrammarSet() {
     return $this->buildGrammarSet('classdecl',
       array(
-        "[classinheritancemod] class [classname] {[classbody, indent, block]}",
-        "class [classname] {[classbody, indent, block]}",
+        '[classinheritancemod] class [classname] {[classbody, indent, block]}',
+        'class [classname] {[classbody, indent, block]}',
       ));
   }
 
@@ -132,7 +132,7 @@ abstract class PhutilCLikeCodeSnippetContextFreeGrammar
   protected function getClassBodyGrammarSet() {
     return $this->buildGrammarSet('classbody',
       array(
-        "[methoddecl]",
+        '[methoddecl]',
         "[methoddecl]\n\n[methoddecl]",
         "[propdecl]\n[propdecl]\n\n[methoddecl]\n\n[methoddecl]",
         "[propdecl]\n[propdecl]\n[propdecl]\n\n[methoddecl]\n\n[methoddecl]".

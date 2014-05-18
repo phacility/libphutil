@@ -13,7 +13,7 @@ final class PhutilTypeCheckException extends Exception {
         "Parameter '%s' has invalid type.",
         $name);
     } else {
-      $invalid = pht("Parameter has invalid type.");
+      $invalid = pht('Parameter has invalid type.');
     }
 
     if ($type->getType() == 'regex') {
@@ -24,7 +24,7 @@ final class PhutilTypeCheckException extends Exception {
           $err);
       } else {
         $message = pht(
-          "Expected a regular expression, but value is not valid: %s",
+          'Expected a regular expression, but value is not valid: %s',
           $err);
       }
     } else {

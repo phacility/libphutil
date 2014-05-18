@@ -48,7 +48,7 @@ final class PhagePHPAgent {
 
     $open = $channel->update();
     if (!$open) {
-      throw new Exception("Channel closed!");
+      throw new Exception('Channel closed!');
     }
 
     while (true) {

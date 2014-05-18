@@ -114,7 +114,7 @@ final class PhutilQueryStringParser {
    */
   private function parseQueryKeyToArr($key, $val, array &$input_arr) {
     if (preg_match('/^[^\[\]]+(?:\[[^\[\]]*\])+$/', $key)) {
-      $key_pieces = preg_split('/\]?\[/', rtrim($key, "]"));
+      $key_pieces = preg_split('/\]?\[/', rtrim($key, ']'));
       if ($key_pieces) {
         $cursor     = &$input_arr;
         foreach ($key_pieces as $piece) {

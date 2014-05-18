@@ -108,8 +108,8 @@ final class PhutilAuthAdapterOAuthGoogle extends PhutilAuthAdapterOAuth {
     $data = json_decode($body, true);
     if (!is_array($data)) {
       throw new Exception(
-        "Expected valid JSON response from Google account data request, ".
-        "got: ".$body);
+        'Expected valid JSON response from Google account data request, '.
+        'got: '.$body);
     }
 
     return $data;

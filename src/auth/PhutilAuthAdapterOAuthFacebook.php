@@ -91,17 +91,17 @@ final class PhutilAuthAdapterOAuthFacebook extends PhutilAuthAdapterOAuth {
     $data = json_decode($body, true);
     if (!is_array($data)) {
       throw new Exception(
-        "Expected valid JSON response from Facebook account data request, ".
-        "got: ".$body);
+        'Expected valid JSON response from Facebook account data request, '.
+        'got: '.$body);
     }
 
     if ($this->requireSecureBrowsing) {
       if (empty($data['security_settings']['secure_browsing']['enabled'])) {
         throw new Exception(
           pht(
-            "This Phabricator install requires you to enable Secure Browsing ".
-            "on your Facebook account in order to use it to log in to ".
-            "Phabricator. For more information, see %s",
+            'This Phabricator install requires you to enable Secure Browsing '.
+            'on your Facebook account in order to use it to log in to '.
+            'Phabricator. For more information, see %s',
             'https://www.facebook.com/help/156201551113407/'));
       }
     }

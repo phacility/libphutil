@@ -152,7 +152,7 @@ abstract class PhutilAuthAdapterOAuth extends PhutilAuthAdapter {
     $code = $this->getCode();
     if (!$code) {
       throw new Exception(
-        "Call setCode() before accessing adapter information.");
+        'Call setCode() before accessing adapter information.');
     }
 
     $params = array(
@@ -192,7 +192,7 @@ abstract class PhutilAuthAdapterOAuth extends PhutilAuthAdapter {
     }
 
     if (isset($data['error'])) {
-      throw new Exception("Access token error: ".$data['error']);
+      throw new Exception('Access token error: '.$data['error']);
     }
 
     return $data;

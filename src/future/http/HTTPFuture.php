@@ -66,7 +66,7 @@ final class HTTPFuture extends BaseHTTPFuture {
 
     if (isset($parts['user']) || isset($parts['pass'])) {
       throw new Exception(
-        "HTTP Basic Auth is not supported by HTTPFuture.");
+        'HTTP Basic Auth is not supported by HTTPFuture.');
     }
 
     if (isset($parts['path'])) {
@@ -145,7 +145,7 @@ final class HTTPFuture extends BaseHTTPFuture {
       if (strlen($this->writeBuffer)) {
         $bytes = @fwrite($this->socket, $this->writeBuffer);
         if ($bytes === false) {
-          throw new Exception("Failed to write to buffer.");
+          throw new Exception('Failed to write to buffer.');
         } else if ($bytes) {
           $this->writeBuffer = substr($this->writeBuffer, $bytes);
         }
@@ -160,7 +160,7 @@ final class HTTPFuture extends BaseHTTPFuture {
       }
 
       if ($data === false) {
-        throw new Exception("Failed to read socket.");
+        throw new Exception('Failed to read socket.');
       }
     }
 
@@ -187,7 +187,7 @@ final class HTTPFuture extends BaseHTTPFuture {
 
     $ok = stream_set_blocking($socket, 0);
     if (!$ok) {
-      throw new Exception("Failed to set stream nonblocking.");
+      throw new Exception('Failed to set stream nonblocking.');
     }
 
     $this->writeBuffer = $this->buildHTTPRequest();

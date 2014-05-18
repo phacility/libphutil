@@ -49,7 +49,7 @@ final class PhutilKeyValueCacheTestCase extends ArcanistPhutilTestCase {
   public function testAPCCache() {
     $cache = new PhutilKeyValueCacheAPC();
     if (!$cache->isAvailable()) {
-      $this->assertSkipped("Cache not available.");
+      $this->assertSkipped('Cache not available.');
     }
     $this->doCacheTest($cache);
   }

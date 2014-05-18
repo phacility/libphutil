@@ -57,7 +57,7 @@ function xsprintf($callback, $userdata, $argv) {
 
         $arg++;
         if ($arg >= $argc) {
-          throw new Exception("Too few arguments to xsprintf().");
+          throw new Exception('Too few arguments to xsprintf().');
         }
 
         $callback($userdata, $pattern, $pos, $argv[$arg], $len);
@@ -72,7 +72,7 @@ function xsprintf($callback, $userdata, $argv) {
   }
 
   if ($arg != ($argc - 1)) {
-    throw new Exception("Too many arguments to xsprintf().");
+    throw new Exception('Too many arguments to xsprintf().');
   }
 
   $argv[0] = $pattern;
@@ -112,6 +112,6 @@ function xsprintf_callback_example(
   &$value,
   &$length) {
   throw new Exception(
-    "This function exists only to document the call signature for xsprintf() ".
-    "callbacks.");
+    'This function exists only to document the call signature for xsprintf() '.
+    'callbacks.');
 }

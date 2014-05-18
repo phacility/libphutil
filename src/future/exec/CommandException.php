@@ -20,15 +20,15 @@ final class CommandException extends Exception {
     $summary = array();
     $summary[] = $this->summarize($message);
 
-    $summary[] = "COMMAND";
+    $summary[] = 'COMMAND';
     $summary[] = $this->summarize($command);
 
     $summary[] = null;
-    $summary[] = "STDOUT";
+    $summary[] = 'STDOUT';
     $summary[] = $this->summarize($stdout);
 
     $summary[] = null;
-    $summary[] = "STDERR";
+    $summary[] = 'STDERR';
     $summary[] = $this->summarize($stderr);
 
     $summary = implode("\n", $summary);
@@ -62,7 +62,7 @@ final class CommandException extends Exception {
     $len = strlen($string);
     if ($len > $limit) {
       $cut = $len - $limit;
-      $suffix = "... (".number_format($cut)." more bytes) ...";
+      $suffix = '... ('.number_format($cut).' more bytes) ...';
       if ($cut > strlen($suffix)) {
         $string = substr($string, 0, $limit).$suffix;
       }

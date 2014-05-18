@@ -156,7 +156,7 @@ abstract class BaseHTTPFuture extends Future {
    */
   public function setData($data) {
     if (!is_string($data) && !is_array($data)) {
-      throw new Exception("Data parameter must be an array or string.");
+      throw new Exception('Data parameter must be an array or string.');
     }
     $this->data = $data;
     return $this;

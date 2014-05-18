@@ -171,7 +171,7 @@ final class PhutilKeyValueCacheDirectory extends PhutilKeyValueCache {
   private function getCacheDirectory() {
     if (!$this->cacheDirectory) {
       throw new Exception(
-        "Call setCacheDirectory() before using a directory cache!");
+        'Call setCacheDirectory() before using a directory cache!');
     }
     return $this->cacheDirectory;
   }

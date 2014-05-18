@@ -50,7 +50,7 @@ final class PhutilSocketChannel extends PhutilChannel {
       }
       $ok = stream_set_blocking($socket, false);
       if (!$ok) {
-        throw new Exception("Failed to set socket nonblocking!");
+        throw new Exception('Failed to set socket nonblocking!');
       }
     }
 
@@ -82,7 +82,7 @@ final class PhutilSocketChannel extends PhutilChannel {
     $domain = phutil_is_windows() ? STREAM_PF_INET : STREAM_PF_UNIX;
     $pair = stream_socket_pair($domain, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
     if (!$pair) {
-      throw new Exception("stream_socket_pair() failed!");
+      throw new Exception('stream_socket_pair() failed!');
     }
 
     $x = new PhutilSocketChannel($pair[0]);

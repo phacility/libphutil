@@ -118,28 +118,28 @@ final class PhutilParserGenerator {
 
   public function getEOFSymbol() {
     if ($this->eofSymbol === null) {
-      throw new Exception("Call processGrammar() before getEOFSymbol()!");
+      throw new Exception('Call processGrammar() before getEOFSymbol()!');
     }
     return $this->eofSymbol;
   }
 
   public function getInitSymbol() {
     if ($this->initSymbol === null) {
-      throw new Exception("Call processGrammar() before getInitSymbol()!");
+      throw new Exception('Call processGrammar() before getInitSymbol()!');
     }
     return $this->initSymbol;
   }
 
   public function getEpsilonSymbol() {
     if ($this->epsilonSymbol === null) {
-      throw new Exception("Call processGrammar() before getEpsilonSymbol()!");
+      throw new Exception('Call processGrammar() before getEpsilonSymbol()!');
     }
     return $this->epsilonSymbol;
   }
 
   public function getEndSymbol() {
     if ($this->endSymbol === null) {
-      throw new Exception("Call processGrammar() before getEndSymbol()!");
+      throw new Exception('Call processGrammar() before getEndSymbol()!');
     }
     return $this->endSymbol;
   }
@@ -319,7 +319,7 @@ final class PhutilParserGenerator {
       $missing_terminals = array_keys($missing);
       $missing_terminals = implode(', ', $missing_terminals);
       throw new PhutilParserGeneratorUnreachableTerminalException(
-        "Some terminals do not appear in any rule: ".
+        'Some terminals do not appear in any rule: '.
         $missing_terminals);
     }
   }
@@ -339,7 +339,7 @@ final class PhutilParserGenerator {
       $missing_rules = array_keys($missing);
       $missing_rules = implode(', ', $missing_rules);
       throw new PhutilParserGeneratorUnreachableRuleException(
-        "Some rules can never be reached from any production: ".
+        'Some rules can never be reached from any production: '.
         $missing_rules);
     }
   }
@@ -731,11 +731,11 @@ final class PhutilParserGenerator {
       }
 
       if ($accept && isset($shift[$eof])) {
-        throw new Exception("Accept/shift conflict!");
+        throw new Exception('Accept/shift conflict!');
       }
 
       if ($accept && isset($reduce[$eof])) {
-        throw new Exception("Accept/reduce conflict!");
+        throw new Exception('Accept/reduce conflict!');
       }
 
       foreach ($reduce as $next => $item) {
@@ -860,7 +860,7 @@ final class PhutilParserGenerator {
    */
   public function inspectRules() {
     if (!$this->rulesValidated) {
-      throw new Exception("Call processGrammar() before inspectRules()!");
+      throw new Exception('Call processGrammar() before inspectRules()!');
     }
     return $this->rules;
   }
@@ -871,7 +871,7 @@ final class PhutilParserGenerator {
    */
   public function inspectFirstTable() {
     if ($this->firstTable === null) {
-      throw new Exception("Call processGrammar() before inspectFirstTable()!");
+      throw new Exception('Call processGrammar() before inspectFirstTable()!');
     }
     return $this->firstTable;
   }

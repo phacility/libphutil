@@ -123,7 +123,7 @@ final class PhutilDeferredLog {
   public function setFile($file) {
     if ($this->didWrite) {
       throw new Exception(
-        "You can not change the logfile after a write has occurred!");
+        'You can not change the logfile after a write has occurred!');
     }
     $this->file = $file;
     return $this;

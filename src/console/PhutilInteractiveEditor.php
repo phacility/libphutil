@@ -268,7 +268,7 @@ final class PhutilInteractiveEditor {
     }
 
     throw new Exception(
-      "Unable to launch an interactive text editor. Set the EDITOR ".
-      "environment variable to an appropriate editor.");
+      'Unable to launch an interactive text editor. Set the EDITOR '.
+      'environment variable to an appropriate editor.');
   }
 }

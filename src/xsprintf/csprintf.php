@@ -80,7 +80,7 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
 
       // Check that the value is a non-empty array.
       if (!is_array($value)) {
-        throw new Exception("Expected an array for %Ls conversion.");
+        throw new Exception('Expected an array for %Ls conversion.');
       }
 
       // Convert the list of strings to a single string.
@@ -99,7 +99,7 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
     case 'P':
       if (!($value instanceof PhutilOpaqueEnvelope)) {
         throw new Exception(
-          "Expected PhutilOpaqueEnvelope for %P conversion.");
+          'Expected PhutilOpaqueEnvelope for %P conversion.');
       }
       if ($is_unmasked) {
         $value = $value->openEnvelope();

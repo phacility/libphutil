@@ -177,7 +177,7 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
       }
     }
 
-    throw new Exception("Unable to hold lock in external process!");
+    throw new Exception('Unable to hold lock in external process!');
   }
 
   private function buildLockFuture($flags, $file) {

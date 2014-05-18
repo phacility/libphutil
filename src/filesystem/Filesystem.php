@@ -190,14 +190,14 @@ final class Filesystem {
         if ($ok === false) {
           throw new FilesystemException(
             $try_path,
-            pht("Failed to write file data."));
+            pht('Failed to write file data.'));
         }
 
         $ok = fclose($handle);
         if (!$ok) {
           throw new FilesystemException(
             $try_path,
-            pht("Failed to close file handle."));
+            pht('Failed to close file handle.'));
         }
 
         return $try_path;
@@ -265,7 +265,7 @@ final class Filesystem {
   public static function remove($path) {
     if (!strlen($path)) {
       // Avoid removing PWD.
-      throw new Exception("No path provided to remove().");
+      throw new Exception('No path provided to remove().');
     }
 
     $path = self::resolvePath($path);
@@ -347,7 +347,7 @@ final class Filesystem {
     self::assertExists($path);
 
     if (!@chmod($path, $umask)) {
-      $readable_umask = sprintf("%04o", $umask);
+      $readable_umask = sprintf('%04o', $umask);
       throw new FilesystemException(
         $path, "Failed to chmod `{$path}' to `{$readable_umask}'.");
     }
@@ -392,7 +392,7 @@ final class Filesystem {
   public static function readRandomBytes($number_of_bytes) {
     $number_of_bytes = (int)$number_of_bytes;
     if ($number_of_bytes < 1) {
-      throw new Exception(pht("You must generate at least 1 byte of entropy."));
+      throw new Exception(pht('You must generate at least 1 byte of entropy.'));
     }
 
     // Try to use `openssl_random_psuedo_bytes()` if it's available. This source
@@ -671,7 +671,7 @@ final class Filesystem {
       if ($df !== false && $df < 1024 * 1024) {
         throw new FilesystemException(
           $dir,
-          pht("Failed to create a temporary directory: the disk is full."));
+          pht('Failed to create a temporary directory: the disk is full.'));
       }
 
       throw new FilesystemException(

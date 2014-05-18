@@ -145,7 +145,7 @@ final class PhutilBootloader {
       switch ($version) {
         case 1:
           throw new Exception(
-            "libphutil v1 libraries are no longer supported.");
+            'libphutil v1 libraries are no longer supported.');
         case 2:
           // NOTE: In version 2 of the library format, all parents (both
           // classes and interfaces) are stored in the 'xmap'. The value is

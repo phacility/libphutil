@@ -138,7 +138,7 @@ final class FileFinder {
     }
     foreach ($found as $filename) {
       // Only exclude files whose names match relative to the root.
-      if ($dir == "") {
+      if ($dir == '') {
         $matches = true;
         foreach ($this->exclude as $exclude_path) {
           if (fnmatch(ltrim($exclude_path, './'), $dir.$filename)) {
@@ -178,16 +178,16 @@ final class FileFinder {
         "with an absolute path.");
     }
 
-    if ($this->forceMode == "shell") {
+    if ($this->forceMode == 'shell') {
       $php_mode = false;
-    } else if ($this->forceMode == "php") {
+    } else if ($this->forceMode == 'php') {
       $php_mode = true;
     } else {
       $php_mode = (phutil_is_windows() || !Filesystem::binaryExists('find'));
     }
 
     if ($php_mode) {
-      $files = $this->getFiles("");
+      $files = $this->getFiles('');
     } else {
       $args = array();
       $command = array();

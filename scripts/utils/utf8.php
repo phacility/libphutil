@@ -94,9 +94,9 @@ function show(array $files, $context) {
     $data = read($file);
     $ok = phutil_is_utf8($data);
     if ($ok) {
-      echo "OKAY";
+      echo 'OKAY';
     } else {
-      echo "FAIL";
+      echo 'FAIL';
     }
     echo "  ".name($file)."\n";
 
@@ -158,7 +158,7 @@ function show_problems($line) {
       $out .= $match[1];
       $line = substr($line, strlen($match[1]));
     } else {
-      $chr = sprintf("<0x%0X>", ord($line[0]));
+      $chr = sprintf('<0x%0X>', ord($line[0]));
       $chr = phutil_console_format('##%s##', $chr);
       $out .= $chr;
       $line = substr($line, 1);

@@ -9,7 +9,7 @@ abstract class PhutilContextFreeGrammar {
 
   abstract protected function getRules();
 
-  public function generateSeveral($count, $implode = " ") {
+  public function generateSeveral($count, $implode = ' ') {
     $paragraph = array();
     for ($ii = 0; $ii < $count; $ii++) {
       $paragraph[$ii] = $this->generate();
@@ -25,7 +25,7 @@ abstract class PhutilContextFreeGrammar {
 
   final protected function applyRules($input, &$count, array $rules) {
     if (++$count > $this->limit) {
-      throw new Exception("Token replacement count exceeded limit!");
+      throw new Exception('Token replacement count exceeded limit!');
     }
 
     $matches = null;
@@ -84,10 +84,10 @@ abstract class PhutilContextFreeGrammar {
   private static function strPadLines($text, $num_spaces = 2) {
     $text_lines = phutil_split_lines($text);
     foreach ($text_lines as $linenr => $line) {
-      $text_lines[$linenr] = str_repeat(" ", $num_spaces) . $line;
+      $text_lines[$linenr] = str_repeat(' ', $num_spaces) . $line;
     }
 
-    return implode("", $text_lines);
+    return implode('', $text_lines);
   }
 
 }

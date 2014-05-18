@@ -165,9 +165,9 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
           if ($prev_block
             && self::shouldMergeBlocks($text, $prev_block, $curr_block)) {
-            $blocks[last_key($blocks)]["num_lines"] += $curr_block["num_lines"];
-            $blocks[last_key($blocks)]["is_empty"] =
-              $blocks[last_key($blocks)]["is_empty"] && $curr_block["is_empty"];
+            $blocks[last_key($blocks)]['num_lines'] += $curr_block['num_lines'];
+            $blocks[last_key($blocks)]['is_empty'] =
+              $blocks[last_key($blocks)]['is_empty'] && $curr_block['is_empty'];
           } else {
             $blocks[] = $curr_block;
           }
@@ -178,7 +178,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
       }
 
       if ($starting_cursor === $cursor) {
-        throw new Exception("Block in text did not match any block rule.");
+        throw new Exception('Block in text did not match any block rule.');
       }
     }
 
@@ -237,9 +237,9 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   }
 
   private static function shouldMergeBlocks($text, $prev_block, $curr_block) {
-    $block_rules = ipull(array($prev_block, $curr_block), "rule");
+    $block_rules = ipull(array($prev_block, $curr_block), 'rule');
 
-    $default_rule = "PhutilRemarkupEngineRemarkupDefaultBlockRule";
+    $default_rule = 'PhutilRemarkupEngineRemarkupDefaultBlockRule';
     try {
       assert_instances_of($block_rules, $default_rule);
 
@@ -254,8 +254,8 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
       }
 
       // If the current line and the last line have content, keep merging
-      if (strlen(trim($text[$curr_block["start"] - 1]))) {
-        if (strlen(trim($text[$curr_block["start"]]))) {
+      if (strlen(trim($text[$curr_block['start'] - 1]))) {
+        if (strlen(trim($text[$curr_block['start']]))) {
           return true;
         }
       }

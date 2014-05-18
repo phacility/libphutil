@@ -32,23 +32,23 @@ final class PhutilDocblockParserTestCase extends PhutilTestCase {
       case 'indented-block.docblock':
         $this->assertEqual(array(), $specials);
         $this->assertEqual(
-          "Cozy lummox gives smart squid who asks for job pen.",
+          'Cozy lummox gives smart squid who asks for job pen.',
           $docblock);
         break;
       case 'indented-text.docblock':
         $this->assertEqual(array(), $specials);
         $this->assertEqual(
-          "Cozy lummox gives smart squid who asks for job pen.",
+          'Cozy lummox gives smart squid who asks for job pen.',
           $docblock);
         break;
       case 'multiline-special.docblock':
         $this->assertEqual(
           array(
-            'special' => "x y z",
+            'special' => 'x y z',
           ),
           $specials);
         $this->assertEqual(
-          "",
+          '',
           $docblock);
         break;
       case 'multi-specials.docblock':
@@ -58,7 +58,7 @@ final class PhutilDocblockParserTestCase extends PhutilTestCase {
           ),
           $specials);
         $this->assertEqual(
-          "",
+          '',
           $docblock);
         break;
       case 'specials.docblock':
@@ -69,7 +69,7 @@ final class PhutilDocblockParserTestCase extends PhutilTestCase {
           ),
           $specials);
         $this->assertEqual(
-          "",
+          '',
           $docblock);
         break;
       case 'linebreak-breaks-specials.docblock':
@@ -79,15 +79,15 @@ final class PhutilDocblockParserTestCase extends PhutilTestCase {
           ),
           $specials);
         $this->assertEqual(
-          "This is normal text, not part of the @title.",
+          'This is normal text, not part of the @title.',
           $docblock);
         break;
       case 'specials-with-hyphen.docblock':
         $this->assertEqual(
           array(
             'repeat-hyphen'     => "a\nb",
-            'multiline-hyphen'  => "mmm nnn",
-            'normal-hyphen'     => "x",
+            'multiline-hyphen'  => 'mmm nnn',
+            'normal-hyphen'     => 'x',
           ),
           $specials);
         break;

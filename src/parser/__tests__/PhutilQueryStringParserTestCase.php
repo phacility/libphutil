@@ -9,47 +9,47 @@ final class PhutilQueryStringParserTestCase extends PhutilTestCase {
 
   public function testQueryStringParsing() {
     $map = array(
-      "" => array(),
-      "foo=bar&foobar=barfoo" => array(
-        "foo" => "bar",
-        "foobar" => "barfoo",
+      '' => array(),
+      'foo=bar&foobar=barfoo' => array(
+        'foo' => 'bar',
+        'foobar' => 'barfoo',
       ),
-      "a]b[]=1&a]=2&a[[]=3&a[b]b=4&[][a]=5" => array(
-        "a]b[]" => "1",
-        "a]" => "2",
-        "a[[]" => "3",
-        "a[b]b" => "4",
-        "[][a]" => "5",
+      'a]b[]=1&a]=2&a[[]=3&a[b]b=4&[][a]=5' => array(
+        'a]b[]' => '1',
+        'a]' => '2',
+        'a[[]' => '3',
+        'a[b]b' => '4',
+        '[][a]' => '5',
       ),
-      "foo[][]=bar&bar[1][3]=foo" => array(
-        "foo" => array(
+      'foo[][]=bar&bar[1][3]=foo' => array(
+        'foo' => array(
           0 => array(
-            0 => "bar",
+            0 => 'bar',
           ),
         ),
-        "bar" => array(
+        'bar' => array(
           1 => array(
-            3 => "foo",
+            3 => 'foo',
           ),
         ),
       ),
-      "foo[][]=bar&a]b[]=1" => array(
-        "foo" => array(
+      'foo[][]=bar&a]b[]=1' => array(
+        'foo' => array(
           0 => array(
-            0 => "bar",
+            0 => 'bar',
           ),
         ),
-        "a]b[]" => "1",
+        'a]b[]' => '1',
       ),
-      "a&&b" => array(
-        "a" => "",
-        "b" => "",
+      'a&&b' => array(
+        'a' => '',
+        'b' => '',
       ),
-      "a[b][]=foo&a[b][]=bar" => array(
-        "a" => array(
-          "b" => array(
-            0 => "foo",
-            1 => "bar",
+      'a[b][]=foo&a[b][]=bar' => array(
+        'a' => array(
+          'b' => array(
+            0 => 'foo',
+            1 => 'bar',
           ),
         ),
       ),

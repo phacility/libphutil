@@ -51,11 +51,11 @@ final class PhutilPayPalAPIFuture extends FutureProxy {
       $params = $this->params;
 
       if (!$this->params) {
-        throw new Exception("You must setRawPayPalQuery()!");
+        throw new Exception('You must setRawPayPalQuery()!');
       }
 
       if (!$this->apiUsername) {
-        throw new Exception("You must set PayPal API credentials!");
+        throw new Exception('You must set PayPal API credentials!');
       }
 
       $params['VERSION'] = '98.0';
@@ -82,7 +82,7 @@ final class PhutilPayPalAPIFuture extends FutureProxy {
 
     if (idx($dict, 'ACK') !== 'Success') {
       throw new Exception(
-        "PayPal API call failed: ".print_r($dict, true));
+        'PayPal API call failed: '.print_r($dict, true));
     }
 
     return $dict;

@@ -63,8 +63,8 @@ final class PhutilAuthAdapterOAuthGitHub extends PhutilAuthAdapterOAuth {
     $data = json_decode($body, true);
     if (!is_array($data)) {
       throw new Exception(
-        "Expected valid JSON response from GitHub account data request, ".
-        "got: ".$body);
+        'Expected valid JSON response from GitHub account data request, '.
+        'got: '.$body);
     }
 
     return $data;
