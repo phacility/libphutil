@@ -732,6 +732,17 @@ function array_mergev(array $arrayv) {
     return array();
   }
 
+  foreach ($arrayv as $key => $item) {
+    if (!is_array($item)) {
+      throw new InvalidArgumentException(
+        pht(
+          'Expected all items passed to array_mergev() to be arrays, but '.
+          'argument with key "%s" has type "%s".',
+          $key,
+          gettype($item)));
+    }
+  }
+
   return call_user_func_array('array_merge', $arrayv);
 }
 

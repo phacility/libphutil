@@ -168,6 +168,25 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
           array(),
           array(4, 5),
         )));
+
+    $not_valid = array(
+      'scalar' => array(1),
+      'array plus scalar' => array(array(), 1),
+      'null' => array(null),
+    );
+
+    foreach ($not_valid as $key => $invalid_input) {
+      $caught = null;
+      try {
+        array_mergev($invalid_input);
+      } catch (InvalidArgumentException $ex) {
+        $caught = $ex;
+      }
+
+      $this->assertTrue(
+        ($caught instanceof InvalidArgumentException),
+        "array_mergev() invalid on {$key}");
+    }
   }
 
   public function testNonempty() {
