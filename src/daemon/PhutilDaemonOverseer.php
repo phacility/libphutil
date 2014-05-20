@@ -150,6 +150,7 @@ EOHELP
     if ($this->phddir) {
       $desc = array(
         'name'            => $this->daemon,
+        'argv'            => $this->moreArgs,
         'pid'             => getmypid(),
         'start'           => time(),
       );
