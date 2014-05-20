@@ -8,6 +8,9 @@
  *   %Ls
  *     List of strings that will be escaped. They will be space separated.
  *
+ *   %LR
+ *     List of "readable" strings. They will be space separated.
+ *
  *   %P
  *     Password (or other sensitive parameter) to escape. Pass a
  *     PhutilOpaqueEnvelope.
@@ -68,24 +71,38 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
 
   switch ($type) {
     case 'L':
-      // Only '%Ls' is supported.
-      if ($next !== 's') {
-        throw new Exception("Unknown conversion %L{$next}.");
-      }
-
-      // Remove the L, leaving %s
+      // Remove the L.
       $pattern = substr_replace($pattern, '', $pos, 1);
       $length  = strlen($pattern);
       $type = 's';
 
       // Check that the value is a non-empty array.
       if (!is_array($value)) {
-        throw new Exception('Expected an array for %Ls conversion.');
+        throw new Exception("Expected an array for %L{$next} conversion.");
       }
 
-      // Convert the list of strings to a single string.
-      $value = implode(' ', array_map('escapeshellarg', $value));
+      switch ($next) {
+        case 's':
+          $values = array();
+          foreach ($value as $val) {
+            $values[] = csprintf('%s', $val);
+          }
+          $value = implode(' ', $values);
+          break;
+
+        case 'R':
+          $values = array();
+          foreach ($value as $val) {
+            $values[] = csprintf('%R', $val);
+          }
+          $value = implode(' ', $values);
+          break;
+
+        default:
+          throw new Exception("Unknown conversion %L{$next}.");
+      }
       break;
+
     case 'R':
       if (!preg_match('(^[a-zA-Z0-9:/@._-]+$)', $value)) {
         $value = escapeshellarg($value);
