@@ -424,6 +424,7 @@ phutil_register_library_map(array(
     'vqueryfx_all' => 'xsprintf/queryfx.php',
     'vurisprintf' => 'xsprintf/urisprintf.php',
     'xhp_parser_node_constants' => 'parser/xhpast/parser_nodes.php',
+    'xhpast_build' => 'parser/xhpast/bin/xhpast_parse.php',
     'xhpast_get_binary_path' => 'parser/xhpast/bin/xhpast_parse.php',
     'xhpast_get_build_instructions' => 'parser/xhpast/bin/xhpast_parse.php',
     'xhpast_get_parser_future' => 'parser/xhpast/bin/xhpast_parse.php',
