@@ -33,6 +33,7 @@ final class PhutilConsoleProgressBar extends Phobject {
   private $drawn;
   private $console;
   private $finished;
+  private $lastUpdate;
 
   public function setConsole(PhutilConsole $console) {
     $this->console = $console;
@@ -59,6 +60,11 @@ final class PhutilConsoleProgressBar extends Phobject {
   }
 
   private function redraw() {
+    if ($this->lastUpdate + 0.1 > microtime(true)) {
+      // We redrew the bar very recently; skip this update.
+      return;
+    }
+
     if ($this->finished) {
       return;
     }
@@ -84,6 +90,8 @@ final class PhutilConsoleProgressBar extends Phobject {
     if ($char_width < $chrome_width) {
       return;
     }
+
+    $this->lastUpdate = microtime(true);
 
     if (!$this->drawn) {
       $this->drawn = true;
