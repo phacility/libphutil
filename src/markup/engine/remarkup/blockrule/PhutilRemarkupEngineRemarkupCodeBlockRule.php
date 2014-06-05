@@ -11,7 +11,7 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
     $match_ticks = null;
     if (preg_match('/^(\s{2,}).+/', $lines[$cursor])) {
       $match_ticks = false;
-    } else if (preg_match('/^(```)/', $lines[$cursor])) {
+    } else if (preg_match('/^\s*(```)/', $lines[$cursor])) {
       $match_ticks = true;
     } else {
       return $num_lines;
@@ -19,7 +19,8 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
 
     $num_lines++;
 
-    if ($match_ticks && preg_match('/^(```)(.*)(```)\s*$/', $lines[$cursor])) {
+    if ($match_ticks &&
+        preg_match('/^\s*(```)(.*)(```)\s*$/', $lines[$cursor])) {
       return $num_lines;
     }
 
@@ -47,10 +48,10 @@ final class PhutilRemarkupEngineRemarkupCodeBlockRule
   }
 
   public function markupText($text, $children) {
-    if (preg_match('/^```/', $text)) {
+    if (preg_match('/^\s*```/', $text)) {
       // If this is a ```-style block, trim off the backticks and any leading
       // blank line.
-      $text = preg_replace('/^```(\s*\n)?/', '', $text);
+      $text = preg_replace('/^\s*```(\s*\n)?/', '', $text);
       $text = preg_replace('/```\s*$/', '', $text);
     }
 
