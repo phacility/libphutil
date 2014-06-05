@@ -78,6 +78,13 @@ final class PhutilDefaultSyntaxHighlighterEngine
         ->getHighlightFuture($source);
     }
 
+    if ($language == 'py') {
+      return id(new PhutilLexerSyntaxHighlighter())
+        ->setConfig('lexer', new PhutilPythonFragmentLexer())
+        ->setConfig('language', 'py')
+        ->getHighlightFuture($source);
+    }
+
     if ($language == 'invisible') {
       return id(new PhutilInvisibleSyntaxHighlighter())
              ->getHighlightFuture($source);
