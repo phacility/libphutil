@@ -624,6 +624,18 @@ final class ExecFuture extends Future {
 
       $pipes = array();
 
+      if (phutil_is_windows()) {
+        // See T4395. proc_open under Windows uses "cmd /C [cmd]", which will
+        // strip the first and last quote when there aren't exactly two quotes
+        // (and some other conditions as well). This results in a command that
+        // looks like `command" "path to my file" "something someting` which is
+        // clearly wrong. By surrounding the command string with quotes we can
+        // be sure this process is harmless.
+        if (strpos($unmasked_command, '"') !== false) {
+          $unmasked_command = '"'.$unmasked_command.'"';
+        }
+      }
+
       // NOTE: See note above about Phage.
       if (class_exists('PhutilErrorTrap')) {
         $trap = new PhutilErrorTrap();
