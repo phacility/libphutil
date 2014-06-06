@@ -195,6 +195,10 @@ final class PhutilPythonFragmentLexer extends PhutilLexer {
       ),
     );
 
+    $nl = array(
+      array('\\n', 's'),
+    );
+
     $strings = array(
       array(
         '%(\\(\\w+\\))?[-#0 +]*([0-9]+|[*])?(\\.([0-9]+|[*]))?'.
@@ -207,31 +211,28 @@ final class PhutilPythonFragmentLexer extends PhutilLexer {
       // unhandled string formatting sign
       array('%', 's'),
       // newlines are an error (use $nl rules)
-    );
-
-    $nl = array(
-      array('\\n', 's'),
+      array('', null, '!pop'),
     );
 
     $dqs = array_merge(array(
       array('"', 's', '!pop'),
       // included here for raw strings
-      array('(?:\\\\\\\\|\\\\\'|\\\\n)', 's', '!pop'),
+      array('(?:\\\\\\\\|\\\\\'|\\\\n)', 's'),
     ), $strings);
 
     $sqs = array_merge(array(
       array('\'', 's', '!pop'),
       // included here for raw strings
-      array('(?:\\\\\\\\|\\\\\'|\\\\n)', 's', '!pop'),
+      array('(?:\\\\\\\\|\\\\\'|\\\\n)', 's'),
     ), $strings);
 
     $tdqs = array_merge(array(
       array('"""', 's', '!pop'),
-    ), $strings, $nl);
+    ), $nl, $strings);
 
     $tsqs = array_merge(array(
       array('\'\'\'', 's', '!pop'),
-    ), $strings, $nl);
+    ), $nl, $strings);
 
     return array(
       'start' => array_merge(array(
