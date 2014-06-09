@@ -1,7 +1,9 @@
 {
   "exclude": [
     "(^externals/)",
-    "(\\.lint-test$)"
+    "(^src/console/__tests__/wrap/.*\\.txt(\\.expect)?$)",
+    "(^src/markup/engine/__tests__/remarkup/.*\\.txt$)",
+    "(^src/markup/syntax/highlighter/__tests__/xhpast/.*\\.(expect|source)$)"
   ],
   "linters": {
     "chmod": {

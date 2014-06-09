@@ -11,4 +11,3 @@ $x = foo()[2];
 $y = foo()[$i];
 
 if (isset(foo()[0])) { }
-
