@@ -6,7 +6,7 @@
 final class FileFinderTestCase extends PhutilTestCase {
 
   protected function getFinder() {
-    $finder = new FileFinder(dirname(__FILE__) . '/data');
+    $finder = new FileFinder(dirname(__FILE__).'/data');
     $finder->excludePath('./exclude')
            ->excludePath('subdir.txt');
     return $finder;

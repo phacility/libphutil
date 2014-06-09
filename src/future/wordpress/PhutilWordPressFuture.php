@@ -54,7 +54,7 @@ final class PhutilWordPressFuture extends FutureProxy {
       $future->setMethod($this->method);
 
       // NOTE: This is how WordPress.com REST API authenticates
-      $future->addHeader('Authorization', 'Bearer ' . $this->accessToken);
+      $future->addHeader('Authorization', 'Bearer '.$this->accessToken);
 
       $this->future = $future;
     }

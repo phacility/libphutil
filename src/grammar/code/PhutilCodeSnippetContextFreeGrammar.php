@@ -12,7 +12,7 @@ abstract class PhutilCodeSnippetContextFreeGrammar
 
   public function generate() {
     // A trailing newline is favorable for source code
-    return trim(parent::generate()) . "\n";
+    return trim(parent::generate())."\n";
   }
 
   final protected function getRules() {

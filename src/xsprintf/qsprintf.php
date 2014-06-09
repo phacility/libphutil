@@ -197,8 +197,8 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         $value = $escaper->escapeStringForLikeClause($value);
         switch ($type) {
           case '~': $value = "'%".$value."%'"; break;
-          case '>': $value = "'" .$value."%'"; break;
-          case '<': $value = "'%".$value. "'"; break;
+          case '>': $value = "'".$value."%'"; break;
+          case '<': $value = "'%".$value."'"; break;
         }
         $type  = 's';
         break;

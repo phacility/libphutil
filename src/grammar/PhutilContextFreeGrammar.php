@@ -84,7 +84,7 @@ abstract class PhutilContextFreeGrammar {
   private static function strPadLines($text, $num_spaces = 2) {
     $text_lines = phutil_split_lines($text);
     foreach ($text_lines as $linenr => $line) {
-      $text_lines[$linenr] = str_repeat(' ', $num_spaces) . $line;
+      $text_lines[$linenr] = str_repeat(' ', $num_spaces).$line;
     }
 
     return implode('', $text_lines);
