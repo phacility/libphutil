@@ -58,6 +58,10 @@ final class PhutilInteractiveEditor {
     $name = $this->getName();
     $content = $this->getContent();
 
+    if (phutil_is_windows()) {
+      $content = str_replace("\n", "\r\n", $content);
+    }
+
     $tmp = Filesystem::createTemporaryDirectory('edit.');
     $path = $tmp.DIRECTORY_SEPARATOR.$name;
 
@@ -84,6 +88,10 @@ final class PhutilInteractiveEditor {
     } catch (Exception $ex) {
       Filesystem::remove($tmp);
       throw $ex;
+    }
+
+    if (phutil_is_windows()) {
+      $result = str_replace("\r\n", "\n", $result);
     }
 
     $this->setContent($result);
