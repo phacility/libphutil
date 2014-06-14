@@ -1,22 +1,24 @@
-## NOTE: Don't .gitignore these files! Even though they're build artifacts, we
-## want to check them in so users can build xhpast without flex/bison.
-# parser.yacc.cpp
-# parser.yacc.hpp
-# scanner.lex.cpp
-# scanner.lex.hpp
+# NOTE: Thinking about adding files created by your operating system, IDE,
+# or text editor here? Don't! Add them to your per-user .gitignore instead.
 
-.DS_Store
-._*
-
+# Diviner
 /docs/
 /.divinercache/
 
-*.a
-*.o
-parser.yacc.output
+# XHPAST
+/support/xhpast/*.a
+/support/xhpast/*.o
+/support/xhpast/parser.yacc.output
 /support/xhpast/node_names.hpp
 /support/xhpast/xhpast
 /src/parser/xhpast/bin/xhpast
+
+## NOTE: Don't .gitignore these files! Even though they're build artifacts, we
+## want to check them in so users can build xhpast without flex/bison.
+# /support/xhpast/parser.yacc.cpp
+# /support/xhpast/parser.yacc.hpp
+# /support/xhpast/scanner.lex.cpp
+# /support/xhpast/scanner.lex.hpp
 
 # This is an OS X build artifact.
 /support/xhpast/xhpast.dSYM
@@ -24,14 +26,12 @@ parser.yacc.output
 # This is a Windows build artifact.
 /support/xhpast/xhpast.exe
 
+# libphutil
 /src/.phutil_module_cache
 /support/phutiltestlib/.phutil_module_cache
 
 # This file overrides "default.pem" if present.
 /resources/ssl/custom.pem
-
-# arc sratch directory.
-/.arc/
 
 # User extensions
 /src/extensions/*
