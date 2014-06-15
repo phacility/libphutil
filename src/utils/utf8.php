@@ -180,8 +180,6 @@ function phutil_utf8_strlen($string) {
  *
  *   http://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c
  *
- * NOTE: We currently do not handle combining characters correctly.
- *
  * NOTE: We currently assume width 1 for East-Asian ambiguous characters.
  *
  * NOTE: This function is VERY slow.
@@ -191,28 +189,43 @@ function phutil_utf8_strlen($string) {
  * @group   utf8
  */
 function phutil_utf8_console_strlen($string) {
-  $string_v = phutil_utf8v_codepoints($string);
+
+  // In the common case of an ASCII string, just return the string length.
+  if (preg_match('/^[\x01-\x7F]*\z/', $string)) {
+    return strlen($string);
+  }
 
   $len = 0;
-  foreach ($string_v as $c) {
-    if ($c == 0) {
-      continue;
-    }
 
-    $len += 1 +
-      ($c >= 0x1100 &&
-        ($c <= 0x115f ||                    /* Hangul Jamo init. consonants */
-          $c == 0x2329 || $c == 0x232a ||
-          ($c >= 0x2e80 && $c <= 0xa4cf &&
-            $c != 0x303f) ||                  /* CJK ... Yi */
-          ($c >= 0xac00 && $c <= 0xd7a3) || /* Hangul Syllables */
-          ($c >= 0xf900 && $c <= 0xfaff) || /* CJK Compatibility Ideographs */
-          ($c >= 0xfe10 && $c <= 0xfe19) || /* Vertical forms */
-          ($c >= 0xfe30 && $c <= 0xfe6f) || /* CJK Compatibility Forms */
-          ($c >= 0xff00 && $c <= 0xff60) || /* Fullwidth Forms */
-          ($c >= 0xffe0 && $c <= 0xffe6) ||
-          ($c >= 0x20000 && $c <= 0x2fffd) ||
-          ($c >= 0x30000 && $c <= 0x3fffd)));
+  // NOTE: To deal with combining characters, we're splitting the string into
+  // glyphs first (characters with combiners) and then counting just the width
+  // of the first character in each glyph.
+
+  $display_glyphs = phutil_utf8v_combined($string);
+  foreach ($display_glyphs as $display_glyph) {
+    $glyph_codepoints = phutil_utf8v_codepoints($display_glyph);
+    foreach ($glyph_codepoints as $c) {
+      if ($c == 0) {
+        break;
+      }
+
+      $len += 1 +
+        ($c >= 0x1100 &&
+          ($c <= 0x115f ||                    /* Hangul Jamo init. consonants */
+            $c == 0x2329 || $c == 0x232a ||
+            ($c >= 0x2e80 && $c <= 0xa4cf &&
+              $c != 0x303f) ||                  /* CJK ... Yi */
+            ($c >= 0xac00 && $c <= 0xd7a3) || /* Hangul Syllables */
+            ($c >= 0xf900 && $c <= 0xfaff) || /* CJK Compatibility Ideographs */
+            ($c >= 0xfe10 && $c <= 0xfe19) || /* Vertical forms */
+            ($c >= 0xfe30 && $c <= 0xfe6f) || /* CJK Compatibility Forms */
+            ($c >= 0xff00 && $c <= 0xff60) || /* Fullwidth Forms */
+            ($c >= 0xffe0 && $c <= 0xffe6) ||
+            ($c >= 0x20000 && $c <= 0x2fffd) ||
+            ($c >= 0x30000 && $c <= 0x3fffd)));
+
+      break;
+    }
   }
 
   return $len;

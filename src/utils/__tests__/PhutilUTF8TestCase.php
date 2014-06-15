@@ -104,6 +104,12 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
       // Double-width chinese character.
       "\xe6\x9d\xb1"  => 2,
+
+      // Combining character.
+      "x\xCD\xA0y"    => 2,
+
+      // Combining plus double-width.
+      "\xe6\x9d\xb1\xCD\xA0y"  => 3,
     );
     foreach ($strings as $str => $expect) {
       $this->assertEqual(
