@@ -418,7 +418,6 @@ phutil_register_library_map(array(
     'queryfx' => 'xsprintf/queryfx.php',
     'queryfx_all' => 'xsprintf/queryfx.php',
     'queryfx_one' => 'xsprintf/queryfx.php',
-    'sprintf_escape' => 'utils/utils.php',
     'urisprintf' => 'xsprintf/urisprintf.php',
     'vcsprintf' => 'xsprintf/csprintf.php',
     'vjsprintf' => 'xsprintf/jsprintf.php',
