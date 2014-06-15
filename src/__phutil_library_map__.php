@@ -175,7 +175,7 @@ phutil_register_library_map(array(
     'PhutilGitURITestCase' => 'parser/__tests__/PhutilGitURITestCase.php',
     'PhutilHangForeverDaemon' => 'daemon/torture/PhutilHangForeverDaemon.php',
     'PhutilHelpArgumentWorkflow' => 'parser/argument/workflow/PhutilHelpArgumentWorkflow.php',
-    'PhutilInfrastructureTestCase' => 'infrastructure/__tests__/PhutilInfrastructureTestCase.php',
+    'PhutilInfrastructureTestCase' => '__tests__/PhutilInfrastructureTestCase.php',
     'PhutilInteractiveEditor' => 'console/PhutilInteractiveEditor.php',
     'PhutilInvisibleSyntaxHighlighter' => 'markup/syntax/highlighter/PhutilInvisibleSyntaxHighlighter.php',
     'PhutilJSON' => 'parser/PhutilJSON.php',
