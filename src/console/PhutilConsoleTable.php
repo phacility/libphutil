@@ -74,6 +74,13 @@ final class PhutilConsoleTable extends Phobject {
     return $this;
   }
 
+  public function addColumns(array $columns) {
+    foreach ($columns as $key => $column) {
+      $this->addColumn($key, $column);
+    }
+    return $this;
+  }
+
   public function addRow(array $data) {
     $this->data[] = $data;
 
