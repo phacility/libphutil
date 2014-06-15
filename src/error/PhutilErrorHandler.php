@@ -298,13 +298,22 @@ final class PhutilErrorHandler {
       if (isset($entry['args'])) {
         $args = array();
         foreach ($entry['args'] as $arg) {
-          $args[] = PhutilReadableSerializer::printShort($arg);
+
+          // NOTE: Print out object types, not values. Values sometimes contain
+          // sensitive information and are usually not particularly helpful
+          // for debugging.
+
+          $type = (gettype($arg) == 'object')
+            ? get_class($arg)
+            : gettype($arg);
+          $args[] = $type;
         }
         $line .= '('.implode(', ', $args).')';
       }
 
       if (isset($entry['file'])) {
-        $line .= ' called at ['.$entry['file'].':'.$entry['line'].']';
+        $file = self::adjustFilePath($entry['file']);
+        $line .= ' called at ['.$file.':'.$entry['line'].']';
       }
 
       $result[] = $line;
@@ -357,7 +366,7 @@ final class PhutilErrorHandler {
           '[%s] EXCEPTION: %s at [%s:%d]',
           $timestamp,
           $messages,
-          self::getRootException($value)->getFile(),
+          self::adjustFilePath(self::getRootException($value)->getFile()),
           self::getRootException($value)->getLine());
 
         $metadata['default_message'] = $default_message;
@@ -402,6 +411,34 @@ final class PhutilErrorHandler {
       call_user_func(self::$errorListener, $event, $value, $metadata);
       $handling_error = false;
     }
+  }
+
+  public static function adjustFilePath($path) {
+    // Compute known library locations so we can emit relative paths if the
+    // file resides inside a known library. This is a little cleaner to read,
+    // and limits the number of false positives we get about full path
+    // disclosure via HackerOne.
+
+    $bootloader = PhutilBootloader::getInstance();
+    $libraries = $bootloader->getAllLibraries();
+    $roots = array();
+    foreach ($libraries as $library) {
+      $root = $bootloader->getLibraryRoot($library);
+      // For these libraries, the effective root is one level up.
+      switch ($library) {
+        case 'phutil':
+        case 'arcanist':
+        case 'phabricator':
+          $root = dirname($root);
+          break;
+      }
+
+      if (!strncmp($root, $path, strlen($root))) {
+        return '<'.$library.'>'.substr($path, strlen($root));
+      }
+    }
+
+    return $path;
   }
 
 }
