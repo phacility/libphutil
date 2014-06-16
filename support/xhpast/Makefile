@@ -12,6 +12,10 @@ ifdef STATIC
 CPPFLAGS += -static
 endif
 
+ifdef MSYSTEM
+CPPFLAGS += -static-libgcc -static-libstdc++
+endif
+
 ROOT = ../../src/parser/xhpast
 
 all: xhpast
