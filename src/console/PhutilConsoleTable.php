@@ -19,7 +19,7 @@
  *       'email' => 'joe@bloggs.com',
  *     ))
  *
- *     ->setDrawBorders(true)
+ *     ->setBorders(true)
  *     ->draw();
  */
 final class PhutilConsoleTable extends Phobject {
@@ -29,6 +29,7 @@ final class PhutilConsoleTable extends Phobject {
   private $widths  = array();
   private $borders = false;
   private $padding = 1;
+  private $showHeader = true;
   private $console;
 
   const ALIGN_LEFT    = 'left';
@@ -60,6 +61,12 @@ final class PhutilConsoleTable extends Phobject {
 
   public function setPadding($padding) {
     $this->padding = $padding;
+    return $this;
+  }
+
+  public function setShowHeader($show_header) {
+    $this->showHeader = $show_header;
+    return $this;
   }
 
 
@@ -109,6 +116,10 @@ final class PhutilConsoleTable extends Phobject {
 
     if ($this->borders) {
       $output .= $this->formatSeparator('=');
+    }
+
+    if (!$this->showHeader) {
+      return $output;
     }
 
     $columns = array();
