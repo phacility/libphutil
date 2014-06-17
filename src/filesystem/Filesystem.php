@@ -911,7 +911,13 @@ final class Filesystem {
     if (phutil_is_windows()) {
       list($err, $stdout) = exec_manual('where %s', $binary);
       $stdout = phutil_split_lines($stdout);
-      if (!$stdout) {
+
+      // If `where %s` could not find anything, check for relative binary
+      if ($err) {
+        $path = Filesystem::resolvePath($binary);
+        if (Filesystem::pathExists($path)) {
+          return $path;
+        }
         return null;
       }
       $stdout = head($stdout);
