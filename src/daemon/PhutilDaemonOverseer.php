@@ -120,7 +120,7 @@ EOHELP
     $this->daemonize  = $args->getArg('daemonize');
     $this->phddir     = $args->getArg('phd');
     $this->argv       = $argv;
-    $this->moreArgs   = $more;
+    $this->moreArgs   = coalesce($more, array());
 
     error_log("Bringing daemon '{$this->daemon}' online...");
 
@@ -162,7 +162,9 @@ EOHELP
     $this->daemonID = $this->generateDaemonID();
     $this->dispatchEvent(
       self::EVENT_DID_LAUNCH,
-      array('argv' => array_slice($original_argv, 1)));
+      array(
+        'argv' => array_slice($original_argv, 1),
+        'interestingArgv' => $this->moreArgs));
 
     declare(ticks = 1);
     pcntl_signal(SIGUSR1, array($this, 'didReceiveKeepaliveSignal'));
