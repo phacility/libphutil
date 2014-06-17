@@ -587,19 +587,20 @@ final class Filesystem {
    * @param  string    Path to directory. The parent directory must exist and
    *                   be writable.
    * @param  int       Permission umask. Note that umask is in octal, so you
-   *                   should specify it as, e.g., `0777', not `777'. By
-   *                   default, these permissions are very liberal (0777).
-   * @param  boolean   Recursivly create directories.  Default to false
+   *                   should specify it as, e.g., `0777', not `777'.
+   * @param  boolean   Recursively create directories. Default to false.
    * @return string    Path to the created directory.
    *
    * @task   directory
    */
-  public static function createDirectory($path, $umask = 0777,
+  public static function createDirectory($path, $umask = 0755,
                                             $recursive = false) {
     $path = self::resolvePath($path);
 
     if (is_dir($path)) {
-      Filesystem::changePermissions($path, $umask);
+      if ($umask) {
+        Filesystem::changePermissions($path, $umask);
+      }
       return $path;
     }
 
@@ -626,7 +627,9 @@ final class Filesystem {
     // 'The parameter mode specifies the permissions to use. It is modified by
     // the process's umask in the usual way: the permissions of the created
     // directory are (mode & ~umask & 0777)."'
-    Filesystem::changePermissions($path, $umask);
+    if ($umask) {
+      Filesystem::changePermissions($path, $umask);
+    }
 
     return $path;
   }
