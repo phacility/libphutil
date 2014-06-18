@@ -112,8 +112,8 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       "\xe6\x9d\xb1\xCD\xA0y"  => 3,
 
       // Colors and formatting.
-      "\e[1mx\e[m" => 1,
-      "\e[1m\e[31mx\e[m" => 1,
+      "\x1B[1mx\x1B[m" => 1,
+      "\x1B[1m\x1B[31mx\x1B[m" => 1,
     );
     foreach ($strings as $str => $expect) {
       $this->assertEqual(

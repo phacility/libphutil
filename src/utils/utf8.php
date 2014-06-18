@@ -191,7 +191,7 @@ function phutil_utf8_strlen($string) {
 function phutil_utf8_console_strlen($string) {
 
   // Formatting and colors don't contribute any width in the console.
-  $string = preg_replace('/\e\[\d*m/', '', $string);
+  $string = preg_replace("/\x1B\[\d*m/", '', $string);
 
   // In the common case of an ASCII string, just return the string length.
   if (preg_match('/^[\x01-\x7F]*\z/', $string)) {
