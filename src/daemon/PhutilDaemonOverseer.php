@@ -164,7 +164,7 @@ EOHELP
       self::EVENT_DID_LAUNCH,
       array(
         'argv' => array_slice($original_argv, 1),
-        'interestingArgv' => $this->moreArgs));
+        'explicitArgv' => $this->moreArgs));
 
     declare(ticks = 1);
     pcntl_signal(SIGUSR1, array($this, 'didReceiveKeepaliveSignal'));
