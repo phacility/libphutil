@@ -33,6 +33,8 @@ final class PhutilReadableSerializer {
       return 'true';
     } else if (is_float($value) && (int)$value == $value) {
       return $value.'.0';
+    } else if (is_string($value)) {
+      return "'".$value."'";
     } else {
       return print_r($value, true);
     }
@@ -67,8 +69,13 @@ final class PhutilReadableSerializer {
       $limit = 1024;
       $str = self::printableValue($value);
       if (strlen($str) > $limit) {
-        $str = substr($str, 0, $limit).'...';
+        if (is_string($value)) {
+          $str = "'".substr($str, 1, $limit)."...'";
+        } else {
+          $str = substr($str, 0, $limit).'...';
+        }
       }
+
       return $str;
     }
   }

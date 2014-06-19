@@ -10,7 +10,7 @@ final class PhutilReadableSerializerTestCase extends PhutilTestCase {
       array(0, '0'),
       array(0.0, '0.0'),
       array(0.1, '0.1'),
-      array('test', 'test'),
+      array('test', "'test'"),
     );
     foreach ($tests as $test) {
       list($value, $expect) = $test;
