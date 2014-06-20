@@ -79,7 +79,11 @@ class JsonLintLexer
     public function showPosition()
     {
         $pre = str_replace("\n", '', $this->getPastInput());
-        $c = str_repeat('-', strlen($pre) - 1); // new Array(pre.length + 1).join("-");
+        if ($pre) {
+          $c = str_repeat('-', strlen($pre) - 1); // new Array(pre.length + 1).join("-");
+        } else {
+          $c = "";
+        }
 
         return $pre . str_replace("\n", '', $this->getUpcomingInput()) . "\n" . $c . "^";
     }

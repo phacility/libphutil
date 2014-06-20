@@ -358,7 +358,7 @@ class JsonLintJsonParser
         case 6:
             return $yyval->token = $tokens[$len-1];
         case 13:
-            $yyval->token = new stdClass;
+            $yyval->token = array();
             break;
         case 14:
             $yyval->token = $tokens[$len-1];
@@ -367,26 +367,26 @@ class JsonLintJsonParser
             $yyval->token = array($tokens[$len-2], $tokens[$len]);
             break;
         case 16:
-            $yyval->token = new stdClass;
+            $yyval->token = array();
             $property = $tokens[$len][0] === '' ? '_empty_' : $tokens[$len][0];
-            $yyval->token->$property = $tokens[$len][1];
+            $yyval->token[$property] = $tokens[$len][1];
             break;
         case 17:
             $yyval->token = $tokens[$len-2];
             $key = $tokens[$len][0] === '' ? '_empty_' : $tokens[$len][0];
-            if (($this->flags & self::DETECT_KEY_CONFLICTS) && isset($tokens[$len-2]->{$key})) {
+            if (($this->flags & self::DETECT_KEY_CONFLICTS) && array_key_exists($key, $tokens[$len-2])) {
                 $errStr = 'Parse error on line ' . ($yylineno+1) . ":\n";
                 $errStr .= $this->lexer->showPosition() . "\n";
                 $errStr .= "Duplicate key: ".$tokens[$len][0];
                 throw new JsonLintParsingException($errStr);
-            } elseif (($this->flags & self::ALLOW_DUPLICATE_KEYS) && isset($tokens[$len-2]->{$key})) {
+            } elseif (($this->flags & self::ALLOW_DUPLICATE_KEYS) && array_key_exists($key, $tokens[$len-2])) {
                 $duplicateCount = 1;
                 do {
                     $duplicateKey = $key . '.' . $duplicateCount++;
-                } while (isset($tokens[$len-2]->$duplicateKey));
+                } while (array_key_exists($duplicateKey, $tokens[$len-2]));
                 $key = $duplicateKey;
             }
-            $tokens[$len-2]->$key = $tokens[$len][1];
+            $yyval->token[$key] = $tokens[$len][1];
             break;
         case 18:
             $yyval->token = array();

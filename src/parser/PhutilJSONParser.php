@@ -15,13 +15,6 @@ final class PhutilJSONParser {
     require_once($jsonlint_root.'/src/Seld/JsonLint/ParsingException.php');
     require_once($jsonlint_root.'/src/Seld/JsonLint/Undefined.php');
 
-    if (!$json) {
-      throw new PhutilJSONParserException(
-        pht(
-          '%s is not a valid JSON object.',
-          PhutilReadableSerializer::printShort($json)));
-    }
-
     $parser = new JsonLintJsonParser();
     try {
       $output = $parser->parse($json);
@@ -29,14 +22,14 @@ final class PhutilJSONParser {
       throw new PhutilJSONParserException($ex->getMessage());
     }
 
-    if (!$output instanceof stdClass && !is_array($output)) {
+    if (!is_array($output)) {
       throw new PhutilJSONParserException(
         pht(
           '%s is not a valid JSON object.',
           PhutilReadableSerializer::printShort($json)));
     }
 
-    return (array)$output;
+    return $output;
   }
 
 }
