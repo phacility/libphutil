@@ -22,6 +22,9 @@ function phutil_utf8ize($string) {
   // TODO: Provide an optional fast C implementation ala fb_utf8ize() if this
   // ever shows up in profiles?
 
+  // NOTE: Overlong 3-byte and 4-byte representations incorrectly survive
+  // this function.
+
   $result = array();
 
   $regex =
@@ -58,13 +61,57 @@ function phutil_utf8ize($string) {
  * @return bool   True if the string is valid UTF-8 with only BMP characters.
  */
 function phutil_is_utf8_with_only_bmp_characters($string) {
+  return phutil_is_utf8_slowly($string, $only_bmp = true);
+}
 
-  // NOTE: By default, PCRE segfaults on patterns like the one we would need
-  // to use here at very small input sizes, at least on some systems (like
-  // OS X). This is apparently because the internal implementation is recursive
-  // and it blows the stack. See <https://bugs.php.net/bug.php?id=45735> for
-  // some discussion. Since the input limit is extremely low (less than 50KB on
-  // my system), do this check very very slowly in PHP instead.
+
+/**
+ * Determine if a string is valid UTF-8.
+ *
+ * @param string  Some string which may or may not be valid UTF-8.
+ * @return bool    True if the string is valid UTF-8.
+ * @group utf8
+ */
+function phutil_is_utf8($string) {
+  if (function_exists('mb_check_encoding')) {
+    // If mbstring is available, this is significantly faster than using PHP.
+    return mb_check_encoding($string, 'UTF-8');
+  }
+
+  return phutil_is_utf8_slowly($string);
+}
+
+
+/**
+ * Determine if a string is valid UTF-8, slowly.
+ *
+ * This works on any system, but has very poor performance.
+ *
+ * You should call @{function:phutil_is_utf8} instead of this function, as
+ * that function can use more performant mechanisms if they are available on
+ * the system.
+ *
+ * @param string  Some string which may or may not be valid UTF-8.
+ * @param bool    True to require all characters be part of the basic
+ *                multilingual plane (no more than 3-bytes long).
+ * @return bool   True if the string is valid UTF-8.
+ */
+function phutil_is_utf8_slowly($string, $only_bmp = false) {
+  // First, check the common case of normal ASCII strings. We're fine if
+  // the string contains no bytes larger than 127.
+  if (preg_match('/^[\x01-\x7F]+\z/', $string)) {
+    return true;
+  }
+
+  // NOTE: In the past, we used a large regular expression in the form of
+  // '(x|y|z)+' to match UTF8 strings. However, PCRE can segfaults on patterns
+  // like this at relatively small input sizes, at least on some systems
+  // (observed on OSX and Windows). This is apparently because the internal
+  // implementation is recursive and it blows the stack.
+
+  // See <https://bugs.php.net/bug.php?id=45735> for some discussion. Since the
+  // input limit is extremely low (less than 50KB on my system), do this check
+  // very very slowly in PHP instead. See also T5316.
 
   $len = strlen($string);
   for ($ii = 0; $ii < $len; $ii++) {
@@ -120,40 +167,64 @@ function phutil_is_utf8_with_only_bmp_characters($string) {
         }
       }
       return false;
+    } else if (!$only_bmp) {
+      if ($chr > 0xF0 && $chr <= 0xF4) {
+        ++$ii;
+        if ($ii >= $len) {
+          return false;
+        }
+        $chr = ord($string[$ii]);
+        if ($chr >= 0x80 && $chr <= 0xBF) {
+          ++$ii;
+          if ($ii >= $len) {
+            return false;
+          }
+          $chr = ord($string[$ii]);
+          if ($chr >= 0x80 && $chr <= 0xBF) {
+            ++$ii;
+            if ($ii >= $len) {
+              return false;
+            }
+            $chr = ord($string[$ii]);
+            if ($chr >= 0x80 && $chr <= 0xBF) {
+              continue;
+            }
+          }
+        }
+      } else if ($chr == 0xF0) {
+        ++$ii;
+        if ($ii >= $len) {
+          return false;
+        }
+        $chr = ord($string[$ii]);
+
+        // NOTE: As above, this range starts at 0x90, not 0x80. The values
+        // 0x80-0x90 are not minimal representations.
+
+        if ($chr >= 0x90 && $chr <= 0xBF) {
+          ++$ii;
+          if ($ii >= $len) {
+            return false;
+          }
+          $chr = ord($string[$ii]);
+          if ($chr >= 0x80 && $chr <= 0xBF) {
+            ++$ii;
+            if ($ii >= $len) {
+              return false;
+            }
+            $chr = ord($string[$ii]);
+            if ($chr >= 0x80 && $chr <= 0xBF) {
+              continue;
+            }
+          }
+        }
+      }
     }
 
     return false;
   }
 
   return true;
-}
-
-
-/**
- * Determine if a string is valid UTF-8.
- *
- * @param string  Some string which may or may not be valid UTF-8.
- * @return bool    True if the string is valid UTF-8.
- * @group utf8
- */
-function phutil_is_utf8($string) {
-  if (function_exists('mb_check_encoding')) {
-    // If mbstring is available, this is significantly faster than using PHP
-    // regexps.
-    return mb_check_encoding($string, 'UTF-8');
-  }
-
-  // NOTE: This incorrectly accepts characters like \xE0\x80\x80, but should
-  // not. The MB version works correctly.
-
-  $regex =
-    "/^(".
-      "[\x01-\x7F]+".
-    "|([\xC2-\xDF][\x80-\xBF])".
-    "|([\xE0-\xEF][\x80-\xBF][\x80-\xBF])".
-    "|([\xF0-\xF4][\x80-\xBF][\x80-\xBF][\x80-\xBF]))*\$/";
-
-  return (bool)preg_match($regex, $string);
 }
 
 

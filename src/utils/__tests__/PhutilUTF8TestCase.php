@@ -520,6 +520,9 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       // This isn't valid.
       "\xEF\xBF\xC0" => array(false, false, 'Invalid, byte range.'),
 
+      // This is an invalid nonminimal representation.
+      "\xF0\x81\x80\x80" => array(false, false, 'Nonminimal 4-byte characer.'),
+
       // This is the first character above BMP, U+10000.
       "\xF0\x90\x80\x80" => array(true, false, 'U+10000'),
       "\xF0\x9D\x84\x9E" => array(true, false, 'gclef'),
@@ -538,10 +541,18 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     foreach ($tests as $input => $test) {
       list($expect_utf8, $expect_bmp, $test_name) = $test;
 
+      // Depending on what's installed on the system, this may use an
+      // extension.
       $this->assertEqual(
         $expect_utf8,
         phutil_is_utf8($input),
         pht('is_utf(%s)', $test_name));
+
+      // Also test this against the pure PHP implementation, explicitly.
+      $this->assertEqual(
+        $expect_utf8,
+        phutil_is_utf8_slowly($input),
+        pht('is_utf_slowly(%s)', $test_name));
 
       $this->assertEqual(
         $expect_bmp,
