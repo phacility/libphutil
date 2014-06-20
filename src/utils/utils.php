@@ -1046,21 +1046,22 @@ function phutil_units($description) {
 
 
 /**
- * Decode a JSON dictionary, or return a default value if the input does not
- * decode or does not decode into a dictionary.
+ * Decode a JSON dictionary.
  *
  * @param   string    A string which ostensibly contains a JSON-encoded list or
  *                    dictionary.
- * @param   default?  Optional default value to return if the string does not
- *                    decode, or does not decode into a list or dictionary.
- * @return  mixed     Decoded list/dictionary, or default value if string
- *                    failed to decode.
+ * @return  mixed     Decoded list/dictionary.
  */
-function phutil_json_decode($string, $default = array()) {
+function phutil_json_decode($string) {
   $result = @json_decode($string, true);
+
   if (!is_array($result)) {
-    return $default;
+    // Failed to decode the JSON. Try to use @{class:PhutilJSONParser} instead.
+    // This will probably fail, but will throw a useful exception.
+    $parser = new PhutilJSONParser();
+    $result = $parser->parse($string);
   }
+
   return $result;
 }
 

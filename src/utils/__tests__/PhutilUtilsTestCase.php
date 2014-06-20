@@ -513,23 +513,34 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   }
 
   public function testPhutilJSONDecode() {
-    $default = (object)array();
-
-    $cases = array(
+    $valid_cases = array(
       '{}' => array(),
       '[]' => array(),
-      '' => $default,
-      '"a"' => $default,
-      '{,}' => $default,
-      'null' => $default,
-      '"null"' => $default,
       '[1, 2]' => array(1, 2),
       '{"a":"b"}' => array('a' => 'b'),
     );
 
-    foreach ($cases as $input => $expect) {
-      $result = phutil_json_decode($input, $default);
+    foreach ($valid_cases as $input => $expect) {
+      $result = phutil_json_decode($input);
       $this->assertEqual($expect, $result, 'phutil_json_decode('.$input.')');
+    }
+
+    $invalid_cases = array(
+      '',
+      '"a"',
+      '{,}',
+      'null',
+      '"null"',
+    );
+
+    foreach ($invalid_cases as $input) {
+      $caught = null;
+      try {
+        phutil_json_decode($input);
+      } catch (Exception $ex) {
+        $caught = $ex;
+      }
+      $this->assertTrue($caught instanceof PhutilJSONParserException);
     }
   }
 
