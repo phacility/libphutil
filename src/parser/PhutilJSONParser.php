@@ -8,6 +8,13 @@
  */
 final class PhutilJSONParser {
 
+  private $allowDuplicateKeys = false;
+
+  public function setAllowDuplicateKeys($allow_duplicate_keys) {
+    $this->allowDuplicateKeys = $allow_duplicate_keys;
+    return $this;
+  }
+
   public function parse($json) {
     $jsonlint_root = phutil_get_library_root('phutil').'/../externals/jsonlint';
     require_once($jsonlint_root.'/src/Seld/JsonLint/JsonParser.php');
@@ -17,17 +24,17 @@ final class PhutilJSONParser {
 
     $parser = new JsonLintJsonParser();
     try {
-      $output = $parser->parse($json);
+      $output = $parser->parse($json, $this->getFlags());
     } catch (JsonLintParsingException $ex) {
       $details = $ex->getDetails();
       $message = preg_replace("/^Parse error .*\\^\n/s", '', $ex->getMessage());
 
       throw new PhutilJSONParserException(
           $message,
-          $details['loc']['last_line'],
-          $details['loc']['last_column'],
-          $details['token'],
-          $details['expected']);
+          idx(idx($details, 'loc', array()), 'last_line'),
+          idx(idx($details, 'loc', array()), 'last_column'),
+          idx($details, 'token'),
+          idx($details, 'expected'));
     }
 
     if (!is_array($output)) {
@@ -38,6 +45,18 @@ final class PhutilJSONParser {
     }
 
     return $output;
+  }
+
+  private function getFlags() {
+    $flags = 0;
+
+    if ($this->allowDuplicateKeys) {
+      $flags |= JsonLintJsonParser::ALLOW_DUPLICATE_KEYS;
+    } else {
+      $flags |= JsonLintJsonParser::DETECT_KEY_CONFLICTS;
+    }
+
+    return $flags;
   }
 
 }

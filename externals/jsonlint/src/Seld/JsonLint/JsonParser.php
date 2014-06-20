@@ -380,11 +380,7 @@ class JsonLintJsonParser
                 $errStr .= "Duplicate key: ".$tokens[$len][0];
                 throw new JsonLintParsingException($errStr);
             } elseif (($this->flags & self::ALLOW_DUPLICATE_KEYS) && array_key_exists($key, $tokens[$len-2])) {
-                $duplicateCount = 1;
-                do {
-                    $duplicateKey = $key . '.' . $duplicateCount++;
-                } while (array_key_exists($duplicateKey, $tokens[$len-2]));
-                $key = $duplicateKey;
+                // Forget about it...
             }
             $yyval->token[$key] = $tokens[$len][1];
             break;

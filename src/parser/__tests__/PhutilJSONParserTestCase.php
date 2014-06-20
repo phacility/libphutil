@@ -86,4 +86,29 @@ final class PhutilJSONParserTestCase extends PhutilTestCase {
     }
   }
 
+  public function testDuplicateKeys() {
+    $parser = new PhutilJSONParser();
+
+    $tests = array(
+      '{"foo": "bar", "foo": "baz"}' => array('foo' => 'baz'),
+    );
+
+    foreach ($tests as $input => $expect) {
+      $parser->setAllowDuplicateKeys(true);
+      $this->assertEqual(
+        $expect,
+        $parser->parse($input),
+        'Parsing JSON: '.$input);
+
+      $parser->setAllowDuplicateKeys(false);
+      $caught = null;
+      try {
+        $parser->parse($input);
+      } catch (Exception $ex) {
+        $caught = $ex;
+      }
+      $this->assertTrue($caught instanceof PhutilJSONParserException);
+    }
+  }
+
 }
