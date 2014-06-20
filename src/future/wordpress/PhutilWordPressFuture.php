@@ -69,10 +69,12 @@ final class PhutilWordPressFuture extends FutureProxy {
       throw $status;
     }
 
-    $data = phutil_json_decode($body);
-    if (empty($data)) {
-      throw new Exception(
-        pht('Expected JSON response from WordPress.com, got: %s', $body));
+    try {
+      $data = phutil_json_decode($body);
+    } catch (PhutilJSONParserException $ex) {
+      throw new PhutilProxyException(
+        pht('Expected JSON response from WordPress.com.'),
+        $ex);
     }
 
     if (idx($data, 'error')) {
