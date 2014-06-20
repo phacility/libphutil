@@ -15,6 +15,7 @@ final class PhutilJSONParserTestCase extends PhutilTestCase {
         => array('foo' => 'bar', 'bar' => array('baz')),
       '{"foo": "bar", "bar": {"baz": "foo"}}'
         => array('foo' => 'bar', 'bar' => array('baz' => 'foo')),
+      '{"": ""}' => array('' => ''),
     );
 
     foreach ($tests as $input => $expect) {

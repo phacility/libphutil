@@ -368,12 +368,12 @@ class JsonLintJsonParser
             break;
         case 16:
             $yyval->token = array();
-            $property = $tokens[$len][0] === '' ? '_empty_' : $tokens[$len][0];
+            $property = $tokens[$len][0];
             $yyval->token[$property] = $tokens[$len][1];
             break;
         case 17:
             $yyval->token = $tokens[$len-2];
-            $key = $tokens[$len][0] === '' ? '_empty_' : $tokens[$len][0];
+            $key = $tokens[$len][0];
             if (($this->flags & self::DETECT_KEY_CONFLICTS) && array_key_exists($key, $tokens[$len-2])) {
                 $errStr = 'Parse error on line ' . ($yylineno+1) . ":\n";
                 $errStr .= $this->lexer->showPosition() . "\n";
