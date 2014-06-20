@@ -107,7 +107,7 @@ class JsonLintLexer
 
     protected function parseError($str, $hash)
     {
-        throw new \Exception($str);
+        throw new Exception($str);
     }
 
     private function next()
