@@ -16,6 +16,12 @@ final class PhutilJSONParserTestCase extends PhutilTestCase {
       '{"foo": "bar", "bar": {"baz": "foo"}}'
         => array('foo' => 'bar', 'bar' => array('baz' => 'foo')),
       '{"": ""}' => array('' => ''),
+      '{"test":"\u00c9v\u00e9nement"}'
+        => array('test' => "\xC3\x89v\xC3\xA9nement"),
+      '["\u00c9v\u00e9nement"]' => array("\xC3\x89v\xC3\xA9nement"),
+      '{"test":"http:\/\/foo\\\\zomg"}'
+        => array('test' => 'http://foo\\zomg'),
+      '["http:\/\/foo\\\\zomg"]' => array('http://foo\\zomg'),
     );
 
     foreach ($tests as $input => $expect) {
@@ -68,6 +74,16 @@ final class PhutilJSONParserTestCase extends PhutilTestCase {
       "{'foo': 'bar'}" => array(
         'line' => 1,
         'char' => 1,
+        'token' => 'INVALID',
+      ),
+      "{\"foo\": \"bar\nbaz\"}" => array(
+        'line' => 1,
+        'char' => 7,
+        'token' => 'INVALID',
+      ),
+      '{"foo": "bar\z"}' => array(
+        'line' => 1,
+        'char' => 7,
         'token' => 'INVALID',
       ),
     );
