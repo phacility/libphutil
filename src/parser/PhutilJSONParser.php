@@ -19,7 +19,15 @@ final class PhutilJSONParser {
     try {
       $output = $parser->parse($json);
     } catch (JsonLintParsingException $ex) {
-      throw new PhutilJSONParserException($ex->getMessage());
+      $details = $ex->getDetails();
+      $message = preg_replace("/^Parse error .*\\^\n/s", '', $ex->getMessage());
+
+      throw new PhutilJSONParserException(
+          $message,
+          $details['loc']['last_line'],
+          $details['loc']['last_column'],
+          $details['token'],
+          $details['expected']);
     }
 
     if (!is_array($output)) {

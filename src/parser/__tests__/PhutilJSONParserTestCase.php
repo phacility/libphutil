@@ -30,19 +30,49 @@ final class PhutilJSONParserTestCase extends PhutilTestCase {
     $parser = new PhutilJSONParser();
 
     $tests = array(
-      '',
-      'null',
-      'false',
-      'true',
-      '"quack quack I am a duck lol"',
-      '{',
-      '[',
-      '{"foo":',
-      '{"foo":"bar",}',
-      '{{}',
+      '{' => array(
+        'line' => 1,
+        'char' => 1,
+        'token' => 'EOF',
+      ),
+      '[' => array(
+        'line' => 1,
+        'char' => 1,
+        'token' => 'EOF',
+      ),
+      '{"foo":' => array(
+        'line' => 1,
+        'char' => 7,
+        'token' => 'EOF',
+      ),
+      '{"foo":"bar",}' => array(
+        'line' => 1,
+        'char' => 13,
+        'token' => '}',
+      ),
+      '{{}' => array(
+        'line' => 1,
+        'char' => 1,
+        'token' => '{',
+      ),
+      '{}}' => array(
+        'line' => 1,
+        'char' => 2,
+        'token' => '}',
+      ),
+      "{\"foo\":\"bar\",\n\"bar\":\"baz\",}" => array(
+        'line' => 2,
+        'char' => 12,
+        'token' => '}',
+      ),
+      "{'foo': 'bar'}" => array(
+        'line' => 1,
+        'char' => 1,
+        'token' => 'INVALID',
+      ),
     );
 
-    foreach ($tests as $input) {
+    foreach ($tests as $input => $expected) {
       $caught = null;
       try {
         $parser->parse($input);
@@ -50,6 +80,9 @@ final class PhutilJSONParserTestCase extends PhutilTestCase {
         $caught = $ex;
       }
       $this->assertTrue($caught instanceof PhutilJSONParserException);
+      $this->assertEqual($expected['line'], $caught->getSourceLine());
+      $this->assertEqual($expected['char'], $caught->getSourceChar());
+      $this->assertEqual($expected['token'], $caught->getSourceToken());
     }
   }
 
