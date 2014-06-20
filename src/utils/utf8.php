@@ -335,11 +335,9 @@ function phutil_utf8v_codepoints($string) {
 
 
 /**
- * Shorten a string to provide a summary, respecting UTF-8 characters. This
- * function attempts to truncate strings at word boundaries.
+ * Shorten a string to provide a summary, respecting UTF-8 characters.
  *
- * NOTE: This function makes a best effort to apply some reasonable rules but
- * will not work well for the full range of unicode languages.
+ * This function is deprecated; use @{class:PhutilUTF8StringTruncator} instead.
  *
  * @param   string  UTF-8 string to shorten.
  * @param   int     Maximum length of the result.
@@ -350,89 +348,10 @@ function phutil_utf8v_codepoints($string) {
  * @group utf8
  */
 function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
-  // If the string has fewer bytes than the minimum length, we can return
-  // it unmodified without doing any heavy lifting.
-  if (strlen($string) <= $length) {
-    return $string;
-  }
-
-  $string_v = phutil_utf8v_combined($string);
-  $string_len = count($string_v);
-
-  if ($string_len <= $length) {
-    // If the string is already shorter than the requested length, simply return
-    // it unmodified.
-    return $string;
-  }
-
-  // NOTE: This is not complete, and there are many other word boundary
-  // characters and reasonable places to break words in the UTF-8 character
-  // space. For now, this gives us reasonable behavior for latin langauges. We
-  // don't necessarily have access to PCRE+Unicode so there isn't a great way
-  // for us to look up character attributes.
-
-  // If we encounter these, prefer to break on them instead of cutting the
-  // string off in the middle of a word.
-  static $break_characters = array(
-    ' '   => true,
-    "\n"  => true,
-    ';'   => true,
-    ':'   => true,
-    '['   => true,
-    '('   => true,
-    ','   => true,
-    '-'   => true,
-  );
-
-  // If we encounter these, shorten to this character exactly without appending
-  // the terminal.
-  static $stop_characters = array(
-    '.'   => true,
-    '!'   => true,
-    '?'   => true,
-  );
-
-  // Search backward in the string, looking for reasonable places to break it.
-  $word_boundary = null;
-  $stop_boundary = null;
-
-  $terminal_len = phutil_utf8_strlen($terminal);
-
-  // If we do a word break with a terminal, we have to look beyond at least the
-  // number of characters in the terminal. If the terminal is longer than the
-  // required length, we'll skip this whole block and return it on its own
-  $terminal_area = $length - min($length, $terminal_len);
-  for ($ii = $length; $ii >= 0; $ii--) {
-    $c = $string_v[$ii];
-
-    if (isset($break_characters[$c]) && ($ii <= $terminal_area)) {
-      $word_boundary = $ii;
-    } else if (isset($stop_characters[$c]) && ($ii < $length)) {
-      $stop_boundary = $ii + 1;
-      break;
-    } else {
-      if ($word_boundary !== null) {
-        break;
-      }
-    }
-  }
-
-  if ($stop_boundary !== null) {
-    // We found a character like ".". Cut the string there, without appending
-    // the terminal.
-    $string_part = array_slice($string_v, 0, $stop_boundary);
-    return implode('', $string_part);
-  }
-
-  // If we didn't find any boundary characters or we found ONLY boundary
-  // characters, just break at the maximum character length.
-  if ($word_boundary === null || $word_boundary === 0) {
-    $word_boundary = $terminal_area;
-  }
-
-  $string_part = array_slice($string_v, 0, $word_boundary);
-  $string_part = implode('', $string_part);
-  return $string_part.$terminal;
+  return id(new PhutilUTF8StringTruncator())
+    ->setMaximumGlyphs($length)
+    ->setTerminator($terminal)
+    ->truncateString($string);
 }
 
 

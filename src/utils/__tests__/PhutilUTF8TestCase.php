@@ -135,7 +135,11 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       array('111111', 5, '2222', '12222'),
 
       array('D1rp. Derp derp.', 7, '...', 'D1rp.'),
-      array('D2rp. Derp derp.', 5, '...', 'D2rp.'),
+
+      // "D2rp." is a better shortening of this, but it's dramatically more
+      // complicated to implement with the newer byte/glyph/character
+      // shortening code.
+      array('D2rp. Derp derp.', 5, '...', 'D2...'),
       array('D3rp. Derp derp.', 4, '...', 'D...'),
       array('D4rp. Derp derp.', 14, '...', 'D4rp. Derp...'),
       array('D5rpderp, derp derp', 16, '...', 'D5rpderp...'),
@@ -160,10 +164,64 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
     foreach ($inputs as $input) {
       list($string, $length, $terminal, $expect) = $input;
-      $result = phutil_utf8_shorten($string, $length, $terminal);
+      $result = id(new PhutilUTF8StringTruncator())
+        ->setMaximumGlyphs($length)
+        ->setTerminator($terminal)
+        ->truncateString($string);
       $this->assertEqual($expect, $result, 'Shortening of '.$string);
     }
 
+  }
+
+  public function testUTF8StringTruncator() {
+    $cases = array(
+      array(
+        "o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0",
+        6, "o\xCD\xA0!",
+        6, "o\xCD\xA0o\xCD\xA0!",
+        6, "o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0",
+      ),
+      array(
+        "X\xCD\xA0\xCD\xA0\xCD\xA0Y",
+        6, '!',
+        6, "X\xCD\xA0\xCD\xA0\xCD\xA0Y",
+        6, "X\xCD\xA0\xCD\xA0\xCD\xA0Y",
+      ),
+      array(
+        "X\xCD\xA0\xCD\xA0\xCD\xA0YZ",
+        6, '!',
+        5, "X\xCD\xA0\xCD\xA0\xCD\xA0!",
+        2, "X\xCD\xA0\xCD\xA0\xCD\xA0!",
+      ),
+      array(
+        "\xE2\x98\x83\xE2\x98\x83\xE2\x98\x83\xE2\x98\x83",
+        4, "\xE2\x98\x83!",
+        3, "\xE2\x98\x83\xE2\x98\x83!",
+        3, "\xE2\x98\x83\xE2\x98\x83!",
+      ),
+    );
+
+    foreach ($cases as $case) {
+      list($input, $b_len, $b_out, $p_len, $p_out, $g_len, $g_out) = $case;
+
+      $result = id(new PhutilUTF8StringTruncator())
+        ->setMaximumBytes($b_len)
+        ->setTerminator('!')
+        ->truncateString($input);
+      $this->assertEqual($b_out, $result, 'byte-short of '.$input);
+
+      $result = id(new PhutilUTF8StringTruncator())
+        ->setMaximumCodepoints($p_len)
+        ->setTerminator('!')
+        ->truncateString($input);
+      $this->assertEqual($p_out, $result, 'codepoint-short of '.$input);
+
+      $result = id(new PhutilUTF8StringTruncator())
+        ->setMaximumGlyphs($g_len)
+        ->setTerminator('!')
+        ->truncateString($input);
+      $this->assertEqual($g_out, $result, 'glyph-short of '.$input);
+    }
   }
 
   public function testUTF8Wrap() {
