@@ -11,5 +11,15 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 insert_final_newline = false
 
+[src/parser/__tests__/languageguesser/*]
+indent_style =
+
 [Makefile]
 indent_style = tab
+
+[externals/**]
+; Use editor default (possible autodetection).
+indent_style =
+indent_size =
+trim_trailing_whitespace = false
+insert_final_newline = false
