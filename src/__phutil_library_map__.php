@@ -391,6 +391,7 @@ phutil_register_library_map(array(
     'phutil_implode_html' => 'markup/render.php',
     'phutil_is_hiphop_runtime' => 'utils/utils.php',
     'phutil_is_utf8' => 'utils/utf8.php',
+    'phutil_is_utf8_slowly' => 'utils/utf8.php',
     'phutil_is_utf8_with_only_bmp_characters' => 'utils/utf8.php',
     'phutil_is_windows' => 'utils/utils.php',
     'phutil_json_decode' => 'utils/utils.php',
