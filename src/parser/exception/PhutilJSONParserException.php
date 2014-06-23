@@ -19,7 +19,8 @@ final class PhutilJSONParserException extends Exception {
     $this->sourceToken = $token;
     $this->expected = $expected;
 
-    parent::__construct($message);
+    parent::__construct(
+      pht('Parse error on line %d at column %d: %s', $line, $char, $message));
   }
 
   public function getSourceLine() {
