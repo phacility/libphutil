@@ -10,26 +10,26 @@ _____
 
 - - - - - - -
 ~~~~~~~~~~
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />
 ~~~~~~~~~~
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />
 
-<hr />
+<hr class="remarkup-hr" />

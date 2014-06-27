@@ -12,23 +12,23 @@
 
 1/ This explicitly should not be formatted as a list.
 ~~~~~~~~~~
-<ol>
-<li>aasdx</li>
-<li>asdf</li>
+<ol class="remarkup-list">
+<li class="remarkup-list-item">aasdx</li>
+<li class="remarkup-list-item">asdf</li>
 </ol>
 
-<ol>
-<li>asa<ol>
-<li>asdf</li>
+<ol class="remarkup-list">
+<li class="remarkup-list-item">asa<ol class="remarkup-list">
+<li class="remarkup-list-item">asdf</li>
 </ol></li>
-<li>asdf</li>
+<li class="remarkup-list-item">asdf</li>
 </ol>
 
 <p>234) asd</p>
 
-<ol>
-<li>asd</li>
-<li>asd</li>
+<ol class="remarkup-list">
+<li class="remarkup-list-item">asd</li>
+<li class="remarkup-list-item">asd</li>
 </ol>
 
 <p>1/ This explicitly should not be formatted as a list.</p>

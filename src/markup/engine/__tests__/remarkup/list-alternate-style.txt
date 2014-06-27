@@ -2,10 +2,10 @@
 -- b
 --- c
 ~~~~~~~~~~
-<ul>
-<li>a<ul>
-<li>b<ul>
-<li>c</li>
+<ul class="remarkup-list">
+<li class="remarkup-list-item">a<ul class="remarkup-list">
+<li class="remarkup-list-item">b<ul class="remarkup-list">
+<li class="remarkup-list-item">c</li>
 </ul></li>
 </ul></li>
 </ul>

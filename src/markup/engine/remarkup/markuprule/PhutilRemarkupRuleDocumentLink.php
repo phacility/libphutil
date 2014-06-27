@@ -63,6 +63,7 @@ final class PhutilRemarkupRuleDocumentLink
         'a',
         array(
           'href'    => $link,
+          'class'   => 'remarkup-link',
           'target'  => $target,
         ),
         $name);

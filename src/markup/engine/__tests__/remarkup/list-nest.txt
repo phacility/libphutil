@@ -7,15 +7,15 @@
 
 derp
 ~~~~~~~~~~
-<ul>
-<li>item<ul>
-<li>sub</li>
+<ul class="remarkup-list">
+<li class="remarkup-list-item">item<ul class="remarkup-list">
+<li class="remarkup-list-item">sub</li>
 </ul></li>
-<li>item<ol>
-<li>sub</li>
-<li>sub</li>
+<li class="remarkup-list-item">item<ol class="remarkup-list">
+<li class="remarkup-list-item">sub</li>
+<li class="remarkup-list-item">sub</li>
 </ol></li>
-<li>item</li>
+<li class="remarkup-list-item">item</li>
 </ul>
 
 <p>derp</p>

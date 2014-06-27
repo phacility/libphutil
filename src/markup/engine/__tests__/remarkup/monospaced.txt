@@ -1,5 +1,5 @@
 ##ls --color > /dev/null##
 ~~~~~~~~~~
-<p><tt>ls --color &gt; /dev/null</tt></p>
+<p><tt class="remarkup-monospaced">ls --color &gt; /dev/null</tt></p>
 ~~~~~~~~~~
 ##ls --color > /dev/null##

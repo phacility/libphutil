@@ -6,9 +6,9 @@ This should be a list:
 ~~~~~~~~~~
 <p>This should be a list:</p>
 
-<ul>
-<li>apple</li>
-<li>banana</li>
+<ul class="remarkup-list">
+<li class="remarkup-list-item">apple</li>
+<li class="remarkup-list-item">banana</li>
 </ul>
 ~~~~~~~~~~
 This should be a list:

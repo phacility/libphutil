@@ -15,18 +15,18 @@
 ~~~~~~~~~~
 <blockquote class="remarkup-reply-block">
 <div class="remarkup-reply-head">Previously, fruit:</div>
-<div class="remarkup-reply-body"><ul>
-<li>Apple</li>
-<li>Banana</li>
-<li>Cherry</li>
+<div class="remarkup-reply-body"><ul class="remarkup-list">
+<li class="remarkup-list-item">Apple</li>
+<li class="remarkup-list-item">Banana</li>
+<li class="remarkup-list-item">Cherry</li>
 </ul>
 
 <blockquote class="remarkup-reply-block">
 <div class="remarkup-reply-head">More previously, vegetables:</div>
-<div class="remarkup-reply-body"><ul>
-<li>Potato</li>
-<li>Potato</li>
-<li>Potato</li>
+<div class="remarkup-reply-body"><ul class="remarkup-list">
+<li class="remarkup-list-item">Potato</li>
+<li class="remarkup-list-item">Potato</li>
+<li class="remarkup-list-item">Potato</li>
 </ul></div>
 </blockquote>
 

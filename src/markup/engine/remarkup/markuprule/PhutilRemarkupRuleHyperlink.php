@@ -69,6 +69,7 @@ class PhutilRemarkupRuleHyperlink
         'a',
         array(
           'href'    => $link,
+          'class'   => 'remarkup-link',
           'target'  => '_blank',
         ),
         $link);

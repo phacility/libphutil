@@ -5,11 +5,11 @@
 <http://www.example.com/ [[http://www.example.net/ | Example]]>
 
 ~~~~~~~~~~
-<p><a href="http://www.example.com/" target="_blank" rel="noreferrer">Example</a>(<a href="http://www.alternate.org/" target="_blank" rel="noreferrer">http://www.alternate.org/</a>)</p>
+<p><a href="http://www.example.com/" class="remarkup-link" target="_blank" rel="noreferrer">Example</a>(<a href="http://www.alternate.org/" class="remarkup-link" target="_blank" rel="noreferrer">http://www.alternate.org/</a>)</p>
 
-<p>(<a href="http://www.alternate.org/" target="_blank" rel="noreferrer">http://www.alternate.org/</a>)<a href="http://www.example.com/" target="_blank" rel="noreferrer">Example</a></p>
+<p>(<a href="http://www.alternate.org/" class="remarkup-link" target="_blank" rel="noreferrer">http://www.alternate.org/</a>)<a href="http://www.example.com/" class="remarkup-link" target="_blank" rel="noreferrer">Example</a></p>
 
-<p>&lt;<a href="http://www.example.com/" target="_blank" rel="noreferrer">http://www.example.com/</a> <a href="http://www.example.net/" target="_blank" rel="noreferrer">Example</a>&gt;</p>
+<p>&lt;<a href="http://www.example.com/" class="remarkup-link" target="_blank" rel="noreferrer">http://www.example.com/</a> <a href="http://www.example.net/" class="remarkup-link" target="_blank" rel="noreferrer">Example</a>&gt;</p>
 ~~~~~~~~~~
 Example <http://www.example.com/>(http://www.alternate.org/)
 

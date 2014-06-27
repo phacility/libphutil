@@ -3,9 +3,9 @@
 - b
 b
 ~~~~~~~~~~
-<ul>
-<li>a a</li>
-<li>b</li>
+<ul class="remarkup-list">
+<li class="remarkup-list-item">a a</li>
+<li class="remarkup-list-item">b</li>
 </ul>
 
 <p>b</p>

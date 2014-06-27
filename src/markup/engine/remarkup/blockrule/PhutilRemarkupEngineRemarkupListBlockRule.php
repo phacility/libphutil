@@ -397,9 +397,13 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
       }
 
       if ($has_marks) {
-        $out[] = hsprintf('<%s class="remarkup-list-with-checkmarks">', $tag);
+        $out[] = hsprintf(
+          '<%s class="remarkup-list remarkup-list-with-checkmarks">',
+          $tag);
       } else {
-        $out[] = hsprintf('<%s>', $tag);
+        $out[] = hsprintf(
+          '<%s class="remarkup-list">',
+          $tag);
       }
 
       $out[] = "\n";
@@ -428,13 +432,15 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
         }
         $out[] = $this->applyRules($item['text'])."\n";
       } else if ($item['text'] === null) {
-        $out[] = hsprintf('<li class="phantom-item">');
+        $out[] = hsprintf('<li class="remarkup-list-item phantom-item">');
       } else {
         if ($item['mark'] !== null) {
           if ($item['mark'] == true) {
-            $out[] = hsprintf('<li class="remarkup-checked-item">');
+            $out[] = hsprintf(
+              '<li class="remarkup-list-item remarkup-checked-item">');
           } else {
-            $out[] = hsprintf('<li class="remarkup-unchecked-item">');
+            $out[] = hsprintf(
+              '<li class="remarkup-list-item remarkup-unchecked-item">');
           }
           $out[] = phutil_tag(
             'input',
@@ -445,7 +451,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
             ));
           $out[] = ' ';
         } else {
-          $out[] = hsprintf('<li>');
+          $out[] = hsprintf('<li class="remarkup-list-item">');
         }
 
         $out[] = $this->applyRules($item['text']);

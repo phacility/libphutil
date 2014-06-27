@@ -30,7 +30,7 @@ final class PhutilRemarkupEngineRemarkupHorizontalRuleBlockRule
   }
 
   public function markupText($text, $children) {
-    return phutil_tag('hr', array());
+    return phutil_tag('hr', array('class' => 'remarkup-hr'));
   }
 
 

@@ -4,10 +4,10 @@
 
 derp
 ~~~~~~~~~~
-<ul>
-<li>item</li>
-<li>item</li>
-<li>item</li>
+<ul class="remarkup-list">
+<li class="remarkup-list-item">item</li>
+<li class="remarkup-list-item">item</li>
+<li class="remarkup-list-item">item</li>
 </ul>
 
 <p>derp</p>

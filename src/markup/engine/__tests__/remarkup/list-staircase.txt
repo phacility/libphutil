@@ -4,14 +4,14 @@
 
 derp
 ~~~~~~~~~~
-<ol>
-<li class="phantom-item"><ul>
-<li class="phantom-item"><ul>
-<li>top</li>
+<ol class="remarkup-list">
+<li class="remarkup-list-item phantom-item"><ul class="remarkup-list">
+<li class="remarkup-list-item phantom-item"><ul class="remarkup-list">
+<li class="remarkup-list-item">top</li>
 </ul></li>
-<li>mid</li>
+<li class="remarkup-list-item">mid</li>
 </ul></li>
-<li>bot</li>
+<li class="remarkup-list-item">bot</li>
 </ol>
 
 <p>derp</p>

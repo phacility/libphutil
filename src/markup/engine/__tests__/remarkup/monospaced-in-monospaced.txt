@@ -5,11 +5,11 @@
 `**x**`
 
 ~~~~~~~~~~
-<p><tt>SELECT * FROM `table`</tt></p>
+<p><tt class="remarkup-monospaced">SELECT * FROM `table`</tt></p>
 
-<p><tt>SELECT * FROM ##table##</tt></p>
+<p><tt class="remarkup-monospaced">SELECT * FROM ##table##</tt></p>
 
-<p><tt>**x**</tt></p>
+<p><tt class="remarkup-monospaced">**x**</tt></p>
 ~~~~~~~~~~
 ##SELECT * FROM `table`##
 

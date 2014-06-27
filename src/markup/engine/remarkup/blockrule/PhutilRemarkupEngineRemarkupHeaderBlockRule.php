@@ -68,7 +68,9 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
 
     $text = phutil_tag(
       'h'.($level + 1),
-      array(),
+      array(
+        'class' => 'remarkup-header',
+      ),
       array($anchor, $this->applyRules($text)));
 
     return $text;
