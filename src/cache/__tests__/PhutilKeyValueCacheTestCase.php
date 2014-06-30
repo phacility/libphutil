@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilKeyValueCacheTestCase extends ArcanistPhutilTestCase {
+final class PhutilKeyValueCacheTestCase extends PhutilTestCase {
 
   public function testInRequestCache() {
     $cache = new PhutilKeyValueCacheInRequest();

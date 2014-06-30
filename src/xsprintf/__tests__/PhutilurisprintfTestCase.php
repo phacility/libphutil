@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilurisprintfTestCase extends ArcanistTestCase {
+final class PhutilurisprintfTestCase extends PhutilTestCase {
 
   public function testurisprintf() {
 

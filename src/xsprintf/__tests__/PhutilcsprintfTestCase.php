@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilcsprintfTestCase extends ArcanistTestCase {
+final class PhutilcsprintfTestCase extends PhutilTestCase {
 
   public function testCommandReadableEscapes() {
     // For arguments comprised of only characters which are safe in any context,
