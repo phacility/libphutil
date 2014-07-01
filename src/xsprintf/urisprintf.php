@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Format a URI. This function behaves like sprintf(), except that all the
- * normal conversions (like %s) will be properly escaped, and additional
+ * Format a URI. This function behaves like `sprintf`, except that all the
+ * normal conversions (like "%s") will be properly escaped, and additional
  * conversions are supported:
  *
  *   %s (String)
@@ -25,11 +25,10 @@ function vurisprintf($pattern, array $argv) {
 }
 
 /**
- * uri_sprintf() callback for URI encoding.
+ * @{function:urisprintf} callback for URI encoding.
  * @group markup
  */
 function xsprintf_uri($userdata, &$pattern, &$pos, &$value, &$length) {
-
   $type = $pattern[$pos];
 
   switch ($type) {
@@ -48,5 +47,5 @@ function xsprintf_uri($userdata, &$pattern, &$pos, &$value, &$length) {
       break;
   }
 
-  $pattern[$pos]  = $type;
+  $pattern[$pos] = $type;
 }

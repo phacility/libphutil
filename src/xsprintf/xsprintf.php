@@ -31,9 +31,8 @@
  *                  @{function:qsprintf}, this is the database connection.
  * @param   list    List of arguments, with the sprintf() pattern in position 0.
  * @return  string  Formatted string.
- *
  */
-function xsprintf($callback, $userdata, $argv) {
+function xsprintf($callback, $userdata, array $argv) {
   $argc = count($argv);
   $arg  = 0;
   $pos  = 0;
@@ -45,58 +44,56 @@ function xsprintf($callback, $userdata, $argv) {
     $c = $pattern[$pos];
 
     if ($conv) {
-      //  We could make a greater effort to support formatting modifiers,
-      //  but they really have no place in semantic string formatting.
+      // We could make a greater effort to support formatting modifiers,
+      // but they really have no place in semantic string formatting.
       if (strpos("'-0123456789.\$+", $c) !== false) {
-        throw new Exception(
+        throw new InvalidArgumentException(
           "xsprintf() does not support the `%{$c}' modifier.");
       }
 
-      if ($c != '%') {
+      if ($c !== '%') {
         $conv = false;
 
         $arg++;
         if ($arg >= $argc) {
-          throw new Exception('Too few arguments to xsprintf().');
+          throw new BadFunctionCallException(
+            'Too few arguments to xsprintf().');
         }
 
         $callback($userdata, $pattern, $pos, $argv[$arg], $len);
       }
     }
 
-    if ($c == '%') {
-      //  If we have "%%", this encodes a literal percentage symbol, so we are
-      //  no longer inside a conversion.
+    if ($c === '%') {
+      // If we have "%%", this encodes a literal percentage symbol, so we are
+      // no longer inside a conversion.
       $conv = !$conv;
     }
   }
 
-  if ($arg != ($argc - 1)) {
-    throw new Exception('Too many arguments to xsprintf().');
+  if ($arg !== ($argc - 1)) {
+    throw new BadFunctionCallException('Too many arguments to xsprintf().');
   }
 
   $argv[0] = $pattern;
-
   return call_user_func_array('sprintf', $argv);
 }
 
-
 /**
- * Example @{function:xsprintf} callback. When you call xsprintf(), you
- * must pass a callback like this one. xsprintf() will invoke the callback when
- * it encounters a conversion (like "%Z") in the pattern string.
+ * Example @{function:xsprintf} callback. When you call `xsprintf`, you must
+ * pass a callback like this one. `xsprintf` will invoke the callback when it
+ * encounters a conversion (like "%Z") in the pattern string.
  *
- * Generally, this callback should examine ##$pattern[$pos]## (which will
- * contain the conversion character, like 'Z'), escape ##$value## appropriately,
- * and then replace ##$pattern[$pos]## with an 's' so sprintf() prints the
- * escaped value as a string. However, more sophisticated behaviors are possible
- * -- particularly, consuming multiple characters to allow for conversions like
- * "%Ld". In this case, the callback needs to substr_replace() the entire
- * conversion with 's' and then update ##$length##.
+ * Generally, this callback should examine `$pattern[$pos]` (which will contain
+ * the conversion character, like 'Z'), escape `$value` appropriately, and then
+ * replace `$pattern[$pos]` with an 's' so `sprintf` prints the escaped value
+ * as a string. However, more sophisticated behaviors are possible --
+ * particularly, consuming multiple characters to allow for conversions like
+ * "%Ld". In this case, the callback needs to `substr_replace` the entire
+ * conversion with 's' and then update `$length`.
  *
  * For example implementations, see @{function:xsprintf_command},
- * @{function:xsprintf_javascript},
- * and @{function:xsprintf_query}.
+ * @{function:xsprintf_javascript} and @{function:xsprintf_query}.
  *
  * @param   wild    Arbitrary, optional userdata. This is whatever userdata
  *                  was passed to @{function:xsprintf}.
@@ -111,7 +108,7 @@ function xsprintf_callback_example(
   &$pos,
   &$value,
   &$length) {
-  throw new Exception(
+  throw new RuntimeException(
     'This function exists only to document the call signature for xsprintf() '.
     'callbacks.');
 }

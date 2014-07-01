@@ -2,8 +2,8 @@
 
 /**
  * Format a Javascript string, using JSON to export complex values. This
- * function behaves like sprintf(), except that all the normal conversions
- * (like %s) will be properly escaped, and additional conversions are
+ * function behaves like `sprintf`, except that all the normal conversions
+ * (like "%s") will be properly escaped, and additional conversions are
  * supported:
  *
  *   %O (Object)
@@ -30,7 +30,6 @@ function jsprintf($pattern /* , ... */) {
   return xsprintf('xsprintf_javascript', null, $args);
 }
 
-
 /**
  * @group markup
  */
@@ -39,13 +38,11 @@ function vjsprintf($pattern, array $argv) {
   return xsprintf('xsprintf_javascript', null, $argv);
 }
 
-
 /**
- * xsprintf() callback for javascript encoding.
+ * @{function:xsprintf} callback for JavaScript encoding.
  * @group markup
  */
 function xsprintf_javascript($userdata, &$pattern, &$pos, &$value, &$length) {
-
   $type = $pattern[$pos];
 
   switch ($type) {
@@ -84,7 +81,7 @@ function xsprintf_javascript($userdata, &$pattern, &$pos, &$value, &$length) {
 
     case 'd':
       if ($value > 0x1FFFFFFFFFFFFF) {
-        throw new Exception(
+        throw new RangeException(
           "You are passing an integer to jsprintf() which is so large it can ".
           "not be represented without loss of precision by Javascript's ".
           "native Number class. Use %# instead.");
@@ -92,5 +89,5 @@ function xsprintf_javascript($userdata, &$pattern, &$pos, &$value, &$length) {
       break;
   }
 
-  $pattern[$pos]  = $type;
+  $pattern[$pos] = $type;
 }

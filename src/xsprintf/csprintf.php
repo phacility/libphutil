@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Format a shell command string. This function behaves like sprintf(), except
- * that all the normal conversions (like %s) will be properly escaped, and
+ * Format a shell command string. This function behaves like `sprintf`, except
+ * that all the normal conversions (like "%s") will be properly escaped, and
  * additional conversions are supported:
  *
  *   %Ls
@@ -13,7 +13,7 @@
  *
  *   %P
  *     Password (or other sensitive parameter) to escape. Pass a
- *     PhutilOpaqueEnvelope.
+ *     @{class:PhutilOpaqueEnvelope}.
  *
  *   %C (Raw Command)
  *     Passes the argument through without escaping. Dangerous!
@@ -24,8 +24,8 @@
  *     in any context. The intent is to produce prettier human-readable
  *     commands.
  *
- * Generally, you should invoke shell commands via execx() rather than by
- * calling csprintf() directly.
+ * Generally, you should invoke shell commands via @{function:execx} rather
+ * than by calling @{function:csprintf} directly.
  *
  * @param  string  sprintf()-style format string.
  * @param  ...     Zero or more arguments.
@@ -38,7 +38,7 @@ function csprintf($pattern/* , ... */) {
 }
 
 /**
- * Version of csprintf() that takes a vector of arguments.
+ * Version of @{function:csprintf} that takes a vector of arguments.
  *
  * @param  string  sprintf()-style format string.
  * @param  list    List of zero or more arguments to csprintf().
@@ -50,9 +50,8 @@ function vcsprintf($pattern, array $argv) {
   return call_user_func_array('csprintf', $argv);
 }
 
-
 /**
- * xsprintf() callback for csprintf().
+ * @{function:xsprintf} callback for @{function:csprintf}.
  * @group exec
  */
 function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
@@ -78,7 +77,8 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
 
       // Check that the value is a non-empty array.
       if (!is_array($value)) {
-        throw new Exception("Expected an array for %L{$next} conversion.");
+        throw new InvalidArgumentException(
+          "Expected an array for %L{$next} conversion.");
       }
 
       switch ($next) {
@@ -99,7 +99,7 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
           break;
 
         default:
-          throw new Exception("Unknown conversion %L{$next}.");
+          throw new XsprintfUnknownConversionException("%L{$next}");
       }
       break;
 
@@ -115,7 +115,7 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
       break;
     case 'P':
       if (!($value instanceof PhutilOpaqueEnvelope)) {
-        throw new Exception(
+        throw new InvalidArgumentException(
           'Expected PhutilOpaqueEnvelope for %P conversion.');
       }
       if ($is_unmasked) {

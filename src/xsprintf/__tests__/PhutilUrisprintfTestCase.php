@@ -1,9 +1,8 @@
 <?php
 
-final class PhutilurisprintfTestCase extends PhutilTestCase {
+final class PhutilUrisprintfTestCase extends PhutilTestCase {
 
-  public function testurisprintf() {
-
+  public function testUrisprintf() {
     $this->assertEqual(
       'x.com?a=huh%3F',
       urisprintf('x.com?a=%s', 'huh?'));
@@ -15,7 +14,6 @@ final class PhutilurisprintfTestCase extends PhutilTestCase {
     $this->assertEqual(
       'y.com?%21&%23',
       vurisprintf('y.com?%s&%s', array('!', '#')));
-
   }
 
 }

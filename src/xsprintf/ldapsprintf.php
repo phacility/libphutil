@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Format an LDAP string. This function behaves like sprintf(), except that all
- * the normal conversions (like %s) will be properly escaped, and additional
+ * Format an LDAP string. This function behaves like `sprintf`, except that all
+ * the normal conversions (like "%s") will be properly escaped, and additional
  * conversions are supported:
  *
  *   %S (Search Filter)
@@ -18,11 +18,10 @@ function ldap_sprintf($pattern /* , ... */) {
 }
 
 /**
- * ldap_sprintf() callback for LDAP encoding.
+ * @{function:ldap_sprintf} callback for LDAP encoding.
  * @group markup
  */
 function xsprintf_ldap($userdata, &$pattern, &$pos, &$value, &$length) {
-
   $type = $pattern[$pos];
 
   // https://www.owasp.org/index.php/Preventing_LDAP_Injection_in_Java
@@ -46,5 +45,5 @@ function xsprintf_ldap($userdata, &$pattern, &$pos, &$value, &$length) {
       break;
   }
 
-  $pattern[$pos]  = $type;
+  $pattern[$pos] = $type;
 }

@@ -17,11 +17,11 @@ final class PhutilCommandString extends Phobject {
   }
 
   public function getUnmaskedString() {
-    return $this->renderString($unmasked = true);
+    return $this->renderString(true);
   }
 
   public function getMaskedString() {
-    return $this->renderString($unmasked = false);
+    return $this->renderString(false);
   }
 
   private function renderString($unmasked) {

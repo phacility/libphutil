@@ -16,14 +16,12 @@ function hgsprintf($pattern /* , ... */) {
   return xsprintf('xsprintf_mercurial', null, $args);
 }
 
-
 /**
- * xsprintf() callback for Mercurial encoding.
+ * @{function:xsprintf} callback for Mercurial encoding.
  *
  * @group mercurial
  */
 function xsprintf_mercurial($userdata, &$pattern, &$pos, &$value, &$length) {
-
   $type = $pattern[$pos];
 
   switch ($type) {
@@ -35,5 +33,5 @@ function xsprintf_mercurial($userdata, &$pattern, &$pos, &$value, &$length) {
       break;
   }
 
-  $pattern[$pos]  = $type;
+  $pattern[$pos] = $type;
 }
