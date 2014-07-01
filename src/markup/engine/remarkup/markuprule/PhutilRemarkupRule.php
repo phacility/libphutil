@@ -46,4 +46,57 @@ abstract class PhutilRemarkupRule {
       array_map('phutil_safe_html', $match)));
   }
 
+
+  /**
+   * Safely generate a tag.
+   *
+   * In Remarkup contexts, it's not safe to use arbitrary text in tag
+   * attributes: even though it will be escaped, it may contain replacement
+   * tokens which are then replaced with markup.
+   *
+   * This method acts as @{function:phutil_tag}, but checks attributes before
+   * using them.
+   *
+   * @param   string              Tag name.
+   * @param   dict<string, wild>  Tag attributes.
+   * @param   wild                Tag content.
+   * @return  PhutilSafeHTML      Tag object.
+   */
+  protected function newTag($name, array $attrs, $content = null) {
+    foreach ($attrs as $key => $attr) {
+      if ($attr !== null) {
+        $attrs[$key] = $this->assertFlatText($attr);
+      }
+    }
+
+    return phutil_tag($name, $attrs, $content);
+  }
+
+  /**
+   * Assert that a text token is flat (it contains no replacement tokens).
+   *
+   * Because tokens can be replaced with markup, it is dangerous to use
+   * arbitrary input text in tag attributes. Normally, rule precedence should
+   * prevent this. Asserting that text is flat before using it as an attribute
+   * provides an extra layer of security.
+   *
+   * Normally, you can call @{method:newTag} rather than calling this method
+   * directly. @{method:newTag} will check attributes for you.
+   *
+   * @param   wild    Ostensibly flat text.
+   * @return  string  Flat text.
+   */
+  protected function assertFlatText($text) {
+    $text = (string)hsprintf('%s', phutil_safe_html($text));
+    $rich = (strpos($text, PhutilRemarkupBlockStorage::MAGIC_BYTE) !== false);
+    if ($rich) {
+      throw new Exception(
+        pht(
+          'Remarkup rule precedence is dangerous: rendering text with tokens '.
+          'as flat text!'));
+    }
+
+    return $text;
+  }
+
 }
