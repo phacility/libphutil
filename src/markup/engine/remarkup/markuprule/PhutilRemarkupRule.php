@@ -99,4 +99,16 @@ abstract class PhutilRemarkupRule {
     return $text;
   }
 
+  /**
+   * Check whether text is flat (contains no replacement tokens) or not.
+   *
+   * @param   wild  Ostensibly flat text.
+   * @return  bool  True if the text is flat.
+   */
+  protected function isFlatText($text) {
+    $text = (string)hsprintf('%s', phutil_safe_html($text));
+    return (strpos($text, PhutilRemarkupBlockStorage::MAGIC_BYTE) === false);
+  }
+
+
 }
