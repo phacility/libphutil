@@ -29,19 +29,19 @@
     "nolint": {
       "type": "nolint"
     },
-    "phutil-xhpast": {
-      "type": "phutil-xhpast",
-      "include": "(\\.php$)"
-    },
     "phutil-library": {
       "type": "phutil-library",
       "include": "(\\.php$)"
     },
-    "text": {
-      "type": "text"
+    "phutil-xhpast": {
+      "type": "phutil-xhpast",
+      "include": "(\\.php$)"
     },
     "spelling": {
       "type": "spelling"
+    },
+    "text": {
+      "type": "text"
     },
     "xhpast": {
       "type": "xhpast",
