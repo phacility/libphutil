@@ -208,6 +208,7 @@ phutil_register_library_map(array(
     'PhutilLexer' => 'lexer/PhutilLexer.php',
     'PhutilLexerSyntaxHighlighter' => 'markup/syntax/highlighter/PhutilLexerSyntaxHighlighter.php',
     'PhutilLibraryConflictException' => 'moduleutils/PhutilLibraryConflictException.php',
+    'PhutilLibraryMapBuilder' => 'moduleutils/PhutilLibraryMapBuilder.php',
     'PhutilLipsumContextFreeGrammar' => 'grammar/PhutilLipsumContextFreeGrammar.php',
     'PhutilLock' => 'filesystem/PhutilLock.php',
     'PhutilLockException' => 'filesystem/PhutilLockException.php',
