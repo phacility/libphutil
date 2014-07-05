@@ -34,4 +34,5 @@
 /resources/ssl/custom.pem
 
 # User extensions
+/externals/includes/*
 /src/extensions/*

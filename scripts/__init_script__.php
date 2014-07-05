@@ -24,7 +24,7 @@ function __phutil_init_script__() {
     // script context we always want to show errors.
     'display_errors'              => true,
 
-    // Send script error messages to the server's error_log setting.
+    // Send script error messages to the server's `error_log` setting.
     'log_errors'                  => true,
 
     // Set the error log to the default, so errors go to stderr. Without this
@@ -62,6 +62,12 @@ function __phutil_init_script__() {
     // value.
     date_default_timezone_set('UTC');
   }
+
+  // Adjust `include_path`.
+  ini_set('include_path', implode(PATH_SEPARATOR, array(
+    dirname(dirname(__FILE__)).'/externals/includes',
+    ini_get('include_path'),
+  )));
 
   // Disable the insanely dangerous XML entity loader by default.
   if (function_exists('libxml_disable_entity_loader')) {
