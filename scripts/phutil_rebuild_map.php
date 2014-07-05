@@ -2,7 +2,6 @@
 <?php
 
 require_once dirname(__FILE__).'/__init_script__.php';
-require_once dirname(__FILE__).'/lib/PhutilLibraryMapBuilder.php';
 
 $args = new PhutilArgumentParser($argv);
 $args->setTagline('rebuild the library map file');
@@ -44,7 +43,7 @@ $args->parse(
     array(
       'name'      => 'root',
       'wildcard'  => true,
-    )
+    ),
   ));
 
 $root = $args->getArg('root');
@@ -62,9 +61,18 @@ if ($args->getArg('drop-cache')) {
 }
 
 if ($args->getArg('show')) {
-  $builder->setShowMap(true);
-  $builder->setUgly($args->getArg('ugly'));
+  $builder->setDryRun(true);
 }
 
-$builder->buildMap();
+$library_map = $builder->buildMap();
+
+if ($args->getArg('show')) {
+  if ($args->getArg('ugly')) {
+    echo json_encode($library_map);
+  } else {
+    $json = new PhutilJSON();
+    echo $json->encodeFormatted($library_map);
+  }
+}
+
 exit(0);

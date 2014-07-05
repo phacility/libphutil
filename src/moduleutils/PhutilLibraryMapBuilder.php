@@ -14,8 +14,7 @@ final class PhutilLibraryMapBuilder {
   private $root;
   private $quiet;
   private $subprocessLimit = 8;
-  private $ugly;
-  private $showMap;
+  private $dryRun = false;
 
   const LIBRARY_MAP_VERSION_KEY   = '__library_version__';
   const LIBRARY_MAP_VERSION       = 2;
@@ -25,7 +24,6 @@ final class PhutilLibraryMapBuilder {
 
 
 /* -(  Mapping libphutil Libraries  )---------------------------------------- */
-
 
   /**
    * Create a new map builder for a library.
@@ -38,12 +36,11 @@ final class PhutilLibraryMapBuilder {
     $this->root = $root;
   }
 
-
   /**
-   * Control status output. Use --quiet to set this.
+   * Control status output. Use `--quiet` to set this.
    *
-   * @param   bool  If true, don't show status output.
-   * @return  this
+   * @param  bool  If true, don't show status output.
+   * @return this
    *
    * @task map
    */
@@ -52,12 +49,11 @@ final class PhutilLibraryMapBuilder {
     return $this;
   }
 
-
   /**
-   * Control subprocess parallelism limit. Use --limit to set this.
+   * Control subprocess parallelism limit. Use `--limit` to set this.
    *
-   * @param   int   Maximum number of subprocesses to run in parallel.
-   * @return  this
+   * @param  int   Maximum number of subprocesses to run in parallel.
+   * @return this
    *
    * @task map
    */
@@ -66,51 +62,32 @@ final class PhutilLibraryMapBuilder {
     return $this;
   }
 
-
-  /**
-   * Control whether the ugly (but fast) or pretty (but slower) JSON formatter
-   * is used.
-   *
-   * @param   bool  If true, use the fastest formatter.
-   * @return  this
-   *
-   * @task map
-   */
-  public function setUgly($ugly) {
-    $this->ugly = $ugly;
-    return $this;
-  }
-
-
   /**
    * Control whether the map should be rebuilt, or just shown (printed to
    * stdout in JSON).
    *
-   * @param bool  If true, show map instead of updating.
+   * @param  bool  If true, show map instead of updating.
    * @return this
    *
    * @task map
    */
-  public function setShowMap($show_map) {
-    $this->showMap = $show_map;
+  public function setDryRun($dry_run) {
+    $this->dryRun = $dry_run;
     return $this;
   }
-
 
   /**
    * Build or rebuild the library map.
    *
-   * @return this
+   * @return dict
    *
    * @task map
    */
   public function buildMap() {
-
     // Identify all the ".php" source files in the library.
     $this->log("Finding source files...\n");
     $source_map = $this->loadSourceFileMap();
     $this->log("Found ".number_format(count($source_map))." files.\n");
-
 
     // Load the symbol cache with existing parsed symbols. This allows us
     // to remap libraries quickly by analyzing only changed files.
@@ -131,7 +108,6 @@ final class PhutilLibraryMapBuilder {
       $futures[$file] = $this->buildSymbolAnalysisFuture($file);
     }
     $this->log("Found ".number_format(count($symbol_map))." files in cache.\n");
-
 
     // Run the analyzer on any files which need analysis.
     if ($futures) {
@@ -165,43 +141,29 @@ final class PhutilLibraryMapBuilder {
       $this->log("\nDone.\n");
     }
 
-
     // We're done building the cache, so write it out immediately. Note that
     // we've only retained entries for files we found, so this implicitly cleans
     // out old cache entries.
     $this->writeSymbolCache($symbol_map, $source_map);
 
-
     // Our map is up to date, so either show it on stdout or write it to disk.
+    $this->log("Building library map...\n");
+    $library_map = $this->buildLibraryMap($symbol_map);
 
-    if ($this->showMap) {
-      $this->log("Showing map...\n");
-
-      if ($this->ugly) {
-        echo json_encode($symbol_map);
-      } else {
-        $json = new PhutilJSON();
-        echo $json->encodeFormatted($symbol_map);
-      }
-    } else {
-      $this->log("Building library map...\n");
-      $library_map = $this->buildLibraryMap($symbol_map);
-
+    if (!$this->dryRun) {
       $this->log("Writing map...\n");
       $this->writeLibraryMap($library_map);
     }
 
     $this->log("Done.\n");
-
-    return $this;
+    return $library_map;
   }
-
 
   /**
    * Write a status message to the user, if not running in quiet mode.
    *
-   * @param   string Message to write.
-   * @return  this
+   * @param  string  Message to write.
+   * @return this
    *
    * @task map
    */
@@ -215,20 +177,18 @@ final class PhutilLibraryMapBuilder {
 
 /* -(  Path Management  )---------------------------------------------------- */
 
-
   /**
    * Get the path to some file in the library.
    *
-   * @param string  A library-relative path. If omitted, returns the library
-   *                root path.
-   * @return string An absolute path.
+   * @param  string  A library-relative path. If omitted, returns the library
+   *                 root path.
+   * @return string  An absolute path.
    *
    * @task path
    */
   private function getPath($path = '') {
     return $this->root.'/'.$path;
   }
-
 
   /**
    * Get the path to the symbol cache file.
@@ -241,7 +201,6 @@ final class PhutilLibraryMapBuilder {
     return $this->getPath('.phutil_module_cache');
   }
 
-
   /**
    * Get the path to the map file.
    *
@@ -252,7 +211,6 @@ final class PhutilLibraryMapBuilder {
   private function getPathForLibraryMap() {
     return $this->getPath('__phutil_library_map__.php');
   }
-
 
   /**
    * Get the path to the library init file.
@@ -268,12 +226,11 @@ final class PhutilLibraryMapBuilder {
 
 /* -(  Symbol Analysis and Caching  )---------------------------------------- */
 
-
   /**
    * Load the library symbol cache, if it exists and is readable and valid.
    *
-   * @return  dict  Map of content hashes to cache of output from
-   *                `phutil_symbols.php`.
+   * @return dict  Map of content hashes to cache of output from
+   *               `phutil_symbols.php`.
    *
    * @task symbol
    */
@@ -304,12 +261,11 @@ final class PhutilLibraryMapBuilder {
     return $symbol_cache;
   }
 
-
   /**
    * Write a symbol map to disk cache.
    *
-   * @param dict  Symbol map of relative paths to symbols.
-   * @param dict  Source map (like @{method:loadSourceFileMap}).
+   * @param  dict  Symbol map of relative paths to symbols.
+   * @param  dict  Source map (like @{method:loadSourceFileMap}).
    * @return void
    *
    * @task symbol
@@ -333,7 +289,6 @@ final class PhutilLibraryMapBuilder {
     }
   }
 
-
   /**
    * Drop the symbol cache, forcing a clean rebuild.
    *
@@ -346,13 +301,12 @@ final class PhutilLibraryMapBuilder {
     Filesystem::remove($this->getPathForSymbolCache());
   }
 
-
   /**
    * Build a future which returns a `phutil_symbols.php` analysis of a source
    * file.
    *
-   * @param   string  Relative path to the source file to analyze.
-   * @return  Future  Analysis future.
+   * @param  string  Relative path to the source file to analyze.
+   * @return Future  Analysis future.
    *
    * @task symbol
    */
@@ -366,7 +320,6 @@ final class PhutilLibraryMapBuilder {
 
 /* -(  Source Management  )-------------------------------------------------- */
 
-
   /**
    * Build a map of all source files in a library to hashes of their content.
    * Returns an array like this:
@@ -376,7 +329,7 @@ final class PhutilLibraryMapBuilder {
    *     // ...
    *   );
    *
-   * @return  dict    Map of library-relative paths to content hashes.
+   * @return dict  Map of library-relative paths to content hashes.
    * @task source
    */
   private function loadSourceFileMap() {
@@ -417,7 +370,6 @@ final class PhutilLibraryMapBuilder {
 
     return $map;
   }
-
 
   /**
    * Convert the symbol analysis of all the source files in the library into
@@ -470,7 +422,6 @@ final class PhutilLibraryMapBuilder {
     return $library_map;
   }
 
-
   /**
    * Write a finalized library map.
    *
@@ -487,7 +438,7 @@ final class PhutilLibraryMapBuilder {
       self::LIBRARY_MAP_VERSION_KEY => $version,
     ) + $library_map;
 
-    $library_map = var_export($library_map, $return_string = true);
+    $library_map = var_export($library_map, true);
     $library_map = preg_replace('/\s+$/m', '', $library_map);
     $library_map = preg_replace('/array \(/', 'array(', $library_map);
     $at = '@';
