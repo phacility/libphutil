@@ -141,6 +141,22 @@ final class PhutilURI {
     return $this;
   }
 
+  public function appendPath($path) {
+    $first = strlen($path) ? $path[0] : null;
+    $last  = strlen($this->path) ? $this->path[strlen($this->path) - 1] : null;
+
+    if (!$this->path) {
+      return $this->setPath($path);
+    } else if ($first === '/' && $last === '/') {
+      $path = substr($path, 1);
+    } else if ($first !== '/' && $last !== '/') {
+      $path = '/'.$path;
+    }
+
+    $this->path .= $path;
+    return $this;
+  }
+
   public function getPath() {
     return $this->path;
   }
