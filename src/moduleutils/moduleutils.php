@@ -5,7 +5,6 @@ function phutil_get_library_root($library) {
   return $bootloader->getLibraryRoot($library);
 }
 
-
 function phutil_get_library_root_for_path($path) {
   foreach (Filesystem::walkToRoot($path) as $dir) {
     if (@file_exists($dir.'/__phutil_library_init__.php')) {
