@@ -9,6 +9,7 @@ final class PhutilBootloader {
 
   private $registeredLibraries  = array();
   private $libraryMaps          = array();
+  private $extensionMaps        = array();
   private $currentLibrary       = null;
   private $classTree            = array();
 
@@ -138,6 +139,28 @@ final class PhutilBootloader {
           throw new Exception("Unsupported library version '{$version}'!");
       }
     }
+
+    $map = $this->libraryMaps[$name];
+
+    // If there's an extension map for this library, merge the maps.
+    if (isset($this->extensionMaps[$name])) {
+      $emap = $this->extensionMaps[$name];
+      foreach (array('function', 'class', 'xmap') as $dict_key) {
+        if (!isset($emap[$dict_key])) {
+          continue;
+        }
+        $map[$dict_key] += $emap[$dict_key];
+      }
+    }
+
+    return $map;
+  }
+
+  public function getLibraryMapWithoutExtensions($name) {
+    // This just does all the checks to make sure the library is valid, then
+    // we throw away the result.
+    $this->getLibraryMap($name);
+
     return $this->libraryMaps[$name];
   }
 
@@ -212,13 +235,13 @@ final class PhutilBootloader {
     foreach ($add_functions as $func => $ignored) {
       $rfunc = new ReflectionFunction($func);
       $fpath = Filesystem::resolvePath($rfunc->getFileName(), $root);
-      $this->libraryMaps[$library]['function'][$func] = $fpath;
+      $this->extensionMaps[$library]['function'][$func] = $fpath;
     }
 
     foreach ($add_classes + $add_interfaces as $class => $ignored) {
       $rclass = new ReflectionClass($class);
       $cpath = Filesystem::resolvePath($rclass->getFileName(), $root);
-      $this->libraryMaps[$library]['class'][$class] = $cpath;
+      $this->extensionMaps[$library]['class'][$class] = $cpath;
 
       $xmap = $rclass->getInterfaceNames();
       $parent = $rclass->getParentClass();
@@ -235,7 +258,7 @@ final class PhutilBootloader {
           $xmap = head($xmap);
         }
 
-        $this->libraryMaps[$library]['xmap'][$class] = $xmap;
+        $this->extensionMaps[$library]['xmap'][$class] = $xmap;
       }
     }
   }

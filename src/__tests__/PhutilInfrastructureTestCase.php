@@ -25,7 +25,7 @@ final class PhutilInfrastructureTestCase extends PhutilTestCase {
       ->buildMap();
 
     $bootloader = PhutilBootloader::getInstance();
-    $old_library_map = $bootloader->getLibraryMap('phutil');
+    $old_library_map = $bootloader->getLibraryMapWithoutExtensions('phutil');
     unset($old_library_map[PhutilLibraryMapBuilder::LIBRARY_MAP_VERSION_KEY]);
 
     $this->assertEqual(
