@@ -1,7 +1,7 @@
 <?php
 
 /**
- * WARNING: This is not quite usable yet. See T5297.
+ * A JSON parser.
  *
  * @phutil-external-symbol class JsonLintJsonParser
  * @phutil-external-symbol class JsonLintParsingException
