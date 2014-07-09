@@ -61,18 +61,16 @@ if ($args->getArg('drop-cache')) {
 }
 
 if ($args->getArg('show')) {
-  $builder->setDryRun(true);
-}
+  $library_map = $builder->buildMap();
 
-$library_map = $builder->buildMap();
-
-if ($args->getArg('show')) {
   if ($args->getArg('ugly')) {
     echo json_encode($library_map);
   } else {
     $json = new PhutilJSON();
     echo $json->encodeFormatted($library_map);
   }
+} else {
+  $builder->buildAndWriteMap();
 }
 
 exit(0);

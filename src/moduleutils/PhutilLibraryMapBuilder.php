@@ -14,7 +14,6 @@ final class PhutilLibraryMapBuilder {
   private $root;
   private $quiet = true;
   private $subprocessLimit = 8;
-  private $dryRun = false;
 
   const LIBRARY_MAP_VERSION_KEY   = '__library_version__';
   const LIBRARY_MAP_VERSION       = 2;
@@ -63,21 +62,7 @@ final class PhutilLibraryMapBuilder {
   }
 
   /**
-   * Control whether the map should be rebuilt, or just shown (printed to
-   * stdout in JSON).
-   *
-   * @param  bool  If true, show map instead of updating.
-   * @return this
-   *
-   * @task map
-   */
-  public function setDryRun($dry_run) {
-    $this->dryRun = $dry_run;
-    return $this;
-  }
-
-  /**
-   * Build or rebuild the library map.
+   * Build the library map.
    *
    * @return dict
    *
@@ -93,7 +78,6 @@ final class PhutilLibraryMapBuilder {
     // to remap libraries quickly by analyzing only changed files.
     $this->log("Loading symbol cache...\n");
     $symbol_cache = $this->loadSymbolCache();
-
 
     // Build out the symbol analysis for all the files in the library. For
     // each file, check if it's in cache. If we miss in the cache, do a fresh
@@ -148,15 +132,19 @@ final class PhutilLibraryMapBuilder {
 
     // Our map is up to date, so either show it on stdout or write it to disk.
     $this->log("Building library map...\n");
-    $library_map = $this->buildLibraryMap($symbol_map);
+    return $this->buildLibraryMap($symbol_map);
+  }
 
-    if (!$this->dryRun) {
-      $this->log("Writing map...\n");
-      $this->writeLibraryMap($library_map);
-    }
+  /**
+   * Build and update the library map.
+   *
+   * @task map
+   */
+  public function buildAndWriteMap() {
+    $library_map = $this->buildMap();
 
-    $this->log("Done.\n");
-    return $library_map;
+    $this->log("Writing map...\n");
+    $this->writeLibraryMap($library_map);
   }
 
   /**
