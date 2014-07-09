@@ -12,7 +12,7 @@
 final class PhutilLibraryMapBuilder {
 
   private $root;
-  private $quiet;
+  private $quiet = true;
   private $subprocessLimit = 8;
   private $dryRun = false;
 
