@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group xhpast
- */
 final class XHPASTToken extends AASTToken {
 
   public function getTypeName() {

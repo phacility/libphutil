@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group markup
- */
 final class PhutilRemarkupEngineRemarkupListBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
@@ -59,7 +56,6 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
   const STRIP_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)])\s*@';
 
   public function markupText($text, $children) {
-
     $items = array();
     $lines = explode("\n", $text);
 
@@ -291,7 +287,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
   }
 
   /**
-   * See additional notes in markupText().
+   * See additional notes in @{method:markupText}.
    */
   private function buildTree(array $items, $l, $r, $cur_level) {
     if ($l == $r) {
@@ -353,10 +349,9 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
 
   /**
-   * See additional notes in markupText().
+   * See additional notes in @{method:markupText}.
    */
   private function adjustTreeStyleInformation(array &$tree) {
-
     // The effect here is just to walk backward through the nodes at this level
     // and apply the first style in the list to any empty nodes we inserted
     // before it. As we go, also recurse down the tree.
@@ -379,7 +374,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
 
   /**
-   * See additional notes in markupText().
+   * See additional notes in @{method:markupText}.
    */
   private function renderTree(array $tree, $level, $has_marks) {
     $style = idx(head($tree), 'style');
@@ -480,6 +475,5 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
     return $out;
   }
-
 
 }

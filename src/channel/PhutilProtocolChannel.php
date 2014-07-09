@@ -9,8 +9,6 @@
  * @task io       Reading and Writing
  * @task protocol Protocol Implementation
  * @task wait     Waiting for Activity
- *
- * @group channel
  */
 abstract class PhutilProtocolChannel extends PhutilChannelChannel {
 

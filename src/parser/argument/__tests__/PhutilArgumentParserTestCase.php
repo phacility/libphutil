@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilArgumentParserTestCase extends PhutilTestCase {
 
   public function testBasics() {

@@ -18,7 +18,6 @@
  * @task info     Command Information
  * @task interact Interacting With Commands
  * @task internal Internals
- * @group exec
  */
 final class ExecFuture extends Future {
 
@@ -61,7 +60,7 @@ final class ExecFuture extends Future {
    *
    *   $future = new ExecFuture('wc -l %s', $file_path);
    *
-   * @param string  ##sprintf()##-style command string which will be passed
+   * @param string  `sprintf()`-style command string which will be passed
    *                through @{function:csprintf} with the rest of the arguments.
    * @param ...     Zero or more additional arguments for @{function:csprintf}.
    * @return ExecFuture ExecFuture for running the specified command.
@@ -165,8 +164,8 @@ final class ExecFuture extends Future {
    * NOTE: If you @{method:resolve} a future with a read buffer limit, you may
    * block forever!
    *
-   * TODO: We should probably release the read buffer limit during `resolve()`,
-   * or otherwise detect this. For now, be careful.
+   * TODO: We should probably release the read buffer limit during
+   * @{method:resolve}, or otherwise detect this. For now, be careful.
    *
    * @param int|null Maximum buffer size, or `null` for unlimited.
    * @return this
@@ -322,7 +321,7 @@ final class ExecFuture extends Future {
    *   } while ($done === null);
    *
    * Conceivably you might also need to do this if you're writing a client using
-   * ExecFuture and ##netcat##, but you probably should not do that.
+   * @{class:ExecFuture} and `netcat`, but you probably should not do that.
    *
    * NOTE: This completely discards the data. It won't be available when the
    * future resolves. This is almost certainly only useful if you need the
@@ -809,7 +808,7 @@ final class ExecFuture extends Future {
 
 
   /**
-   * Execute proc_get_status(), but avoid pitfalls.
+   * Execute `proc_get_status()`, but avoid pitfalls.
    *
    * @return dict Process status.
    * @task internal
@@ -870,6 +869,5 @@ final class ExecFuture extends Future {
 
     return $wait;
   }
-
 
 }

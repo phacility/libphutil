@@ -2,10 +2,10 @@
 
 /**
  * Socket-based HTTP future, for making HTTP requests using future semantics.
- * This is an alternative to :CURLFuture which has better resolution behavior
- * (select()-based wait instead of busy wait) but fewer features. You should
- * prefer this class to :CURLFuture unless you need its advanced features (like
- * HTTP/1.1, chunked transfer encoding, gzip, etc.).
+ * This is an alternative to @{class:CURLFuture} which has better resolution
+ * behavior (select()-based wait instead of busy wait) but fewer features. You
+ * should prefer this class to @{class:CURLFuture} unless you need its advanced
+ * features (like HTTP/1.1, chunked transfer encoding, gzip, etc.).
  *
  * Example Usage
  *
@@ -19,11 +19,9 @@
  *         $response_body,
  *         $headers) = $future->resolve();
  *
- * Prefer resolvex() to resolve() as the former throws
+ * Prefer @{method:resolvex} to @{method:resolve} as the former throws
  * @{class:HTTPFutureResponseStatusHTTP} on failures, which includes an
  * informative exception message.
- *
- * @group futures
  */
 final class HTTPFuture extends BaseHTTPFuture {
 
@@ -168,7 +166,6 @@ final class HTTPFuture extends BaseHTTPFuture {
   }
 
   private function buildSocket() {
-
     $errno = null;
     $errstr = null;
     $socket = @stream_socket_client(
@@ -196,7 +193,6 @@ final class HTTPFuture extends BaseHTTPFuture {
   }
 
   private function checkSocket() {
-
     $timeout = false;
     $now = microtime(true);
     if (($now - $this->stateStartTime) > $this->getTimeout()) {

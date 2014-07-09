@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group markup
- */
 final class PhutilLexerSyntaxHighlighter extends PhutilSyntaxHighlighter {
 
   private $config = array();

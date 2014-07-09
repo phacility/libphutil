@@ -2,8 +2,6 @@
 
 /**
  * Test cases for @{class:PhutilArray} subclasses.
- *
- * @group testcase
  */
 final class PhutilArrayTestCase extends PhutilTestCase {
 

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group aws
- */
 final class PhutilAWSException extends Exception {
 
   private $httpStatus;

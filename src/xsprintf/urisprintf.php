@@ -26,7 +26,6 @@ function vurisprintf($pattern, array $argv) {
 
 /**
  * @{function:urisprintf} callback for URI encoding.
- * @group markup
  */
 function xsprintf_uri($userdata, &$pattern, &$pos, &$value, &$length) {
   $type = $pattern[$pos];

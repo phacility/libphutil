@@ -2,8 +2,6 @@
 
 /**
  * Lexer for shell-like argument strings. Somewhat similar to Python's shlex.
- *
- * @group lexer
  */
 final class PhutilShellLexer extends PhutilLexer {
 
@@ -84,4 +82,5 @@ final class PhutilShellLexer extends PhutilLexer {
       ),
     );
   }
+
 }

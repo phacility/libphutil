@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group conduit
- */
 final class ConduitClientException extends Exception {
 
   protected $errorCode;

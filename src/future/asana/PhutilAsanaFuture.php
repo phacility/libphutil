@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group asana
- */
 final class PhutilAsanaFuture extends FutureProxy {
 
   private $future;

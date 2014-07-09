@@ -16,7 +16,6 @@
  *
  * @task construct  Construction
  * @task internals  Internals
- * @group filesystem
  */
 final class LinesOfALargeFile extends LinesOfALarge {
 
@@ -92,7 +91,6 @@ final class LinesOfALargeFile extends LinesOfALarge {
    * @task internals
    */
   public function readMore() {
-
     // NOTE: At least on OSX in reasonably normal test cases, increasing the
     // size of this read has no impact on performance.
 

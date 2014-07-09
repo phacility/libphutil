@@ -14,7 +14,6 @@
  * @task create  Creating a New Editor
  * @task edit    Editing Interactively
  * @task config  Configuring Options
- * @group console
  */
 final class PhutilInteractiveEditor {
 
@@ -279,4 +278,5 @@ final class PhutilInteractiveEditor {
       'Unable to launch an interactive text editor. Set the EDITOR '.
       'environment variable to an appropriate editor.');
   }
+
 }

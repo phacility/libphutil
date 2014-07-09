@@ -2,8 +2,6 @@
 
 /**
  * Oversees a daemon and restarts it if it fails.
- *
- * @group daemon
  */
 final class PhutilDaemonOverseer {
 

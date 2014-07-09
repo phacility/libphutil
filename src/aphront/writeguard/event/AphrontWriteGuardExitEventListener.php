@@ -2,8 +2,6 @@
 /**
  * Listener for "will exit abruptly" events. Shuts down the attached write guard
  * before request exits.
- *
- * @group aphront
  */
 final class AphrontWriteGuardExitEventListener extends PhutilEventListener {
 
@@ -18,4 +16,5 @@ final class AphrontWriteGuardExitEventListener extends PhutilEventListener {
       AphrontWriteGuard::getInstance()->disposeAbruptly();
     }
   }
+
 }

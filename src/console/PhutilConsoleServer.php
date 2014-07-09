@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group console
- */
 final class PhutilConsoleServer {
 
   private $clients = array();

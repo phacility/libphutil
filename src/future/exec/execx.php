@@ -10,7 +10,6 @@
  * @param  string  sprintf()-style command pattern to execute.
  * @param  ...     Arguments to sprintf pattern.
  * @return array   List of stdout and stderr.
- * @group exec
  */
 function execx($cmd /* , ... */) {
   $args = func_get_args();
@@ -24,14 +23,13 @@ function execx($cmd /* , ... */) {
  *
  *   list ($err, $stdout, $stderr) = exec_manual('ls %s', $file);
  *
- * When invoking this function, you must manually handle the error
- * condition. Error flows can often be simplified by using @{function:execx}
- * instead, which throws an exception when it encounters an error.
+ * When invoking this function, you must manually handle the error condition.
+ * Error flows can often be simplified by using @{function:execx} instead,
+ * which throws an exception when it encounters an error.
  *
  * @param  string  sprintf()-style command pattern to execute.
  * @param  ...     Arguments to sprintf pattern.
  * @return array   List of return code, stdout, and stderr.
- * @group exec
  */
 function exec_manual($cmd /* , ... */) {
   $args = func_get_args();
@@ -46,7 +44,6 @@ function exec_manual($cmd /* , ... */) {
  * @param  string  sprintf()-style command pattern to execute.
  * @param  ...     Arguments to sprintf pattern.
  * @return int     Return code.
- * @group exec
  */
 function phutil_passthru($cmd /* , ... */) {
   $args = func_get_args();
@@ -62,7 +59,6 @@ function phutil_passthru($cmd /* , ... */) {
  * @return  string  Human-readable signal name.
  */
 function phutil_get_signal_name($signo) {
-
   // These aren't always defined; try our best to look up the signal name.
   $constant_names = array(
     'SIGHUP',

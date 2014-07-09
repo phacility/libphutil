@@ -7,7 +7,6 @@
  *   - For writes, we set the keys in each cache.
  *
  * @task  config    Configuring the Stack
- * @group cache
  */
 final class PhutilKeyValueCacheStack extends PhutilKeyValueCache {
 

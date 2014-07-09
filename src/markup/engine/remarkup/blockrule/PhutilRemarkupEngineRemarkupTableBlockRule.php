@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group markup
- */
 final class PhutilRemarkupEngineRemarkupTableBlockRule
   extends PhutilRemarkupEngineBlockRule {
 

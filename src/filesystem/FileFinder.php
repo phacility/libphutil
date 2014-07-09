@@ -14,7 +14,6 @@
  * @task  config    Configuring File Queries
  * @task  exec      Executing the File Query
  * @task  internal  Internal
- * @group filesystem
  */
 final class FileFinder {
 

@@ -3,8 +3,6 @@
 /**
  * Parse a docblock comment from source code into raw text documentation and
  * metadata (like "@author" and "@return").
- *
- * @group parser
  */
 final class PhutilDocblockParser {
 
@@ -43,7 +41,6 @@ final class PhutilDocblockParser {
   }
 
   public function parse($docblock) {
-
     // Strip off comments.
     $docblock = trim($docblock);
     $docblock = preg_replace('@^/\*\*@', '', $docblock);
@@ -142,4 +139,5 @@ final class PhutilDocblockParser {
 
     return array($docblock, $special);
   }
+
 }

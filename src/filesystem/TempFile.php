@@ -13,8 +13,6 @@
  * @task  create    Creating a Temporary File
  * @task  config    Configuration
  * @task  internal  Internals
- *
- * @group filesystem
  */
 final class TempFile {
 

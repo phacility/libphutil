@@ -27,8 +27,6 @@
  * @task disable  Disabling Protection
  * @task manage   Managing Write Guards
  * @task internal Internals
- *
- * @group aphront
  */
 final class AphrontWriteGuard {
 
@@ -285,4 +283,5 @@ final class AphrontWriteGuard {
         'to exit abruptly while debugging.');
     }
   }
+
 }

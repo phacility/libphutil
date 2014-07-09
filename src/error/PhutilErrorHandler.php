@@ -28,7 +28,6 @@
  * @task exutil   Exception Utilities
  * @task trap     Error Traps
  * @task internal Internals
- * @group error
  */
 final class PhutilErrorHandler {
 

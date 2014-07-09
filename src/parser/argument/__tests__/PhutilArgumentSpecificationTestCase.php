@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilArgumentSpecificationTestCase extends PhutilTestCase {
 
   public function testNames() {

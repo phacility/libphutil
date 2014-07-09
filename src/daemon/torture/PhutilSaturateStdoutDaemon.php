@@ -2,8 +2,6 @@
 
 /**
  * Daemon which dumps huge amounts of data to stdout.
- *
- * @group testcase
  */
 final class PhutilSaturateStdoutDaemon extends PhutilTortureTestDaemon {
 

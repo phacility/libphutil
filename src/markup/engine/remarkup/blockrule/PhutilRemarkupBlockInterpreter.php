@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @group markup
  * @stable
  */
 abstract class PhutilRemarkupBlockInterpreter {

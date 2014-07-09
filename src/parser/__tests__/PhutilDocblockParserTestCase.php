@@ -2,8 +2,6 @@
 
 /**
  * Test cases for @{class:PhutilDocblockParser}.
- *
- * @group testcase
  */
 final class PhutilDocblockParserTestCase extends PhutilTestCase {
 
@@ -116,4 +114,5 @@ final class PhutilDocblockParserTestCase extends PhutilTestCase {
         throw new Exception("No test case to handle file '{$file}'!");
     }
   }
+
 }

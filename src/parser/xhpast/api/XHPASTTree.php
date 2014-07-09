@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group xhpast
- */
 final class XHPASTTree extends AASTTree {
 
   public function __construct(array $tree, array $stream, $source) {

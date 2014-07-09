@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @group markup
- */
-final class PhutilRemarkupRuleLinebreaks
-  extends PhutilRemarkupRule {
+final class PhutilRemarkupRuleLinebreaks extends PhutilRemarkupRule {
 
   public function apply($text) {
     if ($this->getEngine()->isTextMode()) {

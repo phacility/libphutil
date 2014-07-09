@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @group storage
  * @concrete-extensible
  */
-class AphrontQueryException extends Exception { }
+class AphrontQueryException extends Exception {}

@@ -2,8 +2,6 @@
 
 /**
  * Test cases for @{class:PhutilDefaultSyntaxHighlighterEngine}.
- *
- * @group testcase
  */
 final class PhutilDefaultSyntaxHighlighterEngineTestCase
   extends PhutilTestCase {

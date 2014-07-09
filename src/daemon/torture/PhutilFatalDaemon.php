@@ -2,8 +2,6 @@
 
 /**
  * Daemon which fails immediately.
- *
- * @group testcase
  */
 final class PhutilFatalDaemon extends PhutilTortureTestDaemon {
 

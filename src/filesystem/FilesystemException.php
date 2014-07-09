@@ -3,8 +3,6 @@
 /**
  * Exception thrown by Filesystem to indicate an error accessing the file
  * system.
- *
- * @group filesystem
  */
 final class FilesystemException extends Exception {
 

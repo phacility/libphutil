@@ -2,10 +2,8 @@
 
 /**
  * @task  xaction Transaction Management
- * @group storage
  */
-abstract class AphrontDatabaseConnection
-  implements PhutilQsprintfInterface {
+abstract class AphrontDatabaseConnection implements PhutilQsprintfInterface {
 
   private $transactionState;
 

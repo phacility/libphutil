@@ -1,12 +1,8 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilFileLockTestCase extends PhutilTestCase {
 
   public function testLockTesting() {
-
     // We should be able to acquire locks.
 
     $file = new TempFile();
@@ -17,7 +13,6 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
   }
 
   public function testLockHolding() {
-
     // When a process is holding a lock, other processes should be unable
     // to acquire it.
 
@@ -32,7 +27,6 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
   }
 
   public function testInProcessLocking() {
-
     // Other processes should be unable to lock a file if we hold the lock.
 
     $file = new TempFile();
@@ -73,7 +67,6 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
   }
 
   public function testRelock() {
-
     // Trying to lock a file twice should throw an exception.
 
     $file = new TempFile();
@@ -91,7 +84,6 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
   }
 
   public function testExcessiveUnlock() {
-
     // Trying to unlock a file twice should throw an exception.
 
     $file = new TempFile();
@@ -111,7 +103,6 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
   }
 
   public function testUnlockAll() {
-
     // unlockAll() should release all locks.
 
     $file = new TempFile();
@@ -135,7 +126,6 @@ final class PhutilFileLockTestCase extends PhutilTestCase {
   }
 
   public function testIsLocked() {
-
     // isLocked() should report lock status accurately.
 
     $file = new TempFile();

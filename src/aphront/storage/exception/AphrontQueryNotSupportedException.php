@@ -1,8 +1,3 @@
 <?php
 
-/**
- * @group storage
- */
-final class AphrontQueryNotSupportedException extends AphrontQueryException {
-
-}
+final class AphrontQueryNotSupportedException extends AphrontQueryException {}

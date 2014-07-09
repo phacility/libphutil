@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilXHPASTSyntaxHighlighterTestCase extends PhutilTestCase {
 
   private function highlight($source) {

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group internationalization
- */
 interface PhutilPerson {
   const SEX_MALE = 'm';
   const SEX_FEMALE = 'f';
@@ -10,5 +7,4 @@ interface PhutilPerson {
 
   public function getSex();
   public function __toString();
-
 }

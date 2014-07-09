@@ -28,8 +28,6 @@
  *
  * NOTE: This function makes a best effort to apply some reasonable rules but
  * will not work well for the full range of unicode languages.
- *
- * @group utf8
  */
 final class PhutilUTF8StringTruncator extends Phobject {
 

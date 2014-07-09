@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilPHPFragmentLexerHighlighterTestCase extends PhutilTestCase {
 
   public function testLexer() {

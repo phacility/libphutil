@@ -1,6 +1,3 @@
 <?php
 
-/**
- * @group storage
- */
-final class AphrontQueryConnectionException extends AphrontQueryException { }
+final class AphrontQueryConnectionException extends AphrontQueryException {}

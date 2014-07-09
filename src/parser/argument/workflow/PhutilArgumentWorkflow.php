@@ -73,7 +73,6 @@
  *
  * @stable
  * @concrete-extensible
- * @group console
  */
 class PhutilArgumentWorkflow {
 

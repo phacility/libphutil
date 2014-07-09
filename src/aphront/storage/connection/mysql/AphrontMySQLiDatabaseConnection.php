@@ -1,8 +1,6 @@
 <?php
 
 /**
- * @group storage
- *
  * @phutil-external-symbol class mysqli
  */
 final class AphrontMySQLiDatabaseConnection

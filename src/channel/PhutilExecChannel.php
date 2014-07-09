@@ -41,8 +41,6 @@
  * the implementation of this class is fairly straightforward.
  *
  * @task construct Construction
- *
- * @group channel
  */
 final class PhutilExecChannel extends PhutilChannel {
 

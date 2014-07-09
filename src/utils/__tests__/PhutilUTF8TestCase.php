@@ -2,8 +2,6 @@
 
 /**
  * Test cases for functions in utf8.php.
- *
- * @group testcase
  */
 final class PhutilUTF8TestCase extends PhutilTestCase {
 
@@ -170,7 +168,6 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
         ->truncateString($string);
       $this->assertEqual($expect, $result, 'Shortening of '.$string);
     }
-
   }
 
   public function testUTF8StringTruncator() {
@@ -337,7 +334,6 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     }
   }
 
-
   public function testUTF8ConvertParams() {
     $caught = null;
     try {
@@ -369,7 +365,6 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
     $this->assertEqual($expect, $output, 'Conversion from ISO-8859-1.');
 
-
     $caught = null;
     try {
       phutil_utf8_convert('xyz', 'moon language', 'UTF-8');
@@ -397,7 +392,6 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
         'phutil_utf8_ucwords("'.$input.'")');
     }
   }
-
 
   public function testUTF8strtolower() {
     $tests = array(
@@ -495,7 +489,6 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     $this->assertEqual(
       array(" \xCD\xA0\xCD\xA0", 'c'),
       phutil_utf8v_combined($string));
-
   }
 
   public function testUTF8BMPSegfaults() {

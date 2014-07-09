@@ -1,9 +1,7 @@
 <?php
 
 /**
- * Test cases for functions in utils.php.
- *
- * @group testcase
+ * Test cases for @{class:PhutilBufferedIteratorExample}.
  */
 final class PhutilBufferedIteratorTestCase extends PhutilTestCase {
 

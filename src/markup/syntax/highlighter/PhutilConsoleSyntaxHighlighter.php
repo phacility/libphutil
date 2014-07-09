@@ -3,8 +3,6 @@
 /**
  * Simple syntax highlighter for console output. We just try to highlight the
  * commands so it's easier to follow transcripts.
- *
- * @group markup
  */
 final class PhutilConsoleSyntaxHighlighter {
 
@@ -17,7 +15,6 @@ final class PhutilConsoleSyntaxHighlighter {
   }
 
   public function getHighlightFuture($source) {
-
     $in_command = false;
     $lines = explode("\n", $source);
     foreach ($lines as $key => $line) {

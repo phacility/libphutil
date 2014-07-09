@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group console
- */
 function phutil_console_format($format /* ... */) {
   $args = func_get_args();
   return call_user_func_array(
@@ -11,9 +8,6 @@ function phutil_console_format($format /* ... */) {
 }
 
 
-/**
- * @group console
- */
 function phutil_console_confirm($prompt, $default_no = true) {
   $prompt_options = $default_no ? '[y/N]' : '[Y/n]';
 
@@ -31,11 +25,7 @@ function phutil_console_confirm($prompt, $default_no = true) {
 }
 
 
-/**
- * @group console
- */
 function phutil_console_prompt($prompt, $history = '') {
-
   echo "\n\n";
   $prompt = phutil_console_wrap($prompt.' ', 4);
 
@@ -93,8 +83,6 @@ function phutil_console_prompt($prompt, $history = '') {
  * @param   string  Text to wrap.
  * @param   int     Optional indent level.
  * @return  string  Wrapped text.
- *
- * @group console
  */
 function phutil_console_wrap($text, $indent = 0) {
   $lines = array();
@@ -182,9 +170,6 @@ function phutil_console_wrap($text, $indent = 0) {
 }
 
 
-/**
- * @group console
- */
 function phutil_console_require_tty() {
   if (function_exists('posix_isatty') && !posix_isatty(STDIN)) {
     throw new PhutilConsoleStdinNotInteractiveException();
@@ -196,7 +181,6 @@ function phutil_console_require_tty() {
  * Determine the width of the terminal, if possible. Returns `null` on failure.
  *
  * @return int|null Terminal width in characters, or null on failure.
- * @group console
  */
 function phutil_console_get_terminal_width() {
   if (phutil_is_windows()) {

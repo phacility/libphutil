@@ -2,8 +2,6 @@
 
 /**
  * Test cases for functions in utils.php.
- *
- * @group testcase
  */
 final class PhutilUtilsTestCase extends PhutilTestCase {
 
@@ -39,7 +37,6 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $this->assertEqual($expected, $actual);
   }
 
-
   public function testMFilterWithEmptyValueNegateFiltered() {
     $a = new MFilterTestHelper('o', 'p', 'q');
     $b = new MFilterTestHelper('o', '', 'q');
@@ -59,7 +56,6 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $this->assertEqual($expected, $actual);
   }
 
-
   public function testIFilterInvalidIndexThrowException() {
     $caught = null;
     try {
@@ -71,31 +67,29 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $this->assertTrue($caught instanceof InvalidArgumentException);
   }
 
-
   public function testIFilterWithEmptyValueFiltered() {
     $list = array(
-      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
-      'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
-      'c' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
-      'd' => array('h' => 'o', 'i' => 0, 'j' => 'q',),
-      'e' => array('h' => 'o', 'i' => null, 'j' => 'q',),
-      'f' => array('h' => 'o', 'i' => false, 'j' => 'q',),
+      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q'),
+      'b' => array('h' => 'o', 'i' => '', 'j' => 'q'),
+      'c' => array('h' => 'o', 'i' => 'p', 'j' => 'q'),
+      'd' => array('h' => 'o', 'i' => 0, 'j' => 'q'),
+      'e' => array('h' => 'o', 'i' => null, 'j' => 'q'),
+      'f' => array('h' => 'o', 'i' => false, 'j' => 'q'),
     );
 
     $actual = ifilter($list, 'i');
     $expected = array(
-      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
-      'c' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
+      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q'),
+      'c' => array('h' => 'o', 'i' => 'p', 'j' => 'q'),
     );
 
     $this->assertEqual($expected, $actual);
   }
 
-
   public function testIFilterIndexNotExistsAllFiltered() {
     $list = array(
-      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
-      'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
+      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q'),
+      'b' => array('h' => 'o', 'i' => '', 'j' => 'q'),
     );
 
      $actual = ifilter($list, 'NoneExisting');
@@ -107,36 +101,35 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
 
   public function testIFilterWithEmptyValueNegateFiltered() {
     $list = array(
-      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
-      'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
-      'c' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
-      'd' => array('h' => 'o', 'i' => 0, 'j' => 'q',),
-      'e' => array('h' => 'o', 'i' => null, 'j' => 'q',),
-      'f' => array('h' => 'o', 'i' => false, 'j' => 'q',),
+      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q'),
+      'b' => array('h' => 'o', 'i' => '', 'j' => 'q'),
+      'c' => array('h' => 'o', 'i' => 'p', 'j' => 'q'),
+      'd' => array('h' => 'o', 'i' => 0, 'j' => 'q'),
+      'e' => array('h' => 'o', 'i' => null, 'j' => 'q'),
+      'f' => array('h' => 'o', 'i' => false, 'j' => 'q'),
     );
 
     $actual = ifilter($list, 'i', true);
     $expected = array(
-      'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
-      'd' => array('h' => 'o', 'i' => 0, 'j' => 'q',),
-      'e' => array('h' => 'o', 'i' => null, 'j' => 'q',),
-      'f' => array('h' => 'o', 'i' => false, 'j' => 'q',),
+      'b' => array('h' => 'o', 'i' => '', 'j' => 'q'),
+      'd' => array('h' => 'o', 'i' => 0, 'j' => 'q'),
+      'e' => array('h' => 'o', 'i' => null, 'j' => 'q'),
+      'f' => array('h' => 'o', 'i' => false, 'j' => 'q'),
     );
 
     $this->assertEqual($expected, $actual);
   }
 
-
   public function testIFilterIndexNotExistsNotFiltered() {
     $list = array(
-      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
-      'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
+      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q'),
+      'b' => array('h' => 'o', 'i' => '', 'j' => 'q'),
     );
 
     $actual = ifilter($list, 'NoneExisting', true);
     $expected = array(
-      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q',),
-      'b' => array('h' => 'o', 'i' => '', 'j' => 'q',),
+      'a' => array('h' => 'o', 'i' => 'p', 'j' => 'q'),
+      'b' => array('h' => 'o', 'i' => '', 'j' => 'q'),
     );
 
     $this->assertEqual($expected, $actual);
@@ -279,9 +272,9 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $this->assertTrue($caught instanceof InvalidArgumentException);
 
     $array = array(
-             'foo' => 'bar',
-             'bar' => 'foo',
-             );
+      'foo' => 'bar',
+      'bar' => 'foo',
+    );
 
     try {
       assert_stringlike($array);
@@ -303,7 +296,6 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     fclose($resource);
 
     $this->assertTrue($caught instanceof InvalidArgumentException);
-
   }
 
   public function testCoalesce() {
@@ -400,7 +392,6 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
         phutil_split_lines($input, $retain_endings = false),
         "(Discarded) ".addcslashes($input, "\r\n\\"));
     }
-
   }
 
   public function testArrayFuse() {
@@ -573,6 +564,5 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
         pht('Credential censoring for: %s', $input));
     }
   }
-
 
 }

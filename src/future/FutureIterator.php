@@ -27,8 +27,6 @@
  * @task  config    Configuring Iteration
  * @task  iterator  Iterator Interface
  * @task  internal  Internals
- *
- * @group futures
  */
 final class FutureIterator implements Iterator {
 

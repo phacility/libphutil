@@ -1,10 +1,9 @@
 <?php
 
 /**
- * Wraps another Future and allows you to post-process its result once it
- * resolves.
+ * Wraps another @{class:Future} and allows you to post-process its result once
+ * it resolves.
  *
- * @group futures
  * @stable
  */
 abstract class FutureProxy extends Future {

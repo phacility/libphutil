@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilSafeHTMLTestCase extends PhutilTestCase {
 
   public function testOperator() {

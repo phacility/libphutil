@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilDeferredLogTestCase extends PhutilTestCase {
 
   public function testLogging() {
@@ -78,7 +75,6 @@ final class PhutilDeferredLogTestCase extends PhutilTestCase {
         'a' => 'a',
         'b' => 'b',
       ));
-
   }
 
   public function testLogWriteFailure() {

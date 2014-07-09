@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group xhpast
- */
 final class XHPASTSyntaxErrorException extends Exception {
 
   protected $errorLine;

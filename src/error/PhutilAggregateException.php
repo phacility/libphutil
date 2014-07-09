@@ -22,7 +22,6 @@
  *   }
  *
  * @concrete-extensible
- * @group error
  */
 class PhutilAggregateException extends Exception {
 

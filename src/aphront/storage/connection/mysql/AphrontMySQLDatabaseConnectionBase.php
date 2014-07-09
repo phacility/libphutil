@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group storage
- */
 abstract class AphrontMySQLDatabaseConnectionBase
   extends AphrontDatabaseConnection {
 

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group storage
- */
 final class AphrontQueryParameterException extends AphrontQueryException {
 
   private $query;

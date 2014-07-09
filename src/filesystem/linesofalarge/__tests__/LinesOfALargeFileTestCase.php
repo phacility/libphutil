@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class LinesOfALargeFileTestCase extends PhutilTestCase {
 
   public function testBasics() {

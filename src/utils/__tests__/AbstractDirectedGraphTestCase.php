@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class AbstractDirectedGraphTestCase extends PhutilTestCase {
 
   public function testTrivialGraph() {
@@ -127,4 +124,5 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
     $detector->loadGraph();
     return $detector->getTopographicallySortedNodes();
   }
+
 }

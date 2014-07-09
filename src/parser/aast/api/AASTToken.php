@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group xhpast
- */
 abstract class AASTToken {
 
   protected $id;
@@ -80,6 +77,5 @@ abstract class AASTToken {
     }
     return $result;
   }
-
 
 }

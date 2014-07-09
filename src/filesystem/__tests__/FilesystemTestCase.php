@@ -1,12 +1,8 @@
 <?php
 
-/**
- * @group testcase
- */
 final class FilesystemTestCase extends PhutilTestCase {
 
   public function testBinaryExists() {
-
     // Test for the `which` binary on Linux, and the `where` binary on Windows,
     // because `which which` is cute.
 
@@ -28,7 +24,6 @@ final class FilesystemTestCase extends PhutilTestCase {
   }
 
   public function testResolveBinary() {
-
     // Test to make sure resolveBinary() returns the full path to the `which`
     // and `where` binaries.
 
@@ -76,7 +71,6 @@ final class FilesystemTestCase extends PhutilTestCase {
       $caught = $ex;
     }
     $this->assertTrue($caught instanceof Exception);
-
   }
 
 }

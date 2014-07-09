@@ -2,7 +2,6 @@
 
 /**
  * @task  memcache Managing Memcache
- * @group cache
  */
 final class PhutilKeyValueCacheMemcache extends PhutilKeyValueCache {
 

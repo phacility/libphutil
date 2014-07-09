@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group xhpast
- */
 final class XHPASTNode extends AASTNode {
 
   public function isStaticScalar() {

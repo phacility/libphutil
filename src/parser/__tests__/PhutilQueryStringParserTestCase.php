@@ -2,8 +2,6 @@
 
 /**
  * Test cases for @{class:PhutilQueryStringParser} parser.
- *
- * @group testcase
  */
 final class PhutilQueryStringParserTestCase extends PhutilTestCase {
 
@@ -138,6 +136,5 @@ final class PhutilQueryStringParserTestCase extends PhutilTestCase {
         $parser->parseQueryStringToPairList($query_string));
     }
   }
-
 
 }

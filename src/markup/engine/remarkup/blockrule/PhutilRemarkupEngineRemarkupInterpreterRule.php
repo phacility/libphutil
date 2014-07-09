@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group markup
- */
 final class PhutilRemarkupEngineRemarkupInterpreterRule
   extends PhutilRemarkupEngineBlockRule {
 
@@ -28,7 +25,6 @@ final class PhutilRemarkupEngineRemarkupInterpreterRule
   }
 
   public function markupText($text, $children) {
-
     $lines = explode("\n", $text);
     $first_key = head_key($lines);
     $last_key = last_key($lines);

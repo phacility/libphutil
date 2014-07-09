@@ -2,8 +2,6 @@
 
 /**
  * Daemon which hangs immediately.
- *
- * @group testcase
  */
 final class PhutilHangForeverDaemon extends PhutilTortureTestDaemon {
 

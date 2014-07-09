@@ -5,7 +5,6 @@
  * pending computation. For a more complete overview of futures, see
  * @{article:Using Futures}.
  *
- * @group futures
  * @stable
  */
 abstract class Future {
@@ -86,10 +85,10 @@ abstract class Future {
 
   /**
    * Retrieve a list of sockets which we can wait to become readable while
-   * a future is resolving. If your future has sockets which can be select()ed,
-   * return them here (or in getWriteSockets()) to make the resolve loop do a
-   * select(). If you do not return sockets in either case, you'll get a busy
-   * wait.
+   * a future is resolving. If your future has sockets which can be
+   * `select()`ed, return them here (or in @{method:getWriteSockets}) to make
+   * the resolve loop  do a `select()`. If you do not return sockets in either
+   * case, you'll get a busy wait.
    *
    * @return list  A list of sockets which we expect to become readable.
    */
@@ -100,7 +99,7 @@ abstract class Future {
 
   /**
    * Retrieve a list of sockets which we can wait to become writable while a
-   * future is resolving. See getReadSockets().
+   * future is resolving. See @{method:getReadSockets}.
    *
    * @return list  A list of sockets which we expect to become writable.
    */
@@ -161,12 +160,13 @@ abstract class Future {
 
   /**
    * Retrieve the final result of the future. This method will be called after
-   * the future is ready (as per isReady()) but before results are passed back
-   * to the caller. The major use of this function is that you can override it
-   * in subclasses to do postprocessing or error checking, which is
+   * the future is ready (as per @{method:isReady}) but before results are
+   * passed back to the caller. The major use of this function is that you can
+   * override it in subclasses to do postprocessing or error checking, which is
    * particularly useful if building application-specific futures on top of
-   * primitive transport futures (like CurlFuture and ExecFuture) which can
-   * make it tricky to hook this logic into the main pipeline.
+   * primitive transport futures (like @{class:CurlFuture} and
+   * @{class:ExecFuture}) which can make it tricky to hook this logic into the
+   * main pipeline.
    *
    * @return mixed   Final resolution of this future.
    */

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class LinesOfALargeExecFutureTestCase extends PhutilTestCase {
 
   // Most of the core functionality of LinesOfALarge is covered by the

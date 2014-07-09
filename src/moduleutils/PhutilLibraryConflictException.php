@@ -20,7 +20,6 @@
  *
  * @task info Getting Exception Information
  * @task construct Creating Library Conflict Exceptions
- * @group library
  */
 final class PhutilLibraryConflictException extends Exception {
 
@@ -82,4 +81,5 @@ final class PhutilLibraryConflictException extends Exception {
   public function getNewPath() {
     return $this->newPath;
   }
+
 }

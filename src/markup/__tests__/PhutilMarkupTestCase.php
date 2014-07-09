@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilMarkupTestCase extends PhutilTestCase {
 
   public function testTagDefaults() {
@@ -246,23 +243,22 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
           hsprintf('</div>'),
         )));
 
-      $this->assertEqual(
-        '<div><br /><hr /><wbr /></div>',
-        phutil_tag(
-          'div',
-          array(
-          ),
+    $this->assertEqual(
+      '<div><br /><hr /><wbr /></div>',
+      phutil_tag(
+        'div',
+        array(),
+        array(
           array(
             array(
+              phutil_tag('br'),
               array(
-                phutil_tag('br'),
-                array(
-                  phutil_tag('hr'),
-                ),
-                phutil_tag('wbr'),
+                phutil_tag('hr'),
               ),
+              phutil_tag('wbr'),
             ),
-          ))->getHTMLContent());
-    }
+          ),
+        ))->getHTMLContent());
+  }
 
 }

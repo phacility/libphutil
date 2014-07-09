@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group markup
- */
 final class PhutilRemarkupEngineRemarkupLiteralBlockRule
   extends PhutilRemarkupEngineBlockRule {
 
@@ -33,4 +30,5 @@ final class PhutilRemarkupEngineRemarkupLiteralBlockRule
     $text = phutil_split_lines($text, $retain_endings = true);
     return phutil_implode_html(phutil_tag('br', array()), $text);
   }
+
 }

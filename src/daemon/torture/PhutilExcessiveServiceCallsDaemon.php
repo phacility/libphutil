@@ -2,8 +2,6 @@
 
 /**
  * Daemon which makes a lot of service calls.
- *
- * @group testcase
  */
 final class PhutilExcessiveServiceCallsDaemon extends PhutilTortureTestDaemon {
 

@@ -73,8 +73,6 @@
  * @task lexerimpl  Lexer Implementation
  * @task rule       Lexer Rules
  * @task tokens     Lexer Tokens
- *
- * @group lexer
  */
 abstract class PhutilLexer {
 

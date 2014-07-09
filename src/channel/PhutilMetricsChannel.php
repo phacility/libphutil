@@ -6,8 +6,6 @@
  *
  * @task metrics  Channel Metrics
  * @task impl     Implementation
- *
- * @group channel
  */
 final class PhutilMetricsChannel extends PhutilChannelChannel {
 

@@ -32,7 +32,6 @@
  * @task  config    Configuration
  * @task  internals Internals
  * @task  iterator  Iterator Interface
- * @group filesystem
  */
 abstract class LinesOfALarge implements Iterator {
 
@@ -136,7 +135,6 @@ abstract class LinesOfALarge implements Iterator {
    * @task iterator
    */
   final public function next() {
-
     // Consume the stream a chunk at a time into an internal buffer, then
     // read lines out of that buffer. This gives us flexibility (stream sources
     // only need to be able to read blocks of bytes) and performance (we can

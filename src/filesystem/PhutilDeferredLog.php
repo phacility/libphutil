@@ -35,7 +35,6 @@
  * @task log        Logging
  * @task write      Writing the Log
  * @task internal   Internals
- * @group filesystem
  */
 final class PhutilDeferredLog {
 

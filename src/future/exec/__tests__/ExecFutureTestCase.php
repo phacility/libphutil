@@ -1,12 +1,8 @@
 <?php
 
-/**
- * @group testcase
- */
 final class ExecFutureTestCase extends PhutilTestCase {
 
   public function testEmptyWrite() {
-
     // NOTE: This is mostly testing that we don't hang while doing an empty
     // write.
 
@@ -16,7 +12,6 @@ final class ExecFutureTestCase extends PhutilTestCase {
   }
 
   public function testKeepPipe() {
-
     // NOTE: This is mosty testing the semantics of $keep_pipe in write().
 
     list($stdout) = id(new ExecFuture('cat'))
@@ -31,7 +26,6 @@ final class ExecFutureTestCase extends PhutilTestCase {
   }
 
   public function testLargeBuffer() {
-
     // NOTE: This is mostly a coverage test to hit branches where we're still
     // flushing a buffer.
 
@@ -52,7 +46,6 @@ final class ExecFutureTestCase extends PhutilTestCase {
   }
 
   public function testResolveTimeoutTestShouldRunLessThan1Sec() {
-
     // NOTE: This tests interactions between the resolve() timeout and the
     // ExecFuture timeout, which are similar but not identical.
 
@@ -72,7 +65,6 @@ final class ExecFutureTestCase extends PhutilTestCase {
 
 
   public function testTimeoutTestShouldRunLessThan1Sec() {
-
     // NOTE: This is partly testing that we choose appropriate select wait
     // times; this test should run for significantly less than 1 second.
 

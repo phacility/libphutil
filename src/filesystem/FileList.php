@@ -17,7 +17,6 @@
  *
  * @task create Creating a File List
  * @task test   Testing File Lists
- * @group filesystem
  */
 final class FileList {
 

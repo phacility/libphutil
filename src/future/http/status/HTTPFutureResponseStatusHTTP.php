@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group futures
- */
 final class HTTPFutureResponseStatusHTTP extends HTTPFutureResponseStatus {
 
   private $excerpt;

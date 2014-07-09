@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group filesystem
- */
 final class PhutilDirectoryFixture {
 
   protected $path;

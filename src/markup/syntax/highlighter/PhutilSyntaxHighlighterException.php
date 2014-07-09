@@ -1,7 +1,3 @@
 <?php
 
-/**
- * @group markup
- */
-final class PhutilSyntaxHighlighterException extends Exception {
-}
+final class PhutilSyntaxHighlighterException extends Exception {}

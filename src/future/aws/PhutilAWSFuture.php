@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group aws
- */
 abstract class PhutilAWSFuture extends FutureProxy {
 
   private $future;

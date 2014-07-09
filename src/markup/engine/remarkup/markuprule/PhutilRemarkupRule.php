@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @group markup
  * @stable
  */
 abstract class PhutilRemarkupRule {
@@ -109,6 +108,5 @@ abstract class PhutilRemarkupRule {
     $text = (string)hsprintf('%s', phutil_safe_html($text));
     return (strpos($text, PhutilRemarkupBlockStorage::MAGIC_BYTE) === false);
   }
-
 
 }

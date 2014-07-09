@@ -2,8 +2,6 @@
 
 /**
  * Test cases for @{class:PhutilRemarkupEngine}.
- *
- * @group testcase
  */
 final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
 

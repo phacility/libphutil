@@ -9,7 +9,6 @@
  * @param   string  String to convert to valid UTF-8.
  * @return  string  String with invalid UTF-8 byte subsequences replaced with
  *                  U+FFFD.
- * @group utf8
  */
 function phutil_utf8ize($string) {
   if (phutil_is_utf8($string)) {
@@ -70,7 +69,6 @@ function phutil_is_utf8_with_only_bmp_characters($string) {
  *
  * @param string  Some string which may or may not be valid UTF-8.
  * @return bool    True if the string is valid UTF-8.
- * @group utf8
  */
 function phutil_is_utf8($string) {
   if (function_exists('mb_check_encoding')) {
@@ -233,7 +231,6 @@ function phutil_is_utf8_slowly($string, $only_bmp = false) {
  *
  * @param string A valid utf-8 string.
  * @return int   The character length of the string.
- * @group utf8
  */
 function phutil_utf8_strlen($string) {
   return strlen(utf8_decode($string));
@@ -257,10 +254,8 @@ function phutil_utf8_strlen($string) {
  *
  * @param   string  A valid UTF-8 string.
  * @return  int     The console display length of the string.
- * @group   utf8
  */
 function phutil_utf8_console_strlen($string) {
-
   // Formatting and colors don't contribute any width in the console.
   $string = preg_replace("/\x1B\[\d*m/", '', $string);
 
@@ -312,7 +307,6 @@ function phutil_utf8_console_strlen($string) {
  *
  * @param string A valid utf-8 string.
  * @return list  A list of characters in the string.
- * @group utf8
  */
 function phutil_utf8v($string) {
   $res = array();
@@ -360,7 +354,6 @@ function phutil_utf8v($string) {
  *
  * @param   string  A valid UTF-8 string.
  * @return  list    A list of codepoints, as integers.
- * @group   utf8
  */
 function phutil_utf8v_codepoints($string) {
   $str_v = phutil_utf8v($string);
@@ -415,8 +408,6 @@ function phutil_utf8v_codepoints($string) {
  * @param   string  If the string is shortened, add this at the end. Defaults to
  *                  horizontal ellipsis.
  * @return  string  A string with no more than the specified character length.
- *
- * @group utf8
  */
 function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
   return id(new PhutilUTF8StringTruncator())
@@ -431,7 +422,6 @@ function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
  *
  * @param   string An HTML string with tags and entities.
  * @return  list   List of hard-wrapped lines.
- * @group utf8
  */
 function phutil_utf8_hard_wrap_html($string, $width) {
   $break_here = array();
@@ -488,7 +478,6 @@ function phutil_utf8_hard_wrap_html($string, $width) {
   * @param string A non HTML string
   * @param int Width of the hard-wrapped lines
   * @return list List of hard-wrapped lines.
-  * @group utf8
   */
 function phutil_utf8_hard_wrap($string, $width) {
   $result = array();
@@ -540,8 +529,6 @@ function phutil_utf8_hard_wrap($string, $width) {
  * @param string Source endocing name, like "ISO-8859-1".
  * @return string Input string, with converted character encoding.
  *
- * @group utf8
- *
  * @phutil-external-symbol function mb_convert_encoding
  */
 function phutil_utf8_convert($string, $to_encoding, $from_encoding) {
@@ -590,14 +577,12 @@ function phutil_utf8_convert($string, $to_encoding, $from_encoding) {
 
 /**
  * Convert a string to title case in a UTF8-aware way. This function doesn't
- * necessarily do a great job, but the builtin implementation of ucwords() can
+ * necessarily do a great job, but the builtin implementation of `ucwords()` can
  * completely destroy inputs, so it just has to be better than that. Similar to
  * @{function:ucwords}.
  *
  * @param   string  UTF-8 input string.
  * @return  string  Input, in some semblance of title case.
- *
- * @group utf8
  */
 function phutil_utf8_ucwords($str) {
   // NOTE: mb_convert_case() discards uppercase letters in words when converting
@@ -639,8 +624,6 @@ function phutil_utf8_ucwords($str) {
  * @param   string  UTF-8 input string.
  * @return  string  Input, in some semblance of lower case.
  *
- * @group utf8
- *
  * @phutil-external-symbol function mb_convert_case
  */
 function phutil_utf8_strtolower($str) {
@@ -665,8 +648,6 @@ function phutil_utf8_strtolower($str) {
  *
  * @param   string  UTF-8 input string.
  * @return  string  Input, in some semblance of upper case.
- *
- * @group utf8
  *
  * @phutil-external-symbol function mb_convert_case
  */
@@ -693,8 +674,6 @@ function phutil_utf8_strtoupper($str) {
  * @param   string              UTF-8 input string.
  * @param   map<string, string> Map of characters to replace.
  * @return  string              Input with translated characters.
- *
- * @group utf8
  */
 function phutil_utf8_strtr($str, array $map) {
   $v = phutil_utf8v($str);
@@ -715,10 +694,7 @@ function phutil_utf8_strtr($str, array $map) {
  *
  * @param   string              A single unicode character.
  * @return  boolean             True or false.
- *
- * @group utf8
  */
-
 function phutil_utf8_is_combining_character($character) {
   $components = phutil_utf8v_codepoints($character);
 
@@ -745,10 +721,7 @@ function phutil_utf8_is_combining_character($character) {
  *
  * @param string A valid utf-8 string.
  * @return list  A list of characters in the string.
- *
- * @group utf8
  */
-
 function phutil_utf8v_combined($string) {
   $components = phutil_utf8v($string);
   $array_length = count($components);

@@ -24,8 +24,6 @@
  * @task  status      Determining Lock Status
  * @task  lock        Locking
  * @task  internal    Internals
- *
- * @group filesystem
  */
 abstract class PhutilLock {
 

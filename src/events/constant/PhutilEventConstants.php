@@ -1,8 +1,3 @@
 <?php
 
-/**
- * @group event
- */
-abstract class PhutilEventConstants {
-
-}
+abstract class PhutilEventConstants {}

@@ -6,7 +6,6 @@
  *
  * @task print Printing PHP Values
  * @task internal Internals
- * @group error
  */
 final class PhutilReadableSerializer {
 
@@ -83,9 +82,9 @@ final class PhutilReadableSerializer {
 
   /**
    * Dump some debug output about an object's members without the
-   * potential recursive explosion of verbosity that comes with ##print_r()##.
+   * potential recursive explosion of verbosity that comes with `print_r()`.
    *
-   * To print any number of member variables, pass null for $max_members.
+   * To print any number of member variables, pass null for `$max_members`.
    *
    * @param wild Any value.
    * @param int Maximum depth to print for nested arrays and objects.
@@ -168,7 +167,8 @@ final class PhutilReadableSerializer {
 
 
   /**
-   * Adds indentation to the beginning of every line starting from $first_line.
+   * Adds indentation to the beginning of every line starting from
+   * `$first_line`.
    *
    * @param string Printed value.
    * @param string String to indent with.
@@ -185,4 +185,5 @@ final class PhutilReadableSerializer {
 
     return implode("\n", $out);
   }
+
 }

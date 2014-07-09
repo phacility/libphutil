@@ -3,7 +3,6 @@
 /**
  * Scaffolding for implementing robust background processing scripts.
  *
- * @group daemon
  * @stable
  */
 abstract class PhutilDaemon {

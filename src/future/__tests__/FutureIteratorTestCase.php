@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class FutureIteratorTestCase extends PhutilTestCase {
 
   public function testAddingFuture() {

@@ -10,7 +10,6 @@
  *             logs/consoles.
  * @param ...  Other values to be logged.
  * @return wild Passed $value.
- * @group error
  */
 function phlog($value/* , ... */) {
 
@@ -58,7 +57,6 @@ function phlog($value/* , ... */) {
  *              'line' and 'trace' are always available. Other keys may be
  *              present, depending on the event type.
  * @return void
- * @group error
  */
 function phutil_error_listener_example($event, $value, array $metadata) {
   throw new Exception('This is just an example function!');

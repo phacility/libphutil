@@ -8,8 +8,6 @@
  * Values may be quoted and escaped:
  *
  *   eyes="one, or two", legs="{^,\",^}"
- *
- * @group lexer
  */
 final class PhutilSimpleOptionsLexer extends PhutilLexer {
 
@@ -88,4 +86,5 @@ final class PhutilSimpleOptionsLexer extends PhutilLexer {
       ),
     );
   }
+
 }

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group storage
- */
 interface PhutilQsprintfInterface {
   public function escapeBinaryString($string);
   public function escapeUTF8String($string);

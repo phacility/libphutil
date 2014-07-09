@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @group markup
- */
 abstract class PhutilSyntaxHighlighterEngine {
+
   abstract public function setConfig($key, $value);
   abstract public function getHighlightFuture($language, $source);
   abstract public function getLanguageFromFilename($filename);

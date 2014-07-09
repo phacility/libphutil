@@ -18,8 +18,6 @@
  *
  * @task command  Executing Passthru Commands
  * @task config   Configuring Passthru Commands
- *
- * @group exec
  */
 final class PhutilExecPassthru extends Phobject {
 

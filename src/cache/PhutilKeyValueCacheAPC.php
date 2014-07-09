@@ -3,8 +3,6 @@
 /**
  * Interface to the APC key-value cache. This is a very high-performance cache
  * which is local to the current machine.
- *
- * @group cache
  */
 final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
 

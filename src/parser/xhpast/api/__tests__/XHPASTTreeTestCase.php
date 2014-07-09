@@ -2,7 +2,6 @@
 
 /**
  * @nolint We test crazy stuff here.
- * @group xhpast
  */
 final class XHPASTTreeTestCase extends PhutilTestCase {
 
@@ -128,7 +127,6 @@ final class XHPASTTreeTestCase extends PhutilTestCase {
     $this->assertEval(
       "\xg",
       '"\xg"');
-
   }
 
   private function assertEval($value, $string) {
@@ -139,5 +137,3 @@ final class XHPASTTreeTestCase extends PhutilTestCase {
   }
 
 }
-
-

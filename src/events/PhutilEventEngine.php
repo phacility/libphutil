@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group event
- */
 final class PhutilEventEngine {
 
   private static $instance;

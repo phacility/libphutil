@@ -10,7 +10,6 @@
  * @task  construct   Construction
  * @task  interface   Interfacing with the User
  * @task  internal    Internals
- * @group console
  */
 final class PhutilConsole {
 

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group aast
- */
 abstract class AASTNode {
 
   protected $id;
@@ -87,14 +84,14 @@ abstract class AASTNode {
   }
 
   /**
-   * Build a cache to improve the performance of selectDescendantsOfType(). This
-   * cache makes a time/memory tradeoff by aggressively caching node
-   * descendants. It may improve the tree's query performance substantially if
-   * you make a large number of queries, but also requires a significant amount
-   * of memory.
+   * Build a cache to improve the performance of
+   * @{method:selectDescendantsOfType}. This cache makes a time/memory tradeoff
+   * by aggressively caching node descendants. It may improve the tree's query
+   * performance substantially if you make a large number of queries, but also
+   * requires a significant amount of memory.
    *
    * This builds a cache for the entire tree and improves performance of all
-   * selectDescendantsOfType() calls.
+   * @{method:selectDescendantsOfType} calls.
    */
   public function buildSelectCache() {
     $cache = array();
@@ -116,10 +113,11 @@ abstract class AASTNode {
   }
 
   /**
-   * Build a cache to improve the performance of selectTokensOfType(). This
-   * cache makes a time/memory tradeoff by aggressively caching token types.
-   * It may improve the tree's query performance substantially if you make a
-   * large enumber of queries, but also requires a signficant amount of memory.
+   * Build a cache to improve the performance of @{method:selectTokensOfType}.
+   * This cache makes a time/memory tradeoff by aggressively caching token
+   * types. It may improve the tree's query performance substantially if you
+   * make a large number of queries, but also requires a signficant amount of
+   * memory.
    *
    * This builds a cache for this node only.
    */

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilTranslatorTestCase extends PhutilTestCase {
 
   public function testEnglish() {

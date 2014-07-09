@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilConsoleWrapTestCase extends PhutilTestCase {
 
   public function testWrap() {
@@ -45,6 +42,5 @@ EOTURTLES;
         rtrim(str_repeat('turtle ', 20)),
         $indent = 20));
   }
-
 
 }

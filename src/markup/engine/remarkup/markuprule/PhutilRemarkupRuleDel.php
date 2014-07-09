@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @group markup
- */
-final class PhutilRemarkupRuleDel
-  extends PhutilRemarkupRule {
+final class PhutilRemarkupRuleDel extends PhutilRemarkupRule {
 
   public function getPriority() {
     return 1000.0;

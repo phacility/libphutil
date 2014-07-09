@@ -21,7 +21,6 @@
  *
  * @task construct  Construction
  * @task internals  Internals
- * @group filesystem
  */
 final class LinesOfALargeExecFuture extends LinesOfALarge {
 
@@ -61,8 +60,8 @@ final class LinesOfALargeExecFuture extends LinesOfALarge {
 
 
   /**
-   * The PHP foreach() construct calls rewind() once, so we allow the first
-   * rewind(), without effect. Subsequent rewinds mean misuse.
+   * The PHP `foreach()` construct calls rewind() once, so we allow the first
+   * `rewind()`, without effect. Subsequent rewinds mean misuse.
    *
    * @return void
    * @task internals
@@ -101,7 +100,7 @@ final class LinesOfALargeExecFuture extends LinesOfALarge {
       // has exited.
 
       if ($future->isReady()) {
-        // Throw if the process exits with a nozero status code. This makes
+        // Throw if the process exits with a nonzero status code. This makes
         // error handling simpler, and prevents us from returning part of a line
         // if the process terminates mid-output.
         $future->resolvex();

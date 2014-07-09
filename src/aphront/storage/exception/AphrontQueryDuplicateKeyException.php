@@ -1,8 +1,3 @@
 <?php
 
-/**
- * @group storage
- */
-final class AphrontQueryDuplicateKeyException extends AphrontQueryException {
-
-}
+final class AphrontQueryDuplicateKeyException extends AphrontQueryException {}

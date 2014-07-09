@@ -12,8 +12,6 @@
  * If using this cache improves application performance, especially if it
  * improves it significantly, it may indicate an architectural problem in your
  * application.
- *
- * @group cache
  */
 final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
 

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group console
- */
 final class PhutilConsoleServerChannel extends PhutilChannelChannel {
 
   public function didReceiveStderr(PhutilExecChannel $channel, $stderr) {

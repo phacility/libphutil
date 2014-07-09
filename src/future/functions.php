@@ -5,7 +5,6 @@
  *
  * @param list              List of @{class:Future}s.
  * @return FutureIterator   New @{class:FutureIterator} over those futures.
- * @group futures
  */
 function Futures($futures) {
   return new FutureIterator($futures);

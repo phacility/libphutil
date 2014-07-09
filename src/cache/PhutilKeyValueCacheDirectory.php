@@ -20,7 +20,6 @@
  *
  * @task  kvimpl    Key-Value Cache Implementation
  * @task  storage   Cache Storage
- * @group cache
  */
 final class PhutilKeyValueCacheDirectory extends PhutilKeyValueCache {
 

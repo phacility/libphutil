@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group futures
- */
 final class HTTPFutureResponseStatusParse extends HTTPFutureResponseStatus {
 
   const ERROR_MALFORMED_RESPONSE = 1;

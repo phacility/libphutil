@@ -1,6 +1,3 @@
 <?php
 
-/**
- * @group storage
- */
-final class AphrontQueryObjectMissingException extends AphrontQueryException { }
+final class AphrontQueryObjectMissingException extends AphrontQueryException {}

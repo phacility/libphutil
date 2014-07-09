@@ -31,8 +31,6 @@
  * @task config   Configuring the Query
  * @task load     Loading Symbols
  * @task internal Internals
- *
- * @group library
  */
 final class PhutilSymbolLoader {
 
@@ -275,7 +273,7 @@ final class PhutilSymbolLoader {
    * Execute the query and select matching symbols, but do not load them. This
    * will perform slightly better if you are only interested in the existence
    * of the symbols and don't plan to use them; otherwise, use
-   * ##selectAndLoadSymbols()##.
+   * @{method:selectAndLoadSymbols}.
    *
    * @return dict A dictionary of matching symbols. See top-level class
    *              documentation for details.
@@ -347,7 +345,6 @@ final class PhutilSymbolLoader {
    * @task internal
    */
   private function loadSymbol(array $symbol_spec) {
-
     // Check if we've already loaded the symbol; bail if we have.
     $name = $symbol_spec['name'];
     $is_function = ($symbol_spec['type'] == 'function');

@@ -57,18 +57,13 @@
  *
  *       //  Find all rows where `name` ends with $suffix.
  *       qsprintf($escaper, 'WHERE name LIKE %<', $suffix);
- *
- * @group storage
  */
-function qsprintf(PhutilQsprintfInterface $escaper, $pattern/* , ... */) {
+function qsprintf(PhutilQsprintfInterface $escaper, $pattern /* , ... */) {
   $args = func_get_args();
   array_shift($args);
   return xsprintf('xsprintf_query', $escaper, $args);
 }
 
-/**
- * @group storage
- */
 function vqsprintf(PhutilQsprintfInterface $escaper, $pattern, array $argv) {
   array_unshift($argv, $pattern);
   return xsprintf('xsprintf_query', $escaper, $argv);
@@ -77,8 +72,6 @@ function vqsprintf(PhutilQsprintfInterface $escaper, $pattern, array $argv) {
 /**
  * @{function:xsprintf} callback for encoding SQL queries. See
  * @{function:qsprintf}.
- *
- * @group storage
  */
 function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
   $type    = $pattern[$pos];
@@ -244,9 +237,6 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
   $pattern[$pos] = $type;
 }
 
-/**
- * @group storage
- */
 function _qsprintf_check_type($value, $type, $query) {
   switch ($type) {
     case 'Ld':
@@ -274,9 +264,6 @@ function _qsprintf_check_type($value, $type, $query) {
   }
 }
 
-/**
- * @group storage
- */
 function _qsprintf_check_scalar_type($value, $type, $query) {
   switch ($type) {
     case 'Q':

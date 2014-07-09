@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group library
- */
 final class PhutilBootloader {
 
   private static $instance;

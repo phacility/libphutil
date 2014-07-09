@@ -2,7 +2,6 @@
 
 /**
  * Exception thrown when a system command fails.
- * @group exec
  */
 final class CommandException extends Exception {
 

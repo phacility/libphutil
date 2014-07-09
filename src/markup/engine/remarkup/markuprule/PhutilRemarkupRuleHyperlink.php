@@ -1,18 +1,15 @@
 <?php
 
 /**
- * @group markup
  * @concrete-extensible (TODO only needed by Facebook at the moment)
  */
-class PhutilRemarkupRuleHyperlink
-  extends PhutilRemarkupRule {
+class PhutilRemarkupRuleHyperlink extends PhutilRemarkupRule {
 
   public function getPriority() {
     return 400.0;
   }
 
   public function apply($text) {
-
     // Hyperlinks with explicit "<>" around them get linked exactly, without
     // the "<>". Angle brackets are basically special and mean "this is a URL
     // with weird characters". This is assumed to be reasonable because they
@@ -38,7 +35,6 @@ class PhutilRemarkupRuleHyperlink
   }
 
   protected function markupHyperlink($matches) {
-
     $protocols = $this->getEngine()->getConfig(
       'uri.allowed-protocols',
       array());

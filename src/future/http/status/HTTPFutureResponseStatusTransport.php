@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group futures
- */
 final class HTTPFutureResponseStatusTransport extends HTTPFutureResponseStatus {
 
   const ERROR_TIMEOUT             = 1;

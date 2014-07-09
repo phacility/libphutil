@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
 
   public function testSimpleOptionsParse() {

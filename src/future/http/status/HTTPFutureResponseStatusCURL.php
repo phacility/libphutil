@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group futures
- */
 final class HTTPFutureResponseStatusCURL extends HTTPFutureResponseStatus {
 
   protected function getErrorCodeType($code) {

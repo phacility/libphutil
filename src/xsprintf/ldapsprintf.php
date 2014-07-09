@@ -19,7 +19,6 @@ function ldap_sprintf($pattern /* , ... */) {
 
 /**
  * @{function:ldap_sprintf} callback for LDAP encoding.
- * @group markup
  */
 function xsprintf_ldap($userdata, &$pattern, &$pos, &$value, &$length) {
   $type = $pattern[$pos];

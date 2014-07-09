@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group paypal
- */
 final class PhutilPayPalAPIFuture extends FutureProxy {
 
   private $future;

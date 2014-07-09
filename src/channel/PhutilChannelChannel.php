@@ -7,8 +7,6 @@
  * semantics with @{class:PhutilProtocolChannel}).
  *
  * The implementation of this class is entirely uninteresting.
- *
- * @group channel
  */
 abstract class PhutilChannelChannel extends PhutilChannel {
 

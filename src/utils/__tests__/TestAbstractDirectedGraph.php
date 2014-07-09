@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class TestAbstractDirectedGraph extends AbstractDirectedGraph {
 
   private $nodes;

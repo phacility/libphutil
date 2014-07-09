@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class FileFinderTestCase extends PhutilTestCase {
 
   protected function getFinder() {
@@ -26,8 +23,9 @@ final class FileFinderTestCase extends PhutilTestCase {
       $this->assertTrue(array_key_exists('test.txt', $files));
       $this->assertTrue(array_key_exists('file.txt', $files));
       $this->assertTrue(
-          array_key_exists('include_dir.txt/subdir.txt/alsoinclude.txt',
-              $files));
+          array_key_exists(
+            'include_dir.txt/subdir.txt/alsoinclude.txt',
+            $files));
       $this->assertFalse(array_key_exists('test', $files));
       $this->assertTrue(array_key_exists('.hidden.txt', $files));
       $this->assertFalse(array_key_exists('exclude/file.txt', $files));
@@ -38,14 +36,18 @@ final class FileFinderTestCase extends PhutilTestCase {
       }
 
       // Test checksums.
-      $this->assertEqual($files['test.txt'],
-          'aea46212fa8b8d0e0e6aa34a15c9e2f5');
-      $this->assertEqual($files['file.txt'],
-          '725130ba6441eadb4e5d807898e0beae');
-      $this->assertEqual($files['.hidden.txt'],
-          'b6cfc9ce9afe12b258ee1c19c235aa27');
-      $this->assertEqual($files['include_dir.txt/subdir.txt/alsoinclude.txt'],
-          '91e5c1ad76ff229c6456ac92e74e1d9f');
+      $this->assertEqual(
+        $files['test.txt'],
+        'aea46212fa8b8d0e0e6aa34a15c9e2f5');
+      $this->assertEqual(
+        $files['file.txt'],
+        '725130ba6441eadb4e5d807898e0beae');
+      $this->assertEqual(
+        $files['.hidden.txt'],
+        'b6cfc9ce9afe12b258ee1c19c235aa27');
+      $this->assertEqual(
+        $files['include_dir.txt/subdir.txt/alsoinclude.txt'],
+        '91e5c1ad76ff229c6456ac92e74e1d9f');
     }
   }
 
@@ -87,8 +89,9 @@ final class FileFinderTestCase extends PhutilTestCase {
       $this->assertTrue(array_key_exists('test.txt', $files));
       $this->assertTrue(array_key_exists('file.txt', $files));
       $this->assertTrue(
-          array_key_exists('include_dir.txt/subdir.txt/alsoinclude.txt',
-              $files));
+          array_key_exists(
+            'include_dir.txt/subdir.txt/alsoinclude.txt',
+            $files));
       $this->assertFalse(array_key_exists('test', $files));
       $this->assertTrue(array_key_exists('.hidden.txt', $files));
       $this->assertFalse(array_key_exists('exclude/file.txt', $files));
@@ -113,8 +116,9 @@ final class FileFinderTestCase extends PhutilTestCase {
 
       // Test whether the correct files were found.
       $this->assertTrue(
-          array_key_exists('include_dir.txt/subdir.txt/alsoinclude.txt',
-              $files));
+          array_key_exists(
+            'include_dir.txt/subdir.txt/alsoinclude.txt',
+            $files));
       // Ensure that only the one file was found.
       $this->assertEqual(1, count($files));
     }

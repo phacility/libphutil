@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilLanguageGuesserTestCase extends PhutilTestCase {
 
   public function testGuessing() {

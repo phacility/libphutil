@@ -16,8 +16,6 @@
  *
  * @task  construct   Constructing Locks
  * @task  impl        Implementation
- *
- * @group filesystem
  */
 final class PhutilFileLock extends PhutilLock {
 
@@ -117,4 +115,5 @@ final class PhutilFileLock extends PhutilLock {
 
     $this->handle = null;
   }
+
 }

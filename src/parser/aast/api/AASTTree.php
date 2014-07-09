@@ -1,9 +1,7 @@
 <?php
 
 /**
- * An abstract abstract syntax tree. YESSSSSSS.
- *
- * @group aast
+ * An abstract abstract syntax tree.
  */
 abstract class AASTTree {
 

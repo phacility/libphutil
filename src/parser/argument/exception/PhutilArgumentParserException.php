@@ -1,8 +1,3 @@
 <?php
 
-/**
- * @group console
- */
-abstract class PhutilArgumentParserException extends Exception {
-
-}
+abstract class PhutilArgumentParserException extends Exception {}

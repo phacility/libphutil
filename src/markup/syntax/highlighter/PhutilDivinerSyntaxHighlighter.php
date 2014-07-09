@@ -3,8 +3,6 @@
 /**
  * Simple syntax highlighter for the ".diviner" format, which is just Remarkup
  * with a specific ruleset. This should also work alright for Remarkup.
- *
- * @group markup
  */
 final class PhutilDivinerSyntaxHighlighter {
 
@@ -17,7 +15,6 @@ final class PhutilDivinerSyntaxHighlighter {
   }
 
   public function getHighlightFuture($source) {
-
     $source = phutil_escape_html($source);
 
     // This highlighter isn't perfect but tries to do an okay job at getting

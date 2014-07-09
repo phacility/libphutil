@@ -1,9 +1,3 @@
 <?php
 
-/**
- * @group storage
- */
-abstract class AphrontQueryRecoverableException
-  extends AphrontQueryException {
-
-}
+abstract class AphrontQueryRecoverableException extends AphrontQueryException {}

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group futures
- */
 abstract class HTTPFutureResponseStatus extends Exception {
 
   private $statusCode;

@@ -2,8 +2,6 @@
 
 /**
  * Daemon which spawns nonterminating, death-resistant children.
- *
- * @group testcase
  */
 final class PhutilProcessGroupDaemon extends PhutilTortureTestDaemon {
 

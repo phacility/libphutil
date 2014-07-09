@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @group event
  * @concrete-extensible
  */
 class PhutilEventType extends PhutilEventConstants {

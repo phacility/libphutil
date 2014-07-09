@@ -8,8 +8,6 @@
  *
  *  %R Rrraw Rreferrrence / Rrrrevset
  *    Passes text through unescaped (e.g., an already-escaped revset).
- *
- * @group mercurial
  */
 function hgsprintf($pattern /* , ... */) {
   $args = func_get_args();
@@ -18,8 +16,6 @@ function hgsprintf($pattern /* , ... */) {
 
 /**
  * @{function:xsprintf} callback for Mercurial encoding.
- *
- * @group mercurial
  */
 function xsprintf_mercurial($userdata, &$pattern, &$pos, &$value, &$length) {
   $type = $pattern[$pos];

@@ -1,9 +1,4 @@
 <?php
 
-/**
- * @group console
- */
 final class PhutilArgumentUsageException
-  extends PhutilArgumentParserException {
-
-}
+  extends PhutilArgumentParserException {}

@@ -6,7 +6,6 @@
  * @{class:PhutilErrorHandler} to unnest exceptions in a forward-compatible way.
  *
  * @concrete-extensible
- * @group error
  */
 class PhutilProxyException extends Exception {
 

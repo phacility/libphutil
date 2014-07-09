@@ -2,8 +2,6 @@
 
 /**
  * Test cases for @{class:PhutilURI} parser.
- *
- * @group testcase
  */
 final class PhutilURITestCase extends PhutilTestCase {
 

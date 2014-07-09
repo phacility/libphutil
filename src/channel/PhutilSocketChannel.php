@@ -16,8 +16,6 @@
  *     fopen('php://stdout', 'w'));
  *
  * @task construct Construction
- *
- * @group channel
  */
 final class PhutilSocketChannel extends PhutilChannel {
 

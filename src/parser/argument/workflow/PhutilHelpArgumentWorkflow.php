@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group console
- */
 final class PhutilHelpArgumentWorkflow extends PhutilArgumentWorkflow {
 
   protected function didConstruct() {

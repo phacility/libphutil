@@ -22,17 +22,12 @@
  *   %J (Javascript)
  *     Inserts raw, unescaped Javascript. This is DANGEROUS because it WILL
  *     NOT BE ESCAPED.
- *
- * @group markup
  */
 function jsprintf($pattern /* , ... */) {
   $args = func_get_args();
   return xsprintf('xsprintf_javascript', null, $args);
 }
 
-/**
- * @group markup
- */
 function vjsprintf($pattern, array $argv) {
   array_unshift($argv, $pattern);
   return xsprintf('xsprintf_javascript', null, $argv);
@@ -40,7 +35,6 @@ function vjsprintf($pattern, array $argv) {
 
 /**
  * @{function:xsprintf} callback for JavaScript encoding.
- * @group markup
  */
 function xsprintf_javascript($userdata, &$pattern, &$pos, &$value, &$length) {
   $type = $pattern[$pos];

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group console
- */
 final class PhutilConsoleFormatter {
 
   private static $colorCodes = array(

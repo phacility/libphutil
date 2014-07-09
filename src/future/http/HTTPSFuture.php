@@ -2,8 +2,6 @@
 
 /**
  * Very basic HTTPS future.
- *
- * @group futures
  */
 final class HTTPSFuture extends BaseHTTPFuture {
 
@@ -129,7 +127,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
   /**
    * Load contents of remote URI. Behaves pretty much like
-   *  `@file_get_contents($uri)` but doesn't require `allow_url_fopen`.
+   * `@file_get_contents($uri)` but doesn't require `allow_url_fopen`.
    *
    * @param string
    * @param float

@@ -2,8 +2,6 @@
 
 /**
  * Represents current transaction state of a connection.
- *
- * @group storage
  */
 final class AphrontDatabaseTransactionState {
 

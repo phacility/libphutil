@@ -3,8 +3,6 @@
 /**
  * Lexer for a simple type grammar. See @{class:PhutilTypeSpec} for a
  * description.
- *
- * @group lexer
  */
 final class PhutilTypeLexer extends PhutilLexer {
 
@@ -30,4 +28,5 @@ final class PhutilTypeLexer extends PhutilLexer {
       ),
     );
   }
+
 }

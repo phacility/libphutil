@@ -26,8 +26,6 @@
  * @task  wait    Waiting for Activity
  * @task  update  Responding to Activity
  * @task  impl    Channel Implementation
- *
- * @group channel
  */
 abstract class PhutilChannel {
 

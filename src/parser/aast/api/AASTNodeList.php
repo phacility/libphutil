@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group aast
- */
 final class AASTNodeList implements Iterator, Countable {
 
   protected $list;

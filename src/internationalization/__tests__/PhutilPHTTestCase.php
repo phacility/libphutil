@@ -2,8 +2,6 @@
 
 /**
  * Test cases for functions in pht.php.
- *
- * @group testcase
  */
 final class PhutilPHTTestCase extends PhutilTestCase {
 

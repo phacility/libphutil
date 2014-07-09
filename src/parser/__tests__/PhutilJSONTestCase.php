@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group testcase
- */
 final class PhutilJSONTestCase extends PhutilTestCase {
 
   public function testEmptyArrayEncoding() {

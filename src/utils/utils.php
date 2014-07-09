@@ -30,7 +30,7 @@ function id($x) {
  * @param   scalar  Index to access in the array.
  * @param   wild    Default value to return if the key is not present in the
  *                  array.
- * @return  wild    If $array[$key] exists, that value is returned. If not,
+ * @return  wild    If `$array[$key]` exists, that value is returned. If not,
  *                  $default is returned without raising a warning.
  */
 function idx(array $array, $key, $default = null) {
@@ -100,9 +100,9 @@ function idx(array $array, $key, $default = null) {
  * @param   string|null   Determines how **keys** will be assigned in the result
  *                        array. Use a string like 'getID' to use the result
  *                        of calling the named method as each object's key, or
- *                        ##null## to preserve the original keys.
+ *                        `null` to preserve the original keys.
  * @return  dict          A dictionary with keys and values derived according
- *                        to whatever you passed as $method and $key_method.
+ *                        to whatever you passed as `$method` and `$key_method`.
  */
 function mpull(array $list, $method, $key_method = null) {
   $result = array();
@@ -169,13 +169,14 @@ function mpull(array $list, $method, $key_method = null) {
  * @param   string|null   Determines which **values** will appear in the result
  *                        array. Use a string like 'name' to store the value of
  *                        accessing the named property in each value, or
- *                        ##null## to preserve the original objects.
+ *                        `null` to preserve the original objects.
  * @param   string|null   Determines how **keys** will be assigned in the result
  *                        array. Use a string like 'id' to use the result of
  *                        accessing the named property as each object's key, or
- *                        ##null## to preserve the original keys.
+ *                        `null` to preserve the original keys.
  * @return  dict          A dictionary with keys and values derived according
- *                        to whatever you passed as $property and $key_property.
+ *                        to whatever you passed as `$property` and
+ *                        `$key_property`.
  */
 function ppull(array $list, $property, $key_property = null) {
   $result = array();
@@ -223,7 +224,7 @@ function ppull(array $list, $property, $key_property = null) {
  *                        array. Use a scalar to select that index from each
  *                        array, or null to preserve the array keys.
  * @return  dict          A dictionary with keys and values derived according
- *                        to whatever you passed for $index and $key_index.
+ *                        to whatever you passed for `$index` and `$key_index`.
  */
 function ipull(array $list, $index, $key_index = null) {
   $result = array();
@@ -341,13 +342,13 @@ function igroup(array $list, $by /* , ... */) {
 
 /**
  * Sort a list of objects by the return value of some method. In PHP, this is
- * often vastly more efficient than ##usort()## and similar.
+ * often vastly more efficient than `usort()` and similar.
  *
  *    // Sort a list of Duck objects by name.
  *    $sorted = msort($ducks, 'getName');
  *
  * It is usually significantly more efficient to define an ordering method
- * on objects and call ##msort()## than to write a comparator. It is often more
+ * on objects and call `msort()` than to write a comparator. It is often more
  * convenient, as well.
  *
  * NOTE: This method does not take the list by reference; it returns a new list.
@@ -415,8 +416,7 @@ function isort(array $list, $index) {
  * @param  string       A method name.
  * @param  bool         Optionally, pass true to drop objects which pass the
  *                      filter instead of keeping them.
- *
- * @return array   List of objects which pass the filter.
+ * @return array        List of objects which pass the filter.
  */
 function mfilter(array $list, $method, $negate = false) {
   if (!is_string($method)) {
@@ -461,8 +461,7 @@ function mfilter(array $list, $method, $negate = false) {
  * @param  scalar       The index.
  * @param  bool         Optionally, pass true to drop arrays which pass the
  *                      filter instead of keeping them.
- *
- * @return array   List of arrays which pass the filter.
+ * @return array        List of arrays which pass the filter.
  */
 function ifilter(array $list, $index, $negate = false) {
   if (!is_scalar($index)) {
@@ -515,8 +514,8 @@ function array_select_keys(array $dict, array $keys) {
 
 
 /**
- * Checks if all values of array are instances of the passed class.
- * Throws InvalidArgumentException if it isn't true for any value.
+ * Checks if all values of array are instances of the passed class. Throws
+ * `InvalidArgumentException` if it isn't true for any value.
  *
  * @param  array
  * @param  string  Name of the class or 'array' to check arrays.
@@ -581,11 +580,11 @@ function assert_stringlike($parameter) {
 }
 
 /**
- * Returns the first argument which is not strictly null, or ##null## if there
+ * Returns the first argument which is not strictly null, or `null` if there
  * are no such arguments. Identical to the MySQL function of the same name.
  *
  * @param  ...         Zero or more arguments of any type.
- * @return mixed       First non-##null## arg, or null if no such arg exists.
+ * @return mixed       First non-`null` arg, or null if no such arg exists.
  */
 function coalesce(/* ... */) {
   $args = func_get_args();
@@ -600,14 +599,14 @@ function coalesce(/* ... */) {
 
 /**
  * Similar to @{function:coalesce}, but less strict: returns the first
- * non-##empty()## argument, instead of the first argument that is strictly
- * non-##null##. If no argument is nonempty, it returns the last argument. This
+ * non-`empty()` argument, instead of the first argument that is strictly
+ * non-`null`. If no argument is nonempty, it returns the last argument. This
  * is useful idiomatically for setting defaults:
  *
  *   $display_name = nonempty($user_name, $full_name, "Anonymous");
  *
  * @param  ...         Zero or more arguments of any type.
- * @return mixed       First non-##empty()## arg, or last arg if no such arg
+ * @return mixed       First non-`empty()` arg, or last arg if no such arg
  *                     exists, or null if you passed in zero args.
  */
 function nonempty(/* ... */) {
@@ -625,7 +624,7 @@ function nonempty(/* ... */) {
 
 /**
  * Invokes the "new" operator with a vector of arguments. There is no way to
- * call_user_func_array() on a class constructor, so you can instead use this
+ * `call_user_func_array()` on a class constructor, so you can instead use this
  * function:
  *
  *   $obj = newv($class_name, $argv);
@@ -640,7 +639,7 @@ function nonempty(/* ... */) {
  *
  *   - Build a fake serialized object and unserialize it.
  *   - Invoke the constructor twice.
- *   - just use eval() lol
+ *   - just use `eval()` lol
  *
  * These are really bad solutions to the problem because they can have side
  * effects (e.g., __wakeup()) and give you an object in an otherwise impossible
@@ -648,8 +647,8 @@ function nonempty(/* ... */) {
  *
  * If you own the classes you're doing this for, you should consider whether
  * or not restructuring your code (for instance, by creating static
- * construction methods) might make it cleaner before using newv(). Static
- * constructors can be invoked with call_user_func_array(), and may give your
+ * construction methods) might make it cleaner before using `newv()`. Static
+ * constructors can be invoked with `call_user_func_array()`, and may give your
  * class a cleaner and more descriptive API.
  *
  * @param  string  The name of a class.
@@ -680,7 +679,7 @@ function head(array $arr) {
 }
 
 /**
- * Returns the last element of an array. This is exactly like end() except
+ * Returns the last element of an array. This is exactly like `end()` except
  * that it won't warn you if you pass some non-referencable array to
  * it -- e.g., the result of some other array operation.
  *
@@ -838,9 +837,6 @@ function array_interleave($interleave, array $array) {
   return $result;
 }
 
-/**
- * @group library
- */
 function phutil_is_windows() {
   // We can also use PHP_OS, but that's kind of sketchy because it returns
   // "WINNT" for Windows 7 and "Darwin" for Mac OS X. Practically, testing for
@@ -848,9 +844,6 @@ function phutil_is_windows() {
   return (DIRECTORY_SEPARATOR != '/');
 }
 
-/**
- * @group library
- */
 function phutil_is_hiphop_runtime() {
   return (array_key_exists('HPHP', $_ENV) && $_ENV['HPHP'] === 1);
 }
@@ -860,7 +853,6 @@ function phutil_is_hiphop_runtime() {
  * before the request completes abruptly.
  *
  * @param int|string $status
- * @group library
  */
 function phutil_exit($status = 0) {
   $event = new PhutilEvent(
@@ -994,7 +986,6 @@ function phutil_fwrite_nonblocking_stream($stream, $bytes) {
  * @return  int     Quantity of specified unit.
  */
 function phutil_units($description) {
-
   $matches = null;
   if (!preg_match('/^(\d+) (\w+) in (\w+)$/', $description, $matches)) {
     throw new InvalidArgumentException(

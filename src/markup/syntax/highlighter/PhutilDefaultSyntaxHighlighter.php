@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group markup
- */
 final class PhutilDefaultSyntaxHighlighter {
 
   public function setConfig($key, $value) {
@@ -13,4 +10,5 @@ final class PhutilDefaultSyntaxHighlighter {
     $result = hsprintf('%s', $source);
     return new ImmediateFuture($result);
   }
+
 }

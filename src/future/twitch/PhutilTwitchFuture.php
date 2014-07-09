@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group twitch
- */
 final class PhutilTwitchFuture extends FutureProxy {
 
   private $future;

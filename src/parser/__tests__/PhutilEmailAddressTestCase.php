@@ -2,8 +2,6 @@
 
 /**
  * Test cases for @{class:PhutilEmailAddress} parser.
- *
- * @group testcase
  */
 final class PhutilEmailAddressTestCase extends PhutilTestCase {
 
@@ -91,7 +89,6 @@ final class PhutilEmailAddressTestCase extends PhutilTestCase {
     $this->assertEqual(
       'alincoln at logcabin dot com',
       $email->getAddress());
-
   }
 
 }
