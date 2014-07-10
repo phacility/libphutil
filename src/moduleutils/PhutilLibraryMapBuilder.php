@@ -119,7 +119,6 @@ final class PhutilLibraryMapBuilder {
         $progress->update(1);
       }
       $progress->done();
-      $this->log("\nDone.\n");
     }
 
     // We're done building the cache, so write it out immediately. Note that
