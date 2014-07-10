@@ -436,7 +436,6 @@ final class PhutilLibraryMapBuilder {
  * {$at}generated
  * {$at}phutil-library-version {$version}
  */
-
 phutil_register_library_map({$library_map});
 
 EOPHP;
