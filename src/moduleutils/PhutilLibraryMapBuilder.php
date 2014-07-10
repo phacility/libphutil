@@ -112,12 +112,9 @@ final class PhutilLibraryMapBuilder {
           $symbol_map[$file] = $result;
         } else {
           $progress->done(false);
-          echo phutil_console_format(
-            "\n**SYNTAX ERROR!**\nFile: %s\nLine: %d\n\n%s\n",
-            Filesystem::readablePath($result['file']),
+          throw new XHPASTSyntaxErrorException(
             $result['line'],
             $result['error']);
-          exit(1);
         }
         $progress->update(1);
       }
