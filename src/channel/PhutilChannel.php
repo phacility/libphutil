@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Wrapper arounds streams, pipes, and other things that have basic read/write
+ * Wrapper around streams, pipes, and other things that have basic read/write
  * I/O characteristics.
  *
  * Channels include buffering, so you can do fire-and-forget writes and reads

@@ -26,7 +26,7 @@
  * The **library** and **where** keys show where the symbol is defined. The
  * **type** and **name** keys identify the symbol itself.
  *
- * NOTE: This class must not use libphutil funtions, including id() and idx().
+ * NOTE: This class must not use libphutil functions, including id() and idx().
  *
  * @task config   Configuring the Query
  * @task load     Loading Symbols

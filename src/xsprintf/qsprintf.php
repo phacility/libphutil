@@ -41,7 +41,7 @@
  *   %~ ("Substring")
  *     Escapes a substring query for a LIKE (or NOT LIKE) clause. For example:
  *
- *       //  Find all rows with $search as a substing of `name`.
+ *       //  Find all rows with $search as a substring of `name`.
  *       qsprintf($escaper, 'WHERE name LIKE %~', $search);
  *
  *     See also %> and %<.

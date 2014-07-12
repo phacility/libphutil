@@ -12,7 +12,7 @@ final class ExecFutureTestCase extends PhutilTestCase {
   }
 
   public function testKeepPipe() {
-    // NOTE: This is mosty testing the semantics of $keep_pipe in write().
+    // NOTE: This is mostly testing the semantics of $keep_pipe in write().
 
     list($stdout) = id(new ExecFuture('cat'))
       ->write('', true)

@@ -595,7 +595,7 @@ final class ExecFuture extends Future {
    */
   public function isReady() {
     // NOTE: We have soft dependencies on PhutilServiceProfiler and
-    // PhutilErrorTrap here. These depencies are soft to avoid the need to
+    // PhutilErrorTrap here. These dependencies are soft to avoid the need to
     // build them into the Phage agent. Under normal circumstances, these
     // classes are always available.
 
@@ -612,7 +612,7 @@ final class ExecFuture extends Future {
       }
 
       if (!$this->start) {
-        // We might already have started the timer via initating resolution.
+        // We might already have started the timer via initiating resolution.
         $this->start = microtime(true);
       }
 
@@ -627,7 +627,7 @@ final class ExecFuture extends Future {
         // See T4395. proc_open under Windows uses "cmd /C [cmd]", which will
         // strip the first and last quote when there aren't exactly two quotes
         // (and some other conditions as well). This results in a command that
-        // looks like `command" "path to my file" "something someting` which is
+        // looks like `command" "path to my file" "something something` which is
         // clearly wrong. By surrounding the command string with quotes we can
         // be sure this process is harmless.
         if (strpos($unmasked_command, '"') !== false) {

@@ -116,7 +116,7 @@ abstract class AASTNode {
    * Build a cache to improve the performance of @{method:selectTokensOfType}.
    * This cache makes a time/memory tradeoff by aggressively caching token
    * types. It may improve the tree's query performance substantially if you
-   * make a large number of queries, but also requires a signficant amount of
+   * make a large number of queries, but also requires a significant amount of
    * memory.
    *
    * This builds a cache for this node only.

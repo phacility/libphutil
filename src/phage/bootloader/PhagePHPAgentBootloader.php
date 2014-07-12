@@ -15,7 +15,7 @@ final class PhagePHPAgentBootloader extends PhageAgentBootloader {
     $len = $this->bootLength;
 
     // We need to run a command which will bootload a full agent by reading
-    // and evaulating source code from stdin. This is the smallest bootstrap
+    // and evaluating source code from stdin. This is the smallest bootstrap
     // I was able to construct:
     //
     //   - Using `fread(STDIN, ...)` is only good up to 8192 bytes.

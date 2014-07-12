@@ -102,7 +102,7 @@ final class PhutilArgumentParser {
   /**
    * Parse and consume a list of arguments, removing them from the argument
    * vector but leaving unparsed arguments for later consumption. You can
-   * retreive unconsumed arguments directly with
+   * retrieve unconsumed arguments directly with
    * @{method:getUnconsumedArgumentVector}. Doing a partial parse can make it
    * easier to share common flags across scripts or workflows.
    *

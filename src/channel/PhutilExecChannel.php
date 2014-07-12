@@ -30,7 +30,7 @@
  * a server but performs I/O on stdin/stdout, and you need to act like a client
  * or interact with the program at the same time as you manage traditional
  * socket connections. Examples are Mercurial operating in "cmdserve" mode, git
- * operating in "receive-pack" mode, etc. It is unlikely that any reasonble
+ * operating in "receive-pack" mode, etc. It is unlikely that any reasonable
  * use of this class is concise enough to make a short example out of, so you
  * get a contrived one instead.
  *

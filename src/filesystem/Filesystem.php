@@ -619,7 +619,7 @@ final class Filesystem {
         "Failed to create directory `{$path}'.");
     }
 
-    // Need to change premissions explicitly because mkdir does something
+    // Need to change permissions explicitly because mkdir does something
     // slightly different. mkdir(2) man page:
     // 'The parameter mode specifies the permissions to use. It is modified by
     // the process's umask in the usual way: the permissions of the created

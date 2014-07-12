@@ -30,7 +30,7 @@ final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
 
   public function setKeys(array $keys, $ttl = null) {
     // NOTE: Although modern APC supports passing an array to `apc_store()`,
-    // it is not supported by older version fo APC or by HPHP.
+    // it is not supported by older version of APC or by HPHP.
 
     foreach ($keys as $key => $value) {
       apc_store($key, $value, $ttl);

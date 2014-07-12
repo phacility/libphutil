@@ -260,7 +260,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
 
     // We may need to open a list on a <null> node, but they do not have
-    // list style information yet. We need to propagate list style inforamtion
+    // list style information yet. We need to propagate list style information
     // backward through the tree. In the above example, the tree now looks
     // like this:
     //

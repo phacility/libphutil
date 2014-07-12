@@ -473,7 +473,7 @@ function phutil_utf8_hard_wrap_html($string, $width) {
 }
 
 /**
-  * Hard-wrap a block of UTF-8 text with no embedded HTML tags and entitites
+  * Hard-wrap a block of UTF-8 text with no embedded HTML tags and entities.
   *
   * @param string A non HTML string
   * @param int Width of the hard-wrapped lines
@@ -526,7 +526,7 @@ function phutil_utf8_hard_wrap($string, $width) {
  *
  * @param string String to re-encode.
  * @param string Target encoding name, like "UTF-8".
- * @param string Source endocing name, like "ISO-8859-1".
+ * @param string Source encoding name, like "ISO-8859-1".
  * @return string Input string, with converted character encoding.
  *
  * @phutil-external-symbol function mb_convert_encoding

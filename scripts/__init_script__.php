@@ -38,7 +38,7 @@ function __phutil_init_script__() {
     // applied to 100+ levels of directory nesting). Stop it from triggering:
     // we explicitly limit recursive algorithms which should be limited.
 
-    // After Feb 2014, XDebug inteprets a value of 0 to mean "do not allow any
+    // After Feb 2014, XDebug interprets a value of 0 to mean "do not allow any
     // function calls". Previously, 0 effectively disabled this check. For
     // context, see T5027.
     'xdebug.max_nesting_level'    => PHP_INT_MAX,

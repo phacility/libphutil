@@ -2,7 +2,7 @@
 <?php
 
 // This script just creates a process which is difficult to terminate. It is
-// used for daemon resiliance tests.
+// used for daemon resilience tests.
 
 declare(ticks = 1);
 pcntl_signal(SIGTERM, 'ignore');

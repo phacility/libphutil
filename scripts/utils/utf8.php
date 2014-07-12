@@ -119,7 +119,7 @@ function show(array $files, $context) {
 
       $width = strlen(max(array_keys($map)));
 
-      // Set $last such that we print a newline on the first iteration thorugh
+      // Set $last such that we print a newline on the first iteration through
       // the loop.
       $last = -2;
       foreach ($map as $idx => $ignored) {

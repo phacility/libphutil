@@ -398,7 +398,7 @@ function isort(array $list, $index) {
 
 /**
  * Filter a list of objects by executing a method across all the objects and
- * filter out the ones wth empty() results. this function works just like
+ * filter out the ones with empty() results. this function works just like
  * @{function:ifilter}, except that it operates on a list of objects instead
  * of a list of arrays.
  *

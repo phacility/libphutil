@@ -11,7 +11,7 @@
  * simpler) to read the entire stream first and then process it (e.g., with
  * `explode()`).
  *
- * This class is abstract. The concrete implementations avialable are:
+ * This class is abstract. The concrete implementations available are:
  *
  *   - @{class:LinesOfALargeFile}, for reading large files; and
  *   - @{class:LinesOfALargeExecFuture}, for reading large output from
@@ -24,7 +24,7 @@
  *   }
  *
  * By default, a line is delimited by "\n". The delimiting character is
- * not returned. You can change the charater with @{method:setDelimiter}. The
+ * not returned. You can change the character with @{method:setDelimiter}. The
  * last part of the file is returned as the last $line, even if it does not
  * include a terminating character (if it does, the terminating character is
  * stripped).
@@ -192,7 +192,7 @@ abstract class LinesOfALarge implements Iterator {
         // No more bytes. If we have a buffer, return its contents. We
         // potentially return part of a line here if the last line had no
         // delimiter, but that currently seems reasonable as a default
-        // behaivor. If we don't have a buffer, we're done.
+        // behavior. If we don't have a buffer, we're done.
         $this->eof = true;
         if (strlen($this->buf)) {
           $this->num++;
