@@ -114,7 +114,7 @@ final class PhutilLibraryMapBuilder {
           $progress->done(false);
           throw new XHPASTSyntaxErrorException(
             $result['line'],
-            $result['error']);
+            $file.': '.$result['error']);
         }
         $progress->update(1);
       }
