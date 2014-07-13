@@ -342,6 +342,7 @@ phutil_register_library_map(array(
   'function' =>
   array(
     'Futures' => 'future/functions.php',
+    '_phutil_date_format' => 'utils/viewutils.php',
     '_qsprintf_check_scalar_type' => 'xsprintf/qsprintf.php',
     '_qsprintf_check_type' => 'xsprintf/qsprintf.php',
     'array_fuse' => 'utils/utils.php',
@@ -390,6 +391,10 @@ phutil_register_library_map(array(
     'phutil_escape_uri' => 'markup/render.php',
     'phutil_escape_uri_path_component' => 'markup/render.php',
     'phutil_exit' => 'utils/utils.php',
+    'phutil_format_bytes' => 'utils/viewutils.php',
+    'phutil_format_relative_time' => 'utils/viewutils.php',
+    'phutil_format_relative_time_detailed' => 'utils/viewutils.php',
+    'phutil_format_units_generic' => 'utils/viewutils.php',
     'phutil_fwrite_nonblocking_stream' => 'utils/utils.php',
     'phutil_get_current_library_name' => 'moduleutils/moduleutils.php',
     'phutil_get_library_name_for_root' => 'moduleutils/moduleutils.php',
@@ -405,6 +410,7 @@ phutil_register_library_map(array(
     'phutil_json_decode' => 'utils/utils.php',
     'phutil_load_library' => 'moduleutils/core.php',
     'phutil_loggable_string' => 'utils/utils.php',
+    'phutil_parse_bytes' => 'utils/viewutils.php',
     'phutil_passthru' => 'future/exec/execx.php',
     'phutil_register_library' => 'moduleutils/core.php',
     'phutil_register_library_map' => 'moduleutils/core.php',
