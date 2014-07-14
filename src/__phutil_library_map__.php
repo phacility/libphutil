@@ -435,6 +435,7 @@ phutil_register_library_map(array(
     'phutil_utf8v' => 'utils/utf8.php',
     'phutil_utf8v_codepoints' => 'utils/utf8.php',
     'phutil_utf8v_combined' => 'utils/utf8.php',
+    'phutil_var_export' => 'utils/utils.php',
     'ppull' => 'utils/utils.php',
     'qsprintf' => 'xsprintf/qsprintf.php',
     'queryfx' => 'xsprintf/queryfx.php',

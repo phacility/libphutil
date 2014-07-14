@@ -1071,3 +1071,22 @@ function phutil_json_decode($string) {
 function phutil_censor_credentials($string) {
   return preg_replace(',(?<=://)([^/@\s]+)(?=@|$),', 'xxxxx', $string);
 }
+
+
+/**
+ * Returns a parsable string representation of a variable.
+ *
+ * @param  wild    The variable you want to export.
+ * @return string
+ */
+function phutil_var_export($var) {
+  $regex = array(
+    '/\s+$/m'             => '',
+    "/=>\n\s+/"           => '=> ',
+    "/array\s*\(\n\s*\)/" => 'array()',
+    '/array \(/'          => 'array(',
+  );
+
+  $var = var_export($var, true);
+  return preg_replace(array_keys($regex), array_values($regex), $var);
+}

@@ -565,4 +565,29 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
   }
 
+  public function testVarExport() {
+    $this->assertEqual(
+      'array()',
+      phutil_var_export(array()));
+    $this->assertEqual(
+      implode("\n", array(
+        'array(',
+        '  0 => 1,',
+        '  1 => 2,',
+        '  2 => 3,',
+        ')',
+      )),
+      phutil_var_export(array(1, 2, 3)));
+    $this->assertEqual(
+      implode("\n", array(
+        'array(',
+        "  0 => 'foo',",
+        "  'bar' => array(",
+        "    'baz' => stdClass::__set_state(array()),",
+        '  ),',
+        ')',
+      )),
+      phutil_var_export(array('foo', 'bar' => array('baz' => new stdClass()))));
+  }
+
 }
