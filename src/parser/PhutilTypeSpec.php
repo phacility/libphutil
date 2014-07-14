@@ -380,1762 +380,1378 @@ final class PhutilTypeSpec {
     // `support/parser/generate-type-parser.php`.
 
     return PhutilParserGenerator::parseTokensWithTables(
-      array (
-        0 =>
-        array (
-          'opt' =>
-          array (
+      array(
+        0 => array(
+          'opt' => array(
             0 => 'S',
             1 => 3,
           ),
-          'k' =>
-          array (
+          'k' => array(
             0 => 'S',
             1 => 20,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 21,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 71,
           ),
         ),
-        1 =>
-        array (
-          '(end-of-file)' =>
-          array (
+        1 => array(
+          '(end-of-file)' => array(
             0 => 'A',
           ),
         ),
-        2 =>
-        array (
-          '(end-of-file)' =>
-          array (
+        2 => array(
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'start',
               1 => 0,
               2 => 1,
             ),
           ),
         ),
-        3 =>
-        array (
-          'k' =>
-          array (
+        3 => array(
+          'k' => array(
             0 => 'S',
             1 => 20,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 21,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 71,
           ),
         ),
-        4 =>
-        array (
-          '(end-of-file)' =>
-          array (
+        4 => array(
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'maybe_optional',
               1 => 'yes',
               2 => 2,
             ),
           ),
         ),
-        5 =>
-        array (
-          '(end-of-file)' =>
-          array (
+        5 => array(
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'maybe_comment',
               1 => 'no',
               2 => 1,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'S',
             1 => 7,
           ),
         ),
-        6 =>
-        array (
-          '(end-of-file)' =>
-          array (
+        6 => array(
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'maybe_comment',
               1 => 'yes',
               2 => 2,
             ),
           ),
         ),
-        7 =>
-        array (
-          'cm' =>
-          array (
+        7 => array(
+          'cm' => array(
             0 => 'S',
             1 => 11,
           ),
         ),
-        8 =>
-        array (
-          ')' =>
-          array (
+        8 => array(
+          ')' => array(
             0 => 'S',
             1 => 9,
           ),
-          'cm' =>
-          array (
+          'cm' => array(
             0 => 'S',
             1 => 10,
           ),
         ),
-        9 =>
-        array (
-          '(end-of-file)' =>
-          array (
+        9 => array(
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'comment',
               1 => 0,
               2 => 3,
             ),
           ),
         ),
-        10 =>
-        array (
-          ')' =>
-          array (
+        10 => array(
+          ')' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'comment_text',
               1 => 0,
               2 => 2,
             ),
           ),
-          'cm' =>
-          array (
+          'cm' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'comment_text',
               1 => 0,
               2 => 2,
             ),
           ),
         ),
-        11 =>
-        array (
-          ')' =>
-          array (
+        11 => array(
+          ')' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'comment_text',
               1 => 1,
               2 => 1,
             ),
           ),
-          'cm' =>
-          array (
+          'cm' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'comment_text',
               1 => 1,
               2 => 1,
             ),
           ),
         ),
-        12 =>
-        array (
-          '(' =>
-          array (
+        12 => array(
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'type',
               1 => 'no',
               2 => 1,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'type',
               1 => 'no',
               2 => 1,
             ),
           ),
-          '?' =>
-          array (
+          '?' => array(
             0 => 'S',
             1 => 13,
           ),
         ),
-        13 =>
-        array (
-          '(' =>
-          array (
+        13 => array(
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'type',
               1 => 'yes',
               2 => 2,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'type',
               1 => 'yes',
               2 => 2,
             ),
           ),
         ),
-        14 =>
-        array (
-          '?' =>
-          array (
+        14 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'S',
             1 => 15,
           ),
         ),
-        15 =>
-        array (
-          'k' =>
-          array (
+        15 => array(
+          'k' => array(
             0 => 'S',
             1 => 20,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 21,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 71,
           ),
         ),
-        16 =>
-        array (
-          '?' =>
-          array (
+        16 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
         ),
-        17 =>
-        array (
-          '?' =>
-          array (
+        17 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
         ),
-        18 =>
-        array (
-          '?' =>
-          array (
+        18 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
         ),
-        19 =>
-        array (
-          '?' =>
-          array (
+        19 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
         ),
-        20 =>
-        array (
-          '?' =>
-          array (
+        20 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
         ),
-        21 =>
-        array (
-          '<' =>
-          array (
+        21 => array(
+          '<' => array(
             0 => 'S',
             1 => 22,
           ),
         ),
-        22 =>
-        array (
-          'k' =>
-          array (
+        22 => array(
+          'k' => array(
             0 => 'S',
             1 => 57,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 58,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 67,
           ),
         ),
-        23 =>
-        array (
-          ',' =>
-          array (
+        23 => array(
+          ',' => array(
             0 => 'S',
             1 => 24,
           ),
         ),
-        24 =>
-        array (
-          'k' =>
-          array (
+        24 => array(
+          'k' => array(
             0 => 'S',
             1 => 35,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 36,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 45,
           ),
         ),
-        25 =>
-        array (
-          '>' =>
-          array (
+        25 => array(
+          '>' => array(
             0 => 'S',
             1 => 26,
           ),
         ),
-        26 =>
-        array (
-          '?' =>
-          array (
+        26 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
         ),
-        27 =>
-        array (
-          '>' =>
-          array (
+        27 => array(
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'type',
               1 => 'no',
               2 => 1,
             ),
           ),
-          '?' =>
-          array (
+          '?' => array(
             0 => 'S',
             1 => 28,
           ),
         ),
-        28 =>
-        array (
-          '>' =>
-          array (
+        28 => array(
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'type',
               1 => 'yes',
               2 => 2,
             ),
           ),
         ),
-        29 =>
-        array (
-          '?' =>
-          array (
+        29 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'S',
             1 => 30,
           ),
         ),
-        30 =>
-        array (
-          'k' =>
-          array (
+        30 => array(
+          'k' => array(
             0 => 'S',
             1 => 35,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 36,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 45,
           ),
         ),
-        31 =>
-        array (
-          '?' =>
-          array (
+        31 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
         ),
-        32 =>
-        array (
-          '?' =>
-          array (
+        32 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
         ),
-        33 =>
-        array (
-          '?' =>
-          array (
+        33 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
         ),
-        34 =>
-        array (
-          '?' =>
-          array (
+        34 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
         ),
-        35 =>
-        array (
-          '?' =>
-          array (
+        35 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
         ),
-        36 =>
-        array (
-          '<' =>
-          array (
+        36 => array(
+          '<' => array(
             0 => 'S',
             1 => 37,
           ),
         ),
-        37 =>
-        array (
-          'k' =>
-          array (
+        37 => array(
+          'k' => array(
             0 => 'S',
             1 => 57,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 58,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 67,
           ),
         ),
-        38 =>
-        array (
-          ',' =>
-          array (
+        38 => array(
+          ',' => array(
             0 => 'S',
             1 => 39,
           ),
         ),
-        39 =>
-        array (
-          'k' =>
-          array (
+        39 => array(
+          'k' => array(
             0 => 'S',
             1 => 35,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 36,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 45,
           ),
         ),
-        40 =>
-        array (
-          '>' =>
-          array (
+        40 => array(
+          '>' => array(
             0 => 'S',
             1 => 41,
           ),
         ),
-        41 =>
-        array (
-          '?' =>
-          array (
+        41 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
         ),
-        42 =>
-        array (
-          '?' =>
-          array (
+        42 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'S',
             1 => 43,
           ),
         ),
-        43 =>
-        array (
-          'k' =>
-          array (
+        43 => array(
+          'k' => array(
             0 => 'S',
             1 => 35,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 36,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 45,
           ),
         ),
-        44 =>
-        array (
-          '?' =>
-          array (
+        44 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
         ),
-        45 =>
-        array (
-          '<' =>
-          array (
+        45 => array(
+          '<' => array(
             0 => 'S',
             1 => 46,
           ),
         ),
-        46 =>
-        array (
-          'k' =>
-          array (
+        46 => array(
+          'k' => array(
             0 => 'S',
             1 => 35,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 36,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 45,
           ),
         ),
-        47 =>
-        array (
-          '>' =>
-          array (
+        47 => array(
+          '>' => array(
             0 => 'S',
             1 => 48,
           ),
         ),
-        48 =>
-        array (
-          '?' =>
-          array (
+        48 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
-          '>' =>
-          array (
+          '>' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
         ),
-        49 =>
-        array (
-          ',' =>
-          array (
+        49 => array(
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'type',
               1 => 'no',
               2 => 1,
             ),
           ),
-          '?' =>
-          array (
+          '?' => array(
             0 => 'S',
             1 => 50,
           ),
         ),
-        50 =>
-        array (
-          ',' =>
-          array (
+        50 => array(
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'type',
               1 => 'yes',
               2 => 2,
             ),
           ),
         ),
-        51 =>
-        array (
-          '?' =>
-          array (
+        51 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'S',
             1 => 52,
           ),
         ),
-        52 =>
-        array (
-          'k' =>
-          array (
+        52 => array(
+          'k' => array(
             0 => 'S',
             1 => 57,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 58,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 67,
           ),
         ),
-        53 =>
-        array (
-          '?' =>
-          array (
+        53 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 0,
               2 => 3,
             ),
           ),
         ),
-        54 =>
-        array (
-          '?' =>
-          array (
+        54 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 0,
               2 => 1,
             ),
           ),
         ),
-        55 =>
-        array (
-          '?' =>
-          array (
+        55 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 1,
               2 => 1,
             ),
           ),
         ),
-        56 =>
-        array (
-          '?' =>
-          array (
+        56 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'not_or_type',
               1 => 2,
               2 => 1,
             ),
           ),
         ),
-        57 =>
-        array (
-          '?' =>
-          array (
+        57 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'basic_type',
               1 => 0,
               2 => 1,
             ),
           ),
         ),
-        58 =>
-        array (
-          '<' =>
-          array (
+        58 => array(
+          '<' => array(
             0 => 'S',
             1 => 59,
           ),
         ),
-        59 =>
-        array (
-          'k' =>
-          array (
+        59 => array(
+          'k' => array(
             0 => 'S',
             1 => 57,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 58,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 67,
           ),
         ),
-        60 =>
-        array (
-          ',' =>
-          array (
+        60 => array(
+          ',' => array(
             0 => 'S',
             1 => 61,
           ),
         ),
-        61 =>
-        array (
-          'k' =>
-          array (
+        61 => array(
+          'k' => array(
             0 => 'S',
             1 => 35,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 36,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 45,
           ),
         ),
-        62 =>
-        array (
-          '>' =>
-          array (
+        62 => array(
+          '>' => array(
             0 => 'S',
             1 => 63,
           ),
         ),
-        63 =>
-        array (
-          '?' =>
-          array (
+        63 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'map_type',
               1 => 0,
               2 => 6,
             ),
           ),
         ),
-        64 =>
-        array (
-          '?' =>
-          array (
+        64 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'S',
             1 => 65,
           ),
         ),
-        65 =>
-        array (
-          'k' =>
-          array (
+        65 => array(
+          'k' => array(
             0 => 'S',
             1 => 57,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 58,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 67,
           ),
         ),
-        66 =>
-        array (
-          '?' =>
-          array (
+        66 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
         ),
-        67 =>
-        array (
-          '<' =>
-          array (
+        67 => array(
+          '<' => array(
             0 => 'S',
             1 => 68,
           ),
         ),
-        68 =>
-        array (
-          'k' =>
-          array (
+        68 => array(
+          'k' => array(
             0 => 'S',
             1 => 35,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 36,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 45,
           ),
         ),
-        69 =>
-        array (
-          '>' =>
-          array (
+        69 => array(
+          '>' => array(
             0 => 'S',
             1 => 70,
           ),
         ),
-        70 =>
-        array (
-          '?' =>
-          array (
+        70 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
-          ',' =>
-          array (
+          ',' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
         ),
-        71 =>
-        array (
-          '<' =>
-          array (
+        71 => array(
+          '<' => array(
             0 => 'S',
             1 => 72,
           ),
         ),
-        72 =>
-        array (
-          'k' =>
-          array (
+        72 => array(
+          'k' => array(
             0 => 'S',
             1 => 35,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 36,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 45,
           ),
         ),
-        73 =>
-        array (
-          '>' =>
-          array (
+        73 => array(
+          '>' => array(
             0 => 'S',
             1 => 74,
           ),
         ),
-        74 =>
-        array (
-          '?' =>
-          array (
+        74 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'list_type',
               1 => 0,
               2 => 4,
             ),
           ),
         ),
-        75 =>
-        array (
-          '?' =>
-          array (
+        75 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'some_type',
               1 => 1,
               2 => 1,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'S',
             1 => 76,
           ),
         ),
-        76 =>
-        array (
-          'k' =>
-          array (
+        76 => array(
+          'k' => array(
             0 => 'S',
             1 => 20,
           ),
-          'map' =>
-          array (
+          'map' => array(
             0 => 'S',
             1 => 21,
           ),
-          'list' =>
-          array (
+          'list' => array(
             0 => 'S',
             1 => 71,
           ),
         ),
-        77 =>
-        array (
-          '?' =>
-          array (
+        77 => array(
+          '?' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
-          '(' =>
-          array (
+          '(' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
-          '(end-of-file)' =>
-          array (
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
-          '|' =>
-          array (
+          '|' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'or_type',
               1 => 1,
               2 => 3,
             ),
           ),
         ),
-        78 =>
-        array (
-          '(end-of-file)' =>
-          array (
+        78 => array(
+          '(end-of-file)' => array(
             0 => 'R',
-            1 =>
-            array (
+            1 => array(
               0 => 'maybe_optional',
               1 => 'no',
               2 => 1,
@@ -2143,9 +1759,8 @@ final class PhutilTypeSpec {
           ),
         ),
       ),
-      array (
-        0 =>
-        array (
+      array(
+        0 => array(
           'start' => 1,
           'maybe_optional' => 2,
           'maybe_comment' => 78,
@@ -2157,8 +1772,7 @@ final class PhutilTypeSpec {
           'map_type' => 18,
           'list_type' => 19,
         ),
-        3 =>
-        array (
+        3 => array(
           'maybe_comment' => 4,
           'type' => 5,
           'some_type' => 12,
@@ -2168,23 +1782,19 @@ final class PhutilTypeSpec {
           'map_type' => 18,
           'list_type' => 19,
         ),
-        5 =>
-        array (
+        5 => array(
           'comment' => 6,
         ),
-        7 =>
-        array (
+        7 => array(
           'comment_text' => 8,
         ),
-        15 =>
-        array (
+        15 => array(
           'not_or_type' => 16,
           'basic_type' => 17,
           'map_type' => 18,
           'list_type' => 19,
         ),
-        22 =>
-        array (
+        22 => array(
           'type' => 23,
           'some_type' => 49,
           'or_type' => 51,
@@ -2193,8 +1803,7 @@ final class PhutilTypeSpec {
           'map_type' => 55,
           'list_type' => 56,
         ),
-        24 =>
-        array (
+        24 => array(
           'type' => 25,
           'some_type' => 27,
           'or_type' => 29,
@@ -2203,15 +1812,13 @@ final class PhutilTypeSpec {
           'map_type' => 33,
           'list_type' => 34,
         ),
-        30 =>
-        array (
+        30 => array(
           'not_or_type' => 31,
           'basic_type' => 32,
           'map_type' => 33,
           'list_type' => 34,
         ),
-        37 =>
-        array (
+        37 => array(
           'type' => 38,
           'some_type' => 49,
           'or_type' => 51,
@@ -2220,8 +1827,7 @@ final class PhutilTypeSpec {
           'map_type' => 55,
           'list_type' => 56,
         ),
-        39 =>
-        array (
+        39 => array(
           'type' => 40,
           'some_type' => 27,
           'or_type' => 29,
@@ -2230,15 +1836,13 @@ final class PhutilTypeSpec {
           'map_type' => 33,
           'list_type' => 34,
         ),
-        43 =>
-        array (
+        43 => array(
           'not_or_type' => 44,
           'basic_type' => 32,
           'map_type' => 33,
           'list_type' => 34,
         ),
-        46 =>
-        array (
+        46 => array(
           'type' => 47,
           'some_type' => 27,
           'or_type' => 29,
@@ -2247,15 +1851,13 @@ final class PhutilTypeSpec {
           'map_type' => 33,
           'list_type' => 34,
         ),
-        52 =>
-        array (
+        52 => array(
           'not_or_type' => 53,
           'basic_type' => 54,
           'map_type' => 55,
           'list_type' => 56,
         ),
-        59 =>
-        array (
+        59 => array(
           'type' => 60,
           'some_type' => 49,
           'or_type' => 51,
@@ -2264,8 +1866,7 @@ final class PhutilTypeSpec {
           'map_type' => 55,
           'list_type' => 56,
         ),
-        61 =>
-        array (
+        61 => array(
           'type' => 62,
           'some_type' => 27,
           'or_type' => 29,
@@ -2274,15 +1875,13 @@ final class PhutilTypeSpec {
           'map_type' => 33,
           'list_type' => 34,
         ),
-        65 =>
-        array (
+        65 => array(
           'not_or_type' => 66,
           'basic_type' => 54,
           'map_type' => 55,
           'list_type' => 56,
         ),
-        68 =>
-        array (
+        68 => array(
           'type' => 69,
           'some_type' => 27,
           'or_type' => 29,
@@ -2291,8 +1890,7 @@ final class PhutilTypeSpec {
           'map_type' => 33,
           'list_type' => 34,
         ),
-        72 =>
-        array (
+        72 => array(
           'type' => 73,
           'some_type' => 27,
           'or_type' => 29,
@@ -2301,8 +1899,7 @@ final class PhutilTypeSpec {
           'map_type' => 33,
           'list_type' => 34,
         ),
-        76 =>
-        array (
+        76 => array(
           'not_or_type' => 77,
           'basic_type' => 17,
           'map_type' => 18,

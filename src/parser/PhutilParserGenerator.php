@@ -776,7 +776,7 @@ final class PhutilParserGenerator {
   }
 
   private function formatAndIndent($var, $depth) {
-    $var = var_export($var, true);
+    $var = phutil_var_export($var, true);
     $var = str_replace("\n", "\n".str_repeat(' ', $depth), $var);
 
     return $var;
