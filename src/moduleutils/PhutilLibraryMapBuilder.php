@@ -422,9 +422,7 @@ final class PhutilLibraryMapBuilder {
       self::LIBRARY_MAP_VERSION_KEY => $version,
     ) + $library_map;
 
-    $library_map = var_export($library_map, true);
-    $library_map = preg_replace('/\s+$/m', '', $library_map);
-    $library_map = preg_replace('/array \(/', 'array(', $library_map);
+    $library_map = phutil_var_export($library_map);
     $at = '@';
 
     $source_file = <<<EOPHP
