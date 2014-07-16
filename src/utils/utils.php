@@ -1081,10 +1081,9 @@ function phutil_censor_credentials($string) {
  */
 function phutil_var_export($var) {
   $regex = array(
-    '/\s+$/m'             => '',
-    "/=>\n\s+/"           => '=> ',
+    "/=>\s*\n\s+/"        => '=> ',
     "/array\s*\(\n\s*\)/" => 'array()',
-    '/array \(/'          => 'array(',
+    '/array\s+\(/'        => 'array(',
   );
 
   $var = var_export($var, true);

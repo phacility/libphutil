@@ -569,6 +569,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $this->assertEqual(
       'array()',
       phutil_var_export(array()));
+
     $this->assertEqual(
       implode("\n", array(
         'array(',
@@ -578,6 +579,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
         ')',
       )),
       phutil_var_export(array(1, 2, 3)));
+
     $this->assertEqual(
       implode("\n", array(
         'array(',
