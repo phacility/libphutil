@@ -1,50 +1,52 @@
-WHAT IS LIBPHUTIL?
+= WHAT IS LIBPHUTIL? =
 
-libphutil is a collection of utility classes and functions for PHP. Some
+`libphutil` is a collection of utility classes and functions for PHP. Some
 features of the library include:
 
-libphutil Library System
-  A system for organizing, loading and introspecting PHP classes and functions.
-  Uses static analysis to generate, validate and update library contents and
-  includes. Based on Facebook's similar 'flib' system.
+== libphutil Library System ==
+A system for organizing, loading and introspecting PHP classes and functions.
+Uses static analysis to generate, validate and update library contents and
+includes. Based on Facebook's similar `flib` system.
 
-Futures
-  Futures (also known as "promises") are objects which act as placeholders for
-  some future result of computation. They let you express parallel and
-  asynchronous execution with a natural syntax. There are three provided
-  concrete Future implementations: ExecFuture for executing system commands,
-  HTTPFuture for making HTTP requests, and QueryFuture for executing database
-  queries.
+== Futures ==
+Futures (also known as "promises") are objects which act as placeholders for
+some future result of computation. They let you express parallel and
+asynchronous execution with a natural syntax. There are three provided
+concrete `Future` implementations: `ExecFuture` for executing system commands,
+`HTTPFuture` for making HTTP requests, and `QueryFuture` for executing database
+queries.
 
-Filesystem
-  The builtin PHP filesystem functions return error codes and emit warnings.
-  It is tedious to check these consistently. The Filesystem class provides a
-  simple API for common filesystem operations that throws exceptions on failure.
+== Filesystem ==
+The builtin PHP filesystem functions return error codes and emit warnings. It is
+tedious to check these consistently. The `Filesystem` class provides a simple
+API for common filesystem operations that throws exceptions on failure.
 
-xsprintf
-  This module allows you to build sprintf()-style functions that have arbitrary
-  conversions. This is particularly useful for escaping data correctly. Three
-  concrete implementations are provided:
-    csprintf(): safely escape data for system commands
-    jsprintf(): safely escape data for Javascript
-    qsprintf(): safely escape data for MySQL
+== xsprintf ==
+This module allows you to build `sprintf()`-style functions that have arbitrary
+conversions. This is particularly useful for escaping data correctly. Three
+concrete implementations are provided:
 
-AAST/PHPAST
-  An abstract, abstract syntax tree which can make it easier to perform simple
-  static analysis, and a concrete AST for PHP.
+  - `csprintf()`: safely escape data for system commands
+  - `jsprintf()`: safely escape data for Javascript
+  - `qsprintf()`: safely escape data for MySQL
 
-Remarkup
-  A Markdown-like lightweight markup language. Remarkup's syntax is defined by
-  parser plugins and fairly easy to extend and configure.
+== AAST/PHPAST ==
+An abstract, abstract syntax tree which can make it easier to perform simple
+static analysis, and a concrete AST for PHP.
 
-Daemons
-  Enables running PHP scripts as stable, long-lived daemons.
+== Remarkup ==
+A Markdown-like lightweight markup language. Remarkup's syntax is defined by
+parser plugins and fairly easy to extend and configure.
 
-Utilities
-  A handful of solid utility functions.
+== Daemons ==
+Enables running PHP scripts as stable, long-lived daemons.
 
-libphutil is used by Phabricator, Arcanist and Diviner.
+== Utilities ==
+A handful of solid utility functions.
 
-LICENSE
+`libphutil` is used by
+[[https://secure.phabricator.com/diffusion/P/ | Phabricator]],
+[[https://secure.phabricator.com/diffusion/ARC/ | Arcanist]] and Diviner.
 
-libphutil is released under the Apache 2.0 license except as otherwise noted.
+= LICENSE =
+`libphutil` is released under the Apache 2.0 license except as otherwise noted.
