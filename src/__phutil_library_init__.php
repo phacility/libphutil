@@ -32,7 +32,7 @@ function __phutil_autoload($class_name) {
     // autoloader; if not, swallow it and let them take a shot.
     $autoloaders = spl_autoload_functions();
     $last = end($autoloaders);
-    if ($last == '__phutil_autoload') {
+    if ($last == __FUNCTION__) {
       throw $ex;
     }
   }
