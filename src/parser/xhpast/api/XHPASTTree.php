@@ -56,7 +56,7 @@ final class XHPASTTree extends AASTTree {
           $stderr,
           $matches);
         if ($is_syntax) {
-          throw new XHPASTSyntaxErrorException($matches[2], $stderr);
+          throw new XHPASTSyntaxErrorException($matches[2], trim($stderr));
         }
       }
       throw new Exception("XHPAST failed to parse file data {$err}: {$stderr}");
