@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require_once dirname(dirname(__FILE__)).'/__init_script__.php';
+require_once dirname(__FILE__).'/../__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
 $args->setTagline('acquire and hold a lockfile');

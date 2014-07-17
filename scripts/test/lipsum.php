@@ -1,8 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-$root = dirname(dirname(dirname(__FILE__)));
-require_once $root.'/scripts/__init_script__.php';
+require_once dirname(__FILE__).'/../__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
 $args->setTagline('test context-free grammars');
@@ -15,8 +14,8 @@ $args->parseStandardArguments();
 $args->parse(
   array(
     array(
-      'name'      => 'class',
-      'wildcard'  => true,
+      'name'     => 'class',
+      'wildcard' => true,
     ),
   ));
 

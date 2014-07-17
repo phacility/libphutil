@@ -1,21 +1,20 @@
 #!/usr/bin/env php
 <?php
 
-$root = dirname(dirname(dirname(__FILE__)));
-require_once $root.'/scripts/__init_script__.php';
+require_once dirname(__FILE__).'/../__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
 $args->parseStandardArguments();
 $args->parse(
   array(
     array(
-      'name'      => 'attach',
-      'param'     => 'file',
-      'help'      => pht('Attach a file to the request.'),
+      'name'     => 'attach',
+      'param'    => 'file',
+      'help'     => pht('Attach a file to the request.'),
     ),
     array(
-      'name'      => 'url',
-      'wildcard'  => true,
+      'name'     => 'url',
+      'wildcard' => true,
     ),
   ));
 
@@ -26,9 +25,9 @@ if (count($uri) !== 1) {
 }
 $uri = head($uri);
 
-$method   = 'GET';
-$data     = '';
-$timeout  = 30;
+$method  = 'GET';
+$data    = '';
+$timeout = 30;
 
 $future = new HTTPSFuture($uri, $data);
 $future->setMethod($method);
