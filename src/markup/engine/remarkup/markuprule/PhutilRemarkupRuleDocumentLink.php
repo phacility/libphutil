@@ -3,7 +3,7 @@
 final class PhutilRemarkupRuleDocumentLink extends PhutilRemarkupRule {
 
   public function getPriority() {
-    return 300.0;
+    return 150.0;
   }
 
   public function apply($text) {
