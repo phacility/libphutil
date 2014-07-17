@@ -140,7 +140,7 @@ $output['functions_windows'] = array(
   'time_sleep_until' => '5.3.0',
 );
 
-file_put_contents(
+Filesystem::writeFile(
   phutil_get_library_root('phutil').'/../'.$target,
   id(new PhutilJSON())->encodeFormatted($output));
 

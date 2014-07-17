@@ -590,8 +590,11 @@ final class Filesystem {
    *
    * @task   directory
    */
-  public static function createDirectory($path, $umask = 0755,
-                                            $recursive = false) {
+  public static function createDirectory(
+    $path,
+    $umask = 0755,
+    $recursive = false) {
+
     $path = self::resolvePath($path);
 
     if (is_dir($path)) {

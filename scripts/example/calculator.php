@@ -7,7 +7,7 @@ $args = new PhutilArgumentParser($argv);
 $args->setTagline('simple calculator example');
 $args->setSynopsis(<<<EOHELP
 **calculator.php** __op__ __n__ ...
-Perform a calculation.
+  Perform a calculation.
 EOHELP
 );
 
@@ -18,8 +18,8 @@ $add_workflow = id(new PhutilArgumentWorkflow())
   ->setArguments(
     array(
       array(
-        'name'       => 'numbers',
-        'wildcard'   => true,
+        'name'     => 'numbers',
+        'wildcard' => true,
       ),
     ));
 
@@ -30,8 +30,8 @@ $mul_workflow = id(new PhutilArgumentWorkflow())
   ->setArguments(
     array(
       array(
-        'name'       => 'numbers',
-        'wildcard'   => true,
+        'name'     => 'numbers',
+        'wildcard' => true,
       ),
     ));
 
