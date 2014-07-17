@@ -2,10 +2,11 @@
 
 define('__LIBPHUTIL__', true);
 
-require_once(__DIR__.'/moduleutils/core.php');
-require_once(__DIR__.'/moduleutils/PhutilBootloader.php');
-require_once(__DIR__.'/moduleutils/PhutilBootloaderException.php');
-require_once(__DIR__.'/moduleutils/PhutilLibraryConflictException.php');
+$root = dirname(__FILE__);
+require_once $root.'/moduleutils/core.php';
+require_once $root.'/moduleutils/PhutilBootloader.php';
+require_once $root.'/moduleutils/PhutilBootloaderException.php';
+require_once $root.'/moduleutils/PhutilLibraryConflictException.php';
 
 function __phutil_autoload($class_name) {
   // Occurs in PHP 5.2 with call_user_func(array($this, 'self::f')).
