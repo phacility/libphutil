@@ -72,13 +72,15 @@ foreach ($load as $library) {
 PhutilErrorHandler::initialize();
 
 function phutil_daemon_error_listener($event, $value, array $metadata) {
+  $console = PhutilConsole::getConsole();
   $message = idx($metadata, 'default_message');
+
   if ($message) {
-    fwrite(STDERR, $message."\n");
+    $console->writeErr("%s\n", $message);
   }
   if (idx($metadata, 'trace')) {
     $trace = PhutilErrorHandler::formatStacktrace($metadata['trace']);
-    fwrite(STDERR, $trace."\n");
+    $console->writeErr("%s\n", $trace);
   }
 }
 
