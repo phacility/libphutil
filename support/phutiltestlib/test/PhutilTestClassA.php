@@ -1,5 +1,3 @@
 <?php
 
-abstract class PhutilTestClassA {
-
-}
+abstract class PhutilTestClassA {}

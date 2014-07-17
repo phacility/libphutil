@@ -1,5 +1,3 @@
 <?php
 
-final class PhutilTestClassB extends PhutilTestClassA {
-
-}
+final class PhutilTestClassB extends PhutilTestClassA {}
