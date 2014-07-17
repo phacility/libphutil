@@ -15,6 +15,9 @@ final class PhutilLibraryMapBuilder {
   private $quiet = true;
   private $subprocessLimit = 8;
 
+  private $fileSymbolMap;
+  private $librarySymbolMap;
+
   const LIBRARY_MAP_VERSION_KEY   = '__library_version__';
   const LIBRARY_MAP_VERSION       = 2;
 
@@ -62,77 +65,43 @@ final class PhutilLibraryMapBuilder {
   }
 
   /**
-   * Build the library map.
+   * Get the map of symbols in this library, analyzing the library to build it
+   * if necessary.
    *
-   * @return dict
+   * @return map<string, wild> Information about symbols in this library.
    *
    * @task map
    */
   public function buildMap() {
-    // Identify all the ".php" source files in the library.
-    $this->log("Finding source files...\n");
-    $source_map = $this->loadSourceFileMap();
-    $this->log("Found ".number_format(count($source_map))." files.\n");
-
-    // Load the symbol cache with existing parsed symbols. This allows us
-    // to remap libraries quickly by analyzing only changed files.
-    $this->log("Loading symbol cache...\n");
-    $symbol_cache = $this->loadSymbolCache();
-
-    // Build out the symbol analysis for all the files in the library. For
-    // each file, check if it's in cache. If we miss in the cache, do a fresh
-    // analysis.
-    $symbol_map = array();
-    $futures = array();
-    foreach ($source_map as $file => $hash) {
-      if (!empty($symbol_cache[$hash])) {
-        $symbol_map[$file] = $symbol_cache[$hash];
-        continue;
-      }
-      $futures[$file] = $this->buildSymbolAnalysisFuture($file);
+    if ($this->librarySymbolMap === null) {
+      $this->analyzeLibrary();
     }
-    $this->log("Found ".number_format(count($symbol_map))." files in cache.\n");
+    return $this->librarySymbolMap;
+  }
 
-    // Run the analyzer on any files which need analysis.
-    if ($futures) {
-      $limit = $this->subprocessLimit;
-      $count = number_format(count($futures));
 
-      $this->log("Analyzing {$count} files with {$limit} subprocesses...\n");
-
-      $progress = new PhutilConsoleProgressBar();
-      if ($this->quiet) {
-        $progress->setQuiet(true);
-      }
-      $progress->setTotal(count($futures));
-
-      foreach (Futures($futures)->limit($limit) as $file => $future) {
-        $result = $future->resolveJSON();
-        if (empty($result['error'])) {
-          $symbol_map[$file] = $result;
-        } else {
-          $progress->done(false);
-          throw new XHPASTSyntaxErrorException(
-            $result['line'],
-            $file.': '.$result['error']);
-        }
-        $progress->update(1);
-      }
-      $progress->done();
+  /**
+   * Get the map of files in this library, analyzing the library to build it
+   * if necessary.
+   *
+   * Returns a map of file paths to information about symbols used and defined
+   * in the file.
+   *
+   * @return map<string, wild> Information about files in this library.
+   *
+   * @task map
+   */
+  public function buildFileSymbolMap() {
+    if ($this->fileSymbolMap === null) {
+      $this->analyzeLibrary();
     }
-
-    // We're done building the cache, so write it out immediately. Note that
-    // we've only retained entries for files we found, so this implicitly cleans
-    // out old cache entries.
-    $this->writeSymbolCache($symbol_map, $source_map);
-
-    // Our map is up to date, so either show it on stdout or write it to disk.
-    $this->log("Building library map...\n");
-    return $this->buildLibraryMap($symbol_map);
+    return $this->fileSymbolMap;
   }
 
   /**
    * Build and update the library map.
+   *
+   * @return void
    *
    * @task map
    */
@@ -440,5 +409,78 @@ EOPHP;
 
     Filesystem::writeFile($map_file, $source_file);
   }
+
+
+  /**
+   * Analyze the library, generating the file and symbol maps.
+   *
+   * @return void
+   */
+  private function analyzeLibrary() {
+    // Identify all the ".php" source files in the library.
+    $this->log("Finding source files...\n");
+    $source_map = $this->loadSourceFileMap();
+    $this->log("Found ".number_format(count($source_map))." files.\n");
+
+    // Load the symbol cache with existing parsed symbols. This allows us
+    // to remap libraries quickly by analyzing only changed files.
+    $this->log("Loading symbol cache...\n");
+    $symbol_cache = $this->loadSymbolCache();
+
+    // Build out the symbol analysis for all the files in the library. For
+    // each file, check if it's in cache. If we miss in the cache, do a fresh
+    // analysis.
+    $symbol_map = array();
+    $futures = array();
+    foreach ($source_map as $file => $hash) {
+      if (!empty($symbol_cache[$hash])) {
+        $symbol_map[$file] = $symbol_cache[$hash];
+        continue;
+      }
+      $futures[$file] = $this->buildSymbolAnalysisFuture($file);
+    }
+    $this->log("Found ".number_format(count($symbol_map))." files in cache.\n");
+
+    // Run the analyzer on any files which need analysis.
+    if ($futures) {
+      $limit = $this->subprocessLimit;
+      $count = number_format(count($futures));
+
+      $this->log("Analyzing {$count} files with {$limit} subprocesses...\n");
+
+      $progress = new PhutilConsoleProgressBar();
+      if ($this->quiet) {
+        $progress->setQuiet(true);
+      }
+      $progress->setTotal(count($futures));
+
+      foreach (Futures($futures)->limit($limit) as $file => $future) {
+        $result = $future->resolveJSON();
+        if (empty($result['error'])) {
+          $symbol_map[$file] = $result;
+        } else {
+          $progress->done(false);
+          throw new XHPASTSyntaxErrorException(
+            $result['line'],
+            $file.': '.$result['error']);
+        }
+        $progress->update(1);
+      }
+      $progress->done();
+    }
+
+    $this->fileSymbolMap = $symbol_map;
+
+    // We're done building the cache, so write it out immediately. Note that
+    // we've only retained entries for files we found, so this implicitly cleans
+    // out old cache entries.
+    $this->writeSymbolCache($symbol_map, $source_map);
+
+    // Our map is up to date, so either show it on stdout or write it to disk.
+    $this->log("Building library map...\n");
+
+    $this->librarySymbolMap = $this->buildLibraryMap($symbol_map);
+  }
+
 
 }
