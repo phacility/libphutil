@@ -35,7 +35,6 @@ $args->parse(
     array(
       'name'    => 'load-phutil-library',
       'param'   => 'library',
-      'default' => array(),
       'repeat'  => true,
       'help' => 'Load __library__.',
     ),
