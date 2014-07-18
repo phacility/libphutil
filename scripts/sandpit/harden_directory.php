@@ -3,9 +3,7 @@
 
 require_once dirname(__FILE__).'/../__init_script__.php';
 
-// PhutilServiceProfiler::installEchoListener();
-
-if ($argc != 4) {
+if ($argc !== 4) {
   usage();
   exit(1);
 }
@@ -62,7 +60,7 @@ foreach ($hash_map as $path => $info) {
     continue;
   }
 
-  if ($type == 'exec') {
+  if ($type === 'exec') {
     // Multiple hardlinks share a single executable bit, so we need to keep
     // executable versions separate from nonexecutable versions.
     $obj .= '.x';
@@ -76,12 +74,11 @@ foreach ($hash_map as $path => $info) {
     if (!$stat) {
       break;
     }
-    if ($stat[3] < 32000) { // TODO: On NTFS, this needs to be 1023. It is
-                            // not apparently trivial to determine if a disk
-                            // is NTFS or not, or what the link limit for a
-                            // disk is. On linux "df -T /path/to/dir" may be
-                            // useful, but on OS X this does something totally
-                            // different...
+    if ($stat[3] < 32000) {
+      // TODO: On NTFS, this needs to be 1023. It is not apparently trivial to
+      // determine if a disk is NTFS or not, or what the link limit for a disk
+      // is. On linux "df -T /path/to/dir" may be useful, but on OS X this does
+      // something totally different...
       break;
     }
     ++$n;
@@ -98,7 +95,7 @@ foreach ($hash_map as $path => $info) {
     if (!$ok) {
       throw new Exception("Failed to copy file '{$soft}/{$path}'!");
     }
-    if ($type == 'exec') {
+    if ($type === 'exec') {
       $ok = chmod($obj, 0755);
       if (!$ok) {
         throw new Exception("Failed to chmod file '{$obj}'!");
@@ -142,7 +139,7 @@ function map_directory($dir) {
         $type = $matches[2];
         $hash = $matches[3];
         $file = $matches[4];
-        if ($type == 'commit') {
+        if ($type === 'commit') {
           // Deal with Git submodules.
           $submap = map_directory($dir.'/'.$file);
           foreach ($submap as $subfile => $info) {
@@ -152,11 +149,9 @@ function map_directory($dir) {
           $mask = (int)base_convert($flag, 8, 10);
           $type = 'file';
           if ($mask & 0111) {
-
             echo "EXEC: {$file}\n";
-
             $type = 'exec';
-          } else if (($mask & 0120000) == 0120000) {
+          } else if (($mask & 0120000) === 0120000) {
             $type = 'link';
           }
           $map[$file] = array(

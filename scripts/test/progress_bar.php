@@ -43,8 +43,9 @@ try {
 function run_interrupt_bar() {
   $bar = id(new PhutilConsoleProgressBar())
     ->setTotal(100);
+
   for ($ii = 0; $ii < 100; $ii++) {
-    if ($ii == 20) {
+    if ($ii === 20) {
       throw new Exception('Boo!');
     }
     $bar->update(1);

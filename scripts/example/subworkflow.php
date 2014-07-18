@@ -11,6 +11,7 @@ $args->setSynopsis(<<<EOHELP
 EOHELP
 );
 
+
 // This shows how to do manual parsing of raw arguments.
 final class PhutilArgumentWorkflowEchoExample extends PhutilArgumentWorkflow {
 
@@ -27,6 +28,7 @@ final class PhutilArgumentWorkflowEchoExample extends PhutilArgumentWorkflow {
     echo implode(' ', $unconsumed)."\n";
     return 0;
   }
+
 }
 
 
@@ -53,7 +55,9 @@ final class PhutilArgumentWorkflowDoExample extends PhutilArgumentWorkflow {
         new PhutilHelpArgumentWorkflow(),
       ));
   }
+
 }
+
 
 $do_workflow = id(new PhutilArgumentWorkflowDoExample())
   ->setName('do')

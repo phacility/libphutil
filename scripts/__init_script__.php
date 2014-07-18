@@ -37,7 +37,7 @@ function __phutil_init_script__() {
     // includes (and in other cases, like recursive filesystem operations
     // applied to 100+ levels of directory nesting). Stop it from triggering:
     // we explicitly limit recursive algorithms which should be limited.
-
+    //
     // After Feb 2014, XDebug interprets a value of 0 to mean "do not allow any
     // function calls". Previously, 0 effectively disabled this check. For
     // context, see T5027.
@@ -92,7 +92,7 @@ function __phutil_init_script__() {
 function __phutil_signal_handler__($signal_number) {
   $e = new Exception();
   $pid = getmypid();
-  // Some phabricator daemons may not be attached to a terminal.
+  // Some Phabricator daemons may not be attached to a terminal.
   Filesystem::writeFile(
     sys_get_temp_dir().'/phabricator_backtrace_'.$pid,
     $e->getTraceAsString());

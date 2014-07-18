@@ -74,15 +74,13 @@ try {
 }
 
 $root = $tree->getRootNode();
-
 $root->buildSelectCache();
 
 // -(  Unsupported Constructs  )------------------------------------------------
 
 $namespaces = $root->selectDescendantsOfType('n_NAMESPACE');
 foreach ($namespaces as $namespace) {
-  phutil_fail_on_unsupported_feature(
-    $namespace, $path, pht('namespaces'));
+  phutil_fail_on_unsupported_feature($namespace, $path, pht('namespaces'));
 }
 
 $uses = $root->selectDescendantsOfType('n_USE');
@@ -94,11 +92,10 @@ foreach ($namespaces as $namespace) {
 $possible_traits = $root->selectDescendantsOfType('n_CLASS_DECLARATION');
 foreach ($possible_traits as $possible_trait) {
   $attributes = $possible_trait->getChildByIndex(0);
-  // can't use getChildByIndex here because not all classes have attributes
+  // Can't use getChildByIndex here because not all classes have attributes
   foreach ($attributes->getChildren() as $attribute) {
-    if (strtolower($attribute->getConcreteString()) == 'trait') {
-      phutil_fail_on_unsupported_feature(
-        $possible_trait, $path, pht('traits'));
+    if (strtolower($attribute->getConcreteString()) === 'trait') {
+      phutil_fail_on_unsupported_feature($possible_trait, $path, pht('traits'));
     }
   }
 }
@@ -113,7 +110,7 @@ foreach ($possible_traits as $possible_trait) {
 $externals = array();
 $doc_parser = new PhutilDocblockParser();
 foreach ($root->getTokens() as $token) {
-  if ($token->getTypeName() == 'T_DOC_COMMENT') {
+  if ($token->getTypeName() === 'T_DOC_COMMENT') {
     list($block, $special) = $doc_parser->parse($token->getValue());
 
     $ext_list = idx($special, 'phutil-external-symbol');
@@ -153,7 +150,7 @@ $xmap = array();  // For extended classes and implemented interfaces.
 $functions = $root->selectDescendantsOfType('n_FUNCTION_DECLARATION');
 foreach ($functions as $function) {
   $name = $function->getChildByIndex(2);
-  if ($name->getTypeName() == 'n_EMPTY') {
+  if ($name->getTypeName() === 'n_EMPTY') {
     // This is an anonymous function; don't record it into the symbol
     // index.
     continue;
@@ -179,18 +176,18 @@ foreach ($functions as $function) {
 $calls = $root->selectDescendantsOfType('n_FUNCTION_CALL');
 foreach ($calls as $call) {
   $name = $call->getChildByIndex(0);
-  if ($name->getTypeName() == 'n_VARIABLE' ||
-      $name->getTypeName() == 'n_VARIABLE_VARIABLE') {
+  if ($name->getTypeName() === 'n_VARIABLE' ||
+      $name->getTypeName() === 'n_VARIABLE_VARIABLE') {
     // Ignore these, we can't analyze them.
     continue;
   }
-  if ($name->getTypeName() == 'n_CLASS_STATIC_ACCESS') {
+  if ($name->getTypeName() === 'n_CLASS_STATIC_ACCESS') {
     // These are "C::f()", we'll pick this up later on.
     continue;
   }
   $call_name = $name->getConcreteString();
-  if ($call_name == 'call_user_func' ||
-      $call_name == 'call_user_func_array') {
+  if ($call_name === 'call_user_func' ||
+      $call_name === 'call_user_func_array') {
     $params = $call->getChildByIndex(1)->getChildren();
     if (!count($params)) {
       // This is a bare call_user_func() with no arguments; just ignore it.
@@ -203,12 +200,11 @@ foreach ($calls as $call) {
     if ($pos) {
       $type = 'class';
       $symbol_value = substr($symbol_value, 0, $pos);
-    } else if ($symbol->getTypeName() == 'n_ARRAY_LITERAL') {
+    } else if ($symbol->getTypeName() === 'n_ARRAY_LITERAL') {
       try {
         $type = 'class';
         $symbol_value = idx($symbol->evalStatic(), 0);
-      } catch (Exception $ex) {
-      }
+      } catch (Exception $ex) {}
     }
     if ($symbol_value && strpos($symbol_value, '$') === false) {
       $need[] = array(
@@ -280,8 +276,8 @@ foreach ($classes as $class) {
 $uses_of_new = $root->selectDescendantsOfType('n_NEW');
 foreach ($uses_of_new as $new_operator) {
   $name = $new_operator->getChildByIndex(0);
-  if ($name->getTypeName() == 'n_VARIABLE' ||
-      $name->getTypeName() == 'n_VARIABLE_VARIABLE') {
+  if ($name->getTypeName() === 'n_VARIABLE' ||
+      $name->getTypeName() === 'n_VARIABLE_VARIABLE') {
     continue;
   }
   $need[] = array(
@@ -294,7 +290,7 @@ foreach ($uses_of_new as $new_operator) {
 $static_uses = $root->selectDescendantsOfType('n_CLASS_STATIC_ACCESS');
 foreach ($static_uses as $static_use) {
   $name = $static_use->getChildByIndex(0);
-  if ($name->getTypeName() != 'n_CLASS_NAME') {
+  if ($name->getTypeName() !== 'n_CLASS_NAME') {
     continue;
   }
   $need[] = array(
@@ -307,7 +303,7 @@ foreach ($static_uses as $static_use) {
 $parameters = $root->selectDescendantsOfType('n_DECLARATION_PARAMETER');
 foreach ($parameters as $parameter) {
   $hint = $parameter->getChildByIndex(0);
-  if ($hint->getTypeName() != 'n_CLASS_NAME') {
+  if ($hint->getTypeName() !== 'n_CLASS_NAME') {
     continue;
   }
   $need[] = array(
@@ -329,11 +325,11 @@ foreach ($catches as $catch) {
 $instanceofs = $root->selectDescendantsOfType('n_BINARY_EXPRESSION');
 foreach ($instanceofs as $instanceof) {
   $operator = $instanceof->getChildOfType(1, 'n_OPERATOR');
-  if ($operator->getConcreteString() != 'instanceof') {
+  if ($operator->getConcreteString() !== 'instanceof') {
     continue;
   }
   $class = $instanceof->getChildByIndex(2);
-  if ($class->getTypeName() != 'n_CLASS_NAME') {
+  if ($class->getTypeName() !== 'n_CLASS_NAME') {
     continue;
   }
   $need[] = array(
@@ -346,7 +342,7 @@ foreach ($instanceofs as $instanceof) {
 $calls = $root->selectDescendantsOfType('n_FUNCTION_CALL');
 foreach ($calls as $call) {
   $call_name = $call->getChildByIndex(0)->getConcreteString();
-  if ($call_name != 'newv') {
+  if ($call_name !== 'newv') {
     continue;
   }
   $params = $call->getChildByIndex(1)->getChildren();
@@ -376,8 +372,8 @@ $interfaces = $root->selectDescendantsOfType('n_INTERFACE_DECLARATION');
 foreach ($interfaces as $interface) {
   $interface_name = $interface->getChildByIndex(1);
   $have[] = array(
-    'type'      => 'interface',
-    'symbol'    => $interface_name,
+    'type'    => 'interface',
+    'symbol'  => $interface_name,
   );
 }
 
@@ -509,7 +505,7 @@ function phutil_symbols_get_builtins() {
   $builtin['classes']    = get_declared_classes();
   $builtin['interfaces'] = get_declared_interfaces();
 
-  $funcs  = get_defined_functions();
+  $funcs = get_defined_functions();
   $builtin['functions']  = $funcs['internal'];
 
   $compat = json_decode(

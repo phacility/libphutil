@@ -11,6 +11,7 @@ $args->setSynopsis(<<<EOHELP
 
 EOHELP
 );
+
 $args->parseStandardArguments();
 $args->parse(array(
   array(
@@ -35,7 +36,7 @@ $args->parse(array(
 
 
 $file = $args->getArg('file');
-if (count($file) != 1) {
+if (count($file) !== 1) {
   $args->printHelpAndExit();
 }
 $file = head($file);

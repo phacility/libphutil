@@ -66,8 +66,7 @@ if ($args->getArg('show')) {
   if ($args->getArg('ugly')) {
     echo json_encode($library_map);
   } else {
-    $json = new PhutilJSON();
-    echo $json->encodeFormatted($library_map);
+    echo id(new PhutilJSON())->encodeFormatted($library_map);
   }
 } else {
   $builder->buildAndWriteMap();

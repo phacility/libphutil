@@ -9,8 +9,8 @@ require_once $root.'/moduleutils/PhutilBootloaderException.php';
 require_once $root.'/moduleutils/PhutilLibraryConflictException.php';
 
 function __phutil_autoload($class_name) {
-  // Occurs in PHP 5.2 with call_user_func(array($this, 'self::f')).
-  if ($class_name == 'self' || $class_name == 'parent') {
+  // Occurs in PHP 5.2 with `call_user_func(array($this, 'self::f'))`.
+  if ($class_name === 'self' || $class_name === 'parent') {
     return;
   }
 
@@ -20,6 +20,7 @@ function __phutil_autoload($class_name) {
       ->setType('class')
       ->setName($class_name)
       ->selectAndLoadSymbols();
+
     if (!$symbols) {
       throw new PhutilMissingSymbolException(
         $class_name,

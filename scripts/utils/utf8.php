@@ -22,6 +22,7 @@ $args->setSynopsis(<<<EOHELP
     valid UTF-8.
 EOHELP
 );
+
 $args->parseStandardArguments();
 $args->parse(array(
   array(
@@ -63,7 +64,7 @@ exit($err);
 
 
 function read($file) {
-  if ($file == '-') {
+  if ($file === '-') {
     return file_get_contents('php://stdin');
   } else {
     return Filesystem::readFile($file);
@@ -71,7 +72,7 @@ function read($file) {
 }
 
 function name($file) {
-  if ($file == '-') {
+  if ($file === '-') {
     return 'stdin';
   } else {
     return $file;
@@ -123,8 +124,8 @@ function show(array $files, $context) {
       // the loop.
       $last = -2;
       foreach ($map as $idx => $ignored) {
-        if ($idx != $last + 1) {
-          printf("\n");
+        if ($idx !== $last + 1) {
+          echo "\n";
         }
         $last = $idx;
 
@@ -137,7 +138,6 @@ function show(array $files, $context) {
       }
       echo "\n";
     }
-
   }
 
   return 0;

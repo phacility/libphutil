@@ -30,7 +30,7 @@ $args->parse(array(
   ),
 ));
 
-$is_create = $args->getArg('create');
+$is_create    = $args->getArg('create');
 $is_read_only = $args->getArg('read-only');
 $console = PhutilConsole::getConsole();
 

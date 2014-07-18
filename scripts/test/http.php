@@ -29,9 +29,9 @@ $method  = 'GET';
 $data    = '';
 $timeout = 30;
 
-$future = new HTTPSFuture($uri, $data);
-$future->setMethod($method);
-$future->setTimeout($timeout);
+$future = id(new HTTPSFuture($uri, $data))
+  ->setMethod($method)
+  ->setTimeout($timeout);
 
 $attach_file = $args->getArg('attach');
 if ($attach_file !== null) {

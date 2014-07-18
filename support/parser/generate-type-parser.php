@@ -66,5 +66,4 @@ $parser = id(new PhutilParserGenerator())
   ->setRules($rules)
   ->processGrammar();
 
-echo $parser->generateParserFunction('phutil_type_spec_parser');
-echo "\n";
+echo $parser->generateParserFunction('phutil_type_spec_parser')."\n";
