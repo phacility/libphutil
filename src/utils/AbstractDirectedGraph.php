@@ -142,6 +142,69 @@ abstract class AbstractDirectedGraph {
   }
 
   /**
+   * Utility function to get the best effort topographically sorted
+   * nodes out of a graph.
+   */
+  final public function getBestEffortTopographicallySortedNodes() {
+    $nodes = $this->getNodes();
+    $edges = $this->loadEdges($nodes);
+
+    $results = array();
+    $completed = array();
+
+    $depth = 0;
+    while (true) {
+      $next = array();
+
+      foreach ($nodes as $node) {
+        if (isset($completed[$node])) {
+          continue;
+        }
+
+        $capable = true;
+        foreach ($edges[$node] as $edge) {
+          if (!isset($completed[$edge])) {
+            $capable = false;
+            break;
+          }
+        }
+
+        if ($capable) {
+          $next[] = $node;
+        }
+      }
+
+      if (count($next) === 0) {
+        // No more nodes to traverse; we are deadlocked if the number
+        // of completed nodes is less than the total number of nodes.
+        break;
+      }
+
+      foreach ($next as $node) {
+        $results[] = array(
+          'node' => $node,
+          'depth' => $depth,
+          'cycle' => false);
+
+        $completed[$node] = true;
+      }
+
+      $depth++;
+    }
+
+    foreach ($nodes as $node) {
+      if (!isset($completed[$node])) {
+        $results[] = array(
+          'node' => $node,
+          'depth' => $depth,
+          'cycle' => true);
+      }
+    }
+
+    return $results;
+  }
+
+  /**
    * Load the graph, building it out so operations can be performed on it. This
    * constructs the graph level-by-level, calling @{method:loadEdges} to
    * expand the graph at each stage until it is complete.
