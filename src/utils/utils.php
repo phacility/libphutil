@@ -1076,16 +1076,43 @@ function phutil_censor_credentials($string) {
 /**
  * Returns a parsable string representation of a variable.
  *
+ * This function is intended to behave similarly to PHP's `var_export` function,
+ * but the output is intended to follow our style conventions.
+ *
  * @param  wild    The variable you want to export.
  * @return string
  */
 function phutil_var_export($var) {
-  $regex = array(
-    "/=>\s*\n\s+/"        => '=> ',
-    "/array\s*\(\n\s*\)/" => 'array()',
-    '/array\s+\(/'        => 'array(',
-  );
+  // `var_export(null, true)` returns `"NULL"` (in uppercase).
+  if ($var === null) {
+    return 'null';
+  }
 
-  $var = var_export($var, true);
-  return preg_replace(array_keys($regex), array_values($regex), $var);
+  // PHP's `var_export` doesn't format arrays very nicely. In particular:
+  //
+  //   - An empty array is split over two lines (`"array (\n)"`).
+  //   - A space separates "array" and the first opening brace.
+  //   - Non-associative arrays are returned as associative arrays with an
+  //     integer key.
+  //
+  if (is_array($var)) {
+    if (count($var) === 0) {
+      return 'array()';
+    }
+
+    $output = array();
+    $output[] = 'array(';
+
+    foreach ($var as $key => $value) {
+      // Adjust the indentation of the value.
+      $value = str_replace("\n", "\n  ", phutil_var_export($value));
+      $output[] = '  '.var_export($key, true).' => '.$value.',';
+    }
+
+    $output[] = ')';
+    return implode("\n", $output);
+  }
+
+  // Let PHP handle everything else.
+  return var_export($var, true);
 }

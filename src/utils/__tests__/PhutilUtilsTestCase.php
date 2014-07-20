@@ -566,10 +566,17 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
   }
 
   public function testVarExport() {
+    // Constants
+    $this->assertEqual('null', phutil_var_export(null));
+    $this->assertEqual('true', phutil_var_export(true));
+    $this->assertEqual('false', phutil_var_export(false));
+    $this->assertEqual("'quack'", phutil_var_export('quack'));
+    $this->assertEqual('1234567', phutil_var_export(1234567));
+
+    // Arrays
     $this->assertEqual(
       'array()',
       phutil_var_export(array()));
-
     $this->assertEqual(
       implode("\n", array(
         'array(',
@@ -579,17 +586,34 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
         ')',
       )),
       phutil_var_export(array(1, 2, 3)));
-
     $this->assertEqual(
       implode("\n", array(
         'array(',
-        "  0 => 'foo',",
-        "  'bar' => array(",
-        "    'baz' => stdClass::__set_state(array()),",
+        "  'foo' => 'bar',",
+        "  'bar' => 'baz',",
+        ')',
+      )),
+      phutil_var_export(array('foo' => 'bar', 'bar' => 'baz')));
+    $this->assertEqual(
+      implode("\n", array(
+        'array(',
+        "  'foo' => array(",
+        "    'bar' => array(",
+        "      'baz' => array(),",
+        '    ),',
         '  ),',
         ')',
       )),
-      phutil_var_export(array('foo', 'bar' => array('baz' => new stdClass()))));
+      phutil_var_export(
+        array('foo' => array('bar' => array('baz' => array())))));
+
+    // Objects
+    $this->assertEqual(
+      "stdClass::__set_state(array(\n))",
+      phutil_var_export(new stdClass()));
+    $this->assertEqual(
+      "PhutilTestPhobject::__set_state(array(\n))",
+      phutil_var_export(new PhutilTestPhobject()));
   }
 
 }
