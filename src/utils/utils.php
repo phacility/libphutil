@@ -1100,13 +1100,18 @@ function phutil_var_export($var) {
       return 'array()';
     }
 
+    // Don't show keys for non-associative arrays.
+    $show_keys = (array_keys($var) !== range(0, count($var) - 1));
+
     $output = array();
     $output[] = 'array(';
 
     foreach ($var as $key => $value) {
       // Adjust the indentation of the value.
       $value = str_replace("\n", "\n  ", phutil_var_export($value));
-      $output[] = '  '.var_export($key, true).' => '.$value.',';
+      $output[] = '  '.
+        ($show_keys ? var_export($key, true).' => ' : '').
+        $value.',';
     }
 
     $output[] = ')';
