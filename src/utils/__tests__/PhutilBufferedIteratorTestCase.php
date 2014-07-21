@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Test cases for @{class:PhutilBufferedIteratorExample}.
+ * Test cases for @{class:PhutilExampleBufferedIterator}.
  */
 final class PhutilBufferedIteratorTestCase extends PhutilTestCase {
 
   public function testBufferedIterator() {
     $expect = array_fill(0, 23, 'example');
 
-    $iterator = new PhutilBufferedIteratorExample();
+    $iterator = new PhutilExampleBufferedIterator();
     $iterator->setPageSize(3);
     $iterator->setExampleData($expect);
 

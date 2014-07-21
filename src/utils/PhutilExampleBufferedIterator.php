@@ -3,7 +3,7 @@
 /**
  * Example implementation and test case for @{class:PhutilBufferedIterator}.
  */
-final class PhutilBufferedIteratorExample extends PhutilBufferedIterator {
+final class PhutilExampleBufferedIterator extends PhutilBufferedIterator {
 
   private $cursor;
   private $data;
