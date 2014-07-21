@@ -88,7 +88,7 @@ abstract class PhutilRemarkupEngineBlockRule {
   }
 
   public function extractChildText($text) {
-    throw new Exception(pht('Not implemented!'));
+    throw new PhutilMethodNotImplementedException();
   }
 
   protected function renderRemarkupTable(array $out_rows) {
