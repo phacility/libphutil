@@ -1,6 +1,6 @@
 <?php
 
-final class HTTPFutureResponseStatusParse extends HTTPFutureResponseStatus {
+final class HTTPFutureParseResponseStatus extends HTTPFutureResponseStatus {
 
   const ERROR_MALFORMED_RESPONSE = 1;
 

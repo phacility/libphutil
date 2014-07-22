@@ -334,7 +334,7 @@ abstract class BaseHTTPFuture extends Future {
       }
     }
 
-    $status = new HTTPFutureResponseStatusHTTP(
+    $status = new HTTPFutureHTTPResponseStatus(
       $response_code,
       $body,
       $headers,
@@ -404,8 +404,8 @@ abstract class BaseHTTPFuture extends Future {
     $body = null;
     $headers = array();
 
-    $status = new HTTPFutureResponseStatusParse(
-      HTTPFutureResponseStatusParse::ERROR_MALFORMED_RESPONSE,
+    $status = new HTTPFutureParseResponseStatus(
+      HTTPFutureParseResponseStatus::ERROR_MALFORMED_RESPONSE,
       $raw_response);
     return array($status, $body, $headers);
   }

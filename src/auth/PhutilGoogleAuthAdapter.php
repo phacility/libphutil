@@ -116,7 +116,7 @@ final class PhutilGoogleAuthAdapter extends PhutilOAuthAuthAdapter {
   }
 
   private function tryToThrowSpecializedError($status, $raw_body) {
-    if (!($status instanceof HTTPFutureResponseStatusHTTP)) {
+    if (!($status instanceof HTTPFutureHTTPResponseStatus)) {
       return;
     }
 

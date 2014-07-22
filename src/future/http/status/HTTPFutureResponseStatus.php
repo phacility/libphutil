@@ -22,7 +22,6 @@ abstract class HTTPFutureResponseStatus extends Exception {
     parent::__construct($message);
   }
 
-
   final public function getStatusCode() {
     return $this->statusCode;
   }

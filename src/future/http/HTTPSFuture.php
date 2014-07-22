@@ -360,7 +360,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
     $err_code = $info['result'];
 
     if ($err_code) {
-      $status = new HTTPFutureResponseStatusCURL($err_code, $uri);
+      $status = new HTTPFutureCURLesponseStatus($err_code, $uri);
       $body = null;
       $headers = array();
       $this->result = array($status, $body, $headers);

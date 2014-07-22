@@ -1,6 +1,6 @@
 <?php
 
-final class HTTPFutureResponseStatusCURL extends HTTPFutureResponseStatus {
+final class HTTPFutureCURLesponseStatus extends HTTPFutureResponseStatus {
 
   protected function getErrorCodeType($code) {
     return 'cURL';
@@ -66,7 +66,6 @@ final class HTTPFutureResponseStatusCURL extends HTTPFutureResponseStatus {
         'indicates that the remote host has an SSL certificate for a '.
         'different domain name than you are connecting with. Make sure the '.
         'certificate you have installed is signed for the correct domain.',
-
     );
 
     $default_message =

@@ -86,7 +86,7 @@ abstract class PhutilAWSFuture extends FutureProxy {
     }
 
     if ($status->isError() || !$xml) {
-      if (!($status instanceof HTTPFutureResponseStatusHTTP)) {
+      if (!($status instanceof HTTPFutureHTTPResponseStatus)) {
         throw $status;
       }
 

@@ -1,6 +1,6 @@
 <?php
 
-final class HTTPFutureResponseStatusHTTP extends HTTPFutureResponseStatus {
+final class HTTPFutureHTTPResponseStatus extends HTTPFutureResponseStatus {
 
   private $excerpt;
   private $expect;
@@ -10,6 +10,7 @@ final class HTTPFutureResponseStatusHTTP extends HTTPFutureResponseStatus {
     $body,
     array $headers,
     $expect = null) {
+
     // NOTE: Avoiding phutil_utf8_shorten() here because this isn't lazy
     // and responses may be large.
     if (strlen($body) > 512) {

@@ -20,7 +20,7 @@
  *         $headers) = $future->resolve();
  *
  * Prefer @{method:resolvex} to @{method:resolve} as the former throws
- * @{class:HTTPFutureResponseStatusHTTP} on failures, which includes an
+ * @{class:HTTPFutureHTTPResponseStatus} on failures, which includes an
  * informative exception message.
  */
 final class HTTPFuture extends BaseHTTPFuture {
@@ -178,7 +178,7 @@ final class HTTPFuture extends BaseHTTPFuture {
     if (!$socket) {
       $this->stateReady = true;
       $this->result = $this->buildErrorResult(
-        HTTPFutureResponseStatusTransport::ERROR_CONNECTION_FAILED);
+        HTTPFutureTransportResponseStatus::ERROR_CONNECTION_FAILED);
       return null;
     }
 
@@ -207,13 +207,13 @@ final class HTTPFuture extends BaseHTTPFuture {
 
     if ($timeout) {
       $this->result = $this->buildErrorResult(
-        HTTPFutureResponseStatusTransport::ERROR_TIMEOUT);
+        HTTPFutureTransportResponseStatus::ERROR_TIMEOUT);
     } else if (!$this->stateConnected) {
       $this->result = $this->buildErrorResult(
-        HTTPFutureResponseStatusTransport::ERROR_CONNECTION_REFUSED);
+        HTTPFutureTransportResponseStatus::ERROR_CONNECTION_REFUSED);
     } else if (!$this->stateWriteComplete) {
       $this->result = $this->buildErrorResult(
-        HTTPFutureResponseStatusTransport::ERROR_CONNECTION_FAILED);
+        HTTPFutureTransportResponseStatus::ERROR_CONNECTION_FAILED);
     } else {
       $this->result = $this->parseRawHTTPResponse($this->response);
     }
@@ -226,7 +226,7 @@ final class HTTPFuture extends BaseHTTPFuture {
 
   private function buildErrorResult($error) {
     return array(
-      $status = new HTTPFutureResponseStatusTransport($error, $this->getURI()),
+      $status = new HTTPFutureTransportResponseStatus($error, $this->getURI()),
       $body = null,
       $headers = array());
   }

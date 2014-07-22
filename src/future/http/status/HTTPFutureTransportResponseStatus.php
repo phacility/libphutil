@@ -1,6 +1,6 @@
 <?php
 
-final class HTTPFutureResponseStatusTransport extends HTTPFutureResponseStatus {
+final class HTTPFutureTransportResponseStatus extends HTTPFutureResponseStatus {
 
   const ERROR_TIMEOUT             = 1;
   const ERROR_CONNECTION_ABORTED  = 2;
