@@ -1,20 +1,20 @@
 <?php
 
 /**
- * Authentication adapter for Twitch.tv OAuth2.
+ * Authentication adapter for WordPress.com OAuth2.
  */
-final class PhutilAuthAdapterOAuthTwitch extends PhutilAuthAdapterOAuth {
+final class PhutilWordPressAuthAdapter extends PhutilOAuthAuthAdapter {
 
   public function getAdapterType() {
-    return 'twitch';
+    return 'wordpress';
   }
 
   public function getAdapterDomain() {
-    return 'twitch.tv';
+    return 'wordpress.com';
   }
 
   public function getAccountID() {
-    return $this->getOAuthAccountData('_id');
+    return $this->getOAuthAccountData('ID');
   }
 
   public function getAccountEmail() {
@@ -22,19 +22,15 @@ final class PhutilAuthAdapterOAuthTwitch extends PhutilAuthAdapterOAuth {
   }
 
   public function getAccountName() {
-    return $this->getOAuthAccountData('name');
+    return $this->getOAuthAccountData('username');
   }
 
   public function getAccountImageURI() {
-    return $this->getOAuthAccountData('logo');
+    return $this->getOAuthAccountData('avatar_URL');
   }
 
   public function getAccountURI() {
-    $name = $this->getAccountName();
-    if ($name) {
-      return 'http://www.twitch.tv/'.$name;
-    }
-    return null;
+    return $this->getOAuthAccountData('profile_URL');
   }
 
   public function getAccountRealName() {
@@ -42,11 +38,11 @@ final class PhutilAuthAdapterOAuthTwitch extends PhutilAuthAdapterOAuth {
   }
 
   protected function getAuthenticateBaseURI() {
-    return 'https://api.twitch.tv/kraken/oauth2/authorize';
+    return 'https://public-api.wordpress.com/oauth2/authorize';
   }
 
   protected function getTokenBaseURI() {
-    return 'https://api.twitch.tv/kraken/oauth2/token';
+    return 'https://public-api.wordpress.com/oauth2/token';
   }
 
   public function getScope() {
@@ -56,6 +52,7 @@ final class PhutilAuthAdapterOAuthTwitch extends PhutilAuthAdapterOAuth {
   public function getExtraAuthenticateParameters() {
     return array(
       'response_type' => 'code',
+      'blog_id' => 0,
     );
   }
 
@@ -66,10 +63,10 @@ final class PhutilAuthAdapterOAuthTwitch extends PhutilAuthAdapterOAuth {
   }
 
   protected function loadOAuthAccountData() {
-    return id(new PhutilTwitchFuture())
+    return id(new PhutilWordPressFuture())
       ->setClientID($this->getClientID())
       ->setAccessToken($this->getAccessToken())
-      ->setRawTwitchQuery('user')
+      ->setRawWordPressQuery('/me/')
       ->resolve();
   }
 

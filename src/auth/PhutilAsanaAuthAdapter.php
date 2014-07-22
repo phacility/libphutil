@@ -1,20 +1,20 @@
 <?php
 
 /**
- * Authentication adapter for WordPress.com OAuth2.
+ * Authentication adapter for Asana OAuth2.
  */
-final class PhutilAuthAdapterOAuthWordPress extends PhutilAuthAdapterOAuth {
+final class PhutilAsanaAuthAdapter extends PhutilOAuthAuthAdapter {
 
   public function getAdapterType() {
-    return 'wordpress';
+    return 'asana';
   }
 
   public function getAdapterDomain() {
-    return 'wordpress.com';
+    return 'asana.com';
   }
 
   public function getAccountID() {
-    return $this->getOAuthAccountData('ID');
+    return $this->getOAuthAccountData('id');
   }
 
   public function getAccountEmail() {
@@ -22,37 +22,41 @@ final class PhutilAuthAdapterOAuthWordPress extends PhutilAuthAdapterOAuth {
   }
 
   public function getAccountName() {
-    return $this->getOAuthAccountData('username');
+    return null;
   }
 
   public function getAccountImageURI() {
-    return $this->getOAuthAccountData('avatar_URL');
+    $photo = $this->getOAuthAccountData('photo', array());
+    if (is_array($photo)) {
+      return idx($photo, 'image_128x128');
+    } else {
+      return null;
+    }
   }
 
   public function getAccountURI() {
-    return $this->getOAuthAccountData('profile_URL');
+    return null;
   }
 
   public function getAccountRealName() {
-    return $this->getOAuthAccountData('display_name');
+    return $this->getOAuthAccountData('name');
   }
 
   protected function getAuthenticateBaseURI() {
-    return 'https://public-api.wordpress.com/oauth2/authorize';
+    return 'https://app.asana.com/-/oauth_authorize';
   }
 
   protected function getTokenBaseURI() {
-    return 'https://public-api.wordpress.com/oauth2/token';
+    return 'https://app.asana.com/-/oauth_token';
   }
 
   public function getScope() {
-    return 'user_read';
+    return null;
   }
 
   public function getExtraAuthenticateParameters() {
     return array(
       'response_type' => 'code',
-      'blog_id' => 0,
     );
   }
 
@@ -62,11 +66,20 @@ final class PhutilAuthAdapterOAuthWordPress extends PhutilAuthAdapterOAuth {
     );
   }
 
+  public function getExtraRefreshParameters() {
+    return array(
+      'grant_type' => 'refresh_token',
+    );
+  }
+
+  public function supportsTokenRefresh() {
+    return true;
+  }
+
   protected function loadOAuthAccountData() {
-    return id(new PhutilWordPressFuture())
-      ->setClientID($this->getClientID())
+    return id(new PhutilAsanaFuture())
       ->setAccessToken($this->getAccessToken())
-      ->setRawWordPressQuery('/me/')
+      ->setRawAsanaQuery('users/me')
       ->resolve();
   }
 

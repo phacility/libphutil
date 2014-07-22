@@ -3,7 +3,7 @@
 /**
  * Authentication adapter for Github OAuth2.
  */
-final class PhutilAuthAdapterOAuthGitHub extends PhutilAuthAdapterOAuth {
+final class PhutilGitHubAuthAdapter extends PhutilOAuthAuthAdapter {
 
   public function getAdapterType() {
     return 'github';
@@ -56,7 +56,7 @@ final class PhutilAuthAdapterOAuthGitHub extends PhutilAuthAdapterOAuth {
     $future = new HTTPSFuture($uri);
 
     // NOTE: GitHub requires a User-Agent string.
-    $future->addHeader('User-Agent', 'PhutilAuthAdapterOAuthGitHub');
+    $future->addHeader('User-Agent', 'PhutilGitHubAuthAdapter');
 
     list($body) = $future->resolvex();
 

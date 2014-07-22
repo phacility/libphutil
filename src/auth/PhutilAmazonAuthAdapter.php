@@ -1,20 +1,20 @@
 <?php
 
 /**
- * Authentication adapter for Disqus OAuth2.
+ * Authentication adapter for Amazon OAuth2.
  */
-final class PhutilAuthAdapterOAuthDisqus extends PhutilAuthAdapterOAuth {
+final class PhutilAmazonAuthAdapter extends PhutilOAuthAuthAdapter {
 
   public function getAdapterType() {
-    return 'disqus';
+    return 'amazon';
   }
 
   public function getAdapterDomain() {
-    return 'disqus.com';
+    return 'amazon.com';
   }
 
   public function getAccountID() {
-    return $this->getOAuthAccountData('id');
+    return $this->getOAuthAccountData('user_id');
   }
 
   public function getAccountEmail() {
@@ -22,15 +22,15 @@ final class PhutilAuthAdapterOAuthDisqus extends PhutilAuthAdapterOAuth {
   }
 
   public function getAccountName() {
-    return $this->getOAuthAccountData('username');
+    return null;
   }
 
   public function getAccountImageURI() {
-    return $this->getOAuthAccountData('avatar', 'permalink');
+    return null;
   }
 
   public function getAccountURI() {
-    return $this->getOAuthAccountData('profileUrl');
+    return null;
   }
 
   public function getAccountRealName() {
@@ -38,15 +38,15 @@ final class PhutilAuthAdapterOAuthDisqus extends PhutilAuthAdapterOAuth {
   }
 
   protected function getAuthenticateBaseURI() {
-    return 'https://disqus.com/api/oauth/2.0/authorize/';
+    return 'https://www.amazon.com/ap/oa';
   }
 
   protected function getTokenBaseURI() {
-    return 'https://disqus.com/api/oauth/2.0/access_token/';
+    return 'https://api.amazon.com/auth/o2/token';
   }
 
   public function getScope() {
-    return 'read';
+    return 'profile';
   }
 
   public function getExtraAuthenticateParameters() {
@@ -62,23 +62,20 @@ final class PhutilAuthAdapterOAuthDisqus extends PhutilAuthAdapterOAuth {
   }
 
   protected function loadOAuthAccountData() {
-    $uri = new PhutilURI('https://disqus.com/api/3.0/users/details.json');
-    $uri->setQueryParam('api_key', $this->getClientID());
+    $uri = new PhutilURI('https://api.amazon.com/user/profile');
     $uri->setQueryParam('access_token', $this->getAccessToken());
-    $uri = (string)$uri;
 
     $future = new HTTPSFuture($uri);
-    $future->setMethod('GET');
     list($body) = $future->resolvex();
 
     $data = json_decode($body, true);
     if (!is_array($data)) {
       throw new Exception(
-        'Expected valid JSON response from Disqus account data request, '.
+        'Expected valid JSON response from Amazon account data request, '.
         'got: '.$body);
     }
 
-    return $data['response'];
+    return $data;
   }
 
 }

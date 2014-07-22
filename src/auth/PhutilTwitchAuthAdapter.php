@@ -1,20 +1,20 @@
 <?php
 
 /**
- * Authentication adapter for Asana OAuth2.
+ * Authentication adapter for Twitch.tv OAuth2.
  */
-final class PhutilAuthAdapterOAuthAsana extends PhutilAuthAdapterOAuth {
+final class PhutilTwitchAuthAdapter extends PhutilOAuthAuthAdapter {
 
   public function getAdapterType() {
-    return 'asana';
+    return 'twitch';
   }
 
   public function getAdapterDomain() {
-    return 'asana.com';
+    return 'twitch.tv';
   }
 
   public function getAccountID() {
-    return $this->getOAuthAccountData('id');
+    return $this->getOAuthAccountData('_id');
   }
 
   public function getAccountEmail() {
@@ -22,36 +22,35 @@ final class PhutilAuthAdapterOAuthAsana extends PhutilAuthAdapterOAuth {
   }
 
   public function getAccountName() {
-    return null;
+    return $this->getOAuthAccountData('name');
   }
 
   public function getAccountImageURI() {
-    $photo = $this->getOAuthAccountData('photo', array());
-    if (is_array($photo)) {
-      return idx($photo, 'image_128x128');
-    } else {
-      return null;
-    }
+    return $this->getOAuthAccountData('logo');
   }
 
   public function getAccountURI() {
+    $name = $this->getAccountName();
+    if ($name) {
+      return 'http://www.twitch.tv/'.$name;
+    }
     return null;
   }
 
   public function getAccountRealName() {
-    return $this->getOAuthAccountData('name');
+    return $this->getOAuthAccountData('display_name');
   }
 
   protected function getAuthenticateBaseURI() {
-    return 'https://app.asana.com/-/oauth_authorize';
+    return 'https://api.twitch.tv/kraken/oauth2/authorize';
   }
 
   protected function getTokenBaseURI() {
-    return 'https://app.asana.com/-/oauth_token';
+    return 'https://api.twitch.tv/kraken/oauth2/token';
   }
 
   public function getScope() {
-    return null;
+    return 'user_read';
   }
 
   public function getExtraAuthenticateParameters() {
@@ -66,20 +65,11 @@ final class PhutilAuthAdapterOAuthAsana extends PhutilAuthAdapterOAuth {
     );
   }
 
-  public function getExtraRefreshParameters() {
-    return array(
-      'grant_type' => 'refresh_token',
-    );
-  }
-
-  public function supportsTokenRefresh() {
-    return true;
-  }
-
   protected function loadOAuthAccountData() {
-    return id(new PhutilAsanaFuture())
+    return id(new PhutilTwitchFuture())
+      ->setClientID($this->getClientID())
       ->setAccessToken($this->getAccessToken())
-      ->setRawAsanaQuery('users/me')
+      ->setRawTwitchQuery('user')
       ->resolve();
   }
 

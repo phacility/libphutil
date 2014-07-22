@@ -3,7 +3,7 @@
 /**
  * Abstract adapter for OAuth2 providers.
  */
-abstract class PhutilAuthAdapterOAuth extends PhutilAuthAdapter {
+abstract class PhutilOAuthAuthAdapter extends PhutilAuthAdapter {
 
   private $clientID;
   private $clientSecret;

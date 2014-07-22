@@ -3,7 +3,7 @@
 /**
  * Abstract adapter for OAuth1 providers.
  */
-abstract class PhutilAuthAdapterOAuth1 extends PhutilAuthAdapter {
+abstract class PhutilOAuth1AuthAdapter extends PhutilAuthAdapter {
 
   private $consumerKey;
   private $consumerSecret;

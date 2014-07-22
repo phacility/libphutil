@@ -3,7 +3,7 @@
 /**
  * Authentication adapter for Twitter OAuth1.
  */
-final class PhutilAuthAdapterOAuthTwitter extends PhutilAuthAdapterOAuth1 {
+final class PhutilTwitterAuthAdapter extends PhutilOAuth1AuthAdapter {
 
   private $userInfo;
 
@@ -69,6 +69,5 @@ final class PhutilAuthAdapterOAuthTwitter extends PhutilAuthAdapterOAuth1 {
     }
     return $this->userInfo;
   }
-
 
 }

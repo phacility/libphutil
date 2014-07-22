@@ -3,7 +3,7 @@
 /**
  * Authentication adapter for Facebook OAuth2.
  */
-final class PhutilAuthAdapterOAuthFacebook extends PhutilAuthAdapterOAuth {
+final class PhutilFacebookAuthAdapter extends PhutilOAuthAuthAdapter {
 
   private $requireSecureBrowsing;
 

@@ -3,7 +3,7 @@
 /**
  * Authentication adapter for JIRA OAuth1.
  */
-final class PhutilAuthAdapterOAuthJIRA extends PhutilAuthAdapterOAuth1 {
+final class PhutilJIRAAuthAdapter extends PhutilOAuth1AuthAdapter {
 
   // TODO: JIRA tokens expire (after 5 years) and we could surface and store
   // that.

@@ -3,7 +3,7 @@
 /**
  * Authentication adapter for Google OAuth2.
  */
-final class PhutilAuthAdapterOAuthGoogle extends PhutilAuthAdapterOAuth {
+final class PhutilGoogleAuthAdapter extends PhutilOAuthAuthAdapter {
 
   public function getAdapterType() {
     return 'google';

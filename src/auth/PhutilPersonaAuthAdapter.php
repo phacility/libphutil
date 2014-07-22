@@ -3,7 +3,7 @@
 /**
  * Authentication adapter for Mozilla's Persona.
  */
-final class PhutilAuthAdapterPersona extends PhutilAuthAdapter {
+final class PhutilPersonaAuthAdapter extends PhutilAuthAdapter {
 
   private $audience;
   private $assertion;

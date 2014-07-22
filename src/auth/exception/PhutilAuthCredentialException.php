@@ -3,6 +3,4 @@
 /**
  * The user provided invalid credentials.
  */
-final class PhutilAuthCredentialException extends PhutilAuthException {
-
-}
+final class PhutilAuthCredentialException extends PhutilAuthException {}

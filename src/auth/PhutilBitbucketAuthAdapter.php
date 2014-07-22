@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilAuthAdapterOAuthBitbucket extends PhutilAuthAdapterOAuth1 {
+final class PhutilBitbucketAuthAdapter extends PhutilOAuth1AuthAdapter {
 
   private $userInfo;
 

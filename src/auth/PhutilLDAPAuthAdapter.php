@@ -3,7 +3,7 @@
 /**
  * Retrieve identify information from LDAP accounts.
  */
-final class PhutilAuthAdapterLDAP extends PhutilAuthAdapter {
+final class PhutilLDAPAuthAdapter extends PhutilAuthAdapter {
 
   private $hostname;
   private $port = 389;

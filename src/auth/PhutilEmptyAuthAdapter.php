@@ -6,7 +6,7 @@
  * This adapter can be used when you need an adapter for some technical reason
  * but it doesn't make sense to put logic inside it.
  */
-final class PhutilAuthAdapterEmpty extends PhutilAuthAdapter {
+final class PhutilEmptyAuthAdapter extends PhutilAuthAdapter {
 
   private $accountID;
   private $adapterType;
