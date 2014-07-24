@@ -12,9 +12,14 @@ final class PhutilMethodNotImplementedException extends Exception {
     if ($message) {
       parent::__construct($message);
     } else {
-      $caller = idx(debug_backtrace(false), 1);
+      $caller = idx(debug_backtrace(), 1);
 
-      $class    = idx($caller, 'class');
+      if (isset($caller['object'])) {
+        $class = get_class($caller['object']);
+      } else {
+        $class = idx($caller, 'class');
+      }
+
       $function = idx($caller, 'function');
 
       if ($class) {
