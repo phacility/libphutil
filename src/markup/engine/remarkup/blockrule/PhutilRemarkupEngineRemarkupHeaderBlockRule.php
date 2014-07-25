@@ -5,7 +5,7 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
 
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
-    if (preg_match('/^(={1,5}).*+$/', $lines[$cursor])) {
+    if (preg_match('/^([=|#]{1,5}).*+$/', $lines[$cursor])) {
       $num_lines = 1;
     } else {
       if (isset($lines[$cursor + 1])) {
@@ -40,13 +40,13 @@ final class PhutilRemarkupEngineRemarkupHeaderBlockRule
     } else {
       $level = 0;
       for ($ii = 0; $ii < min(5, strlen($text)); $ii++) {
-        if ($text[$ii] == '=') {
+        if ($text[$ii] == '=' || $text[$ii] == '#') {
           ++$level;
         } else {
           break;
         }
       }
-      $text = trim($text, ' =');
+      $text = trim($text, ' =#');
     }
 
     $engine = $this->getEngine();

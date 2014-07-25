@@ -1,17 +1,17 @@
-##SELECT * FROM `table`##
+query ##SELECT * FROM `table`##
 
 `SELECT * FROM ##table##`
 
 `**x**`
 
 ~~~~~~~~~~
-<p><tt class="remarkup-monospaced">SELECT * FROM `table`</tt></p>
+<p>query <tt class="remarkup-monospaced">SELECT * FROM `table`</tt></p>
 
 <p><tt class="remarkup-monospaced">SELECT * FROM ##table##</tt></p>
 
 <p><tt class="remarkup-monospaced">**x**</tt></p>
 ~~~~~~~~~~
-##SELECT * FROM `table`##
+query ##SELECT * FROM `table`##
 
 `SELECT * FROM ##table##`
 

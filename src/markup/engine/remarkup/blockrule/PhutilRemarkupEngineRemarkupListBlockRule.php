@@ -14,17 +14,21 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
 
+    $first_line = $cursor;
+    $is_one_line = false;
     while (isset($lines[$cursor])) {
       if (!$num_lines) {
         if (preg_match(self::START_BLOCK_PATTERN, $lines[$cursor])) {
           $num_lines++;
           $cursor++;
+          $is_one_line = true;
           continue;
         }
       } else {
         if (preg_match(self::CONT_BLOCK_PATTERN, $lines[$cursor])) {
           $num_lines++;
           $cursor++;
+          $is_one_line = false;
           continue;
         }
 
@@ -41,6 +45,18 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
       }
 
       break;
+    }
+
+    // If this list only has one item in it, and the list marker is "#", and
+    // it's not the last line in the input, parse it as a header instead of a
+    // list. This produces better behavior for alternate Markdown headers.
+
+    if ($is_one_line) {
+      if (($first_line + $num_lines) < count($lines)) {
+        if (strncmp($lines[$first_line], '#', 1) === 0) {
+          return 0;
+        }
+      }
     }
 
     return $num_lines;
