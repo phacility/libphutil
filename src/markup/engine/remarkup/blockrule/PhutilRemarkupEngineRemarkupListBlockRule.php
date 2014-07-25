@@ -311,7 +311,7 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
 
     $min = $l;
     for ($ii = $r - 1; $ii >= $l; $ii--) {
-      if ($items[$ii]['depth'] < $items[$min]['depth']) {
+      if ($items[$ii]['depth'] <= $items[$min]['depth']) {
         $min = $ii;
       }
     }
