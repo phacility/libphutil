@@ -407,50 +407,57 @@ final class PhutilRemarkupEngineRemarkupListBlockRule
     $number = 1;
     foreach ($tree as $item) {
       if ($this->getEngine()->isTextMode()) {
-        $out[] = str_repeat(' ', 2 * $level);
-        if ($item['mark'] !== null) {
-          if ($item['mark']) {
-            $out[] = '[X] ';
-          } else {
-            $out[] = '[ ] ';
-          }
+        if ($item['text'] === null) {
+          // Don't render anything.
         } else {
-          switch ($style) {
-            case '#':
-              $out[] = $number.'. ';
-              $number++;
-              break;
-            case '-':
-              $out[] = '- ';
-              break;
+          $out[] = str_repeat(' ', 2 * $level);
+          if ($item['mark'] !== null) {
+            if ($item['mark']) {
+              $out[] = '[X] ';
+            } else {
+              $out[] = '[ ] ';
+            }
+          } else {
+            switch ($style) {
+              case '#':
+                $out[] = $number.'. ';
+                $number++;
+                break;
+              case '-':
+                $out[] = '- ';
+                break;
+            }
           }
+          $out[] = $this->applyRules($item['text'])."\n";
         }
-        $out[] = $this->applyRules($item['text'])."\n";
-      } else if ($item['text'] === null) {
-        $out[] = hsprintf('<li class="remarkup-list-item phantom-item">');
       } else {
-        if ($item['mark'] !== null) {
-          if ($item['mark'] == true) {
-            $out[] = hsprintf(
-              '<li class="remarkup-list-item remarkup-checked-item">');
-          } else {
-            $out[] = hsprintf(
-              '<li class="remarkup-list-item remarkup-unchecked-item">');
-          }
-          $out[] = phutil_tag(
-            'input',
-            array(
-              'type' => 'checkbox',
-              'checked' => ($item['mark'] ? 'checked' : null),
-              'disabled' => 'disabled',
-            ));
-          $out[] = ' ';
+        if ($item['text'] === null) {
+          $out[] = hsprintf('<li class="remarkup-list-item phantom-item">');
         } else {
-          $out[] = hsprintf('<li class="remarkup-list-item">');
-        }
+          if ($item['mark'] !== null) {
+            if ($item['mark'] == true) {
+              $out[] = hsprintf(
+                '<li class="remarkup-list-item remarkup-checked-item">');
+            } else {
+              $out[] = hsprintf(
+                '<li class="remarkup-list-item remarkup-unchecked-item">');
+            }
+            $out[] = phutil_tag(
+              'input',
+              array(
+                'type' => 'checkbox',
+                'checked' => ($item['mark'] ? 'checked' : null),
+                'disabled' => 'disabled',
+              ));
+            $out[] = ' ';
+          } else {
+            $out[] = hsprintf('<li class="remarkup-list-item">');
+          }
 
-        $out[] = $this->applyRules($item['text']);
+          $out[] = $this->applyRules($item['text']);
+        }
       }
+
       if ($item['items']) {
         $subitems = $this->renderTree($item['items'], $level + 1, $has_marks);
         foreach ($subitems as $i) {

@@ -16,10 +16,8 @@ derp
 
 <p>derp</p>
 ~~~~~~~~~~
-1.
-  -
     - top
   - mid
-2. bot
+1. bot
 
 derp

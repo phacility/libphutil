@@ -10,7 +10,6 @@
 <li class="remarkup-list-item">Banana</li>
 </ul>
 ~~~~~~~~~~
--
   1. Fruit
 - Apple
 - Banana
