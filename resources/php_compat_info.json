@@ -128,6 +128,12 @@
       "4.0.0",
       "5.3.0"
     ],
+    "openssl_sign"          : [
+      "4.0.4",
+      "4.0.4",
+      "4.0.4",
+      "5.0.0"
+    ],
     "parse_url"             : [
       "4.0.0",
       "5.1.2"
@@ -1473,6 +1479,11 @@
       "min" : "5.0.0",
       "max" : null,
       "ref" : "standard"
+    },
+    "dom_import_simplexml"                   : {
+      "min" : "5.0.0",
+      "max" : null,
+      "ref" : "dom"
     },
     "doubleval"                              : {
       "min" : "4.0.0",
@@ -5589,6 +5600,246 @@
       "max" : null,
       "ref" : "standard"
     },
+    "openssl_cipher_iv_length"               : {
+      "min" : "5.3.3",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_csr_export"                     : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_csr_export_to_file"             : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_csr_get_public_key"             : {
+      "min" : "5.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_csr_get_subject"                : {
+      "min" : "5.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_csr_new"                        : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_csr_sign"                       : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_decrypt"                        : {
+      "min" : "5.3.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_dh_compute_key"                 : {
+      "min" : "5.3.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_digest"                         : {
+      "min" : "5.3.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_encrypt"                        : {
+      "min" : "5.3.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_error_string"                   : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_free_key"                       : {
+      "min" : "4.0.4",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_get_cipher_methods"             : {
+      "min" : "5.3.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_get_md_methods"                 : {
+      "min" : "5.3.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_get_privatekey"                 : {
+      "min" : "4.0.4",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_get_publickey"                  : {
+      "min" : "4.0.4",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_open"                           : {
+      "min" : "4.0.4",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pbkdf2"                         : {
+      "min" : "5.5.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkcs12_export"                  : {
+      "min" : "5.2.2",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkcs12_export_to_file"          : {
+      "min" : "5.2.2",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkcs12_read"                    : {
+      "min" : "5.2.2",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkcs7_decrypt"                  : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkcs7_encrypt"                  : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkcs7_sign"                     : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkcs7_verify"                   : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkey_export"                    : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkey_export_to_file"            : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkey_free"                      : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkey_get_details"               : {
+      "min" : "5.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkey_get_private"               : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkey_get_public"                : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_pkey_new"                       : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_private_decrypt"                : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_private_encrypt"                : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_public_decrypt"                 : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_public_encrypt"                 : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_random_pseudo_bytes"            : {
+      "min" : "5.3.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_seal"                           : {
+      "min" : "4.0.4",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_sign"                           : {
+      "min" : "4.0.4",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_verify"                         : {
+      "min" : "4.0.4",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_x509_check_private_key"         : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_x509_checkpurpose"              : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_x509_export"                    : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_x509_export_to_file"            : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_x509_free"                      : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_x509_parse"                     : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
+    "openssl_x509_read"                      : {
+      "min" : "4.0.6",
+      "max" : null,
+      "ref" : "openssl"
+    },
     "ord"                                    : {
       "min" : "4.0.0",
       "max" : null,
@@ -5786,7 +6037,7 @@
     },
     "php_egg_logo_guid"                      : {
       "min" : "4.0.3",
-      "max" : "5.4.30RC1",
+      "max" : "5.4.31",
       "ref" : "standard"
     },
     "php_ini_loaded_file"                    : {
@@ -5801,12 +6052,12 @@
     },
     "php_logo_guid"                          : {
       "min" : "4.0.0",
-      "max" : "5.4.30RC1",
+      "max" : "5.4.31",
       "ref" : "standard"
     },
     "php_real_logo_guid"                     : {
       "min" : "4.0.0",
-      "max" : "5.4.30RC1",
+      "max" : "5.4.31",
       "ref" : "standard"
     },
     "php_sapi_name"                          : {
@@ -6439,20 +6690,175 @@
       "max" : null,
       "ref" : "standard"
     },
+    "socket_accept"                          : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_bind"                            : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_clear_error"                     : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_close"                           : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_cmsg_space"                      : {
+      "min" : "5.5.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_connect"                         : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_create"                          : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_create_listen"                   : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_create_pair"                     : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_get_option"                      : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
     "socket_get_status"                      : {
       "min" : "4.0.0",
       "max" : null,
       "ref" : "standard"
+    },
+    "socket_getopt"                          : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_getpeername"                     : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_getsockname"                     : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_import_stream"                   : {
+      "min" : "5.4.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_last_error"                      : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_listen"                          : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_read"                            : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_recv"                            : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_recvfrom"                        : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_recvmsg"                         : {
+      "min" : "5.5.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_select"                          : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_send"                            : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_sendmsg"                         : {
+      "min" : "5.5.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_sendto"                          : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_set_block"                       : {
+      "min" : "4.2.0",
+      "max" : null,
+      "ref" : "sockets"
     },
     "socket_set_blocking"                    : {
       "min" : "4.0.0",
       "max" : null,
       "ref" : "standard"
     },
+    "socket_set_nonblock"                    : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_set_option"                      : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
     "socket_set_timeout"                     : {
       "min" : "4.0.0",
       "max" : null,
       "ref" : "standard"
+    },
+    "socket_setopt"                          : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_shutdown"                        : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_strerror"                        : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
+    },
+    "socket_write"                           : {
+      "min" : "4.1.0",
+      "max" : null,
+      "ref" : "sockets"
     },
     "sort"                                   : {
       "min" : "4.0.0",
@@ -7601,7 +8007,7 @@
     },
     "zend_logo_guid"                         : {
       "min" : "4.0.0",
-      "max" : "5.4.30RC1",
+      "max" : "5.4.31",
       "ref" : "standard"
     },
     "zend_thread_id"                         : {
@@ -7613,6 +8019,56 @@
       "min" : "4.0.0",
       "max" : null,
       "ref" : "Core"
+    },
+    "zip_close"                              : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
+    },
+    "zip_entry_close"                        : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
+    },
+    "zip_entry_compressedsize"               : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
+    },
+    "zip_entry_compressionmethod"            : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
+    },
+    "zip_entry_filesize"                     : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
+    },
+    "zip_entry_name"                         : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
+    },
+    "zip_entry_open"                         : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
+    },
+    "zip_entry_read"                         : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
+    },
+    "zip_open"                               : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
+    },
+    "zip_read"                               : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "zip"
     },
     "zlib_decode"                            : {
       "min" : "5.4.0",
@@ -7673,6 +8129,130 @@
     },
     "Collator"                                  : {
       "min" : "5.2.0",
+      "max" : null
+    },
+    "DOMAttr"                                   : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMCdataSection"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMCharacterData"                          : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMComment"                                : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMConfiguration"                          : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMDocument"                               : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMDocumentFragment"                       : {
+      "min" : "5.1.0",
+      "max" : null
+    },
+    "DOMDocumentType"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMDomError"                               : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMElement"                                : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMEntity"                                 : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMEntityReference"                        : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMErrorHandler"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMException"                              : {
+      "min" : "5.1.0",
+      "max" : null
+    },
+    "DOMImplementation"                         : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMImplementationList"                     : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMImplementationSource"                   : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMLocator"                                : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMNameList"                               : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMNameSpaceNode"                          : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMNamedNodeMap"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMNode"                                   : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMNodeList"                               : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMNotation"                               : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMProcessingInstruction"                  : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMStringExtend"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMStringList"                             : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMText"                                   : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMTypeinfo"                               : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMUserDataHandler"                        : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOMXPath"                                  : {
+      "min" : "5.0.0",
       "max" : null
     },
     "DateInterval"                              : {
@@ -8083,6 +8663,10 @@
       "min" : "5.1.2",
       "max" : null
     },
+    "ZipArchive"                                : {
+      "min" : "5.2.0",
+      "max" : null
+    },
     "__PHP_Incomplete_Class"                    : {
       "min" : "4.0.0",
       "max" : null
@@ -8364,6 +8948,18 @@
       "max" : null
     },
     "ABMON_9"                                     : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "AF_INET"                                     : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "AF_INET6"                                    : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "AF_UNIX"                                     : {
       "min" : "4.1.0",
       "max" : null
     },
@@ -8653,23 +9249,23 @@
     },
     "CURLCLOSEPOLICY_CALLBACK"                    : {
       "min" : "4.0.2",
-      "max" : "5.5.14RC1"
+      "max" : "5.5.15"
     },
     "CURLCLOSEPOLICY_LEAST_RECENTLY_USED"         : {
       "min" : "4.0.2",
-      "max" : "5.5.14RC1"
+      "max" : "5.5.15"
     },
     "CURLCLOSEPOLICY_LEAST_TRAFFIC"               : {
       "min" : "4.0.2",
-      "max" : "5.5.14RC1"
+      "max" : "5.5.15"
     },
     "CURLCLOSEPOLICY_OLDEST"                      : {
       "min" : "4.0.2",
-      "max" : "5.5.14RC1"
+      "max" : "5.5.15"
     },
     "CURLCLOSEPOLICY_SLOWEST"                     : {
       "min" : "4.0.2",
-      "max" : "5.5.14RC1"
+      "max" : "5.5.15"
     },
     "CURLE_ABORTED_BY_CALLBACK"                   : {
       "min" : "4.0.2",
@@ -9003,14 +9599,6 @@
       "min" : "4.0.2",
       "max" : null
     },
-    "CURLGSSAPI_DELEGATION_FLAG"                  : {
-      "min" : "5.5.0",
-      "max" : null
-    },
-    "CURLGSSAPI_DELEGATION_POLICY_FLAG"           : {
-      "min" : "5.5.0",
-      "max" : null
-    },
     "CURLINFO_APPCONNECT_TIME"                    : {
       "min" : "5.5.0",
       "max" : null
@@ -9223,14 +9811,6 @@
       "min" : "4.0.2",
       "max" : null
     },
-    "CURLOPT_ACCEPTTIMEOUT_MS"                    : {
-      "min" : "5.5.0",
-      "max" : null
-    },
-    "CURLOPT_ACCEPT_ENCODING"                     : {
-      "min" : "5.5.0",
-      "max" : null
-    },
     "CURLOPT_ADDRESS_SCOPE"                       : {
       "min" : "5.5.0",
       "max" : null
@@ -9265,7 +9845,7 @@
     },
     "CURLOPT_CLOSEPOLICY"                         : {
       "min" : "4.0.2",
-      "max" : "5.5.14RC1"
+      "max" : "5.5.15"
     },
     "CURLOPT_CONNECTTIMEOUT"                      : {
       "min" : "4.0.2",
@@ -9317,10 +9897,6 @@
     },
     "CURLOPT_DNS_CACHE_TIMEOUT"                   : {
       "min" : "4.0.2",
-      "max" : null
-    },
-    "CURLOPT_DNS_SERVERS"                         : {
-      "min" : "5.5.0",
       "max" : null
     },
     "CURLOPT_DNS_USE_GLOBAL_CACHE"                : {
@@ -9423,10 +9999,6 @@
       "min" : "5.5.0",
       "max" : null
     },
-    "CURLOPT_GSSAPI_DELEGATION"                   : {
-      "min" : "5.5.0",
-      "max" : null
-    },
     "CURLOPT_HEADER"                              : {
       "min" : "4.0.2",
       "max" : null
@@ -9517,10 +10089,6 @@
     },
     "CURLOPT_LOW_SPEED_TIME"                      : {
       "min" : "4.0.2",
-      "max" : null
-    },
-    "CURLOPT_MAIL_AUTH"                           : {
-      "min" : "5.5.0",
       "max" : null
     },
     "CURLOPT_MAIL_FROM"                           : {
@@ -9807,10 +10375,6 @@
       "min" : "4.0.2",
       "max" : null
     },
-    "CURLOPT_SSL_OPTIONS"                         : {
-      "min" : "5.5.0",
-      "max" : null
-    },
     "CURLOPT_SSL_SESSIONID_CACHE"                 : {
       "min" : "5.5.0",
       "max" : null
@@ -9825,18 +10389,6 @@
     },
     "CURLOPT_STDERR"                              : {
       "min" : "4.0.2",
-      "max" : null
-    },
-    "CURLOPT_TCP_KEEPALIVE"                       : {
-      "min" : "5.5.0",
-      "max" : null
-    },
-    "CURLOPT_TCP_KEEPIDLE"                        : {
-      "min" : "5.5.0",
-      "max" : null
-    },
-    "CURLOPT_TCP_KEEPINTVL"                       : {
-      "min" : "5.5.0",
       "max" : null
     },
     "CURLOPT_TCP_NODELAY"                         : {
@@ -9881,10 +10433,6 @@
     },
     "CURLOPT_TRANSFERTEXT"                        : {
       "min" : "4.0.2",
-      "max" : null
-    },
-    "CURLOPT_TRANSFER_ENCODING"                   : {
-      "min" : "5.5.0",
       "max" : null
     },
     "CURLOPT_UNRESTRICTED_AUTH"                   : {
@@ -10113,10 +10661,6 @@
     },
     "CURLSSH_AUTH_PUBLICKEY"                      : {
       "min" : "5.3.0",
-      "max" : null
-    },
-    "CURLSSLOPT_ALLOW_BEAST"                      : {
-      "min" : "5.5.0",
       "max" : null
     },
     "CURLUSESSL_ALL"                              : {
@@ -10445,6 +10989,74 @@
     },
     "DNS_TXT"                                     : {
       "min" : "4.0.0",
+      "max" : null
+    },
+    "DOMSTRING_SIZE_ERR"                          : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_HIERARCHY_REQUEST_ERR"                   : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_INDEX_SIZE_ERR"                          : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_INUSE_ATTRIBUTE_ERR"                     : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_INVALID_ACCESS_ERR"                      : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_INVALID_CHARACTER_ERR"                   : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_INVALID_MODIFICATION_ERR"                : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_INVALID_STATE_ERR"                       : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_NAMESPACE_ERR"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_NOT_FOUND_ERR"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_NOT_SUPPORTED_ERR"                       : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_NO_DATA_ALLOWED_ERR"                     : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_NO_MODIFICATION_ALLOWED_ERR"             : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_PHP_ERR"                                 : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_SYNTAX_ERR"                              : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_VALIDATION_ERR"                          : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "DOM_WRONG_DOCUMENT_ERR"                      : {
+      "min" : "5.0.0",
       "max" : null
     },
     "D_FMT"                                       : {
@@ -11283,6 +11895,66 @@
       "min" : "5.2.4",
       "max" : null
     },
+    "IPPROTO_IP"                                  : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "IPPROTO_IPV6"                                : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "IPV6_HOPLIMIT"                               : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "IPV6_MULTICAST_HOPS"                         : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "IPV6_MULTICAST_IF"                           : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "IPV6_MULTICAST_LOOP"                         : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "IPV6_PKTINFO"                                : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "IPV6_RECVHOPLIMIT"                           : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "IPV6_RECVPKTINFO"                            : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "IPV6_RECVTCLASS"                             : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "IPV6_TCLASS"                                 : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "IPV6_UNICAST_HOPS"                           : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "IP_MULTICAST_IF"                             : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "IP_MULTICAST_LOOP"                           : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "IP_MULTICAST_TTL"                            : {
+      "min" : "5.4.0",
+      "max" : null
+    },
     "JSON_BIGINT_AS_STRING"                       : {
       "min" : "5.4.0",
       "max" : null
@@ -11547,14 +12219,6 @@
       "min" : "5.1.0",
       "max" : null
     },
-    "LIBXML_HTML_NODEFDTD"                        : {
-      "min" : "5.4.0",
-      "max" : null
-    },
-    "LIBXML_HTML_NOIMPLIED"                       : {
-      "min" : "5.4.0",
-      "max" : null
-    },
     "LIBXML_LOADED_VERSION"                       : {
       "min" : "5.3.0",
       "max" : null
@@ -11787,6 +12451,30 @@
       "min" : "4.0.6",
       "max" : null
     },
+    "MCAST_BLOCK_SOURCE"                          : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "MCAST_JOIN_GROUP"                            : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "MCAST_JOIN_SOURCE_GROUP"                     : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "MCAST_LEAVE_GROUP"                           : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "MCAST_LEAVE_SOURCE_GROUP"                    : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "MCAST_UNBLOCK_SOURCE"                        : {
+      "min" : "5.4.0",
+      "max" : null
+    },
     "MON_1"                                       : {
       "min" : "4.1.0",
       "max" : null
@@ -11833,6 +12521,66 @@
     },
     "MON_9"                                       : {
       "min" : "4.1.0",
+      "max" : null
+    },
+    "MSG_CMSG_CLOEXEC"                            : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "MSG_CONFIRM"                                 : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "MSG_CTRUNC"                                  : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "MSG_DONTROUTE"                               : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "MSG_DONTWAIT"                                : {
+      "min" : "5.2.10",
+      "max" : null
+    },
+    "MSG_EOF"                                     : {
+      "min" : "5.2.4",
+      "max" : null
+    },
+    "MSG_EOR"                                     : {
+      "min" : "5.2.4",
+      "max" : null
+    },
+    "MSG_ERRQUEUE"                                : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "MSG_MORE"                                    : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "MSG_NOSIGNAL"                                : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "MSG_OOB"                                     : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "MSG_PEEK"                                    : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "MSG_TRUNC"                                   : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "MSG_WAITALL"                                 : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "MSG_WAITFORONE"                              : {
+      "min" : "5.5.0",
       "max" : null
     },
     "MYSQLI_ASSOC"                                : {
@@ -12375,6 +13123,130 @@
       "min" : "4.0.0",
       "max" : null
     },
+    "OPENSSL_ALGO_DSS1"                           : {
+      "min" : "5.2.8",
+      "max" : null
+    },
+    "OPENSSL_ALGO_MD2"                            : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "OPENSSL_ALGO_MD4"                            : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "OPENSSL_ALGO_MD5"                            : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "OPENSSL_ALGO_RMD160"                         : {
+      "min" : "5.4.8",
+      "max" : null
+    },
+    "OPENSSL_ALGO_SHA1"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "OPENSSL_ALGO_SHA224"                         : {
+      "min" : "5.4.8",
+      "max" : null
+    },
+    "OPENSSL_ALGO_SHA256"                         : {
+      "min" : "5.4.8",
+      "max" : null
+    },
+    "OPENSSL_ALGO_SHA384"                         : {
+      "min" : "5.4.8",
+      "max" : null
+    },
+    "OPENSSL_ALGO_SHA512"                         : {
+      "min" : "5.4.8",
+      "max" : null
+    },
+    "OPENSSL_CIPHER_3DES"                         : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "OPENSSL_CIPHER_AES_128_CBC"                  : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "OPENSSL_CIPHER_AES_192_CBC"                  : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "OPENSSL_CIPHER_AES_256_CBC"                  : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "OPENSSL_CIPHER_DES"                          : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "OPENSSL_CIPHER_RC2_128"                      : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "OPENSSL_CIPHER_RC2_40"                       : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "OPENSSL_CIPHER_RC2_64"                       : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "OPENSSL_KEYTYPE_DH"                          : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "OPENSSL_KEYTYPE_DSA"                         : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "OPENSSL_KEYTYPE_EC"                          : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "OPENSSL_KEYTYPE_RSA"                         : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "OPENSSL_NO_PADDING"                          : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "OPENSSL_PKCS1_OAEP_PADDING"                  : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "OPENSSL_PKCS1_PADDING"                       : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "OPENSSL_RAW_DATA"                            : {
+      "min" : "5.4.0",
+      "max" : null
+    },
+    "OPENSSL_SSLV23_PADDING"                      : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "OPENSSL_TLSEXT_SERVER_NAME"                  : {
+      "min" : "5.3.2",
+      "max" : null
+    },
+    "OPENSSL_VERSION_NUMBER"                      : {
+      "min" : "5.2.0",
+      "max" : null
+    },
+    "OPENSSL_VERSION_TEXT"                        : {
+      "min" : "5.2.0",
+      "max" : null
+    },
+    "OPENSSL_ZERO_PADDING"                        : {
+      "min" : "5.4.0",
+      "max" : null
+    },
     "PASSWORD_BCRYPT"                             : {
       "min" : "5.5.0",
       "max" : null
@@ -12507,6 +13379,10 @@
       "min" : "5.4.0",
       "max" : null
     },
+    "PHP_BINARY_READ"                             : {
+      "min" : "4.1.0",
+      "max" : null
+    },
     "PHP_BINDIR"                                  : {
       "min" : "4.0.0",
       "max" : null
@@ -12569,6 +13445,10 @@
     },
     "PHP_MINOR_VERSION"                           : {
       "min" : "5.2.7",
+      "max" : null
+    },
+    "PHP_NORMAL_READ"                             : {
+      "min" : "4.1.0",
       "max" : null
     },
     "PHP_OS"                                      : {
@@ -12757,6 +13637,42 @@
     },
     "PHP_ZTS"                                     : {
       "min" : "5.2.7",
+      "max" : null
+    },
+    "PKCS7_BINARY"                                : {
+      "min" : "4.0.6",
+      "max" : null
+    },
+    "PKCS7_DETACHED"                              : {
+      "min" : "4.0.6",
+      "max" : null
+    },
+    "PKCS7_NOATTR"                                : {
+      "min" : "4.0.6",
+      "max" : null
+    },
+    "PKCS7_NOCERTS"                               : {
+      "min" : "4.0.6",
+      "max" : null
+    },
+    "PKCS7_NOCHAIN"                               : {
+      "min" : "4.0.6",
+      "max" : null
+    },
+    "PKCS7_NOINTERN"                              : {
+      "min" : "4.0.6",
+      "max" : null
+    },
+    "PKCS7_NOSIGS"                                : {
+      "min" : "4.0.6",
+      "max" : null
+    },
+    "PKCS7_NOVERIFY"                              : {
+      "min" : "4.0.6",
+      "max" : null
+    },
+    "PKCS7_TEXT"                                  : {
+      "min" : "4.0.6",
       "max" : null
     },
     "PM_STR"                                      : {
@@ -12953,6 +13869,14 @@
     },
     "SCANDIR_SORT_NONE"                           : {
       "min" : "5.4.0",
+      "max" : null
+    },
+    "SCM_CREDENTIALS"                             : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "SCM_RIGHTS"                                  : {
+      "min" : "5.5.0",
       "max" : null
     },
     "SEEK_CUR"                                    : {
@@ -13175,6 +14099,490 @@
       "min" : "5.3.0",
       "max" : null
     },
+    "SOCKET_E2BIG"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EACCES"                               : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EADDRINUSE"                           : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EADDRNOTAVAIL"                        : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EADV"                                 : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EAFNOSUPPORT"                         : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EAGAIN"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EALREADY"                             : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EBADE"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EBADF"                                : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EBADFD"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EBADMSG"                              : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EBADR"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EBADRQC"                              : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EBADSLT"                              : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EBUSY"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ECHRNG"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ECOMM"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ECONNABORTED"                         : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ECONNREFUSED"                         : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ECONNRESET"                           : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EDESTADDRREQ"                         : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EDISCON"                              : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EDQUOT"                               : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EEXIST"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EFAULT"                               : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EHOSTDOWN"                            : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EHOSTUNREACH"                         : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EIDRM"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EINPROGRESS"                          : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EINTR"                                : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EINVAL"                               : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EIO"                                  : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EISCONN"                              : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EISDIR"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EISNAM"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EL2HLT"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EL2NSYNC"                             : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EL3HLT"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EL3RST"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ELNRNG"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ELOOP"                                : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EMEDIUMTYPE"                          : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EMFILE"                               : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EMLINK"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EMSGSIZE"                             : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EMULTIHOP"                            : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENAMETOOLONG"                         : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ENETDOWN"                             : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ENETRESET"                            : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ENETUNREACH"                          : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ENFILE"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOANO"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOBUFS"                              : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ENOCSI"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENODATA"                              : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENODEV"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOENT"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOLCK"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOLINK"                              : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOMEDIUM"                            : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOMEM"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOMSG"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENONET"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOPROTOOPT"                          : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ENOSPC"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOSR"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOSTR"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOSYS"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOTBLK"                              : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOTCONN"                             : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ENOTDIR"                              : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOTEMPTY"                            : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ENOTSOCK"                             : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ENOTTY"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENOTUNIQ"                             : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ENXIO"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EOPNOTSUPP"                           : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EPERM"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EPFNOSUPPORT"                         : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EPIPE"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EPROCLIM"                             : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EPROTO"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EPROTONOSUPPORT"                      : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EPROTOTYPE"                           : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EREMCHG"                              : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EREMOTE"                              : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EREMOTEIO"                            : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ERESTART"                             : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EROFS"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ESHUTDOWN"                            : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ESOCKTNOSUPPORT"                      : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ESPIPE"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ESRMNT"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ESTALE"                               : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ESTRPIPE"                             : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ETIME"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_ETIMEDOUT"                            : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_ETOOMANYREFS"                         : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EUNATCH"                              : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EUSERS"                               : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EWOULDBLOCK"                          : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_EXDEV"                                : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_EXFULL"                               : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "SOCKET_HOST_NOT_FOUND"                       : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_NOTINITIALISED"                       : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_NO_ADDRESS"                           : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_NO_DATA"                              : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_NO_RECOVERY"                          : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_SYSNOTREADY"                          : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_TRY_AGAIN"                            : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCKET_VERNOTSUPPORTED"                      : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCK_DGRAM"                                  : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCK_RAW"                                    : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCK_RDM"                                    : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCK_SEQPACKET"                              : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOCK_STREAM"                                 : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOL_SOCKET"                                  : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOL_TCP"                                     : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOL_UDP"                                     : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SOMAXCONN"                                   : {
+      "min" : "4.1.0",
+      "max" : null
+    },
     "SORT_ASC"                                    : {
       "min" : "4.0.0",
       "max" : null
@@ -13205,6 +14613,78 @@
     },
     "SORT_STRING"                                 : {
       "min" : "4.0.0",
+      "max" : null
+    },
+    "SO_BINDTODEVICE"                             : {
+      "min" : "5.4.18",
+      "max" : null
+    },
+    "SO_BROADCAST"                                : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_DEBUG"                                    : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_DONTROUTE"                                : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_ERROR"                                    : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_KEEPALIVE"                                : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_LINGER"                                   : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_OOBINLINE"                                : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_PASSCRED"                                 : {
+      "min" : "5.5.0",
+      "max" : null
+    },
+    "SO_RCVBUF"                                   : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_RCVLOWAT"                                 : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_RCVTIMEO"                                 : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_REUSEADDR"                                : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_REUSEPORT"                                : {
+      "min" : "5.4.10",
+      "max" : null
+    },
+    "SO_SNDBUF"                                   : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_SNDLOWAT"                                 : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_SNDTIMEO"                                 : {
+      "min" : "4.1.0",
+      "max" : null
+    },
+    "SO_TYPE"                                     : {
+      "min" : "4.1.0",
       "max" : null
     },
     "STDERR"                                      : {
@@ -13525,6 +15005,10 @@
     },
     "SUNFUNCS_RET_TIMESTAMP"                      : {
       "min" : "5.1.2",
+      "max" : null
+    },
+    "TCP_NODELAY"                                 : {
+      "min" : "5.2.7",
       "max" : null
     },
     "THOUSEP"                                     : {
@@ -14119,6 +15603,122 @@
       "min" : "4.1.0",
       "max" : null
     },
+    "X509_PURPOSE_ANY"                            : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "X509_PURPOSE_CRL_SIGN"                       : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "X509_PURPOSE_NS_SSL_SERVER"                  : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "X509_PURPOSE_SMIME_ENCRYPT"                  : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "X509_PURPOSE_SMIME_SIGN"                     : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "X509_PURPOSE_SSL_CLIENT"                     : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "X509_PURPOSE_SSL_SERVER"                     : {
+      "min" : "4.0.4",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_CDATA"                         : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_DECL_NODE"                     : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_ENTITY"                        : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_ENUMERATION"                   : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_ID"                            : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_IDREF"                         : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_IDREFS"                        : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_NMTOKEN"                       : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_NMTOKENS"                      : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_NODE"                          : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ATTRIBUTE_NOTATION"                      : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_CDATA_SECTION_NODE"                      : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_COMMENT_NODE"                            : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_DOCUMENT_FRAG_NODE"                      : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_DOCUMENT_NODE"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_DOCUMENT_TYPE_NODE"                      : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_DTD_NODE"                                : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ELEMENT_DECL_NODE"                       : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ELEMENT_NODE"                            : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ENTITY_DECL_NODE"                        : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ENTITY_NODE"                             : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_ENTITY_REF_NODE"                         : {
+      "min" : "5.0.0",
+      "max" : null
+    },
     "XML_ERROR_ASYNC_ENTITY"                      : {
       "min" : "4.0.0",
       "max" : null
@@ -14207,6 +15807,22 @@
       "min" : "4.0.0",
       "max" : null
     },
+    "XML_HTML_DOCUMENT_NODE"                      : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_LOCAL_NAMESPACE"                         : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_NAMESPACE_DECL_NODE"                     : {
+      "min" : "5.0.0",
+      "max" : null
+    },
+    "XML_NOTATION_NODE"                           : {
+      "min" : "5.0.0",
+      "max" : null
+    },
     "XML_OPTION_CASE_FOLDING"                     : {
       "min" : "4.0.0",
       "max" : null
@@ -14223,8 +15839,16 @@
       "min" : "4.0.0",
       "max" : null
     },
+    "XML_PI_NODE"                                 : {
+      "min" : "5.0.0",
+      "max" : null
+    },
     "XML_SAX_IMPL"                                : {
       "min" : "4.0.0",
+      "max" : null
+    },
+    "XML_TEXT_NODE"                               : {
+      "min" : "5.0.0",
       "max" : null
     },
     "YAML_ANY_BREAK"                              : {
@@ -14510,6 +16134,24 @@
       },
       "rewind" : {
         "min" : "4.0.0",
+        "max" : null
+      }
+    },
+    "ZipArchive"      : {
+      "setExternalAttributesName"  : {
+        "min" : "5.2.0",
+        "max" : null
+      },
+      "setExternalAttributesIndex" : {
+        "min" : "5.2.0",
+        "max" : null
+      },
+      "getExternalAttributesName"  : {
+        "min" : "5.2.0",
+        "max" : null
+      },
+      "getExternalAttributesIndex" : {
+        "min" : "5.2.0",
         "max" : null
       }
     },
