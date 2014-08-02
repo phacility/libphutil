@@ -1,6 +1,6 @@
 <?php
 
-final class HTTPFutureCURLesponseStatus extends HTTPFutureResponseStatus {
+final class HTTPFutureCURLResponseStatus extends HTTPFutureResponseStatus {
 
   protected function getErrorCodeType($code) {
     return 'cURL';
