@@ -1,7 +1,6 @@
 <?php
 
-final class PhutilRemarkupEngineRemarkupListBlockRule
-  extends PhutilRemarkupEngineBlockRule {
+final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
 
   /**
    * This rule must apply before the Code block rule because it needs to

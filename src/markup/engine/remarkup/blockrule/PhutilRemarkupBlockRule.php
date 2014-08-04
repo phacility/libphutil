@@ -3,7 +3,7 @@
 /**
  * @stable
  */
-abstract class PhutilRemarkupEngineBlockRule {
+abstract class PhutilRemarkupBlockRule {
 
   private $engine;
   private $rules = array();

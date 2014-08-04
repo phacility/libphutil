@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilRemarkupRuleEscapeRemarkup extends PhutilRemarkupRule {
+final class PhutilRemarkupEscapeRemarkupRule extends PhutilRemarkupRule {
 
   public function getPriority() {
     return 0;

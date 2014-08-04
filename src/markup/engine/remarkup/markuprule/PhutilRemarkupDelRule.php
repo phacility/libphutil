@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilRemarkupRuleItalic extends PhutilRemarkupRule {
+final class PhutilRemarkupDelRule extends PhutilRemarkupRule {
 
   public function getPriority() {
     return 1000.0;
@@ -12,13 +12,13 @@ final class PhutilRemarkupRuleItalic extends PhutilRemarkupRule {
     }
 
     return $this->replaceHTML(
-      '@(?<!:)//(.+?)//@s',
+      '@(?<!~)~~([^\s~].*?~*)~~@s',
       array($this, 'applyCallback'),
       $text);
   }
 
   protected function applyCallback($matches) {
-    return hsprintf('<em>%s</em>', $matches[1]);
+    return hsprintf('<del>%s</del>', $matches[1]);
   }
 
 }

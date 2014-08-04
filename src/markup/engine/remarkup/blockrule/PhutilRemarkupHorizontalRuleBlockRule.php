@@ -1,7 +1,7 @@
 <?php
 
-final class PhutilRemarkupEngineRemarkupHorizontalRuleBlockRule
-  extends PhutilRemarkupEngineBlockRule {
+final class PhutilRemarkupHorizontalRuleBlockRule
+  extends PhutilRemarkupBlockRule {
 
   /**
    * This rule executes at priority `300`, so it can preempt the list block

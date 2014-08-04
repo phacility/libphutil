@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilRemarkupRuleDocumentLink extends PhutilRemarkupRule {
+final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
 
   public function getPriority() {
     return 150.0;

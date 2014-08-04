@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilRemarkupRuleMonospace extends PhutilRemarkupRule {
+final class PhutilRemarkupMonospaceRule extends PhutilRemarkupRule {
 
   public function getPriority() {
     return 100.0;

@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilRemarkupEngineRemarkupTestInterpreterRule
+final class PhutilRemarkupTestInterpreterRule
   extends PhutilRemarkupBlockInterpreter {
 
   public function getInterpreterName() {

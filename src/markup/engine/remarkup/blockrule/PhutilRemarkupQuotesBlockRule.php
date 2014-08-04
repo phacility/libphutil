@@ -1,7 +1,6 @@
 <?php
 
-final class PhutilRemarkupEngineRemarkupQuotesBlockRule
-  extends PhutilRemarkupEngineBlockRule {
+final class PhutilRemarkupQuotesBlockRule extends PhutilRemarkupBlockRule {
 
   public function getMatchingLineCount(array $lines, $cursor) {
     $pos = $cursor;

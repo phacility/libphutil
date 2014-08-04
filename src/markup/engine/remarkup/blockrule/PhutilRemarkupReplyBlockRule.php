@@ -1,7 +1,6 @@
 <?php
 
-final class PhutilRemarkupEngineRemarkupReplyBlockRule
-  extends PhutilRemarkupEngineBlockRule {
+final class PhutilRemarkupReplyBlockRule extends PhutilRemarkupBlockRule {
 
   public function getPriority() {
     return 400.0;

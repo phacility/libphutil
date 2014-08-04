@@ -1,9 +1,6 @@
 <?php
 
-/**
- * @concrete-extensible (TODO only needed by Facebook at the moment)
- */
-class PhutilRemarkupRuleHyperlink extends PhutilRemarkupRule {
+final class PhutilRemarkupHyperlinkRule extends PhutilRemarkupRule {
 
   public function getPriority() {
     return 400.0;

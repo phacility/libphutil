@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilRemarkupRuleLinebreaks extends PhutilRemarkupRule {
+final class PhutilRemarkupLinebreaksRule extends PhutilRemarkupRule {
 
   public function apply($text) {
     if ($this->getEngine()->isTextMode()) {

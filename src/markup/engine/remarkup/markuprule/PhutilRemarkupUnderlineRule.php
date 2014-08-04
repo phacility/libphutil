@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilRemarkupRuleDel extends PhutilRemarkupRule {
+final class PhutilRemarkupUnderlineRule extends PhutilRemarkupRule {
 
   public function getPriority() {
     return 1000.0;
@@ -12,13 +12,13 @@ final class PhutilRemarkupRuleDel extends PhutilRemarkupRule {
     }
 
     return $this->replaceHTML(
-      '@(?<!~)~~([^\s~].*?~*)~~@s',
+      '@(?<!_|/)__([^\s_/].*?_*)__(?!/|\.\S)@s',
       array($this, 'applyCallback'),
       $text);
   }
 
   protected function applyCallback($matches) {
-    return hsprintf('<del>%s</del>', $matches[1]);
+    return hsprintf('<u>%s</u>', $matches[1]);
   }
 
 }
