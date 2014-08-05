@@ -15,7 +15,7 @@
  * @task  kvimpl    Key-Value Cache Implementation
  * @task  storage   Cache Storage
  */
-final class PhutilKeyValueCacheOnDisk extends PhutilKeyValueCache {
+final class PhutilOnDiskKeyValueCache extends PhutilKeyValueCache {
 
   private $cache = array();
   private $cacheFile;

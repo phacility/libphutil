@@ -13,7 +13,7 @@
  * improves it significantly, it may indicate an architectural problem in your
  * application.
  */
-final class PhutilKeyValueCacheInRequest extends PhutilKeyValueCache {
+final class PhutilInRequestKeyValueCache extends PhutilKeyValueCache {
 
   private $cache = array();
   private $ttl = array();

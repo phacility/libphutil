@@ -3,13 +3,13 @@
 final class PhutilKeyValueCacheTestCase extends PhutilTestCase {
 
   public function testInRequestCache() {
-    $cache = new PhutilKeyValueCacheInRequest();
+    $cache = new PhutilInRequestKeyValueCache();
     $this->doCacheTest($cache);
     $cache->destroyCache();
   }
 
   public function testInRequestCacheLimit() {
-    $cache = new PhutilKeyValueCacheInRequest();
+    $cache = new PhutilInRequestKeyValueCache();
     $cache->setLimit(4);
 
     $cache->setKey(1, 1);
@@ -40,14 +40,14 @@ final class PhutilKeyValueCacheTestCase extends PhutilTestCase {
   }
 
   public function testOnDiskCache() {
-    $cache = new PhutilKeyValueCacheOnDisk();
+    $cache = new PhutilOnDiskKeyValueCache();
     $cache->setCacheFile(new TempFile());
     $this->doCacheTest($cache);
     $cache->destroyCache();
   }
 
   public function testAPCCache() {
-    $cache = new PhutilKeyValueCacheAPC();
+    $cache = new PhutilAPCKeyValueCache();
     if (!$cache->isAvailable()) {
       $this->assertSkipped('Cache not available.');
     }
@@ -55,7 +55,7 @@ final class PhutilKeyValueCacheTestCase extends PhutilTestCase {
   }
 
   public function testDirectoryCache() {
-    $cache = new PhutilKeyValueCacheDirectory();
+    $cache = new PhutilDirectoryKeyValueCache();
 
     $dir = Filesystem::createTemporaryDirectory();
     $cache->setCacheDirectory($dir);
@@ -64,7 +64,7 @@ final class PhutilKeyValueCacheTestCase extends PhutilTestCase {
   }
 
   public function testDirectoryCacheSpecialDirectoryRules() {
-    $cache = new PhutilKeyValueCacheDirectory();
+    $cache = new PhutilDirectoryKeyValueCache();
 
     $dir = Filesystem::createTemporaryDirectory();
     $dir = $dir.'/dircache/';
@@ -87,7 +87,7 @@ final class PhutilKeyValueCacheTestCase extends PhutilTestCase {
 
   public function testNamespaceCache() {
     $namespace = 'namespace'.mt_rand();
-    $in_request_cache = new PhutilKeyValueCacheInRequest();
+    $in_request_cache = new PhutilInRequestKeyValueCache();
     $cache = new PhutilKeyValueCacheNamespace($in_request_cache);
     $cache->setNamespace($namespace);
 
@@ -119,10 +119,10 @@ final class PhutilKeyValueCacheTestCase extends PhutilTestCase {
   }
 
   public function testCacheStack() {
-    $req_cache = new PhutilKeyValueCacheInRequest();
-    $disk_cache = new PhutilKeyValueCacheOnDisk();
+    $req_cache = new PhutilInRequestKeyValueCache();
+    $disk_cache = new PhutilOnDiskKeyValueCache();
     $disk_cache->setCacheFile(new TempFile());
-    $apc_cache = new PhutilKeyValueCacheAPC();
+    $apc_cache = new PhutilAPCKeyValueCache();
 
     $stack = array(
       $req_cache,

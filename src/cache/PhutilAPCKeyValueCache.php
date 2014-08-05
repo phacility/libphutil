@@ -4,7 +4,7 @@
  * Interface to the APC key-value cache. This is a very high-performance cache
  * which is local to the current machine.
  */
-final class PhutilKeyValueCacheAPC extends PhutilKeyValueCache {
+final class PhutilAPCKeyValueCache extends PhutilKeyValueCache {
 
 
 /* -(  Key-Value Cache Implementation  )------------------------------------- */

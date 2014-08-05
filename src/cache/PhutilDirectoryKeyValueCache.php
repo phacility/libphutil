@@ -6,7 +6,7 @@
  * This cache is very very slow, and most suitable for command line scripts
  * which need to build large caches derived from sources like working copies
  * (for example, Diviner). This cache performs better for large amounts of
- * data than @{class:PhutilKeyValueCacheOnDisk} because each key is serialized
+ * data than @{class:PhutilOnDiskKeyValueCache} because each key is serialized
  * individually, but this comes at the cost of having even slower reads and
  * writes.
  *
@@ -21,7 +21,7 @@
  * @task  kvimpl    Key-Value Cache Implementation
  * @task  storage   Cache Storage
  */
-final class PhutilKeyValueCacheDirectory extends PhutilKeyValueCache {
+final class PhutilDirectoryKeyValueCache extends PhutilKeyValueCache {
 
   private $lock;
   private $cacheDirectory;

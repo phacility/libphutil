@@ -3,7 +3,7 @@
 /**
  * @task  memcache Managing Memcache
  */
-final class PhutilKeyValueCacheMemcache extends PhutilKeyValueCache {
+final class PhutilMemcacheKeyValueCache extends PhutilKeyValueCache {
 
   private $servers = array();
   private $connections = array();
