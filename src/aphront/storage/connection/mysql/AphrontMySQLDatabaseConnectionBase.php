@@ -179,7 +179,7 @@ abstract class AphrontMySQLDatabaseConnectionBase
         }
 
         $this->throwQueryException($this->connection);
-      } catch (AphrontQueryConnectionLostException $ex) {
+      } catch (AphrontConnectionLostQueryException $ex) {
         if ($this->isInsideTransaction()) {
           // Zero out the transaction state to prevent a second exception
           // ("program exited with open transaction") from being thrown, since
@@ -280,29 +280,29 @@ abstract class AphrontMySQLDatabaseConnectionBase
 
     switch ($errno) {
       case 2013: // Connection Dropped
-        throw new AphrontQueryConnectionLostException($exmsg);
+        throw new AphrontConnectionLostQueryException($exmsg);
       case 2006: // Gone Away
         $more = "This error may occur if your MySQL 'wait_timeout' ".
                 "or 'max_allowed_packet' configuration values are set too low.";
-        throw new AphrontQueryConnectionLostException("{$exmsg}\n\n{$more}");
+        throw new AphrontConnectionLostQueryException("{$exmsg}\n\n{$more}");
       case 1213: // Deadlock
       case 1205: // Lock wait timeout exceeded
-        throw new AphrontQueryDeadlockException($exmsg);
+        throw new AphrontDeadlockQueryException($exmsg);
       case 1062: // Duplicate Key
         // NOTE: In some versions of MySQL we get a key name back here, but
         // older versions just give us a key index ("key 2") so it's not
         // portable to parse the key out of the error and attach it to the
         // exception.
-        throw new AphrontQueryDuplicateKeyException($exmsg);
+        throw new AphrontDuplicateKeyQueryException($exmsg);
       case 1044: // Access denied to database
       case 1045: // Access denied (auth)
       case 1142: // Access denied to table
       case 1143: // Access denied to column
-        throw new AphrontQueryAccessDeniedException($exmsg);
+        throw new AphrontAccessDeniedQueryException($exmsg);
       case 1146: // No such table
       case 1049: // No such database
       case 1054: // Unknown column "..." in field list
-        throw new AphrontQuerySchemaException($exmsg);
+        throw new AphrontSchemaQueryException($exmsg);
       default:
         // TODO: 1064 is syntax error, and quite terrible in production.
         throw new AphrontQueryException($exmsg);
@@ -328,7 +328,7 @@ abstract class AphrontMySQLDatabaseConnectionBase
       return;
     }
 
-    throw new AphrontQueryCharacterSetException(
+    throw new AphrontCharacterSetQueryException(
       pht(
         'Attempting to construct a query containing characters outside of '.
         'the Unicode Basic Multilingual Plane. MySQL will silently truncate '.

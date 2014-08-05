@@ -62,7 +62,7 @@ final class AphrontMySQLiDatabaseConnection
     $errno = $conn->connect_errno;
     if ($errno) {
       $error = $conn->connect_error;
-      throw new AphrontQueryConnectionException(
+      throw new AphrontConnectionQueryException(
         "Attempt to connect to {$user}@{$host} failed with error ".
         "#{$errno}: {$error}.", $errno);
     }

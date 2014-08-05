@@ -244,12 +244,12 @@ function _qsprintf_check_type($value, $type, $query) {
     case 'LC':
     case 'LB':
       if (!is_array($value)) {
-        throw new AphrontQueryParameterException(
+        throw new AphrontParameterQueryException(
           $query,
           "Expected array argument for %{$type} conversion.");
       }
       if (empty($value)) {
-        throw new AphrontQueryParameterException(
+        throw new AphrontParameterQueryException(
           $query,
           "Array for %{$type} conversion is empty.");
       }
@@ -271,7 +271,7 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
     case 'T':
     case 'C':
       if (!is_string($value)) {
-        throw new AphrontQueryParameterException(
+        throw new AphrontParameterQueryException(
           $query,
           "Expected a string for %{$type} conversion.");
       }
@@ -281,7 +281,7 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
     case 'd':
     case 'f':
       if (!is_null($value) && !is_numeric($value)) {
-        throw new AphrontQueryParameterException(
+        throw new AphrontParameterQueryException(
           $query,
           "Expected a numeric scalar or null for %{$type} conversion.");
       }
@@ -296,7 +296,7 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
     case '<':
     case 'K':
       if (!is_null($value) && !is_scalar($value)) {
-        throw new AphrontQueryParameterException(
+        throw new AphrontParameterQueryException(
           $query,
           "Expected a scalar or null for %{$type} conversion.");
       }

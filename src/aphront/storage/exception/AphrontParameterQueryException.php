@@ -1,6 +1,6 @@
 <?php
 
-final class AphrontQueryParameterException extends AphrontQueryException {
+final class AphrontParameterQueryException extends AphrontQueryException {
 
   private $query;
 
