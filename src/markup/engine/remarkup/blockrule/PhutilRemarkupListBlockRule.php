@@ -31,14 +31,29 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
           continue;
         }
 
-        if (strlen(trim($lines[$cursor]))
-          && strlen($lines[$cursor]) !== strlen(ltrim($lines[$cursor]))) {
-          $num_lines++;
-          $cursor++;
-          continue;
+        // Allow lists to continue across multiple paragraphs, as long as lines
+        // are indented or a single empty line separates indented lines.
+
+        $this_empty = !strlen(trim($lines[$cursor]));
+        $this_indented = preg_match('/^ /', $lines[$cursor]);
+
+        $next_empty = true;
+        $next_indented = false;
+        if (isset($lines[$cursor + 1])) {
+          $next_empty = !strlen(trim($lines[$cursor + 1]));
+          $next_indented = preg_match('/^ /', $lines[$cursor + 1]);
         }
 
-        if (!strlen(trim($lines[$cursor]))) {
+        if ($this_empty || $this_indented) {
+          if (($this_indented && !$this_empty) ||
+              ($next_indented && !$next_empty)) {
+            $num_lines++;
+            $cursor++;
+            continue;
+          }
+        }
+
+        if ($this_empty) {
           $num_lines++;
         }
       }
@@ -155,6 +170,9 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
     // Process each item to normalize the text, remove line wrapping, and
     // determine its depth (indentation level) and style (ordered vs unordered).
     //
+    // We preserve consecutive linebreaks and interpret them as paragraph
+    // breaks.
+    //
     // Given the above example, the processed array will look like:
     //
     //   array(
@@ -172,7 +190,14 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
 
     $has_marks = false;
     foreach ($items as $key => $item) {
-      $item = preg_replace('/\s*\n\s*/', ' ', implode("\n", $item));
+      // Trim space around newlines, to strip trailing whitespace and formatting
+      // indentation.
+      $item = preg_replace('/ *(\n+) */', '\1', implode("\n", $item));
+
+      // Replace single newlines with a space. Preserve multiple newlines as
+      // paragraph breaks.
+      $item = preg_replace('/(?<!\n)\n(?!\n)/', ' ', $item);
+
       $item = rtrim($item);
 
       if (!strlen($item)) {
@@ -425,7 +450,8 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
         if ($item['text'] === null) {
           // Don't render anything.
         } else {
-          $out[] = str_repeat(' ', 2 * $level);
+          $indent = str_repeat(' ', 2 * $level);
+          $out[] = $indent;
           if ($item['mark'] !== null) {
             if ($item['mark']) {
               $out[] = '[X] ';
@@ -443,7 +469,15 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
                 break;
             }
           }
-          $out[] = $this->applyRules($item['text'])."\n";
+
+          $parts = preg_split('/\n{2,}/', $item['text']);
+          foreach ($parts as $key => $part) {
+            if ($key != 0) {
+              $out[] = "\n\n  ".$indent;
+            }
+            $out[] = $this->applyRules($part);
+          }
+          $out[] = "\n";
         }
       } else {
         if ($item['text'] === null) {
@@ -469,7 +503,18 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
             $out[] = hsprintf('<li class="remarkup-list-item">');
           }
 
-          $out[] = $this->applyRules($item['text']);
+          $parts = preg_split('/\n{2,}/', $item['text']);
+          foreach ($parts as $key => $part) {
+            if ($key != 0) {
+              $out[] = array(
+                "\n",
+                phutil_tag('br'),
+                phutil_tag('br'),
+                "\n",
+              );
+            }
+            $out[] = $this->applyRules($part);
+          }
         }
       }
 
