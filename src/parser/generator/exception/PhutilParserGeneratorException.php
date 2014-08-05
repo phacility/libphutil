@@ -1,5 +1,3 @@
 <?php
 
-abstract class PhutilParserGeneratorException extends Exception {
-
-}
+abstract class PhutilParserGeneratorException extends Exception {}

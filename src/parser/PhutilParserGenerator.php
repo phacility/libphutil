@@ -207,7 +207,7 @@ final class PhutilParserGenerator {
         } else {
           foreach ($variant as $symbol) {
             if (($symbol === null) && count($variant) > 1) {
-              throw new PhutilParserGeneratorInvalidRuleException(
+              throw new PhutilInvalidRuleParserGeneratorException(
                 "Rule '{$rule_name}' contains a production '{$vkey}' which ".
                 "is nonempty but has a null in it. A rule with other symbols ".
                 "may not contain null.");
@@ -237,7 +237,7 @@ final class PhutilParserGenerator {
             continue;
           }
           $production_string = implode(' ', $production);
-          throw new PhutilParserGeneratorUnknownSymbolException(
+          throw new PhutilUnknownSymbolParserGeneratorException(
             "Symbol '{$symbol}' in production '{$production_name}' ".
             "('{$production_string}') of rule '{$rule}' does not name a rule ".
             "or terminal. Did you misspell a symbol, fail to specify a ".
@@ -254,7 +254,7 @@ final class PhutilParserGenerator {
   private function validateStartRule() {
     $start_rule = $this->getStartRule();
     if (!$this->isRule($start_rule)) {
-      throw new PhutilParserGeneratorUnknownSymbolException(
+      throw new PhutilUnknownSymbolParserGeneratorException(
         "Start rule '{$start_rule}' does not appear in the rules for the ".
         "grammar. Use setStartRule() to choose a different start rule, or ".
         "add a rule named '{$start_rule}'.");
@@ -318,7 +318,7 @@ final class PhutilParserGenerator {
     if ($missing) {
       $missing_terminals = array_keys($missing);
       $missing_terminals = implode(', ', $missing_terminals);
-      throw new PhutilParserGeneratorUnreachableTerminalException(
+      throw new PhutilUnreachableTerminalParserGeneratorException(
         'Some terminals do not appear in any rule: '.
         $missing_terminals);
     }
@@ -338,7 +338,7 @@ final class PhutilParserGenerator {
     if ($missing) {
       $missing_rules = array_keys($missing);
       $missing_rules = implode(', ', $missing_rules);
-      throw new PhutilParserGeneratorUnreachableRuleException(
+      throw new PhutilUnreachableRuleParserGeneratorException(
         'Some rules can never be reached from any production: '.
         $missing_rules);
     }
@@ -375,7 +375,7 @@ final class PhutilParserGenerator {
     $reducible = array();
     foreach ($this->rules as $rule => $productions) {
       if (!$this->isRuleReducible($rule, $reducible)) {
-        throw new PhutilParserGeneratorIrreducibleRuleException(
+        throw new PhutilIrreducibleRuleParserGeneratorException(
           "Rule '{$rule}' can never be reduced: it recurses indefinitely ".
           "and reaches no production of terminals.");
       }

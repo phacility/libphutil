@@ -15,7 +15,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
     try {
       // Expect "b is not a rule or terminal".
       $generator->processGrammar();
-    } catch (PhutilParserGeneratorUnknownSymbolException $ex) {
+    } catch (PhutilUnknownSymbolParserGeneratorException $ex) {
       $caught = $ex;
     }
 
@@ -35,7 +35,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
     try {
       // Expect "no start rule Q".
       $generator->processGrammar();
-    } catch (PhutilParserGeneratorUnknownSymbolException $ex) {
+    } catch (PhutilUnknownSymbolParserGeneratorException $ex) {
       $caught = $ex;
     }
 
@@ -107,7 +107,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
     $caught = null;
     try {
       $generator->processGrammar();
-    } catch (PhutilParserGeneratorUnreachableTerminalException $ex) {
+    } catch (PhutilUnreachableTerminalParserGeneratorException $ex) {
       $caught = $ex;
     }
 
@@ -128,7 +128,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
     $caught = null;
     try {
       $generator->processGrammar();
-    } catch (PhutilParserGeneratorUnreachableRuleException $ex) {
+    } catch (PhutilUnreachableRuleParserGeneratorException $ex) {
       $caught = $ex;
     }
 
@@ -180,7 +180,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
       $caught = null;
       try {
         $generator->processGrammar();
-      } catch (PhutilParserGeneratorIrreducibleRuleException $ex) {
+      } catch (PhutilIrreducibleRuleParserGeneratorException $ex) {
         $caught = $ex;
       }
 
