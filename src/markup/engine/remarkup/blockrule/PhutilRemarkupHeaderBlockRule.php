@@ -4,7 +4,7 @@ final class PhutilRemarkupHeaderBlockRule extends PhutilRemarkupBlockRule {
 
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
-    if (preg_match('/^([=|#]{1,5}).*+$/', $lines[$cursor])) {
+    if (preg_match('/^(={1,5}|#{2,5}|# ).*+$/', $lines[$cursor])) {
       $num_lines = 1;
     } else {
       if (isset($lines[$cursor + 1])) {
