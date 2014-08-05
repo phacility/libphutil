@@ -3,9 +3,9 @@
 /**
  * Test cases for functions in pht.php.
  */
-final class PhutilPHTTestCase extends PhutilTestCase {
+final class PhutilPhtTestCase extends PhutilTestCase {
 
-  public function testPHT() {
+  public function testPht() {
     PhutilTranslator::setInstance(new PhutilTranslator());
 
     $this->assertEqual('beer', pht('beer'));
