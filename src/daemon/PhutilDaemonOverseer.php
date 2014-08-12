@@ -8,6 +8,7 @@ final class PhutilDaemonOverseer {
   const EVENT_DID_LAUNCH    = 'daemon.didLaunch';
   const EVENT_DID_LOG       = 'daemon.didLogMessage';
   const EVENT_DID_HEARTBEAT = 'daemon.didHeartbeat';
+  const EVENT_WILL_GRACEFUL = 'daemon.willGraceful';
   const EVENT_WILL_EXIT     = 'daemon.willExit';
 
   const HEARTBEAT_WAIT      = 120;
@@ -24,7 +25,8 @@ final class PhutilDaemonOverseer {
   private $argv;
   private $moreArgs;
   private $childPID;
-  private $signaled;
+  private $inAbruptShutdown;
+  private $inGracefulShutdown;
   private static $instance;
 
   private $traceMode;
@@ -168,7 +170,7 @@ EOHELP
     pcntl_signal(SIGUSR1, array($this, 'didReceiveKeepaliveSignal'));
     pcntl_signal(SIGUSR2, array($this, 'didReceiveNotifySignal'));
 
-    pcntl_signal(SIGINT,  array($this, 'didReceiveTerminalSignal'));
+    pcntl_signal(SIGINT,  array($this, 'didReceiveGracefulSignal'));
     pcntl_signal(SIGTERM, array($this, 'didReceiveTerminalSignal'));
   }
 
@@ -269,9 +271,23 @@ EOHELP
         $this->annihilateProcessGroup();
       } while (false);
 
+      if ($this->inGracefulShutdown) {
+        // If we just exited because of a graceful shutdown, break now.
+        break;
+      }
+
       $this->logMessage('WAIT', 'Waiting to restart process.');
       sleep(self::RESTART_WAIT);
+
+      if ($this->inGracefulShutdown) {
+        // If we were awakend by a graceful shutdown, break now.
+        break;
+      }
     }
+
+    // This is a clean exit after a graceful shutdown.
+    $this->dispatchEvent(self::EVENT_WILL_EXIT);
+    exit(0);
   }
 
   public function didReceiveNotifySignal($signo) {
@@ -285,11 +301,35 @@ EOHELP
     $this->deadline = time() + $this->deadlineTimeout;
   }
 
+  public function didReceiveGracefulSignal($signo) {
+    // If we receive SIGINT more than once, interpret it like SIGTERM.
+    if ($this->inGracefulShutdown) {
+      return $this->didReceiveTerminalSignal($signo);
+    }
+    $this->inGracefulShutdown = true;
+
+    $signame = phutil_get_signal_name($signo);
+    if ($signame) {
+      $sigmsg = pht(
+        'Graceful shutdown in response to signal %d (%s).',
+        $signo,
+        $signame);
+    } else {
+      $sigmsg = pht(
+        'Graceful shutdown in response to signal %d.',
+        $signo);
+    }
+
+    $this->logMessage('DONE', $sigmsg, $signo);
+
+    $this->gracefulProcessGroup();
+  }
+
   public function didReceiveTerminalSignal($signo) {
-    if ($this->signaled) {
+    if ($this->inAbruptShutdown) {
       exit(128 + $signo);
     }
-    $this->signaled = true;
+    $this->inAbruptShutdown = true;
 
     $signame = phutil_get_signal_name($signo);
     if ($signame) {
@@ -354,6 +394,15 @@ EOHELP
       // ignore any error which may be raised.
       exec("kill -KILL -{$pgid} 2>/dev/null");
       $this->childPID = null;
+    }
+  }
+
+
+  private function gracefulProcessGroup() {
+    $pid = $this->childPID;
+    $pgid = posix_getpgid($pid);
+    if ($pid && $pgid) {
+      exec("kill -INT -{$pgid}");
     }
   }
 
