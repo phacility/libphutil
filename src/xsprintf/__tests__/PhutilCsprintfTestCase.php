@@ -12,6 +12,26 @@ final class PhutilCsprintfTestCase extends PhutilTestCase {
     $this->assertFalse('a b' === (string)csprintf('%R', 'a b'));
   }
 
+  public function testPowershell() {
+    $cmd = csprintf('%s', "\n");
+    $cmd->setEscapingMode(PhutilCommandString::MODE_POWERSHELL);
+
+    $this->assertEqual(
+      '"`n"',
+      (string)$cmd);
+  }
+
+  public function testNoPowershell() {
+    if (!phutil_is_windows()) {
+      $cmd = csprintf('%s', '#');
+      $cmd->setEscapingMode(PhutilCommandString::MODE_DEFAULT);
+
+      $this->assertEqual(
+        '\'#\'',
+        (string)$cmd);
+    }
+  }
+
   public function testPasswords() {
     // Normal "%s" doesn't do anything special.
     $command = csprintf('echo %s', 'hunter2trustno1');
