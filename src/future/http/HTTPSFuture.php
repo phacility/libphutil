@@ -278,8 +278,15 @@ final class HTTPSFuture extends BaseHTTPFuture {
         curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
       }
 
+      // We're going to try to set CAINFO below. This doesn't work at all on
+      // OSX around Yosemite (see T5913). On these systems, we'll use the
+      // system CA and then try to tell the user that their settings were
+      // ignored and how to fix things if we encounter a CA-related error.
+      // Assume we have custom CA settings to start with; we'll clear this
+      // flag if we read the default CA info below.
+
       // Try some decent fallbacks here:
-      // - First, check if a bundle is set explicit for this request, via
+      // - First, check if a bundle is set explicitly for this request, via
       //   `setCABundle()` or similar.
       // - Then, check if a global bundle is set explicitly for all requests,
       //   via `setGlobalCABundle()` or similar.
@@ -308,7 +315,9 @@ final class HTTPSFuture extends BaseHTTPFuture {
         }
       }
 
-      curl_setopt($curl, CURLOPT_CAINFO, $this->getCABundle());
+      if ($this->canSetCAInfo()) {
+        curl_setopt($curl, CURLOPT_CAINFO, $this->getCABundle());
+      }
 
       $domain = id(new PhutilURI($uri))->getDomain();
       if (!empty(self::$blindTrustDomains[$domain])) {
@@ -360,7 +369,14 @@ final class HTTPSFuture extends BaseHTTPFuture {
     $err_code = $info['result'];
 
     if ($err_code) {
-      $status = new HTTPFutureCURLResponseStatus($err_code, $uri);
+      if (($err_code == CURLE_SSL_CACERT) && !$this->canSetCAInfo()) {
+        $status = new HTTPFutureCertificateResponseStatus(
+          HTTPFutureCertificateResponseStatus::ERROR_IMMUTABLE_CERTIFICATES,
+          $uri);
+      } else {
+        $status = new HTTPFutureCURLResponseStatus($err_code, $uri);
+      }
+
       $body = null;
       $headers = array();
       $this->result = array($status, $body, $headers);
@@ -576,6 +592,23 @@ final class HTTPSFuture extends BaseHTTPFuture {
         'these values to mean that it should read arbitrary files off disk '.
         'and transmit them to remote servers. Declining to make this '.
         'request.'));
+  }
+
+
+  /**
+   * Determine whether CURLOPT_CAINFO is usable on this system.
+   */
+  private function canSetCAInfo() {
+    // We cannot set CAInfo on OSX after Yosemite.
+
+    $osx_version = PhutilExecutionEnvironment::getOSXVersion();
+    if ($osx_version) {
+      if (version_compare($osx_version, 14, '>=')) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 }
