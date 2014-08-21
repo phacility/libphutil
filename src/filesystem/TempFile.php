@@ -19,6 +19,7 @@ final class TempFile {
   private $dir;
   private $file;
   private $preserve;
+  private $destroyed = false;
 
 /* -(  Creating a Temporary File  )------------------------------------------ */
 
@@ -38,6 +39,10 @@ final class TempFile {
     } else {
       $this->file = $this->dir.'/'.$filename;
     }
+
+    // If we fatal (e.g., call a method on NULL), destructors are not called.
+    // Make sure our destructor is invoked.
+    register_shutdown_function(array($this, '__destruct'));
 
     Filesystem::writeFile($this, '');
   }
@@ -82,9 +87,14 @@ final class TempFile {
    * @task internal
    */
   public function __destruct() {
+    if ($this->destroyed) {
+      return;
+    }
+
     if ($this->preserve) {
       return;
     }
+
     Filesystem::remove($this->dir);
 
     // NOTE: tempnam() doesn't guarantee it will return a file inside the
@@ -92,6 +102,10 @@ final class TempFile {
     // explicitly.
 
     Filesystem::remove($this->file);
+
+    $this->file = null;
+    $this->dir = null;
+    $this->destroyed = true;
   }
 
 }
