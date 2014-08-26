@@ -418,10 +418,12 @@ EOHELP
    *     12345 => array(
    *       'type' => 'overseer',
    *       'command' => 'php launch_daemon.php --daemonize ...',
+   *       'pid' => 12345,
    *     ),
    *     12346 => array(
    *       'type' => 'daemon',
    *       'command' => 'php exec_daemon.php ...',
+   *       'pid' => 12346,
    *     ),
    *  );
    *
@@ -441,13 +443,27 @@ EOHELP
       list($pid, $command) = explode(' ', $process, 2);
 
       $matches = null;
-      if (!preg_match('/(launch|exec)_daemon.php/', $command, $matches)) {
+      if (!preg_match('/((launch|exec)_daemon.php|phd-daemon)/',
+                      $command,
+                      $matches)) {
         continue;
       }
 
+      switch ($matches[1]) {
+        case 'exec_daemon.php':
+          $type = 'daemon';
+          break;
+        case 'launch_daemon.php':
+        case 'phd-daemon':
+        default:
+          $type = 'overseer';
+          break;
+      }
+
       $results[(int)$pid] = array(
-        'type'    => ($matches[1] == 'launch') ? 'overseer' : 'daemon',
+        'type'    => $type,
         'command' => $command,
+        'pid' => (int) $pid,
       );
     }
 
