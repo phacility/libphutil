@@ -93,7 +93,9 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
     $message = sprintf(
       '%s near: %s',
       $message,
-      phutil_utf8_shorten($near, 32000));
+      id(new PhutilUTF8StringTruncator())
+      ->setMaximumGlyphs(32000)
+      ->truncateString($near));
 
     if ($this->getEngine()->isTextMode()) {
       return '('.$message.')';

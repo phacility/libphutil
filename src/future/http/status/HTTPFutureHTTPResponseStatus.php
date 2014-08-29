@@ -11,7 +11,7 @@ final class HTTPFutureHTTPResponseStatus extends HTTPFutureResponseStatus {
     array $headers,
     $expect = null) {
 
-    // NOTE: Avoiding phutil_utf8_shorten() here because this isn't lazy
+    // NOTE: Avoiding PhutilUTF8StringTruncator here because this isn't lazy
     // and responses may be large.
     if (strlen($body) > 512) {
       $excerpt = substr($body, 0, 512).'...';

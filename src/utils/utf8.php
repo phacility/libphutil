@@ -399,25 +399,6 @@ function phutil_utf8v_codepoints($string) {
 
 
 /**
- * Shorten a string to provide a summary, respecting UTF-8 characters.
- *
- * This function is deprecated; use @{class:PhutilUTF8StringTruncator} instead.
- *
- * @param   string  UTF-8 string to shorten.
- * @param   int     Maximum length of the result.
- * @param   string  If the string is shortened, add this at the end. Defaults to
- *                  horizontal ellipsis.
- * @return  string  A string with no more than the specified character length.
- */
-function phutil_utf8_shorten($string, $length, $terminal = "\xE2\x80\xA6") {
-  return id(new PhutilUTF8StringTruncator())
-    ->setMaximumGlyphs($length)
-    ->setTerminator($terminal)
-    ->truncateString($string);
-}
-
-
-/**
  * Hard-wrap a block of UTF-8 text with embedded HTML tags and entities.
  *
  * @param   string An HTML string with tags and entities.
