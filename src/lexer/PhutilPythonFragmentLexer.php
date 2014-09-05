@@ -289,14 +289,14 @@ final class PhutilPythonFragmentLexer extends PhutilLexer {
         // never be a module name
         array('None\b', 'bp', '!pop'),
         // sadly, in "raise x from y" y will be highlighted as namespace too
-        array('[a-zA-Z_.][w.]*', 'nn'),
+        array('[a-zA-Z_.][\w.]*', 'nn'),
         array('', null, '!pop'),
       )),
 
       'import' => array_merge($nonsemantic_rules, array(
         array('as\b', 'kn'),
         array(',', 'o'),
-        array('[a-zA-Z_.][w.]*', 'nn'),
+        array('[a-zA-Z_.][\w.]*', 'nn'),
         array('', null, '!pop'),
       )),
 
