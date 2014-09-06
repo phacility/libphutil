@@ -1,7 +1,7 @@
 <?php
 
 final class AphrontMySQLDatabaseConnection
-  extends AphrontMySQLDatabaseConnectionBase {
+  extends AphrontBaseMySQLDatabaseConnection {
 
   public function escapeUTF8String($string) {
     $this->validateUTF8String($string);

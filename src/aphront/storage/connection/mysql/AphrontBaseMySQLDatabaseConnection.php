@@ -1,6 +1,6 @@
 <?php
 
-abstract class AphrontMySQLDatabaseConnectionBase
+abstract class AphrontBaseMySQLDatabaseConnection
   extends AphrontDatabaseConnection {
 
   private $configuration;

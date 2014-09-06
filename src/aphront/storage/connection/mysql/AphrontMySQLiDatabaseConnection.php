@@ -4,7 +4,7 @@
  * @phutil-external-symbol class mysqli
  */
 final class AphrontMySQLiDatabaseConnection
-  extends AphrontMySQLDatabaseConnectionBase {
+  extends AphrontBaseMySQLDatabaseConnection {
 
   public function escapeUTF8String($string) {
     $this->validateUTF8String($string);
