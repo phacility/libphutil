@@ -17,10 +17,10 @@ final class PhutilJSONParser {
 
   public function parse($json) {
     $jsonlint_root = phutil_get_library_root('phutil').'/../externals/jsonlint';
-    require_once($jsonlint_root.'/src/Seld/JsonLint/JsonParser.php');
-    require_once($jsonlint_root.'/src/Seld/JsonLint/Lexer.php');
-    require_once($jsonlint_root.'/src/Seld/JsonLint/ParsingException.php');
-    require_once($jsonlint_root.'/src/Seld/JsonLint/Undefined.php');
+    require_once $jsonlint_root.'/src/Seld/JsonLint/JsonParser.php';
+    require_once $jsonlint_root.'/src/Seld/JsonLint/Lexer.php';
+    require_once $jsonlint_root.'/src/Seld/JsonLint/ParsingException.php';
+    require_once $jsonlint_root.'/src/Seld/JsonLint/Undefined.php';
 
     $parser = new JsonLintJsonParser();
     try {
