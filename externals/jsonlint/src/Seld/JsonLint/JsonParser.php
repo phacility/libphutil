@@ -26,13 +26,15 @@ class JsonLintJsonParser
 {
     const DETECT_KEY_CONFLICTS = 1;
     const ALLOW_DUPLICATE_KEYS = 2;
+    const PARSE_TO_ASSOC = 4;
+
+    private $lexer;
 
     private $flags;
     private $stack;
     private $vstack; // semantic value stack
     private $lstack; // location stack
 
-    private $yy;
     private $symbols = array(
         'error'                 => 2,
         'JSONString'            => 3,
@@ -358,7 +360,11 @@ class JsonLintJsonParser
         case 6:
             return $yyval->token = $tokens[$len-1];
         case 13:
-            $yyval->token = array();
+            if ($this->flags & self::PARSE_TO_ASSOC) {
+                $yyval->token = array();
+            } else {
+                $yyval->token = new stdClass;
+            }
             break;
         case 14:
             $yyval->token = $tokens[$len-1];
@@ -367,22 +373,45 @@ class JsonLintJsonParser
             $yyval->token = array($tokens[$len-2], $tokens[$len]);
             break;
         case 16:
-            $yyval->token = array();
             $property = $tokens[$len][0];
-            $yyval->token[$property] = $tokens[$len][1];
+            if ($this->flags & self::PARSE_TO_ASSOC) {
+                $yyval->token = array();
+                $yyval->token[$property] = $tokens[$len][1];
+            } else {
+                $yyval->token = new stdClass;
+                $yyval->token->$property = $tokens[$len][1];
+            }
             break;
         case 17:
-            $yyval->token = $tokens[$len-2];
-            $key = $tokens[$len][0];
-            if (($this->flags & self::DETECT_KEY_CONFLICTS) && array_key_exists($key, $tokens[$len-2])) {
-                $errStr = 'Parse error on line ' . ($yylineno+1) . ":\n";
-                $errStr .= $this->lexer->showPosition() . "\n";
-                $errStr .= "Duplicate key: ".$tokens[$len][0];
-                throw new JsonLintParsingException($errStr);
-            } elseif (($this->flags & self::ALLOW_DUPLICATE_KEYS) && array_key_exists($key, $tokens[$len-2])) {
-                // Forget about it...
+            if ($this->flags & self::PARSE_TO_ASSOC) {
+                $yyval->token =& $tokens[$len-2];
+                $key = $tokens[$len][0];
+                if (($this->flags & self::DETECT_KEY_CONFLICTS) && isset($tokens[$len-2][$key])) {
+                    $errStr = 'Parse error on line ' . ($yylineno+1) . ":\n";
+                    $errStr .= $this->lexer->showPosition() . "\n";
+                    $errStr .= "Duplicate key: ".$tokens[$len][0];
+                    throw new JsonLintParsingException($errStr);
+                } elseif (($this->flags & self::ALLOW_DUPLICATE_KEYS) && isset($tokens[$len-2][$key])) {
+                    // Forget about it...
+                }
+                $tokens[$len-2][$key] = $tokens[$len][1];
+            } else {
+                $yyval->token = $tokens[$len-2];
+                $key = $tokens[$len][0];
+                if (($this->flags & self::DETECT_KEY_CONFLICTS) && isset($tokens[$len-2]->{$key})) {
+                    $errStr = 'Parse error on line ' . ($yylineno+1) . ":\n";
+                    $errStr .= $this->lexer->showPosition() . "\n";
+                    $errStr .= "Duplicate key: ".$tokens[$len][0];
+                    throw new JsonLintParsingException($errStr);
+                } elseif (($this->flags & self::ALLOW_DUPLICATE_KEYS) && isset($tokens[$len-2]->{$key})) {
+                    $duplicateCount = 1;
+                    do {
+                        $duplicateKey = $key . '.' . $duplicateCount++;
+                    } while (isset($tokens[$len-2]->$duplicateKey));
+                    $key = $duplicateKey;
+                }
+                $tokens[$len-2]->$key = $tokens[$len][1];
             }
-            $yyval->token[$key] = $tokens[$len][1];
             break;
         case 18:
             $yyval->token = array();

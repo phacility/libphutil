@@ -48,7 +48,7 @@ final class PhutilJSONParser {
   }
 
   private function getFlags() {
-    $flags = 0;
+    $flags = JsonLintJsonParser::PARSE_TO_ASSOC;
 
     if ($this->allowDuplicateKeys) {
       $flags |= JsonLintJsonParser::ALLOW_DUPLICATE_KEYS;
