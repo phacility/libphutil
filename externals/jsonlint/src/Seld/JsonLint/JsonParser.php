@@ -229,7 +229,7 @@ class JsonLintJsonParser
                 // just recovered from another error
                 if ($recovering == 3) {
                     if ($symbol == $EOF) {
-                        throw new JsonLintParsingException($errStr ?: 'Parsing halted.');
+                        throw new JsonLintParsingException($errStr ? $errStr : 'Parsing halted.');
                     }
 
                     // discard current lookahead and grab another
@@ -247,7 +247,7 @@ class JsonLintJsonParser
                         break;
                     }
                     if ($state == 0) {
-                        throw new JsonLintParsingException($errStr ?: 'Parsing halted.');
+                        throw new JsonLintParsingException($errStr ? $errStr : 'Parsing halted.');
                     }
                     $this->popStack(1);
                     $state = $this->stack[count($this->stack)-1];
@@ -293,9 +293,9 @@ class JsonLintJsonParser
                     $yyval->token = $this->vstack[count($this->vstack) - $len]; // default to $$ = $1
                     // default location, uses first token for firsts, last for lasts
                     $yyval->store = array( // _$ = store
-                        'first_line' => $this->lstack[count($this->lstack) - ($len ?: 1)]['first_line'],
+                        'first_line' => $this->lstack[count($this->lstack) - ($len ? $len : 1)]['first_line'],
                         'last_line' => $this->lstack[count($this->lstack) - 1]['last_line'],
-                        'first_column' => $this->lstack[count($this->lstack) - ($len ?: 1)]['first_column'],
+                        'first_column' => $this->lstack[count($this->lstack) - ($len ? $len : 1)]['first_column'],
                         'last_column' => $this->lstack[count($this->lstack) - 1]['last_column'],
                     );
                     $r = $this->performAction($yyval, $yytext, $yyleng, $yylineno, $action[1], $this->vstack, $this->lstack);
@@ -464,7 +464,7 @@ class JsonLintJsonParser
 
     private function lex()
     {
-        $token = $this->lexer->lex() ?: 1; // $end = 1
+        $token = $this->lexer->lex() ? $this->lexer->len() : 1; // $end = 1
         // if token isn't its numeric value, convert
         if (!is_numeric($token)) {
             $token = isset($this->symbols[$token]) ? $this->symbols[$token] : $token;
