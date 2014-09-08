@@ -17,45 +17,17 @@ $output['interfaces'] = array();
 $output['constants'] = array();
 $output['classMethods'] = array();
 
-$references = array(
-  new \Bartlett\CompatInfo\Reference\Extension\ApcExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\BcmathExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\CoreExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\CurlExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\DateExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\DomExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\FileinfoExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\GdExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\GettextExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\HttpExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\ImagickExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\IntlExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\JsonExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\LdapExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\LibxmlExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\MbstringExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\MysqlExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\MysqliExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\OpensslExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\PcntlExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\PcreExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\PdoExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\PharExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\PosixExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\ReflectionExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\SimplexmlExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\SocketsExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\StandardExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\SplExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\XmlExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\XmlreaderExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\XmlwriterExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\YamlExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\ZipExtension(),
-  new \Bartlett\CompatInfo\Reference\Extension\ZlibExtension(),
-);
+$loader = new \Bartlett\CompatInfo\Reference\ReferenceLoader();
+$prefetch = new \Bartlett\CompatInfo\Reference\Strategy\PreFetchStrategy();
+$loader->register($prefetch);
+$references = $loader->getProvidedReferences();
 
 foreach ($references as $reference) {
+  $reference_name = ucfirst(str_replace(' ', '', $reference->name));
+  $class_name = "\\Bartlett\\CompatInfo\\Reference".
+                "\\Extension\\{$reference_name}Extension";
+  $reference = new $class_name();
+
   foreach ($reference->getFunctions() as $function => $compat) {
     $output['functions'][$function] = array(
       'min' => nonempty($compat['php.min'], null),
