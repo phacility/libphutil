@@ -1,5 +1,3 @@
 <?php
 
-final class PhutilTestPhobject extends Phobject {
-
-}
+final class PhutilTestPhobject extends Phobject {}

@@ -25,8 +25,7 @@ final class HTTPFutureHTTPResponseStatus extends HTTPFutureResponseStatus {
       $encoding = trim($match[1], "\"'");
       try {
         $excerpt = phutil_utf8_convert($excerpt, 'UTF-8', $encoding);
-      } catch (Exception $ex) {
-      }
+      } catch (Exception $ex) {}
     }
 
     $this->excerpt = phutil_utf8ize($excerpt);

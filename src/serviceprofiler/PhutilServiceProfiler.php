@@ -12,8 +12,7 @@ final class PhutilServiceProfiler {
   private $logSize = 0;
   private $discardMode = false;
 
-  private function __construct() {
-  }
+  private function __construct() {}
 
   public function enableDiscardMode() {
     $this->discardMode = true;

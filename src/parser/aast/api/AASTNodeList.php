@@ -48,9 +48,7 @@ final class AASTNodeList implements Iterator, Countable {
     return $obj;
   }
 
-  protected function __construct() {
-
-  }
+  protected function __construct() {}
 
   public function getDescription() {
     if (empty($this->list)) {
