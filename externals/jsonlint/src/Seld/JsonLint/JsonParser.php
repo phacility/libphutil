@@ -464,7 +464,10 @@ class JsonLintJsonParser
 
     private function lex()
     {
-        $token = $this->lexer->lex() ? $this->lexer->lex() : 1; // $end = 1
+        $token = $this->lexer->lex();
+        if (!$token) {
+            $token = 1;
+        }
         // if token isn't its numeric value, convert
         if (!is_numeric($token)) {
             $token = isset($this->symbols[$token]) ? $this->symbols[$token] : $token;
