@@ -73,6 +73,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
       array(
         'http' => true,
         'mailto' => true,
+        'tel' => true,
       ));
 
     $rules = array();

@@ -76,6 +76,7 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
       '  http://www.example.org/' => true,
       'ftp://filez.com' => true,
       'mailto:santa@northpole.com' => true,
+      'tel:18005555555' => true,
     );
 
     foreach ($map as $input => $expect) {

@@ -34,8 +34,8 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
         $text = $base.$text;
       }
 
-      // If present, strip off "mailto:".
-      $text = preg_replace('/^mailto:/', '', $text);
+      // If present, strip off "mailto:" or "tel:".
+      $text = preg_replace('/^(?:mailto|tel):/', '', $text);
 
       if ($link == $name) {
         return $text;
@@ -50,7 +50,7 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
       $target = null;
     }
 
-    $name = preg_replace('/^mailto:/', '', $name);
+    $name = preg_replace('/^(?:mailto|tel):/', '', $name);
 
     if ($this->getEngine()->getState('toc')) {
       return $name;
@@ -82,7 +82,8 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
     }
 
     if (strpos($uri, '/') === false &&
-        strpos($uri, '@') === false) {
+        strpos($uri, '@') === false &&
+        strncmp($uri, 'tel:', 4)) {
       return $matches[0];
     }
 
@@ -99,8 +100,8 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
     $name = trim(idx($matches, 2, $uri));
 
     // If whatever is being linked to begins with "/" or "#", or has "://",
-    // or is "mailto:", treat it as a URI instead of a wiki page.
-    $is_uri = preg_match('@(^/)|(://)|(^#)|(^mailto:)@', $uri);
+    // or is "mailto:" or "tel:", treat it as a URI instead of a wiki page.
+    $is_uri = preg_match('@(^/)|(://)|(^#)|(^(?:mailto|tel):)@', $uri);
 
     if ($is_uri && strncmp('/', $uri, 1) && strncmp('#', $uri, 1)) {
       $protocols = $this->getEngine()->getConfig(
