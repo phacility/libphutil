@@ -99,4 +99,21 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('http://example.com/foo/bar/', $uri->__toString());
   }
 
+  public function testUnusualURIs() {
+    $uri = new PhutilURI('file:///path/to/file');
+    $this->assertEqual('file', $uri->getProtocol(), 'protocol');
+    $this->assertEqual('', $uri->getDomain(), 'domain');
+    $this->assertEqual('/path/to/file', $uri->getPath(), 'path');
+
+    $uri = new PhutilURI('idea://open?x=/');
+    $this->assertEqual('idea', $uri->getProtocol(), 'protocol');
+    $this->assertEqual('open', $uri->getDomain(), 'domain');
+    $this->assertEqual('', $uri->getPath(), 'path');
+    $this->assertEqual(
+      array(
+        'x' => '/',
+      ),
+      $uri->getQueryParams());
+  }
+
 }
