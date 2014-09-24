@@ -243,6 +243,15 @@ abstract class AASTNode {
     return $stream[$this->l]->getOffset();
   }
 
+  public function getLength() {
+    $stream = $this->tree->getRawTokenStream();
+    if (empty($stream[$this->r])) {
+      return null;
+    }
+    return $stream[$this->r]->getOffset() - $this->getOffset();
+  }
+
+
   public function getSurroundingNonsemanticTokens() {
     $before = array();
     $after  = array();
@@ -262,6 +271,12 @@ abstract class AASTNode {
 
   public function getLineNumber() {
     return idx($this->tree->getOffsetToLineNumberMap(), $this->getOffset());
+  }
+
+  public function getEndLineNumber() {
+    return idx(
+      $this->tree->getOffsetToLineNumberMap(),
+      $this->getOffset() + $this->getLength());
   }
 
   public function dispose() {
