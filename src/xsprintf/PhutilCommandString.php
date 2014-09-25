@@ -40,7 +40,7 @@ final class PhutilCommandString extends Phobject {
       'xsprintf_command',
       array(
         'unmasked' => $unmasked,
-        'mode' => $this->escapingMode
+        'mode' => $this->escapingMode,
       ),
       $this->argv);
   }

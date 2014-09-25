@@ -65,7 +65,7 @@ abstract class PhutilCLikeCodeSnippetContextFreeGrammar
     return $this->buildGrammarSet('funcdecl',
       array(
         'function [funcname]([funcparam]) '.
-          '{[funcbody, indent, block, trim=right]}'
+          '{[funcbody, indent, block, trim=right]}',
       ));
   }
 
@@ -92,7 +92,7 @@ abstract class PhutilCLikeCodeSnippetContextFreeGrammar
     return $this->buildGrammarSet('funcreturn',
       array(
         'return [expr][term]',
-        ''
+        '',
       ));
   }
 

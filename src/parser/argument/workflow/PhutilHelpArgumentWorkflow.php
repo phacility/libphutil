@@ -17,7 +17,8 @@ EOHELP
         array(
           'name'      => 'help-with-what',
           'wildcard'  => true,
-        )));
+        ),
+      ));
   }
 
   public function isExecutable() {

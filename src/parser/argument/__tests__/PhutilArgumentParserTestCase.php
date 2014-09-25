@@ -6,7 +6,8 @@ final class PhutilArgumentParserTestCase extends PhutilTestCase {
     $specs = array(
       array(
         'name' => 'flag',
-      ));
+      ),
+    );
 
     $args = new PhutilArgumentParser(array('bin'));
     $args->parseFull($specs);
@@ -92,7 +93,8 @@ final class PhutilArgumentParserTestCase extends PhutilTestCase {
           ),
           array(
             'name' => 'x',
-          )));
+          ),
+        ));
     } catch (PhutilArgumentSpecificationException $ex) {
       $caught = $ex;
     }
@@ -108,12 +110,14 @@ final class PhutilArgumentParserTestCase extends PhutilTestCase {
         array(
           array(
             'name' => 'x',
-          )));
+          ),
+        ));
       $args->parsePartial(
         array(
           array(
             'name' => 'x',
-          )));
+          ),
+        ));
     } catch (PhutilArgumentSpecificationException $ex) {
       $caught = $ex;
     }
@@ -134,7 +138,8 @@ final class PhutilArgumentParserTestCase extends PhutilTestCase {
           array(
             'name' => 'y',
             'short' => 'x',
-          )));
+          ),
+        ));
     } catch (PhutilArgumentSpecificationException $ex) {
       $caught = $ex;
     }
@@ -155,7 +160,8 @@ final class PhutilArgumentParserTestCase extends PhutilTestCase {
           array(
             'name' => 'y',
             'wildcard' => true,
-          )));
+          ),
+        ));
     } catch (PhutilArgumentSpecificationException $ex) {
       $caught = $ex;
     }

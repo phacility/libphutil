@@ -184,7 +184,8 @@ abstract class AbstractDirectedGraph {
         $results[] = array(
           'node' => $node,
           'depth' => $depth,
-          'cycle' => false);
+          'cycle' => false,
+        );
 
         $completed[$node] = true;
       }
@@ -197,7 +198,8 @@ abstract class AbstractDirectedGraph {
         $results[] = array(
           'node' => $node,
           'depth' => $depth,
-          'cycle' => true);
+          'cycle' => true,
+        );
       }
     }
 

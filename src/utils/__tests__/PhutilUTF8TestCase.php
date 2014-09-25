@@ -149,8 +149,10 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
       // This behavior is maybe a little bad, but it seems mostly reasonable,
       // at least for latin languages.
-      array('Derp, supercalafragalisticexpialadoshus', 30, '...',
-              'Derp...'),
+      array(
+        'Derp, supercalafragalisticexpialadoshus', 30, '...',
+        'Derp...',
+      ),
 
       // If a string has only word-break characters in it, we should just cut
       // it, not produce only the terminal.
@@ -230,7 +232,8 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
           'aaa',
           'aaa',
           'a',
-        )),
+        ),
+      ),
       array(
         'aa<b>aaaaa',
         3,
@@ -238,7 +241,8 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
           'aa<b>a',
           'aaa',
           'a',
-        )),
+        ),
+      ),
       array(
         'aa&amp;aaaa',
         3,
@@ -246,7 +250,8 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
           'aa&amp;',
           'aaa',
           'a',
-        )),
+        ),
+      ),
       array(
         "aa\xe6\x9d\xb1aaaa",
         3,
@@ -254,18 +259,21 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
           "aa\xe6\x9d\xb1",
           'aaa',
           'a',
-        )),
+        ),
+      ),
       array(
         '',
         80,
         array(
-        )),
+        ),
+      ),
       array(
         'a',
         80,
         array(
           'a',
-        )),
+        ),
+      ),
     );
 
     foreach ($inputs as $input) {
@@ -286,7 +294,8 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
           'aaa',
           'aaa',
           'a',
-        )),
+        ),
+      ),
       array(
         'abracadabra!',
         4,
@@ -294,18 +303,21 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
           'abra',
           'cada',
           'bra!',
-        )),
+        ),
+      ),
       array(
         '',
         10,
         array(
-        )),
+        ),
+      ),
       array(
         'a',
         20,
         array(
           'a',
-        )),
+        ),
+      ),
       array(
         "aa\xe6\x9d\xb1aaaa",
         3,
@@ -313,7 +325,8 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
           "aa\xe6\x9d\xb1",
           'aaa',
           'a',
-        )),
+        ),
+      ),
       array(
         "mmm\nmmm\nmmmm",
         3,
@@ -322,7 +335,8 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
           'mmm',
           'mmm',
           'm',
-        )),
+        ),
+      ),
     );
 
     foreach ($inputs as $input) {

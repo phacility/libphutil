@@ -57,7 +57,8 @@ final class PhutilRemarkupNoteBlockRule extends PhutilRemarkupBlockRule {
           ),
           $word_part),
         ' ',
-        $text_part);
+        $text_part,
+      );
     } else {
       $content = $text_part;
     }
@@ -65,7 +66,7 @@ final class PhutilRemarkupNoteBlockRule extends PhutilRemarkupBlockRule {
     return phutil_tag(
       'div',
       array(
-        'class' => 'remarkup-'.$class_suffix
+        'class' => 'remarkup-'.$class_suffix,
       ),
       $content);
   }

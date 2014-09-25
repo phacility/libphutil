@@ -228,7 +228,8 @@ final class HTTPFuture extends BaseHTTPFuture {
     return array(
       $status = new HTTPFutureTransportResponseStatus($error, $this->getURI()),
       $body = null,
-      $headers = array());
+      $headers = array(),
+    );
   }
 
   private function buildHTTPRequest() {
@@ -253,7 +254,8 @@ final class HTTPFuture extends BaseHTTPFuture {
         $data = http_build_query($data, '', '&')."\r\n";
         $add_headers[] = array(
           'Content-Type',
-          'application/x-www-form-urlencoded');
+          'application/x-www-form-urlencoded',
+        );
       }
     }
 
@@ -261,18 +263,21 @@ final class HTTPFuture extends BaseHTTPFuture {
 
     $add_headers[] = array(
       'Content-Length',
-      $length);
+      $length,
+    );
 
     if (!$this->getHeaders('User-Agent')) {
       $add_headers[] = array(
         'User-Agent',
-        $this->getDefaultUserAgent());
+        $this->getDefaultUserAgent(),
+      );
     }
 
     if (!$this->getHeaders('Host')) {
       $add_headers[] = array(
         'Host',
-        $this->host);
+        $this->host,
+      );
     }
 
     $headers = array_merge($this->getHeaders(), $add_headers);

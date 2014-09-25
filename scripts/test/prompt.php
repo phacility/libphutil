@@ -23,7 +23,7 @@ $args->parse(
       'name'    => 'prompt',
       'param'   => 'text',
       'default' => 'Enter some text:',
-      'help'    => 'Change the prompt text to __text__.'
+      'help'    => 'Change the prompt text to __text__.',
     ),
   ));
 

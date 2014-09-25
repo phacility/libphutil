@@ -105,7 +105,7 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
       array(
         'June' => 'correct',
         '21' => 'wrong',
-        'F' => 'wrong'
+        'F' => 'wrong',
       ));
     $this->assertEqual('correct', $translator->translateDate('F', $date));
     $this->assertEqual('correct 21', $translator->translateDate('F d', $date));
@@ -138,7 +138,7 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
     $translator->addTranslations(
       array(
         ',' => ' ',
-        '.' => ','
+        '.' => ',',
       ));
     $this->assertEqual('1 234', $translator->formatNumber(1234));
     $this->assertEqual('1 234,5', $translator->formatNumber(1234.5, 1));

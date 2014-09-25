@@ -115,7 +115,8 @@ final class PhutilPHPFragmentLexer extends PhutilLexer {
         array('\\?>', 'cp', '!pop'),
         array(
           '<<<([\'"]?)('.$identifier_pattern.')\\1\\n.*?\\n\\2\\;?\\n',
-          's'),
+          's',
+        ),
       ), $nonsemantic_rules, array(
         array('(?i:__halt_compiler)\\b', 'cp', 'halt_compiler'),
         array('(->|::)', 'o', 'attr'),

@@ -189,7 +189,7 @@ final class PhutilPythonFragmentLexer extends PhutilLexer {
       array(
         '\\\\([\\\\abfnrtv"\']|\n|N{.*?}|u[a-fA-F0-9]{4}|'.
         'U[a-fA-F0-9]{8}|x[a-fA-F0-9]{2}|[0-7]{1,3})',
-        'se'
+        'se',
       ),
     );
 

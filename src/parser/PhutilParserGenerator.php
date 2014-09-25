@@ -642,7 +642,8 @@ final class PhutilParserGenerator {
         $item[0],
         $item[1],
         $item[2] + 1,
-        $item[3]);
+        $item[3],
+      );
     }
 
     foreach ($nexts as $next => $items) {
@@ -744,13 +745,15 @@ final class PhutilParserGenerator {
           array(
             $item[0],
             $item[1],
-            count($this->rules[$item[0]][$item[1]]) - 1));
+            count($this->rules[$item[0]][$item[1]]) - 1),
+          );
       }
 
       foreach ($shift as $next => $item) {
         $action[$state][$next] = array(
           'S',
-          $this->successor[$state][$next]);
+          $this->successor[$state][$next],
+        );
       }
 
       if ($accept) {

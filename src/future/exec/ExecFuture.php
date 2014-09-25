@@ -459,7 +459,8 @@ final class ExecFuture extends Future {
       $this->result = array(
         128 + $signal,
         $this->stdout,
-        $this->stderr);
+        $this->stderr,
+      );
       $this->closeProcess();
     }
 

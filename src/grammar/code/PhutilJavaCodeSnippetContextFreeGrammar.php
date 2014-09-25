@@ -22,7 +22,7 @@ final class PhutilJavaCodeSnippetContextFreeGrammar
   protected function getStartGrammarSet() {
     return $this->buildGrammarSet('start',
       array(
-        '[import, block][nmspdecl, block][classdecl, block]'
+        '[import, block][nmspdecl, block][classdecl, block]',
       ));
   }
 

@@ -83,7 +83,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
       'B' => array('D', 'E'),
       'C' => array(),
       'D' => array(),
-      'E' => array()
+      'E' => array(),
     );
 
     $sorted = $this->getTopographicSort($graph);
@@ -98,7 +98,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
       'B' => array('C'),
       'C' => array('D', 'E'),
       'D' => array('E'),
-      'E' => array()
+      'E' => array(),
     );
 
     $sorted = $this->getTopographicSort($graph);
