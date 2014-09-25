@@ -58,6 +58,18 @@ abstract class AASTNode {
     return $this->children;
   }
 
+  public function getChildrenOfType($type) {
+    $nodes = array();
+
+    foreach ($this->children as $child) {
+      if ($child->getTypeName() == $type) {
+        $nodes[] = $child;
+      }
+    }
+
+    return $nodes;
+  }
+
   public function getChildOfType($index, $type) {
     $child = $this->getChildByIndex($index);
     if ($child->getTypeName() != $type) {
