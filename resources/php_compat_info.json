@@ -1645,7 +1645,7 @@
     },
     "define_syslog_variables"                       : {
       "min" : "4.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "standard"
     },
     "defined"                                       : {
@@ -2603,6 +2603,11 @@
       "max" : null,
       "ref" : "gd"
     },
+    "geoip_asnum_by_name"                           : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "geoip"
+    },
     "geoip_continent_code_by_name"                  : {
       "min" : "4.3.0",
       "max" : null,
@@ -2643,12 +2648,22 @@
       "max" : null,
       "ref" : "geoip"
     },
+    "geoip_domain_by_name"                          : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "geoip"
+    },
     "geoip_id_by_name"                              : {
       "min" : "4.3.0",
       "max" : null,
       "ref" : "geoip"
     },
     "geoip_isp_by_name"                             : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "geoip"
+    },
+    "geoip_netspeedcell_by_name"                    : {
       "min" : "4.3.0",
       "max" : null,
       "ref" : "geoip"
@@ -2669,6 +2684,11 @@
       "ref" : "geoip"
     },
     "geoip_region_name_by_code"                     : {
+      "min" : "4.3.0",
+      "max" : null,
+      "ref" : "geoip"
+    },
+    "geoip_setup_custom_directory"                  : {
       "min" : "4.3.0",
       "max" : null,
       "ref" : "geoip"
@@ -4455,7 +4475,7 @@
     },
     "import_request_variables"                      : {
       "min" : "4.0.7",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "standard"
     },
     "in_array"                                      : {
@@ -7035,12 +7055,12 @@
     },
     "mysqli_bind_param"                             : {
       "min" : "5.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "mysqli"
     },
     "mysqli_bind_result"                            : {
       "min" : "5.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "mysqli"
     },
     "mysqli_change_user"                            : {
@@ -7055,7 +7075,7 @@
     },
     "mysqli_client_encoding"                        : {
       "min" : "5.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "mysqli"
     },
     "mysqli_close"                                  : {
@@ -7155,7 +7175,7 @@
     },
     "mysqli_fetch"                                  : {
       "min" : "5.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "mysqli"
     },
     "mysqli_fetch_all"                              : {
@@ -7260,7 +7280,7 @@
     },
     "mysqli_get_metadata"                           : {
       "min" : "5.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "mysqli"
     },
     "mysqli_get_proto_info"                         : {
@@ -7340,7 +7360,7 @@
     },
     "mysqli_param_count"                            : {
       "min" : "5.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "mysqli"
     },
     "mysqli_ping"                                   : {
@@ -7430,7 +7450,7 @@
     },
     "mysqli_send_long_data"                         : {
       "min" : "5.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "mysqli"
     },
     "mysqli_send_query"                             : {
@@ -7835,7 +7855,7 @@
     },
     "ob_iconv_handler"                              : {
       "min" : "4.0.5",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "iconv"
     },
     "ob_implicit_flush"                             : {
@@ -7855,7 +7875,7 @@
     },
     "ob_tidyhandler"                                : {
       "min" : "5.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "tidy"
     },
     "octdec"                                        : {
@@ -10085,7 +10105,7 @@
     },
     "php_egg_logo_guid"                             : {
       "min" : "4.0.3",
-      "max" : "5.4.28",
+      "max" : "5.4.33",
       "ref" : "standard"
     },
     "php_ini_loaded_file"                           : {
@@ -10100,12 +10120,12 @@
     },
     "php_logo_guid"                                 : {
       "min" : "4.0.0",
-      "max" : "5.4.28",
+      "max" : "5.4.33",
       "ref" : "standard"
     },
     "php_real_logo_guid"                            : {
       "min" : "4.0.0",
-      "max" : "5.4.28",
+      "max" : "5.4.33",
       "ref" : "standard"
     },
     "php_sapi_name"                                 : {
@@ -10745,7 +10765,7 @@
     },
     "sem_acquire"                                   : {
       "min" : "4.0.0",
-      "max" : null,
+      "max" : "5.6.1RC1",
       "ref" : "sysvsem"
     },
     "sem_get"                                       : {
@@ -10810,7 +10830,7 @@
     },
     "session_is_registered"                         : {
       "min" : "4.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "session"
     },
     "session_module_name"                           : {
@@ -10830,7 +10850,7 @@
     },
     "session_register"                              : {
       "min" : "4.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "session"
     },
     "session_register_shutdown"                     : {
@@ -10865,7 +10885,7 @@
     },
     "session_unregister"                            : {
       "min" : "4.0.0",
-      "max" : "5.3.28",
+      "max" : "5.3.29",
       "ref" : "session"
     },
     "session_unset"                                 : {
@@ -13875,7 +13895,7 @@
     },
     "zend_logo_guid"                                : {
       "min" : "4.0.0",
-      "max" : "5.4.28",
+      "max" : "5.4.33",
       "ref" : "standard"
     },
     "zend_thread_id"                                : {
@@ -14037,6 +14057,10 @@
     },
     "Collator"                                             : {
       "min" : "5.2.0",
+      "max" : null
+    },
+    "Collectable"                                          : {
+      "min" : "5.3.0",
       "max" : null
     },
     "Cond"                                                 : {
@@ -15103,6 +15127,10 @@
       "min" : "5.2.3",
       "max" : null
     },
+    "SolrServerException"                                  : {
+      "min" : "5.3.0",
+      "max" : null
+    },
     "SolrUpdateResponse"                                   : {
       "min" : "5.2.3",
       "max" : null
@@ -15199,6 +15227,22 @@
       "min" : "4.0.0",
       "max" : null
     },
+    "SyncEvent"                                            : {
+      "min" : "5.3.0",
+      "max" : null
+    },
+    "SyncMutex"                                            : {
+      "min" : "5.3.0",
+      "max" : null
+    },
+    "SyncReaderWriter"                                     : {
+      "min" : "5.3.0",
+      "max" : null
+    },
+    "SyncSemaphore"                                        : {
+      "min" : "5.3.0",
+      "max" : null
+    },
     "Thread"                                               : {
       "min" : "5.3.0",
       "max" : null
@@ -15253,6 +15297,10 @@
     },
     "XSLTProcessor"                                        : {
       "min" : "5.0.0",
+      "max" : null
+    },
+    "Yac"                                                  : {
+      "min" : "5.2.0",
       "max" : null
     },
     "ZipArchive"                                           : {
@@ -15478,7 +15526,7 @@
       "max" : null
     },
     "Serializable"                                     : {
-      "min" : "5.3.0",
+      "min" : "5.1.0",
       "max" : null
     },
     "SessionHandlerInterface"                          : {
@@ -16065,23 +16113,23 @@
     },
     "CURLCLOSEPOLICY_CALLBACK"                    : {
       "min" : "4.0.2",
-      "max" : null
+      "max" : "5.5.17"
     },
     "CURLCLOSEPOLICY_LEAST_RECENTLY_USED"         : {
       "min" : "4.0.2",
-      "max" : null
+      "max" : "5.5.17"
     },
     "CURLCLOSEPOLICY_LEAST_TRAFFIC"               : {
       "min" : "4.0.2",
-      "max" : null
+      "max" : "5.5.17"
     },
     "CURLCLOSEPOLICY_OLDEST"                      : {
       "min" : "4.0.2",
-      "max" : null
+      "max" : "5.5.17"
     },
     "CURLCLOSEPOLICY_SLOWEST"                     : {
       "min" : "4.0.2",
-      "max" : null
+      "max" : "5.5.17"
     },
     "CURLE_ABORTED_BY_CALLBACK"                   : {
       "min" : "4.0.2",
@@ -16677,7 +16725,7 @@
     },
     "CURLOPT_CLOSEPOLICY"                         : {
       "min" : "4.0.2",
-      "max" : null
+      "max" : "5.5.17"
     },
     "CURLOPT_CONNECTTIMEOUT"                      : {
       "min" : "4.0.2",
@@ -18624,6 +18672,10 @@
       "max" : null
     },
     "GEOIP_NETSPEED_EDITION"                      : {
+      "min" : "4.3.0",
+      "max" : null
+    },
+    "GEOIP_NETSPEED_EDITION_REV1"                 : {
       "min" : "4.3.0",
       "max" : null
     },
@@ -23951,6 +24003,18 @@
       "min" : "4.0.0",
       "max" : null
     },
+    "SQL_WCHAR"                                   : {
+      "min" : "5.4.32RC1",
+      "max" : null
+    },
+    "SQL_WLONGVARCHAR"                            : {
+      "min" : "5.4.32RC1",
+      "max" : null
+    },
+    "SQL_WVARCHAR"                                : {
+      "min" : "5.4.32RC1",
+      "max" : null
+    },
     "SSH2_DEFAULT_TERMINAL"                       : {
       "min" : "4.0.0",
       "max" : null
@@ -24113,7 +24177,7 @@
     },
     "STREAM_ENFORCE_SAFE_MODE"                    : {
       "min" : "4.0.0",
-      "max" : "5.3.28"
+      "max" : "5.3.29"
     },
     "STREAM_FILTER_ALL"                           : {
       "min" : "4.0.0",
@@ -27659,6 +27723,26 @@
       "min" : "5.3.9",
       "max" : null
     },
+    "YAC_MAX_KEY_LEN"                             : {
+      "min" : "5.2.0",
+      "max" : null
+    },
+    "YAC_MAX_RAW_COMPRESSED_LEN"                  : {
+      "min" : "5.2.0",
+      "max" : null
+    },
+    "YAC_MAX_VALUE_RAW_LEN"                       : {
+      "min" : "5.2.0",
+      "max" : null
+    },
+    "YAC_SERIALIZER"                              : {
+      "min" : "5.2.0",
+      "max" : null
+    },
+    "YAC_VERSION"                                 : {
+      "min" : "5.2.0",
+      "max" : null
+    },
     "YAML_ANY_BREAK"                              : {
       "min" : "5.2.0",
       "max" : null
@@ -27769,7 +27853,7 @@
     },
     "ZEND_MULTIBYTE"                              : {
       "min" : "5.3.4",
-      "max" : "5.3.28"
+      "max" : "5.3.29"
     },
     "ZEND_THREAD_SAFE"                            : {
       "min" : "4.0.0",
@@ -27925,6 +28009,76 @@
     }
   },
   "classMethods"      : {
+    "Collectable"     : {
+      "chunck"             : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "count"              : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "getTerminationInfo" : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "isGarbage"          : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "isRunning"          : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "isTerminated"       : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "isWaiting"          : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "lock"               : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "merge"              : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "notify"             : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "pop"                : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "run"                : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "setGarbage"         : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "shift"              : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "synchronized"       : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "unlock"             : {
+        "min" : "5.3.0",
+        "max" : null
+      },
+      "wait"               : {
+        "min" : "5.3.0",
+        "max" : null
+      }
+    },
     "DateTime"        : {
       "diff" : {
         "min" : "5.3.0",
@@ -28104,6 +28258,36 @@
       },
       "wait"               : {
         "min" : "5.3.0",
+        "max" : null
+      }
+    },
+    "Yac"             : {
+      "add"    : {
+        "min" : "5.2.0",
+        "max" : null
+      },
+      "set"    : {
+        "min" : "5.2.0",
+        "max" : null
+      },
+      "get"    : {
+        "min" : "5.2.0",
+        "max" : null
+      },
+      "delete" : {
+        "min" : "5.2.0",
+        "max" : null
+      },
+      "flush"  : {
+        "min" : "5.2.0",
+        "max" : null
+      },
+      "info"   : {
+        "min" : "5.2.0",
+        "max" : null
+      },
+      "dump"   : {
+        "min" : "5.2.0",
         "max" : null
       }
     },
