@@ -72,7 +72,10 @@ final class AphrontMySQLDatabaseConnection
       }
     }
 
-    mysql_set_charset('utf8', $conn);
+    $ok = mysql_set_charset('utf8mb4', $conn);
+    if (!$ok) {
+      mysql_set_charset('utf8', $conn);
+    }
 
     return $conn;
   }

@@ -20,7 +20,7 @@ abstract class AphrontBaseMySQLDatabaseConnection
   abstract protected function freeResult($result);
 
   public function __construct(array $configuration) {
-    $this->configuration  = $configuration;
+    $this->configuration = $configuration;
   }
 
   public function __clone() {
@@ -324,16 +324,32 @@ abstract class AphrontBaseMySQLDatabaseConnection
    * can lead to data loss and security problems.
    */
   protected function validateUTF8String($string) {
-    if (phutil_is_utf8_with_only_bmp_characters($string)) {
-      return;
-    }
+    // TODO: Make this `true` eventually, once we make storage adjustment
+    // mandatory. For now, you can set it to `true` to test things.
+    $has_utf8mb4 = false;
 
-    throw new AphrontCharacterSetQueryException(
-      pht(
-        'Attempting to construct a query containing characters outside of '.
-        'the Unicode Basic Multilingual Plane. MySQL will silently truncate '.
-        'this data if it is inserted into a `utf8` column. Use the `%%B` '.
-        'conversion to escape binary strings data.'));
+    if ($has_utf8mb4) {
+      if (phutil_is_utf8($string)) {
+        return;
+      }
+
+      throw new AphrontCharacterSetQueryException(
+        pht(
+          'Attempting to construct a query using a non-utf8 string when '.
+          'utf8 is expected. Use the `%%B` conversion to escape binary '.
+          'strings data.'));
+    } else {
+      if (phutil_is_utf8_with_only_bmp_characters($string)) {
+        return;
+      }
+
+      throw new AphrontCharacterSetQueryException(
+        pht(
+          'Attempting to construct a query containing characters outside of '.
+          'the Unicode Basic Multilingual Plane. MySQL will silently truncate '.
+          'this data if it is inserted into a `utf8` column. Use the `%%B` '.
+          'conversion to escape binary strings data.'));
+    }
   }
 
 }

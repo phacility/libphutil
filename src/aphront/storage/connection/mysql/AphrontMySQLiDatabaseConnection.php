@@ -67,7 +67,10 @@ final class AphrontMySQLiDatabaseConnection
         "#{$errno}: {$error}.", $errno);
     }
 
-    $conn->set_charset('utf8');
+    $ok = $conn->set_charset('utf8mb4');
+    if (!$ok) {
+      $ok = $conn->set_charset('utf8');
+    }
 
     return $conn;
   }
