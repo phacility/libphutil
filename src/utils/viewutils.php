@@ -71,7 +71,7 @@ function phutil_format_relative_time_detailed($duration, $levels = 2) {
 
 /**
  * Format a byte count for human consumption, e.g. "10MB" instead of
- * "10000000".
+ * "10485760".
  *
  * @param int Number of bytes.
  * @return string Human-readable description.
@@ -79,8 +79,7 @@ function phutil_format_relative_time_detailed($duration, $levels = 2) {
 function phutil_format_bytes($bytes) {
   return phutil_format_units_generic(
     $bytes,
-    // NOTE: Using the SI version of these units rather than the 1024 version.
-    array(1000, 1000, 1000, 1000, 1000),
+    array(1024, 1024, 1024, 1024, 1024),
     array('B', 'KB', 'MB', 'GB', 'TB', 'PB'),
     $precision = 0);
 }
@@ -107,11 +106,11 @@ function phutil_parse_bytes($input) {
   }
 
   $scale = array(
-    'k' => 1000,
-    'm' => 1000 * 1000,
-    'g' => 1000 * 1000 * 1000,
-    't' => 1000 * 1000 * 1000 * 1000,
-    'p' => 1000 * 1000 * 1000 * 1000 * 1000,
+    'k' => 1024,
+    'm' => 1024 * 1024,
+    'g' => 1024 * 1024 * 1024,
+    't' => 1024 * 1024 * 1024 * 1024,
+    'p' => 1024 * 1024 * 1024 * 1024 * 1024,
   );
 
   $bytes = (float)$bytes;
