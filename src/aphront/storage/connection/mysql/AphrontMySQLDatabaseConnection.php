@@ -72,7 +72,7 @@ final class AphrontMySQLDatabaseConnection
       }
     }
 
-    $ok = mysql_set_charset('utf8mb4', $conn);
+    $ok = @mysql_set_charset('utf8mb4', $conn);
     if (!$ok) {
       mysql_set_charset('utf8', $conn);
     }
