@@ -545,7 +545,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
       // In 5.5.0 and later, we can use CURLFile. Prior to that, we have to
       // use this "@" stuff.
 
-      if (class_exists('CURLFile')) {
+      if (class_exists('CURLFile', false)) {
         $file_value = new CURLFile((string)$tmp, $info['mime'], $info['name']);
       } else {
         $file_value = '@'.(string)$tmp;
