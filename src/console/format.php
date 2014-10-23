@@ -37,7 +37,9 @@ function phutil_console_prompt($prompt, $history = '') {
     throw $ex;
   }
 
-  $use_history = true;
+  // `escapeshellarg` makes double quotes in the command below disappear on
+  // Windows, which breaks prompts when using history. See T6348
+  $use_history = !phutil_is_windows();
   if ($history == '') {
     $use_history = false;
   } else {
@@ -45,8 +47,6 @@ function phutil_console_prompt($prompt, $history = '') {
     list($err) = exec_manual('bash -c %s', 'true');
     if ($err) {
       $use_history = false;
-    } else if (phutil_is_windows()) {
-      $history = str_replace('\\', '/', $history);
     }
   }
 
