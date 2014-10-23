@@ -81,7 +81,7 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
    * the stack.
    */
   const MAXIMUM_LIST_NESTING_DEPTH = 12;
-  const START_BLOCK_PATTERN = '@^\s*(?:[-*#]+|1[.)]|\[.?\])\s+@';
+  const START_BLOCK_PATTERN = '@^\s*(?:[-*#]+|([1-9][0-9]*)[.)]|\[.?\])\s+@';
   const CONT_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)]|\[.?\])\s+@';
   const STRIP_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)])\s*@';
 
@@ -151,9 +151,14 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
     //   );
 
     $item = array();
+    $starts_at = null;
     $regex = self::START_BLOCK_PATTERN;
     foreach ($lines as $line) {
-      if (preg_match($regex, $line)) {
+      $match = null;
+      if (preg_match($regex, $line, $match)) {
+        if (!$starts_at && !empty($match[1])) {
+          $starts_at = $match[1];
+        }
         $regex = self::CONT_BLOCK_PATTERN;
         if ($item) {
           $items[] = $item;
@@ -164,6 +169,9 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
     }
     if ($item) {
       $items[] = $item;
+    }
+    if (!$starts_at) {
+      $starts_at = 1;
     }
 
 
@@ -314,7 +322,7 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
 
     // Finally, we have enough information to render the tree.
 
-    $out = $this->renderTree($tree, 0, $has_marks);
+    $out = $this->renderTree($tree, 0, $has_marks, $starts_at);
 
     if ($this->getEngine()->isTextMode()) {
       $out = implode('', $out);
@@ -416,7 +424,12 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
   /**
    * See additional notes in @{method:markupText}.
    */
-  private function renderTree(array $tree, $level, $has_marks) {
+  private function renderTree(
+    array $tree,
+    $level,
+    $has_marks,
+    $starts_at = 1) {
+
     $style = idx(head($tree), 'style');
 
     $out = array();
@@ -431,20 +444,27 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
           break;
       }
 
+      $start_attr = null;
+      if (ctype_digit($starts_at) && $starts_at > 1) {
+        $start_attr = hsprintf(' start="%d"', $starts_at);
+      }
+
       if ($has_marks) {
         $out[] = hsprintf(
-          '<%s class="remarkup-list remarkup-list-with-checkmarks">',
-          $tag);
+          '<%s class="remarkup-list remarkup-list-with-checkmarks"%s>',
+          $tag,
+          $start_attr);
       } else {
         $out[] = hsprintf(
-          '<%s class="remarkup-list">',
-          $tag);
+          '<%s class="remarkup-list"%s>',
+          $tag,
+          $start_attr);
       }
 
       $out[] = "\n";
     }
 
-    $number = 1;
+    $number = $starts_at;
     foreach ($tree as $item) {
       if ($this->getEngine()->isTextMode()) {
         if ($item['text'] === null) {
