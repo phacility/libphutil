@@ -4,6 +4,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
   const MODE_DEFAULT = 0;
   const MODE_TEXT = 1;
+  const MODE_HTML_MAIL = 2;
 
   const MAX_CHILD_DEPTH = 32;
 
@@ -30,6 +31,10 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
   public function isTextMode() {
     return $this->mode & self::MODE_TEXT;
+  }
+
+  public function isHTMLMailMode() {
+    return $this->mode & self::MODE_HTML_MAIL;
   }
 
   public function setBlockRules(array $rules) {

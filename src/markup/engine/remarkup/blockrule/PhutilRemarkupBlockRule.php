@@ -128,18 +128,39 @@ abstract class PhutilRemarkupBlockRule {
       return rtrim(implode('', $out), "\n");
     }
 
+    if ($this->getEngine()->isHTMLMailMode()) {
+      $table_attributes = array(
+        'style' => 'border-collapse: separate;
+          border-spacing: 1px;
+          background: #d3d3d3;
+          margin: 12px 0;',
+      );
+      $cell_attributes = array (
+        'style' => 'background: #ffffff;
+          padding: 3px 6px;',
+      );
+    } else {
+      $table_attributes = array(
+        'class' => 'remarkup-table',
+      );
+      $cell_attributes = array();
+    }
+
     $out = array();
     $out[] = "\n";
     foreach ($out_rows as $row) {
       $cells = array();
       foreach ($row['content'] as $cell) {
-        $cells[] = phutil_tag($cell['type'], array(), $cell['content']);
+        $cells[] = phutil_tag(
+          $cell['type'],
+          $cell_attributes,
+          $cell['content']);
       }
       $out[] = phutil_tag($row['type'], array(), $cells);
       $out[] = "\n";
     }
 
-    return phutil_tag('table', array('class' => 'remarkup-table'), $out);
+    return phutil_tag('table', $table_attributes, $out);
   }
 
 }

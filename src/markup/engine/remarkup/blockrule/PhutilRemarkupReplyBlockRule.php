@@ -65,25 +65,50 @@ final class PhutilRemarkupReplyBlockRule extends PhutilRemarkupBlockRule {
       return $text."\n\n".$children;
     }
 
+    if ($this->getEngine()->isHTMLMailMode()) {
+      $block_attributes = array(
+        'style' => 'border-left: 3px solid #8C98B8;
+          color: #6B748C;
+          font-style: italic;
+          margin: 4px 0 12px 0;
+          padding: 8px 12px;
+          background-color: #F8F9FC;',
+      );
+      $head_attributes = array(
+        'style' => 'font-style: normal;
+          padding-bottom: 4px;',
+      );
+      $reply_attributes = array(
+        'style' => 'margin: 0;
+          padding: 0;
+          border: 0;
+          color: rgb(107, 116, 140);',
+      );
+    } else {
+      $block_attributes = array(
+        'class' => 'remarkup-reply-block',
+      );
+      $head_attributes = array(
+        'class' => 'remarkup-reply-head',
+      );
+      $reply_attributes = array(
+        'class' => 'remarkup-reply-body',
+      );
+    }
+
     return phutil_tag(
       'blockquote',
-      array(
-        'class' => 'remarkup-reply-block',
-      ),
+      $block_attributes,
       array(
         "\n",
         phutil_tag(
           'div',
-          array(
-            'class' => 'remarkup-reply-head',
-          ),
+          $head_attributes,
           $text),
         "\n",
         phutil_tag(
           'div',
-          array(
-            'class' => 'remarkup-reply-body',
-          ),
+          $reply_attributes,
           $children),
         "\n",
       ));

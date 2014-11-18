@@ -23,6 +23,16 @@ final class PhutilRemarkupMonospaceRule extends PhutilRemarkupRule {
     if ($this->getEngine()->isTextMode()) {
       $result = $matches[0];
 
+    } else
+    if ($this->getEngine()->isHTMLMailMode()) {
+      $match = isset($matches[2]) ? $matches[2] : $matches[1];
+      $result = phutil_tag(
+        'tt',
+        array(
+          'style' => 'background: #ebebeb; font-size: 13px;',
+        ),
+        $match);
+
     } else {
       $match = isset($matches[2]) ? $matches[2] : $matches[1];
       $result = phutil_tag(

@@ -131,22 +131,39 @@ final class PhutilRemarkupCodeBlockRule extends PhutilRemarkupBlockRule {
     $code_body = $this->highlightSource($text, $options);
 
     $name_header = null;
+    if ($this->getEngine()->isHTMLMailMode()) {
+      $header_attributes = array (
+        'style' => 'padding: 6px 8px;
+          background: #fdf5d4;
+          color: rgba(0,0,0,.75);
+          font-weight: bold;
+          display: inline-block;
+          border-top: 1px solid #f1c40f;
+          border-left: 1px solid #f1c40f;
+          border-right: 1px solid #f1c40f;
+          margin-bottom: -1px;',
+      );
+    } else {
+      $header_attributes = array(
+        'class' => 'remarkup-code-header',
+      );
+    }
     if ($options['name']) {
       $name_header = phutil_tag(
         'div',
-        array(
-          'class' => 'remarkup-code-header',
-        ),
+        $header_attributes,
         $options['name']);
     }
 
-    return phutil_tag(
-      'div',
-      array(
+    $attributes = array(
         'class' => 'remarkup-code-block',
         'data-code-lang' => $options['lang'],
         'data-sigil' => 'remarkup-code-block',
-      ),
+    );
+
+    return phutil_tag(
+      'div',
+      $attributes,
       array($name_header, $code_body));
   }
 
@@ -158,11 +175,30 @@ final class PhutilRemarkupCodeBlockRule extends PhutilRemarkupBlockRule {
     }
 
     $aux_style = null;
+
+    if ($this->getEngine()->isHTMLMailMode()) {
+      if ($options['counterexample']) {
+        $aux_style = 'border: 1px solid #c0392b;
+          background: #f4dddb;
+          font-size: 10x;
+          padding: 8px;';
+      } else {
+        $aux_style = 'border: 1px solid #f1c40f;
+          background: #fdf5d4;
+          font-size: 10x;
+          padding: 8px;';
+      }
+    }
+
     if ($options['lines']) {
       // Put a minimum size on this because the scrollbar is otherwise
       // unusable.
       $height = max(6, (int)$options['lines']);
-      $aux_style = 'max-height: '.(2 * $height).'em;';
+      $aux_style = $aux_style
+        .' '
+        .'max-height: '
+        .(2 * $height)
+        .'em; overflow: auto;';
     }
 
     $engine = $this->getEngine()->getConfig('syntax-highlighter.engine');

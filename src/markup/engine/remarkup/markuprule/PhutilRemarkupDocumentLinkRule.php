@@ -41,6 +41,15 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
         return $text;
       }
       return $name.' <'.$text.'>';
+    } else if ($this->getEngine()->isHTMLMailMode()) {
+      if (strncmp($link, '/', 1) == 0 || strncmp($link, '#', 1) == 0) {
+        $base =  $this->getEngine()->getConfig('uri.base');
+        $text = $link;
+        if (strncmp($link, '/', 1) == 0) {
+          $base = rtrim($base, '/');
+        }
+        $link = $base.$text;
+      }
     }
 
     // By default, we open links in a new window or tab. For anchors on the same

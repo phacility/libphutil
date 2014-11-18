@@ -44,6 +44,7 @@ final class PhutilRemarkupNoteBlockRule extends PhutilRemarkupBlockRule {
     $text_part = $this->applyRules(rtrim($text_part));
 
     $text_mode = $this->getEngine()->isTextMode();
+    $html_mail_mode = $this->getEngine()->isHTMLMailMode();
     if ($text_mode) {
       return $word_part.' '.$text_part;
     }
@@ -63,11 +64,38 @@ final class PhutilRemarkupNoteBlockRule extends PhutilRemarkupBlockRule {
       $content = $text_part;
     }
 
+    if ($html_mail_mode) {
+      if ($class_suffix == 'important') {
+        $attributes = array(
+          'style' => 'margin: 16px 0;
+            padding: 12px;
+            border-left: 3px solid #c0392b;
+            background: #f4dddb;',
+        );
+      } else if ($class_suffix == 'note') {
+        $attributes = array(
+          'style' => 'margin: 16px 0;
+            padding: 12px;
+            border-left: 3px solid #2980b9;
+            background: #daeaf3;',
+        );
+      } else if ($class_suffix == 'warning') {
+        $attributes = array(
+          'style' => 'margin: 16px 0;
+            padding: 12px;
+            border-left: 3px solid #f1c40f;
+            background: #fdf5d4;',
+        );
+      }
+    } else {
+      $attributes = array(
+        'class' => 'remarkup-'.$class_suffix,
+      );
+    }
+
     return phutil_tag(
       'div',
-      array(
-        'class' => 'remarkup-'.$class_suffix,
-      ),
+      $attributes,
       $content);
   }
 
