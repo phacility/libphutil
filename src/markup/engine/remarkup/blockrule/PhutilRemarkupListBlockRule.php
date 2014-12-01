@@ -81,8 +81,8 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
    * the stack.
    */
   const MAXIMUM_LIST_NESTING_DEPTH = 12;
-  const START_BLOCK_PATTERN = '@^\s*(?:[-*#]+|([1-9][0-9]*)[.)]|\[.?\])\s+@';
-  const CONT_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)]|\[.?\])\s+@';
+  const START_BLOCK_PATTERN = '@^\s*(?:[-*#]+|([1-9][0-9]*)[.)]|\[\D?\])\s+@';
+  const CONT_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)]|\[\D?\])\s+@';
   const STRIP_BLOCK_PATTERN = '@^\s*(?:[-*#]+|[0-9]+[.)])\s*@';
 
   public function markupText($text, $children) {
@@ -234,10 +234,11 @@ final class PhutilRemarkupListBlockRule extends PhutilRemarkupBlockRule {
       $text = preg_replace(self::STRIP_BLOCK_PATTERN, '', $item);
 
       // Look for "[]", "[ ]", "[*]", "[x]", etc., which we render as a
-      // checkbox.
+      // checkbox. We don't render [1], [2], etc., as checkboxes, as these
+      // are often used as footnotes.
       $mark = null;
       $matches = null;
-      if (preg_match('/^\s*\[(.?)\]\s*/', $text, $matches)) {
+      if (preg_match('/^\s*\[(\D?)\]\s*/', $text, $matches)) {
         if (strlen(trim($matches[1]))) {
           $mark = true;
         } else {
