@@ -52,7 +52,14 @@ final class AphrontMySQLiDatabaseConnection
       }
     }
 
-    $conn = @new mysqli(
+    $conn = mysqli_init();
+
+    $timeout = $this->getConfiguration('timeout');
+    if ($timeout) {
+      $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeout);
+    }
+
+    @$conn->real_connect(
       $host,
       $user,
       $pass,
