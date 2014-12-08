@@ -745,8 +745,9 @@ final class PhutilParserGenerator {
           array(
             $item[0],
             $item[1],
-            count($this->rules[$item[0]][$item[1]]) - 1),
-          );
+            count($this->rules[$item[0]][$item[1]]) - 1,
+          ),
+        );
       }
 
       foreach ($shift as $next => $item) {
