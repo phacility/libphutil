@@ -3,6 +3,7 @@
 final class ConduitClient {
 
   private $uri;
+  private $host;
   private $connectionID;
   private $sessionKey;
   private $timeout = 300.0;
@@ -24,6 +25,22 @@ final class ConduitClient {
     if (!strlen($this->uri->getDomain())) {
       throw new Exception("Conduit URI '{$uri}' must include a valid host.");
     }
+    $this->host = $this->uri->getDomain();
+  }
+
+  /**
+   * Override the domain specified in the service URI and provide a specific
+   * host identity.
+   *
+   * This can be used to connect to a specific node in a cluster environment.
+   */
+  public function setHost($host) {
+    $this->host = $host;
+    return $this;
+  }
+
+  public function getHost() {
+    return $this->host;
   }
 
   public function callMethodSynchronous($method, array $params) {
@@ -102,6 +119,7 @@ final class ConduitClient {
     // Always use the cURL-based HTTPSFuture, for proxy support and other
     // protocol edge cases that HTTPFuture does not support.
     $core_future = new HTTPSFuture($uri, $data);
+    $core_future->addHeader('Host', $this->getHost());
 
     $core_future->setMethod('POST');
     $core_future->setTimeout($this->timeout);
@@ -127,8 +145,9 @@ final class ConduitClient {
   }
 
   private function getHostString() {
+    $host = $this->getHost();
+
     $uri = new PhutilURI($this->uri);
-    $host = $uri->getDomain();
     $port = $uri->getPort();
     if (!$port) {
       switch ($uri->getProtocol()) {
