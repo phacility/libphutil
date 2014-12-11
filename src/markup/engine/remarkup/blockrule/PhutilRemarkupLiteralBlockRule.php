@@ -4,7 +4,7 @@ final class PhutilRemarkupLiteralBlockRule extends PhutilRemarkupBlockRule {
 
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
-    if (preg_match('/^%%%/', $lines[$cursor])) {
+    if (preg_match('/^\s*%%%/', $lines[$cursor])) {
       $num_lines++;
 
       while (isset($lines[$cursor])) {
@@ -15,13 +15,25 @@ final class PhutilRemarkupLiteralBlockRule extends PhutilRemarkupBlockRule {
         }
         break;
       }
+
+      $cursor++;
+
+      while (isset($lines[$cursor])) {
+        if (!strlen(trim($lines[$cursor]))) {
+          $num_lines++;
+          $cursor++;
+          continue;
+        }
+        break;
+      }
+
     }
 
     return $num_lines;
   }
 
   public function markupText($text, $children) {
-    $text = preg_replace('/%%%\s*$/', '', substr($text, 3));
+    $text = preg_replace('/^\s*%%%(.*)%%%\s*\z/s', '\1', $text);
     if ($this->getEngine()->isTextMode()) {
       return $text;
     }

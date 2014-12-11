@@ -9,6 +9,8 @@ _____
 ---
 
 - - - - - - -
+
+ ---
 ~~~~~~~~~~
 <hr class="remarkup-hr" />
 
@@ -21,15 +23,19 @@ _____
 <hr class="remarkup-hr" />
 
 <hr class="remarkup-hr" />
+
+<hr class="remarkup-hr" />
 ~~~~~~~~~~
-<hr class="remarkup-hr" />
+___
 
-<hr class="remarkup-hr" />
+_____
 
-<hr class="remarkup-hr" />
+***
 
-<hr class="remarkup-hr" />
+* * * * * * *
 
-<hr class="remarkup-hr" />
+---
 
-<hr class="remarkup-hr" />
+- - - - - - -
+
+ ---
