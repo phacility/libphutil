@@ -6,9 +6,9 @@
 ~~~~~~~~~~
 <p><strong>foo</strong></p>
 
-- first
+<p class="remarkup-literal">- first
 <br />- second
-<br />- third
+<br />- third</p>
 
 <p><a href="http://hello" class="remarkup-link" target="_blank" rel="noreferrer">world</a></p>
 ~~~~~~~~~~
