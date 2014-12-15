@@ -11,6 +11,7 @@ final class ConduitClient {
   private $password;
   private $publicKey;
   private $privateKey;
+  private $conduitToken;
 
   const AUTH_ASYMMETRIC = 'asymmetric';
 
@@ -41,6 +42,15 @@ final class ConduitClient {
 
   public function getHost() {
     return $this->host;
+  }
+
+  public function setConduitToken($conduit_token) {
+    $this->conduitToken = $conduit_token;
+    return $this;
+  }
+
+  public function getConduitToken() {
+    return $this->conduitToken;
   }
 
   public function callMethodSynchronous($method, array $params) {
@@ -98,6 +108,10 @@ final class ConduitClient {
 
       $signature = $this->signRequest($method, $params, $meta);
       $meta['auth.signature'] = $signature;
+    }
+
+    if ($this->conduitToken) {
+      $meta['token'] = $this->conduitToken;
     }
 
     if ($meta) {
