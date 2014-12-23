@@ -107,7 +107,6 @@ EOHELP
 
     $log = $args->getArg('log');
     if ($log) {
-      ini_set('error_log', $log);
       $argv[] = '--log='.$log;
     }
 
@@ -122,14 +121,34 @@ EOHELP
     $this->argv       = $argv;
     $this->moreArgs   = coalesce($more, array());
 
-    error_log("Bringing daemon '{$this->daemon}' online...");
-
     if (self::$instance) {
       throw new Exception(
         'You may not instantiate more than one Overseer per process.');
     }
 
     self::$instance = $this;
+
+    // Check this before we daemonize, since if it's an issue the child will
+    // exit immediately.
+    if ($this->phddir) {
+      $dir = $this->phddir;
+      try {
+        Filesystem::assertWritable($dir);
+      } catch (Exception $ex) {
+        throw new Exception(
+          "Specified daemon PID directory ('{$dir}') does not exist or is ".
+          "not writable by the daemon user!");
+      }
+    }
+
+    if ($log) {
+      // NOTE: Now that we're committed to daemonizing, redirect the error
+      // log if we have a `--log` parameter. Do this at the last moment
+      // so as many setup issues as possible are surfaced.
+      ini_set('error_log', $log);
+    }
+
+    error_log("Bringing daemon '{$this->daemon}' online...");
 
     if ($this->daemonize) {
 
