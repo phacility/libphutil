@@ -348,7 +348,6 @@ phutil_register_library_map(array(
     'XsprintfUnknownConversionException' => 'xsprintf/exception/XsprintfUnknownConversionException.php',
   ),
   'function' => array(
-    'Futures' => 'future/functions.php',
     '_phutil_date_format' => 'utils/viewutils.php',
     '_qsprintf_check_scalar_type' => 'xsprintf/qsprintf.php',
     '_qsprintf_check_type' => 'xsprintf/qsprintf.php',

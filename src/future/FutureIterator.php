@@ -45,9 +45,7 @@ final class FutureIterator implements Iterator {
 
 
   /**
-   * Create a new iterator over a list of futures. By convention, use the
-   * convenience function @{function:Futures} instead of instantiating this
-   * class directly.
+   * Create a new iterator over a list of futures.
    *
    * @param list  List of @{class:Future}s to resolve.
    * @task basics
