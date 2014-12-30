@@ -7,7 +7,7 @@ final class PhutilJSONTestCase extends PhutilTestCase {
 
     $expect = <<<EOJSON
 {
-  "x" : []
+  "x": []
 }
 
 EOJSON;

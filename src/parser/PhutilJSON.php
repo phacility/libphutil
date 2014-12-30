@@ -53,7 +53,7 @@ final class PhutilJSON {
     }
     $key_lines = array();
     foreach ($keys as $k => $key) {
-      $key_lines[] = $key_pre.str_pad($key, $max).' : '.$vals[$k];
+      $key_lines[] = $key_pre.str_pad($key, $max).': '.$vals[$k];
     }
     $key_lines = implode(",\n", $key_lines);
 
