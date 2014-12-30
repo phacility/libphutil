@@ -41,7 +41,19 @@
       "type": "spelling"
     },
     "text": {
-      "type": "text"
+      "type": "text",
+      "exclude": [
+        "(^support/xhpast/\\w+\\.(hpp|l|y)$)"
+      ]
+    },
+    "text-without-length": {
+      "type": "text",
+      "severity": {
+        "3": "disabled"
+      },
+      "include": [
+        "(^support/xhpast/\\w+\\.(hpp|l|y)$)"
+      ]
     },
     "xhpast": {
       "type": "xhpast",
