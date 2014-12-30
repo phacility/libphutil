@@ -454,7 +454,9 @@ EOPHP;
       }
       $progress->setTotal(count($futures));
 
-      foreach (Futures($futures)->limit($limit) as $file => $future) {
+      $futures = id(new FutureIterator($futures))
+        ->limit($limit);
+      foreach ($futures as $file => $future) {
         $result = $future->resolveJSON();
         if (empty($result['error'])) {
           $symbol_map[$file] = $result;

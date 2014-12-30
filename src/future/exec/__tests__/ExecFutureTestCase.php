@@ -81,7 +81,7 @@ final class ExecFutureTestCase extends PhutilTestCase {
       $futures[] = id(new ExecFuture('sleep 32000'))->setTimeout(0.01);
     }
 
-    foreach (Futures($futures) as $future) {
+    foreach (new FutureIterator($futures) as $future) {
       list ($err) = $future->resolve();
 
       $this->assertTrue($err > 0);

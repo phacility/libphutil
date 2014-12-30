@@ -16,7 +16,7 @@
  *   $futures[] = new QueryFuture($conn1, 'DELETE FROM table');
  *   $futures[] = new QueryFuture($conn2, 'SELECT 2');
  *
- *   foreach (Futures($futures) as $future) {
+ *   foreach (new FutureIterator($futures) as $future) {
  *     try {
  *       $result = $future->resolve();
  *     } catch (AphrontQueryException $ex) {

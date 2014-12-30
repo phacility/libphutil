@@ -108,7 +108,8 @@ final class PhutilDeferredLogTestCase extends PhutilTestCase {
       $futures[] = new ExecFuture('%s %d %s', $bin, $n_lines, (string)$tmp);
     }
 
-    Futures($futures)->resolveAll();
+    id(new FutureIterator($futures))
+      ->resolveAll();
 
     $this->assertEqual(
       str_repeat("abcdefghijklmnopqrstuvwxyz\n", $n_writers * $n_lines),
