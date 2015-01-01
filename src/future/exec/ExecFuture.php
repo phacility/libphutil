@@ -636,6 +636,26 @@ final class ExecFuture extends Future {
         }
       }
 
+
+      // NOTE: Convert all the environmental variables we're going to pass
+      // into strings before we install PhutilErrorTrap. If something in here
+      // is really an object which is going to throw when we try to turn it
+      // into a string, we want the exception to escape here -- not after we
+      // start trapping errors.
+      $env = $this->env;
+      if ($env !== null) {
+        foreach ($env as $key => $value) {
+          $env[$key] = (string)$value;
+        }
+      }
+
+      // Same for the working directory.
+      if ($this->cwd === null) {
+        $cwd = null;
+      } else {
+        $cwd = (string)$this->cwd;
+      }
+
       // NOTE: See note above about Phage.
       if (class_exists('PhutilErrorTrap')) {
         $trap = new PhutilErrorTrap();
@@ -647,8 +667,8 @@ final class ExecFuture extends Future {
         $unmasked_command,
         self::$descriptorSpec,
         $pipes,
-        $this->cwd,
-        $this->env);
+        $cwd,
+        $env);
 
       if ($trap) {
         $err = $trap->getErrorsAsString();
