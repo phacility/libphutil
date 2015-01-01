@@ -123,7 +123,7 @@ final class PhutilRemarkupCodeBlockRule extends PhutilRemarkupBlockRule {
       if (!$lang) {
         $lang = nonempty(
           $this->getEngine()->getConfig('phutil.codeblock.language-default'),
-          'php');
+          'text');
       }
       $options['lang'] = $lang;
     }
