@@ -89,6 +89,13 @@ final class PhutilTranslator {
     }
 
     $result = vsprintf($translation, $args);
+    if ($result === false) {
+      // If vsprintf() fails (often because the translated string references
+      // too many parameters), show the bad template with a note instead of
+      // returning an empty string. This makes it easier to figure out what
+      // went wrong and fix it.
+      $result = '[Invalid Translation!] '.$translation;
+    }
 
     if ($this->language == 'en-ac') {
       $result = strtoupper($result);
