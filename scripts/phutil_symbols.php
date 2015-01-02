@@ -294,7 +294,7 @@ foreach ($static_uses as $static_use) {
     continue;
   }
   $need[] = array(
-    'type'    => 'class/interface',
+    'type'    => 'class',
     'symbol'  => $name,
   );
 }
