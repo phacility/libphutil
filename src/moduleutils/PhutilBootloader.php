@@ -9,6 +9,7 @@ final class PhutilBootloader {
   private $extensionMaps        = array();
   private $currentLibrary       = null;
   private $classTree            = array();
+  private $inMemoryMaps         = array();
 
   public static function getInstance() {
     if (!self::$instance) {
@@ -23,6 +24,13 @@ final class PhutilBootloader {
 
   public function getClassTree() {
     return $this->classTree;
+  }
+
+  public function registerInMemoryLibrary($name, $map) {
+    $this->registeredLibraries[$name] = "memory:$name";
+    $this->inMemoryMaps[$name] = $map;
+
+    $this->getLibraryMap($name);
   }
 
   public function registerLibrary($name, $path) {
@@ -104,10 +112,15 @@ final class PhutilBootloader {
     if (empty($this->libraryMaps[$name])) {
       $root = $this->getLibraryRoot($name);
       $this->currentLibrary = $name;
-      $okay = include $root.'/__phutil_library_map__.php';
-      if (!$okay) {
-        throw new PhutilBootloaderException(
-          "Include of '{$root}/__phutil_library_map__.php' failed!");
+
+      if (isset($this->inMemoryMaps[$name])) {
+        $this->libraryMaps[$name] = $this->inMemoryMaps[$name];
+      } else {
+        $okay = include $root.'/__phutil_library_map__.php';
+        if (!$okay) {
+          throw new PhutilBootloaderException(
+            "Include of '{$root}/__phutil_library_map__.php' failed!");
+        }
       }
 
       $map = $this->libraryMaps[$name];
