@@ -392,7 +392,7 @@ final class Filesystem {
       throw new Exception(pht('You must generate at least 1 byte of entropy.'));
     }
 
-    // Try to use `openssl_random_psuedo_bytes()` if it's available. This source
+    // Try to use `openssl_random_pseudo_bytes()` if it's available. This source
     // is the most widely available source, and works on Windows/Linux/OSX/etc.
 
     if (function_exists('openssl_random_pseudo_bytes')) {
