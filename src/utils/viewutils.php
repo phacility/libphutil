@@ -1,6 +1,6 @@
 <?php
 
-function _phutil_date_format($epoch) {
+function phutil_date_format($epoch) {
   $now = time();
   $shift = 30 * 24 * 60 * 60;
   if ($epoch < $now + $shift && $epoch > $now - $shift) {
