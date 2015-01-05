@@ -1070,6 +1070,8 @@ non_empty_function_call_parameter_list:
     $$ = $1->appendChild($3);
   }
 | non_empty_function_call_parameter_list ',' '&' w_variable {
+    NTYPE($3, n_VARIABLE_REFERENCE);
+    $3->appendChild($4);
     $$ = $1->appendChild($3);
   }
 ;
