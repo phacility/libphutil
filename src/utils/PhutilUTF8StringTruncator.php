@@ -17,7 +17,7 @@
  * Codepoint limits restrict the number of codepoints the result may contain.
  * Since codepoints may have up to 4 bytes, the resulting strings may require
  * have more than this many bytes. This kind of limit is appropriate when you
- * are using UTF-8 storage, like MySQL.
+ * are using UTF-8 storage.
  *
  * Glyph limits restrict the display size of the string. Because a single glyph
  * may have an arbitrary number of combining characters, this does not impose
