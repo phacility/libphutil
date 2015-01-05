@@ -43,7 +43,8 @@
     "text": {
       "type": "text",
       "exclude": [
-        "(^support/xhpast/\\w+\\.(hpp|l|y)$)"
+        "(^support/xhpast/\\w+\\.(hpp|l|y)$)",
+        "(^\\.arclint$)"
       ]
     },
     "text-without-length": {
@@ -52,7 +53,8 @@
         "3": "disabled"
       },
       "include": [
-        "(^support/xhpast/\\w+\\.(hpp|l|y)$)"
+        "(^support/xhpast/\\w+\\.(hpp|l|y)$)",
+        "(^\\.arclint$)"
       ]
     },
     "xhpast": {
@@ -61,6 +63,9 @@
       "severity": {
         "16": "advice",
         "34": "error"
+      },
+      "xhpast.blacklisted.function": {
+        "eval": "The eval() function should be avoided. It is potentially unsafe and makes debugging more difficult."
       },
       "xhpast.php-version": "5.2.3",
       "xhpast.php-version.windows": "5.3.0"
