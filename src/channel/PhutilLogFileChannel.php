@@ -4,7 +4,7 @@
  * A @{class:PhutilChannelChannel} which wraps some other channel and writes
  * data passed over it to a log file.
  */
-final class PhutilLogfileChannel extends PhutilChannelChannel {
+final class PhutilLogFileChannel extends PhutilChannelChannel {
 
   private $logfile;
 
