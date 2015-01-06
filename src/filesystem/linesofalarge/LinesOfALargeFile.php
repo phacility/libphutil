@@ -90,7 +90,7 @@ final class LinesOfALargeFile extends LinesOfALarge {
    * @return  string  Next chunk of the file.
    * @task internals
    */
-  public function readMore() {
+  protected function readMore() {
     // NOTE: At least on OSX in reasonably normal test cases, increasing the
     // size of this read has no impact on performance.
 
