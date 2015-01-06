@@ -1168,6 +1168,7 @@ class_statement:
     yyextra->expecting_xhp_class_statements = yyextra->old_expecting_xhp_class_statements;
 
     $$ = NNEW(n_METHOD_DECLARATION);
+    NLMORE($$, $2);
     $$->appendChild($1);
     $$->appendChild($4);
     $$->appendChild(NTYPE($5, n_STRING));
