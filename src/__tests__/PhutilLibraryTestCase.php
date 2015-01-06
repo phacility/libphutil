@@ -1,6 +1,9 @@
 <?php
 
-final class PhutilInfrastructureTestCase extends PhutilTestCase {
+/**
+ * @concrete-extensible
+ */
+class PhutilLibraryTestCase extends PhutilTestCase {
 
   /**
    * This is more of an acceptance test case instead of a unit test. It verifies
@@ -17,8 +20,8 @@ final class PhutilInfrastructureTestCase extends PhutilTestCase {
    * that all the library map is up-to-date.
    */
   public function testLibraryMap() {
-    $library = phutil_get_current_library_name();
-    $root = phutil_get_library_root($library);
+    $root = $this->getLibraryRoot();
+    $library = phutil_get_library_name_for_root($root);
 
     $new_library_map = id(new PhutilLibraryMapBuilder($root))
       ->buildMap();
@@ -30,8 +33,18 @@ final class PhutilInfrastructureTestCase extends PhutilTestCase {
     $this->assertEqual(
       $new_library_map,
       $old_library_map,
-      'The library map does not appear to be up-to-date. Try '.
-      'rebuilding the map with `arc liberate`.');
+      pht(
+        'The library map does not appear to be up-to-date. Try '.
+        'rebuilding the map with `%s`.',
+        'arc liberate'));
+  }
+
+  /**
+   * Get the root directory for the library currently being tested.
+   */
+  protected function getLibraryRoot() {
+    $caller = id(new ReflectionClass($this))->getFileName();
+    return phutil_get_library_root_for_path($caller);
   }
 
 }
