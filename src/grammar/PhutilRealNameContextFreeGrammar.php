@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilRealnameContextFreeGrammar
+final class PhutilRealNameContextFreeGrammar
   extends PhutilContextFreeGrammar {
 
   protected function getRules() {
