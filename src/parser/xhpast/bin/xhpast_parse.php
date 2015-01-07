@@ -9,7 +9,7 @@ function xhpast_is_available() {
       list($err, $stdout) = exec_manual('%s --version', $bin);
       if (!$err) {
         $version = trim($stdout);
-        if ($version === 'xhpast version 5.5.8/1f') {
+        if ($version === 'xhpast version 5.5.8/1g') {
           $available = true;
         }
       }

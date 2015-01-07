@@ -17,7 +17,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 39
+#define YY_FLEX_SUBMINOR_VERSION 35
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -71,6 +71,7 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
+typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -78,6 +79,7 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
+#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -107,8 +109,6 @@ typedef unsigned int flex_uint32_t;
 #ifndef UINT32_MAX
 #define UINT32_MAX             (4294967295U)
 #endif
-
-#endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
 
@@ -201,15 +201,7 @@ typedef void* yyscan_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k.
- * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
- * Ditto for the __ia64__ case accordingly.
- */
-#define YY_BUF_SIZE 32768
-#else
 #define YY_BUF_SIZE 16384
-#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -239,7 +231,6 @@ typedef size_t yy_size_t;
 #define EOB_ACT_LAST_MATCH 2
 
     #define YY_LESS_LINENO(n)
-    #define YY_LINENO_REWIND_TO(ptr)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -411,7 +402,7 @@ void xhpastfree (void * ,yyscan_t yyscanner );
 /* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def's & init go here */
 /* Begin user sect3 */
 
-#define xhpastwrap(yyscanner) 1
+#define xhpastwrap(n) 1
 #define YY_SKIP_YYWRAP
 
 #define FLEX_DEBUG
@@ -421,8 +412,6 @@ typedef unsigned char YY_CHAR;
 typedef int yy_state_type;
 
 #define yytext_ptr yytext_r
-
-/* %% [1.5] DFA */
 
 /* %if-c-only Standard (non-C++) definition */
 
@@ -440,7 +429,7 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 	yyg->yytext_ptr = yy_bp; \
 /* %% [2.0] code to fiddle yytext and yyleng for yymore() goes here \ */\
 	yyg->yytext_ptr -= yyg->yy_more_len; \
-	yyleng = (size_t) (yy_cp - yyg->yytext_ptr); \
+	yyleng = (yy_size_t) (yy_cp - yyg->yytext_ptr); \
 	yyg->yy_hold_char = *yy_cp; \
 	*yy_cp = '\0'; \
 /* %% [3.0] code to copy yytext_ptr to yytext[] goes here, if %array \ */\
@@ -3546,7 +3535,7 @@ static void yy_scan_newlines(const char* text, struct yyguts_t* yyg);
 
 
 
-#line 3550 "scanner.lex.cpp"
+#line 3539 "scanner.lex.cpp"
 
 #define INITIAL 0
 #define PHP 1
@@ -3664,10 +3653,6 @@ int xhpastget_lineno (yyscan_t yyscanner );
 
 void xhpastset_lineno (int line_number ,yyscan_t yyscanner );
 
-int xhpastget_column  (yyscan_t yyscanner );
-
-void xhpastset_column (int column_no ,yyscan_t yyscanner );
-
 /* %if-bison-bridge */
 
 YYSTYPE * xhpastget_lval (yyscan_t yyscanner );
@@ -3730,12 +3715,7 @@ static int input (yyscan_t yyscanner );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k */
-#define YY_READ_BUF_SIZE 16384
-#else
 #define YY_READ_BUF_SIZE 8192
-#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -3744,7 +3724,7 @@ static int input (yyscan_t yyscanner );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO do { if (fwrite( yytext, yyleng, 1, yyout )) {} } while (0)
+#define ECHO fwrite( yytext, yyleng, 1, yyout )
 /* %endif */
 /* %if-c++-only C++ definition */
 /* %endif */
@@ -3759,7 +3739,7 @@ static int input (yyscan_t yyscanner );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		size_t n; \
+		yy_size_t n; \
 		for ( n = 0; n < max_size && \
 			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
@@ -3868,6 +3848,13 @@ YY_DECL
 	register int yy_act;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
+/* %% [7.0] user's declarations go here */
+#line 75 "scanner.l"
+
+
+ /* Open / close PHP + inline HTML */
+#line 3857 "scanner.lex.cpp"
+
     yylval = yylval_param;
 
 	if ( !yyg->yy_init )
@@ -3903,14 +3890,6 @@ YY_DECL
 
 		xhpast_load_buffer_state(yyscanner );
 		}
-
-	{
-/* %% [7.0] user's declarations go here */
-#line 75 "scanner.l"
-
-
- /* Open / close PHP + inline HTML */
-#line 3914 "scanner.lex.cpp"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -4894,7 +4873,7 @@ YY_RULE_SETUP
 #line 392 "scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 4898 "scanner.lex.cpp"
+#line 4877 "scanner.lex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(PHP):
 case YY_STATE_EOF(PHP_HEREDOC_START):
@@ -5033,7 +5012,6 @@ case YY_STATE_EOF(PHP_):
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
-	} /* end of user's declarations */
 } /* end of xhpastlex */
 /* %ok-for-header */
 
@@ -5109,7 +5087,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 			{ /* Not enough room in the buffer - grow it. */
 
 			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
+			YY_BUFFER_STATE b = YY_CURRENT_BUFFER;
 
 			int yy_c_buf_p_offset =
 				(int) (yyg->yy_c_buf_p - b->yy_ch_buf);
@@ -5252,7 +5230,6 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	yy_current_state = yy_NUL_trans[yy_current_state];
 	yy_is_jam = (yy_current_state == 0);
 
-	(void)yyg;
 	return yy_is_jam ? 0 : yy_current_state;
 }
 
@@ -5357,7 +5334,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( xhpastwrap(yyscanner ) )
-						return EOF;
+						return 0;
 
 					if ( ! yyg->yy_did_buffer_switch_on_eof )
 						YY_NEW_FILE;
@@ -5520,6 +5497,17 @@ static void xhpast_load_buffer_state  (yyscan_t yyscanner)
 
 	xhpastfree((void *) b ,yyscanner );
 }
+
+/* %if-c-only */
+
+#ifndef __cplusplus
+extern int isatty (int );
+#endif /* __cplusplus */
+    
+/* %endif */
+
+/* %if-c++-only */
+/* %endif */
 
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
@@ -5766,8 +5754,8 @@ YY_BUFFER_STATE xhpast_scan_string (yyconst char * yystr , yyscan_t yyscanner)
 /* %if-c-only */
 /** Setup the input buffer state to scan the given bytes. The next call to xhpastlex() will
  * scan from a @e copy of @a bytes.
- * @param yybytes the byte buffer to scan
- * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
+ * @param bytes the byte buffer to scan
+ * @param len the number of bytes in the buffer pointed to by @a bytes.
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  */
@@ -5775,8 +5763,7 @@ YY_BUFFER_STATE xhpast_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_
 {
 	YY_BUFFER_STATE b;
 	char *buf;
-	yy_size_t n;
-	yy_size_t i;
+	yy_size_t n, i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
@@ -5988,7 +5975,7 @@ void xhpastset_lineno (int  line_number , yyscan_t yyscanner)
 
         /* lineno is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           YY_FATAL_ERROR( "xhpastset_lineno called with no buffer" );
+           yy_fatal_error( "xhpastset_lineno called with no buffer" , yyscanner); 
     
     yylineno = line_number;
 }
@@ -6003,7 +5990,7 @@ void xhpastset_column (int  column_no , yyscan_t yyscanner)
 
         /* column is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           YY_FATAL_ERROR( "xhpastset_column called with no buffer" );
+           yy_fatal_error( "xhpastset_column called with no buffer" , yyscanner); 
     
     yycolumn = column_no;
 }
@@ -6247,7 +6234,7 @@ void xhpastfree (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 391 "scanner.l"
+#line 392 "scanner.l"
 
 
 

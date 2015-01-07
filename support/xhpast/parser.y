@@ -34,16 +34,13 @@
   ((n)->setType(type))
 
 #define NMORE(n, end) \
-  ((n)->setEnd(end))
+  ((n)->expandRange(end))
 
 #define NSPAN(n, type, end) \
   (NMORE(NTYPE((n), type), end))
 
-#define NLMORE(n, begin) \
-  ((n)->setBegin(begin))
-
 #define NEXPAND(l, n, r) \
-  ((n)->setBegin(l)->setEnd(r))
+  ((n)->expandRange(l)->expandRange(r))
 
 using namespace std;
 
@@ -243,7 +240,7 @@ top_statement:
   NSPAN($1, n_NAMESPACE, $4);
   $1->appendChild(NNEW(n_EMPTY));
   NMORE($3, $4);
-  NLMORE($3, $2);
+  NMORE($3, $2);
   $1->appendChild($3);
   $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
@@ -283,13 +280,13 @@ use_declaration:
   }
 | T_NS_SEPARATOR namespace_name {
     $$ = NNEW(n_USE);
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$->appendChild($2);
     $$->appendChild(NNEW(n_EMPTY));
   }
 | T_NS_SEPARATOR namespace_name T_AS T_STRING {
     $$ = NNEW(n_USE);
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$->appendChild($2);
     NTYPE($4, n_STRING);
     $$->appendChild($4);
@@ -486,17 +483,17 @@ unticked_statement:
     NMORE($$, $3);
   }
 | T_GLOBAL global_var_list ';' {
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$ = NNEW(n_STATEMENT)->appendChild($2);
     NMORE($$, $3);
   }
 | T_STATIC static_var_list ';' {
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$ = NNEW(n_STATEMENT)->appendChild($2);
     NMORE($$, $3);
   }
 | T_ECHO echo_expr_list ';' {
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$ = NNEW(n_STATEMENT)->appendChild($2);
     NMORE($$, $3);
   }
@@ -514,7 +511,7 @@ unticked_statement:
   }
 | T_UNSET '(' unset_variables ')' ';' {
     NMORE($3, $4);
-    NLMORE($3, $1);
+    NMORE($3, $1);
     $$ = NNEW(n_STATEMENT)->appendChild($3);
     NMORE($$, $5);
   }
@@ -696,7 +693,7 @@ unticked_class_declaration_statement:
 | interface_entry T_STRING interface_extends_list '{' class_statement_list '}' {
     $$ = NNEW(n_INTERFACE_DECLARATION);
     $$->appendChild(NNEW(n_CLASS_ATTRIBUTES));
-    NLMORE($$, $1);
+    NMORE($$, $1);
     $$->appendChild(NTYPE($2, n_CLASS_NAME));
     $$->appendChild($3);
     $$->appendChild(NNEW(n_EMPTY));
@@ -714,14 +711,14 @@ class_entry_type:
   }
 | T_ABSTRACT T_CLASS {
     NTYPE($2, n_CLASS_ATTRIBUTES);
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $2->appendChild(NTYPE($1, n_STRING));
 
     $$ = $2;
   }
 | T_FINAL T_CLASS {
     NTYPE($2, n_CLASS_ATTRIBUTES);
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $2->appendChild(NTYPE($1, n_STRING));
 
     $$ = $2;
@@ -797,7 +794,7 @@ foreach_variable:
 for_statement:
   statement
 | ':' inner_statement_list T_ENDFOR ';' {
-  NLMORE($2, $1);
+  NMORE($2, $1);
   NMORE($2, $4);
   $$ = $2;
   }
@@ -806,7 +803,7 @@ for_statement:
 foreach_statement:
   statement
 | ':' inner_statement_list T_ENDFOREACH ';' {
-  NLMORE($2, $1);
+  NMORE($2, $1);
   NMORE($2, $4);
   $$ = $2;
   }
@@ -815,7 +812,7 @@ foreach_statement:
 declare_statement:
   statement
 | ':' inner_statement_list T_ENDDECLARE ';' {
-  NLMORE($2, $1);
+  NMORE($2, $1);
   NMORE($2, $4);
   $$ = $2;
   }
@@ -854,7 +851,7 @@ switch_case_list:
   }
 | ':' case_list T_ENDSWITCH ';' {
     NMORE($2, $4);
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$ = $2;
   }
 | ':' ';' case_list T_ENDSWITCH ';' {
@@ -864,7 +861,7 @@ switch_case_list:
     $$ = NNEW(n_STATEMENT_LIST)->appendChild($2);
     $$->appendChildren($3);
     NMORE($$, $5);
-    NLMORE($$, $1);
+    NMORE($$, $1);
   }
 ;
 
@@ -898,7 +895,7 @@ while_statement:
   statement
 | ':' inner_statement_list T_ENDWHILE ';' {
   NMORE($2, $4);
-  NLMORE($2, $1);
+  NMORE($2, $1);
   $$ = $2;
   }
 ;
@@ -1168,7 +1165,7 @@ class_statement:
     yyextra->expecting_xhp_class_statements = yyextra->old_expecting_xhp_class_statements;
 
     $$ = NNEW(n_METHOD_DECLARATION);
-    NLMORE($$, $2);
+    NMORE($$, $2);
     $$->appendChild($1);
     $$->appendChild($4);
     $$->appendChild(NTYPE($5, n_STRING));
@@ -1835,7 +1832,7 @@ expr_without_variable:
   }
 | T_STATIC function is_reference '(' parameter_list ')' lexical_vars '{' inner_statement_list '}' {
     NSPAN($2, n_FUNCTION_DECLARATION, $10);
-    NLMORE($2, $1);
+    NMORE($2, $1);
 
     $$ = NNEW(n_FUNCTION_MODIFIER_LIST);
     $$->appendChild(NTYPE($1, n_STRING));
@@ -1922,13 +1919,13 @@ function_call:
     $$->appendChild(NEXPAND($2, $3, $4));
   }
 | T_NAMESPACE T_NS_SEPARATOR namespace_name '(' function_call_parameter_list ')' {
-    NLMORE($3, $1);
+    NMORE($3, $1);
     $$ = NNEW(n_FUNCTION_CALL);
     $$->appendChild($3);
     $$->appendChild(NEXPAND($4, $5, $6));
   }
 | T_NS_SEPARATOR namespace_name '(' function_call_parameter_list ')' {
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$ = NNEW(n_FUNCTION_CALL);
     $$->appendChild($2);
     $$->appendChild(NEXPAND($3, $4, $5));
@@ -1980,11 +1977,11 @@ class_name:
     $$ = NTYPE($1, n_CLASS_NAME);
   }
 | T_NAMESPACE T_NS_SEPARATOR namespace_name {
-    NLMORE($3, $1);
+    NMORE($3, $1);
     $$ = NTYPE($3, n_CLASS_NAME);
   }
 | T_NS_SEPARATOR namespace_name {
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$ = NTYPE($2, n_CLASS_NAME);
   }
 ;
@@ -1994,11 +1991,11 @@ fully_qualified_class_name:
     $$ = NTYPE($1, n_CLASS_NAME);
   }
 | T_NAMESPACE T_NS_SEPARATOR namespace_name {
-    NLMORE($3, $1);
+    NMORE($3, $1);
     $$ = NTYPE($3, n_CLASS_NAME);
   }
 | T_NS_SEPARATOR namespace_name {
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$ = NTYPE($2, n_CLASS_NAME);
   }
 ;
@@ -2103,11 +2100,11 @@ static_scalar: /* compile-time evaluated scalars */
   common_scalar
 | namespace_name
 | T_NAMESPACE T_NS_SEPARATOR namespace_name {
-    NLMORE($3, $1);
+    NMORE($3, $1);
     $$ = $3;
   }
 | T_NS_SEPARATOR namespace_name {
-    NLMORE($2, $1);
+    NMORE($2, $1);
     $$ = $2;
   }
 | '+' static_scalar {
@@ -2148,10 +2145,10 @@ scalar:
 | class_constant
 | namespace_name
 | T_NAMESPACE T_NS_SEPARATOR namespace_name {
-    $$ = NLMORE($3, $1);
+    $$ = NMORE($3, $1);
   }
 | T_NS_SEPARATOR namespace_name {
-    $$ = NLMORE($2, $1);
+    $$ = NMORE($2, $1);
   }
 | common_scalar
 ;
