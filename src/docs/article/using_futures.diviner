@@ -58,14 +58,13 @@ execute system commands with libphutil.
 
 Commonly, you may have many similar tasks you wish to parallelize: instead of
 compressing one file, you want to compress several files. You can use the
-@{class:FutureIterator} class to manage multiple futures, via the convenience
-function @{function:Futures}.
+@{class:FutureIterator} class to manage multiple futures.
 
   $futures = array();
   foreach ($files as $file) {
     $futures[$file] = new ExecFuture("gzip %s", $file);
   }
-  foreach (Futures($futures) as $file => $future) {
+  foreach (new FutureIterator($futures) as $file => $future) {
     list($err, $stdout, $stderr) = $future->resolve();
     if (!$err) {
       echo "Compressed {$file}...\n";
@@ -74,7 +73,7 @@ function @{function:Futures}.
     }
   }
 
-@{function:Futures} takes a list of futures and runs them in parallel,
+@{class:FutureIterator} takes a list of futures and runs them in parallel,
 **returning them in the order they resolve, NOT the original list order**. This
 allows your program to begin any followup computation as quickly as possible: if
 the slowest future in the list happens to be the first one, you can finish
@@ -83,7 +82,7 @@ processing all the other futures while waiting for it.
 You can also limit how many futures you want to run at once. For instance, to
 process no more than 4 files simultaneously:
 
-  foreach (Futures($futures)->limit(4) as $file => $future) {
+  foreach (id(new FutureIterator($futures))->limit(4) as $file => $future) {
     // ...
   }
 
