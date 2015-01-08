@@ -5,7 +5,7 @@
  */
 final class PhutilChunkedIteratorTestCase extends PhutilTestCase {
 
-  function testChunkedIterator() {
+  public function testChunkedIterator() {
     $expect = array(
       array(0 => 1, 1 => 3),
       array(2 => 5),
