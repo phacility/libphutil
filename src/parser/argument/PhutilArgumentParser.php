@@ -124,7 +124,9 @@ final class PhutilArgumentParser {
     for ($ii = 0; $ii < $len; $ii++) {
       $arg = $argv[$ii];
       $map = null;
-      if ($arg == '--') {
+      if (!is_string($arg)) {
+        // Non-string argument; pass it through as-is.
+      } else if ($arg == '--') {
         // This indicates "end of flags".
         break;
       } else if ($arg == '-') {
@@ -660,7 +662,11 @@ final class PhutilArgumentParser {
       if ($value == '--') {
         unset($argv[$key]);
         break;
-      } else if (!strncmp($value, '-', 1) && strlen($value) > 1) {
+      } else if (
+        is_string($value) &&
+        !strncmp($value, '-', 1) &&
+        strlen($value) > 1) {
+
         throw new PhutilArgumentUsageException(
           "Argument '{$value}' is unrecognized. Use '--' to indicate the ".
           "end of flags.");
