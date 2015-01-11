@@ -11,6 +11,9 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 insert_final_newline = false
 
+[src/parser/__tests__/json/*.data]
+insert_final_newline = false
+
 [src/parser/__tests__/languageguesser/*]
 indent_style =
 

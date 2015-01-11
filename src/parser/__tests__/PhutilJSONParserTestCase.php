@@ -22,6 +22,15 @@ final class PhutilJSONParserTestCase extends PhutilTestCase {
       '{"test":"http:\/\/foo\\\\zomg"}'
         => array('test' => 'http://foo\\zomg'),
       '["http:\/\/foo\\\\zomg"]' => array('http://foo\\zomg'),
+      Filesystem::readFile(dirname(__FILE__).'/json/base64.json') => array(
+        'action' => 'candidate.create',
+        'actionId' => '80653a26cc46357ff79ff83b47e27c3cb7a668bd',
+        'params' => array(
+          'attachments' => array(
+            Filesystem::readFile(dirname(__FILE__).'/json/base64.data'),
+          ),
+        ),
+      ),
     );
 
     foreach ($tests as $input => $expect) {
