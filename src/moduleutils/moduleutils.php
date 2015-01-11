@@ -7,7 +7,7 @@ function phutil_get_library_root($library) {
 
 function phutil_get_library_root_for_path($path) {
   foreach (Filesystem::walkToRoot($path) as $dir) {
-    if (@file_exists($dir.'/__phutil_library_init__.php')) {
+    if (Filesystem::pathExists($dir.'/__phutil_library_init__.php')) {
       return $dir;
     }
   }
