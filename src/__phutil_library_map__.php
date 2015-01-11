@@ -461,6 +461,7 @@ phutil_register_library_map(array(
     'xhpast_get_parser_future' => 'parser/xhpast/bin/xhpast_parse.php',
     'xhpast_is_available' => 'parser/xhpast/bin/xhpast_parse.php',
     'xhpast_parser_token_constants' => 'parser/xhpast/parser_tokens.php',
+    'xhpast_version' => 'parser/xhpast/bin/xhpast_parse.php',
     'xsprintf' => 'xsprintf/xsprintf.php',
     'xsprintf_callback_example' => 'xsprintf/xsprintf.php',
     'xsprintf_command' => 'xsprintf/csprintf.php',

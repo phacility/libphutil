@@ -2,19 +2,11 @@
 
 function xhpast_is_available() {
   static $available;
+
   if ($available === null) {
-    $available = false;
-    $bin = xhpast_get_binary_path();
-    if (Filesystem::pathExists($bin)) {
-      list($err, $stdout) = exec_manual('%s --version', $bin);
-      if (!$err) {
-        $version = trim($stdout);
-        if ($version === 'xhpast version 5.5.8/1g') {
-          $available = true;
-        }
-      }
-    }
+    $available = xhpast_version() == 'xhpast version 5.5.8/1g';
   }
+
   return $available;
 }
 
@@ -56,4 +48,20 @@ function xhpast_get_parser_future($data) {
 function xhpast_build() {
   $root = phutil_get_library_root('phutil');
   execx('%s', $root.'/../scripts/build_xhpast.sh');
+}
+
+function xhpast_version() {
+  static $version;
+
+  if ($version === null) {
+    $bin = xhpast_get_binary_path();
+    if (Filesystem::pathExists($bin)) {
+      list($err, $stdout) = exec_manual('%s --version', $bin);
+      if (!$err) {
+        $version = trim($stdout);
+      }
+    }
+  }
+
+  return $version;
 }
