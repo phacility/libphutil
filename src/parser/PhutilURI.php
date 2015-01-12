@@ -147,6 +147,19 @@ final class PhutilURI {
     return $this->port;
   }
 
+  public function getPortWithProtocolDefault() {
+    static $default_ports = array(
+      'http'  => '80',
+      'https' => '443',
+      'ssh'   => '22',
+    );
+
+    return nonempty(
+      $this->getPort(),
+      idx($default_ports, $this->getProtocol()),
+      '');
+  }
+
   public function setPath($path) {
     if ($this->domain && strlen($path) && $path[0] !== '/') {
       $path = '/'.$path;

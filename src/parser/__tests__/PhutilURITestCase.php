@@ -116,4 +116,18 @@ final class PhutilURITestCase extends PhutilTestCase {
       $uri->getQueryParams());
   }
 
+  public function testDefaultPorts() {
+    $uri = new PhutilURI('http://www.example.com');
+    $this->assertEqual('80', $uri->getPortWithProtocolDefault());
+
+    $uri = new PhutilURI('https://www.example.com');
+    $this->assertEqual('443', $uri->getPortWithProtocolDefault());
+
+    $uri = new PhutilURI('ssh://git@example.com/example/example.git');
+    $this->assertEqual('22', $uri->getPortWithProtocolDefault());
+
+    $uri = new PhutilURI('unknown://www.example.com');
+    $this->assertEqual('', $uri->getPortWithProtocolDefault());
+  }
+
 }
