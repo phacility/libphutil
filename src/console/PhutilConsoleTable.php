@@ -124,12 +124,18 @@ final class PhutilConsoleTable extends Phobject {
 
     $columns = array();
     foreach ($this->columns as $key => $column) {
-      $columns[] = PhutilConsoleFormatter::formatString(
-        '**%s**',
-        $this->alignString(
+      if (!$this->shouldAddSpacing($key, $column)) {
+        $column_str = $column['title'];
+      } else {
+        $column_str = $this->alignString(
           $column['title'],
           $this->getWidth($key),
-          idx($column, 'align', self::ALIGN_LEFT)));
+          idx($column, 'align', self::ALIGN_LEFT));
+      }
+
+      $columns[] = PhutilConsoleFormatter::formatString(
+        '**%s**',
+        $column_str);
     }
 
     $output .= $this->formatRow($columns);
@@ -148,10 +154,14 @@ final class PhutilConsoleTable extends Phobject {
       $columns = array();
 
       foreach ($this->columns as $key => $column) {
-        $columns[] = $this->alignString(
-          (string)idx($data, $key, ''),
-          $this->getWidth($key),
-          idx($column, 'align', self::ALIGN_LEFT));
+        if (!$this->shouldAddSpacing($key, $column)) {
+          $columns[] = (string)idx($data, $key, '');
+        } else {
+          $columns[] = $this->alignString(
+            (string)idx($data, $key, ''),
+            $this->getWidth($key),
+            idx($column, 'align', self::ALIGN_LEFT));
+        }
       }
 
       $output .= $this->formatRow($columns);
@@ -178,6 +188,27 @@ final class PhutilConsoleTable extends Phobject {
 
 
 /* -(  Internals  )---------------------------------------------------------- */
+
+  /**
+   * Returns if the specified column should have spacing added.
+   *
+   * @return bool
+   */
+  private function shouldAddSpacing($key, $column) {
+    if (!$this->borders) {
+      if (last_key($this->columns) === $key) {
+        if (idx($column, 'align', self::ALIGN_LEFT) === self::ALIGN_LEFT) {
+          // Don't add extra spaces to this column since it's the last column,
+          // left aligned, and we're not showing borders.  This prevents
+          // unnecessary empty lines from appearing when the extra spaces
+          // wrap around the terminal.
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
 
   /**
    * Returns the column IDs.
