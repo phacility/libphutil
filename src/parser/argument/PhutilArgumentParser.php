@@ -745,9 +745,13 @@ final class PhutilArgumentParser {
 
     $out = array();
 
+    $no_standard_options =
+      !empty($this->specs['show-standard-options']) &&
+      !$this->getArg('show-standard-options');
+
     $specs = msort($specs, 'getName');
     foreach ($specs as $spec) {
-      if ($spec->getStandard() && !$this->getArg('show-standard-options')) {
+      if ($spec->getStandard() && $no_standard_options) {
         // If this is a standard argument and the user didn't pass
         // --show-standard-options, skip it.
         continue;
