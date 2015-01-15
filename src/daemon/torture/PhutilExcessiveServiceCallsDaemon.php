@@ -5,7 +5,7 @@
  */
 final class PhutilExcessiveServiceCallsDaemon extends PhutilTortureTestDaemon {
 
-  public function run() {
+  protected function run() {
     while (true) {
       execx('true');
       $this->stillWorking();

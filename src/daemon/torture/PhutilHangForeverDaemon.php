@@ -5,7 +5,7 @@
  */
 final class PhutilHangForeverDaemon extends PhutilTortureTestDaemon {
 
-  public function run() {
+  protected function run() {
     while (true) {
       sleep(60);
     }

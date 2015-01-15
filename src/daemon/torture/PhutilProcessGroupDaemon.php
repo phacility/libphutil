@@ -5,7 +5,7 @@
  */
 final class PhutilProcessGroupDaemon extends PhutilTortureTestDaemon {
 
-  public function run() {
+  protected function run() {
     $root = phutil_get_library_root('phutil');
     $root = dirname($root);
 

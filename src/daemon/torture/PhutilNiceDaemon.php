@@ -5,7 +5,7 @@
  */
 final class PhutilNiceDaemon extends PhutilTortureTestDaemon {
 
-  public function run() {
+  protected function run() {
     while (true) {
       $this->log(date('r'));
       $this->stillWorking();
