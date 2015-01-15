@@ -113,7 +113,7 @@ final class PhutilOAuth1Future extends FutureProxy {
     return $this;
   }
 
-  public function getProxiedFuture() {
+  protected function getProxiedFuture() {
     $future = parent::getProxiedFuture();
 
     if (!$this->hasConstructedFuture) {
