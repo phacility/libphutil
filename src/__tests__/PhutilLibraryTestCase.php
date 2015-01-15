@@ -11,7 +11,9 @@ class PhutilLibraryTestCase extends PhutilTestCase {
    * missing methods in descendants of abstract base classes.
    */
   public function testEverythingImplemented() {
-    id(new PhutilSymbolLoader())->selectAndLoadSymbols();
+    id(new PhutilSymbolLoader())
+      ->setLibrary($this->getLibraryName())
+      ->selectAndLoadSymbols();
     $this->assertTrue(true);
   }
 
@@ -46,6 +48,7 @@ class PhutilLibraryTestCase extends PhutilTestCase {
    */
   public function testMethodVisibility() {
     $symbols = id(new PhutilSymbolLoader())
+      ->setLibrary($this->getLibraryName())
       ->selectSymbolsWithoutLoading();
 
     $classes = array();
@@ -98,6 +101,13 @@ class PhutilLibraryTestCase extends PhutilTestCase {
     $this->assertTrue(
       empty($failures),
       "\n\n".implode("\n\n", $failures));
+  }
+
+  /**
+   * Get the name of the library currently being tested.
+   */
+  protected function getLibraryName() {
+    return phutil_get_library_name_for_root($this->getLibraryRoot());
   }
 
   /**
