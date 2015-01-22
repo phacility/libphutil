@@ -23,17 +23,18 @@
  *     throw new Exception('proc_open() failed: '.$err);
  *   }
  *
- * NOTE: You must explicitly destroy traps because they register themselves with
- * @{class:PhutilErrorHandler}, and thus will not be destroyed when `unset()`.
+ * IMPORTANT: You must explicitly destroy traps because they register
+ * themselves with @{class:PhutilErrorHandler}, and thus will not be destroyed
+ * when `unset()`.
  *
  * Some notes on traps:
  *
  *   - Traps catch all errors, including those silenced by `@`.
  *   - Traps do not prevent errors from reaching other standard handlers. You
  *     can use `@` to keep errors out of the logs while still trapping them.
- *   - Traps capture all errors until they are destroyed, usually by leaving
- *     scope. This means that you should not create long-lived traps, or they
- *     may consume unbounded amounts of memory to hold the error log.
+ *   - Traps capture all errors until they are explicitly destroyed. This means
+ *     that you should not create long-lived traps, or they may consume
+ *     unbounded amounts of memory to hold the error log.
  */
 final class PhutilErrorTrap extends Phobject {
 
