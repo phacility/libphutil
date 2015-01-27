@@ -19,6 +19,9 @@ final class HTTPSFuture extends BaseHTTPFuture {
   private $responseBufferPos;
   private $files = array();
   private $temporaryFiles = array();
+  private $rawBody;
+  private $rawBodyPos = 0;
+  private $fileHandle;
 
   /**
    * Create a temp file containing an SSL cert, and use it for this session.
@@ -225,8 +228,32 @@ final class HTTPSFuture extends BaseHTTPFuture {
         curl_setopt($curl, CURLOPT_REDIR_PROTOCOLS, $allowed_protocols);
       }
 
-      $data = $this->formatRequestDataForCURL();
-      curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+      if (strlen($this->rawBody)) {
+        if ($this->getData()) {
+          throw new Exception(
+            pht(
+              'You can not execute an HTTP future with both a raw request '.
+              'body and structured request data.'));
+        }
+
+        // We aren't actually going to use this file handle, since we are
+        // just pushing data through the callback, but cURL gets upset if
+        // we don't hand it a real file handle.
+        $tmp = new TempFile();
+        $this->fileHandle = fopen($tmp, 'r');
+
+        // NOTE: We must set CURLOPT_PUT here to make cURL use CURLOPT_INFILE.
+        // We'll possibly overwrite the method later on, unless this is really
+        // a PUT request.
+        curl_setopt($curl, CURLOPT_PUT, true);
+        curl_setopt($curl, CURLOPT_INFILE, $this->fileHandle);
+        curl_setopt($curl, CURLOPT_INFILESIZE, strlen($this->rawBody));
+        curl_setopt($curl, CURLOPT_READFUNCTION,
+          array($this, 'willWriteBody'));
+      } else {
+        $data = $this->formatRequestDataForCURL();
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+      }
 
       $headers = $this->getHeaders();
 
@@ -610,5 +637,30 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
     return true;
   }
+
+
+  /**
+   * Write a raw HTTP body into the request.
+   *
+   * You must write the entire body before starting the request.
+   *
+   * @param string Raw body.
+   * @return this
+   */
+  public function write($raw_body) {
+    $this->rawBody = $raw_body;
+    return $this;
+  }
+
+
+  /**
+   * Callback to pass data to cURL.
+   */
+  public function willWriteBody($handle, $infile, $len) {
+    $bytes = substr($this->rawBody, $this->rawBodyPos, $len);
+    $this->rawBodyPos += $len;
+    return $bytes;
+  }
+
 
 }
