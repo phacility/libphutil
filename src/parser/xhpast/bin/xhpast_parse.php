@@ -35,8 +35,8 @@ function xhpast_get_parser_future($data) {
       // Try to build XHPAST automatically. If we can't then just ask the user
       // to build it themselves.
       xhpast_build();
-    } catch (CommandException $e) {
-      throw new Exception(xhpast_get_build_instructions());
+    } catch (CommandException $ex) {
+      throw new PhutilProxyException(xhpast_get_build_instructions(), $ex);
     }
   }
   $future = new ExecFuture('%s', xhpast_get_binary_path());
