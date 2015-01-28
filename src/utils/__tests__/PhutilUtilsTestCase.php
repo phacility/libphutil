@@ -674,4 +674,107 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       phutil_var_export(new PhutilTestPhobject()));
   }
 
+  public function testFnmatch() {
+    $cases = array(
+      '' => array(
+        array(''),
+        array('.', '/'),
+      ),
+      '*' => array(
+        array('file'),
+        array('dir/', '/dir'),
+      ),
+      '**' => array(
+        array('file', 'dir/', '/dir', 'dir/subdir/file'),
+        array(),
+      ),
+      '**/file' => array(
+        array('file', 'dir/file', 'dir/subdir/file', 'dir/subdir/subdir/file'),
+        array('file/', 'file/dir'),
+      ),
+      'file.*' => array(
+        array('file.php', 'file.a', 'file.'),
+        array('files.php', 'file.php/blah'),
+      ),
+      'fo?' => array(
+        array('foo', 'fot'),
+        array('fooo', 'ffoo', 'fo/', 'foo/'),
+      ),
+      'fo{o,t}' => array(
+        array('foo', 'fot'),
+        array('fob', 'fo/', 'foo/'),
+      ),
+      'fo{o,\\,}' => array(
+        array('foo', 'fo,'),
+        array('foo/', 'fo,/'),
+      ),
+      'fo{o,\\\\}' => array(
+        array('foo', 'fo\\'),
+        array('foo/', 'fo\\/'),
+      ),
+      '/foo' => array(
+        array('/foo'),
+        array('foo', '/foo/'),
+      ),
+
+      // Tests for various `fnmatch` flags.
+      '*.txt' => array(
+        array(
+          'file.txt',
+
+          // FNM_PERIOD
+          '.secret-file.txt',
+        ),
+        array(
+          // FNM_PATHNAME
+          'dir/file.txt',
+
+          // FNM_CASEFOLD
+          'file.TXT',
+        ),
+        '\\*.txt' => array(
+          array(
+            // FNM_NOESCAPE
+            '*.txt',
+          ),
+          array(
+            'file.txt',
+          ),
+        ),
+      ),
+    );
+
+    $invalid = array(
+      '{',
+      'asdf\\',
+    );
+
+    foreach ($cases as $input => $expect) {
+      list($matches, $no_matches) = $expect;
+
+      foreach ($matches as $match) {
+        $this->assertTrue(
+          phutil_fnmatch($input, $match),
+          pht('Expecting "%s" to match "%s".', $input, $match));
+      }
+
+      foreach ($no_matches as $no_match) {
+        $this->assertFalse(
+          phutil_fnmatch($input, $no_match),
+          pht('Expecting "%s" not to match "%s".', $input, $no_match));
+      }
+    }
+
+    foreach ($invalid as $input) {
+      $caught = null;
+      try {
+        phutil_fnmatch($input, '');
+      } catch (Exception $ex) {
+        $caught = $ex;
+      }
+
+      $this->assertTrue($caught instanceof InvalidArgumentException);
+    }
+  }
+
 }

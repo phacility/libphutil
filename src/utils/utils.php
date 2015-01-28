@@ -1184,3 +1184,72 @@ function phutil_var_export($var) {
   // Let PHP handle everything else.
   return var_export($var, true);
 }
+
+
+/**
+ * An improved version of `fnmatch`.
+ *
+ * @param  string  A glob pattern.
+ * @param  string  A path.
+ * @return bool
+ */
+function phutil_fnmatch($glob, $path) {
+  // Modify the glob to allow `**/` to match files in the root directory.
+  $glob = preg_replace('@(?:(?<!\\\\)\\*){2}/@', '{,*/,**/}', $glob);
+
+  $escaping = false;
+  $in_curlies = 0;
+  $regex = '';
+
+  for ($i = 0; $i < strlen($glob); $i++) {
+    $char = $glob[$i];
+    $next_char = ($i < strlen($glob) - 1) ? $glob[$i + 1] : null;
+
+    $escape = array('$', '(', ')', '+', '.', '^', '|');
+    $mapping = array();
+
+    if ($escaping) {
+      $escape[] = '*';
+      $escape[] = '?';
+      $escape[] = '{';
+    } else {
+      $mapping['*'] = $next_char === '*' ? '.*' : '[^/]*';
+      $mapping['?'] = '[^/]';
+      $mapping['{'] = '(';
+
+      if ($in_curlies) {
+        $mapping[','] = '|';
+        $mapping['}'] = ')';
+      }
+    }
+
+    if (in_array($char, $escape)) {
+      $regex .= "\\{$char}";
+    } else if ($replacement = idx($mapping, $char)) {
+      $regex .= $replacement;
+    } else if ($char === '\\') {
+      if ($escaping) {
+        $regex .= '\\\\';
+      }
+      $escaping = !$escaping;
+      continue;
+    } else {
+      $regex .= $char;
+    }
+
+    if ($char === '{' && !$escaping) {
+      $in_curlies++;
+    } else if ($char === '}' && $in_curlies && !$escaping) {
+      $in_curlies--;
+    }
+
+    $escaping = false;
+  }
+
+  if ($in_curlies || $escaping) {
+    throw new InvalidArgumentException(pht('Invalid glob pattern.'));
+  }
+
+  $regex = '(\A'.$regex.'\z)';
+  return (bool)preg_match($regex, $path);
+}

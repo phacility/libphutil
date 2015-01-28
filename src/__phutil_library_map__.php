@@ -399,6 +399,7 @@ phutil_register_library_map(array(
     'phutil_escape_uri' => 'markup/render.php',
     'phutil_escape_uri_path_component' => 'markup/render.php',
     'phutil_exit' => 'utils/utils.php',
+    'phutil_fnmatch' => 'utils/utils.php',
     'phutil_format_bytes' => 'utils/viewutils.php',
     'phutil_format_relative_time' => 'utils/viewutils.php',
     'phutil_format_relative_time_detailed' => 'utils/viewutils.php',
