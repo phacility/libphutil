@@ -535,6 +535,64 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
   }
 
+  public function testPhutilINIDecode() {
+    // Skip the test if we are using an older version of PHP that doesn't
+    // have the `parse_ini_string` function.
+    try {
+      phutil_ini_decode('');
+    } catch (PhutilMethodNotImplementedException $ex) {
+      $this->assertSkipped($ex->getMessage());
+    }
+
+    $valid_cases = array(
+      '' => array(),
+      'foo=' => array('foo' => ''),
+      'foo=bar' => array('foo' => 'bar'),
+      'foo = bar' => array('foo' => 'bar'),
+      "foo = bar\n" => array('foo' => 'bar'),
+      "foo\nbar = baz" => array('bar' => 'baz'),
+
+      "[foo]\nbar = baz" => array('foo' => array('bar' => 'baz')),
+      "[foo]\n[bar]\nbaz = foo" => array(
+        'foo' => array(),
+        'bar' => array('baz' => 'foo'),
+      ),
+      "[foo]\nbar = baz\n\n[bar]\nbaz = foo" => array(
+        'foo' => array('bar' => 'baz'),
+        'bar' => array('baz' => 'foo'),
+      ),
+
+      "; Comment\n[foo]\nbar = baz" => array('foo' => array('bar' => 'baz')),
+      "# Comment\n[foo]\nbar = baz" => array('foo' => array('bar' => 'baz')),
+
+      "foo = true\n[bar]\nbaz = false"
+        => array('foo' => true, 'bar' => array('baz' => false)),
+      "foo = 1\nbar = 1.234" => array('foo' => 1, 'bar' => 1.234),
+      'x = {"foo": "bar"}' => array('x' => '{"foo": "bar"}'),
+    );
+
+    foreach ($valid_cases as $input => $expect) {
+      $result = phutil_ini_decode($input);
+      $this->assertEqual($expect, $result, 'phutil_ini_decode('.$input.')');
+    }
+
+    $invalid_cases = array(
+      '[' =>
+        'syntax error, unexpected $end, expecting \']\' in Unknown on line 1',
+    );
+
+    foreach ($invalid_cases as $input => $expect) {
+      $caught = null;
+      try {
+        phutil_ini_decode($input);
+      } catch (Exception $ex) {
+        $caught = $ex;
+      }
+      $this->assertTrue($caught instanceof PhutilINIParserException);
+      $this->assertEqual($expect, $caught->getMessage());
+    }
+  }
+
   public function testCensorCredentials() {
     $cases = array(
       '' => '',
