@@ -46,7 +46,7 @@ final class PhutilDefaultSyntaxHighlighterEngine
 
     $have_pygments = !empty($this->config['pygments.enabled']);
 
-    if ($language == 'php' && xhpast_is_available()) {
+    if ($language == 'php' && PhutilXHPASTBinary::isAvailable()) {
       return id(new PhutilXHPASTSyntaxHighlighter())
         ->getHighlightFuture($source);
     }

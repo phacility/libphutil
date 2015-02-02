@@ -24,7 +24,7 @@ final class XHPASTTree extends AASTTree {
   }
 
   public static function newFromData($php_source) {
-    $future = xhpast_get_parser_future($php_source);
+    $future = PhutilXHPASTBinary::getParserFuture($php_source);
     return self::newFromDataAndResolvedExecFuture(
       $php_source,
       $future->resolve());

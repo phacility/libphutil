@@ -82,7 +82,7 @@ final class PHPASTParserTestCase extends PhutilTestCase {
           $name));
     }
 
-    $future = xhpast_get_parser_future($body);
+    $future = PhutilXHPASTBinary::getParserFuture($body);
     list($err, $stdout, $stderr) = $future->resolve();
 
     switch ($type) {
