@@ -427,6 +427,14 @@ EOPHP;
     $this->log("Loading symbol cache...\n");
     $symbol_cache = $this->loadSymbolCache();
 
+    // If the XHPAST binary is not up-to-date, build it now. Otherwise,
+    // `phutil_symbols.php` will attempt to build the binary and will fail
+    // miserably because it will be trying to build the same file multiple
+    // times in parallel.
+    if (!PhutilXHPASTBinary::isAvailable()) {
+      PhutilXHPASTBinary::build();
+    }
+
     // Build out the symbol analysis for all the files in the library. For
     // each file, check if it's in cache. If we miss in the cache, do a fresh
     // analysis.
