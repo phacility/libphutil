@@ -3,8 +3,12 @@
 final class PHPASTParserTestCase extends PhutilTestCase {
 
   public function testParser() {
-    if (!xhpast_is_available()) {
-      $this->assertSkipped(pht('xhpast is not built or not up to date.'));
+    if (!PhutilXHPASTBinary::isAvailable()) {
+      try {
+        PhutilXHPASTBinary::build();
+      } catch (Exception $ex) {
+        $this->assertSkipped(pht('xhpast is not built or not up to date.'));
+      }
     }
 
     $dir = dirname(__FILE__).'/data/';
