@@ -335,6 +335,7 @@ phutil_register_library_map(array(
     'PhutilUtilsTestCase' => 'utils/__tests__/PhutilUtilsTestCase.php',
     'PhutilWordPressAuthAdapter' => 'auth/PhutilWordPressAuthAdapter.php',
     'PhutilWordPressFuture' => 'future/wordpress/PhutilWordPressFuture.php',
+    'PhutilXHPASTBinary' => 'parser/xhpast/bin/PhutilXHPASTBinary.php',
     'PhutilXHPASTSyntaxHighlighter' => 'markup/syntax/highlighter/PhutilXHPASTSyntaxHighlighter.php',
     'PhutilXHPASTSyntaxHighlighterFuture' => 'markup/syntax/highlighter/xhpast/PhutilXHPASTSyntaxHighlighterFuture.php',
     'PhutilXHPASTSyntaxHighlighterTestCase' => 'markup/syntax/highlighter/__tests__/PhutilXHPASTSyntaxHighlighterTestCase.php',
