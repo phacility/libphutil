@@ -27,7 +27,27 @@ final class PhutilXHPASTBinary {
    * @return void
    */
   public static function build() {
-    execx('%s', self::getBuildPath());
+    if (Filesystem::binaryExists('gmake')) {
+      $command = 'gmake';
+    } else {
+      $command = 'make';
+    }
+
+    $root = phutil_get_library_root('phutil');
+    $path = Filesystem::resolvePath($root.'/../support/xhpast');
+
+    // Run the build.
+    execx(
+      '%s -C %s %Ls',
+      $command,
+      $path,
+      array('clean', 'all', 'install'));
+
+    // Test the binary.
+    if (!self::isAvailable()) {
+      throw new Exception('xhpast is broken.');
+    }
+
     self::$version = null;
   }
 
@@ -37,24 +57,16 @@ final class PhutilXHPASTBinary {
    * @return string
    */
   public static function getBuildInstructions() {
+    $root = phutil_get_library_root('phutil');
+    $make = Filesystem::resolvePath($root.'/../scripts/build_xhpast.php');
+
     return phutil_console_format(
       "%s:\n\n  \$ %s\n",
       pht(
         "Your version of '%s' is unbuilt or out of date. Run this ".
         "script to build it",
         'xhpast'),
-      self::getBuildPath());
-  }
-
-  /**
-   * Returns the path to the script used to build XHPAST.
-   *
-   * @return string
-   */
-  private static function getBuildPath() {
-    $root = phutil_get_library_root('phutil');
-    $make = $root.'/../scripts/build_xhpast.sh';
-    return Filesystem::resolvePath($make);
+      $make);
   }
 
   /**
