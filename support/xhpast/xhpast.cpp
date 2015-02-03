@@ -15,8 +15,8 @@ int main(int argc, char* argv[]) {
   vector<string> files;
 
   if (argc != 1) {
-    //coupling: modify also libphutil/src/parser/xhpast/bin/xhpast_parse.php
-    cout << "xhpast version 5.5.8/1g\n";
+    //coupling: modify also libphutil/src/parser/xhpast/bin/PhutilXHPASTBinary.php
+    cout << "5.5.8/1h\n";
     return 0;
   }
 

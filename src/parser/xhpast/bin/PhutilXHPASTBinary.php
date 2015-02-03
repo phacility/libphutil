@@ -8,7 +8,7 @@ final class PhutilXHPASTBinary {
    * This is the version that would be obtained with an up-to-date XHPAST
    * build. The //actual// XHPAST build version may vary.
    */
-  const EXPECTED_VERSION = 'xhpast version 5.5.8/1g';
+  const EXPECTED_VERSION = '5.5.8/1h';
 
   /**
    * The XHPAST build version.
@@ -21,8 +21,7 @@ final class PhutilXHPASTBinary {
   /**
    * Builds XHPAST automatically.
    *
-   * Attempts to build the XHPAST binary automatically. Throws a
-   * @{class:CommandException} in the event of a failure.
+   * Attempts to build the XHPAST binary automatically.
    *
    * @return void
    */
@@ -45,7 +44,7 @@ final class PhutilXHPASTBinary {
 
     // Test the binary.
     if (!self::isAvailable()) {
-      throw new Exception('xhpast is broken.');
+      throw new Exception(pht('xhpast is broken.'));
     }
 
     self::$version = null;
