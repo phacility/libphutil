@@ -30,8 +30,7 @@ install: xhpast
 	cp xhpast $(ROOT)/bin/xhpast
 
 scanner: scanner.l
-	./find_flex.sh >/dev/null && \
-		`./find_flex.sh` -C --header-file=scanner.lex.hpp -o scanner.lex.cpp -d $<
+	flex -C --header-file=scanner.lex.hpp -o scanner.lex.cpp -d $<
 	echo '/* @gen''er''ated */' >> scanner.lex.cpp
 	echo '/* @gen''er''ated */' >> scanner.lex.hpp
 
