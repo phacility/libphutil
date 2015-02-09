@@ -66,7 +66,9 @@ function xsprintf($callback, $userdata, array $argv) {
               'xsprintf()'));
         }
 
-        $callback($userdata, $pattern, $pos, $argv[$arg], $len);
+        if ($callback !== null) {
+          $callback($userdata, $pattern, $pos, $argv[$arg], $len);
+        }
       }
     }
 
