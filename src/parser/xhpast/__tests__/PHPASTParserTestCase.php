@@ -51,7 +51,7 @@ final class PHPASTParserTestCase extends PhutilTestCase {
           if ($type !== null) {
             throw new Exception(
               pht(
-                'Test file "%s" unexpectedly specifies multiple expected ',
+                'Test file "%s" unexpectedly specifies multiple expected '.
                 'test outcomes.',
                 $name));
           }

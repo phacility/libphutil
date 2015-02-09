@@ -276,7 +276,7 @@ final class ConduitClient {
       } else {
         throw new Exception(
           pht(
-            'OpenSSL encountered an unknown error verifying the request.',
+            'OpenSSL encountered an unknown error verifying the request: %s',
             $err));
       }
     }

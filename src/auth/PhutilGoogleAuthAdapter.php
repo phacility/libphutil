@@ -23,7 +23,7 @@ final class PhutilGoogleAuthAdapter extends PhutilOAuthAuthAdapter {
 
     throw new Exception(
       pht(
-        'Expected to retrieve an "account" email from Google Plus API call ',
+        'Expected to retrieve an "account" email from Google Plus API call '.
         'to identify account, but failed.'));
   }
 
