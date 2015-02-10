@@ -178,6 +178,11 @@ final class PhutilDeferredLog {
     $line = $this->format();
 
     if ($this->file !== null) {
+      $dir = dirname($this->file);
+      if (!Filesystem::pathExists($dir)) {
+        Filesystem::createDirectory($dir, 0755, true);
+      }
+
       $ok = @file_put_contents(
         $this->file,
         $line,
