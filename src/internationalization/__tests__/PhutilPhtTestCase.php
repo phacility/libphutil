@@ -11,15 +11,18 @@ final class PhutilPhtTestCase extends PhutilTestCase {
     $this->assertEqual('beer', pht('beer'));
     $this->assertEqual('1 beer(s)', pht('%d beer(s)', 1));
 
-    PhutilTranslator::getInstance()->addTranslations(
+    $english_locale = PhutilLocale::loadLocale('en_US');
+    PhutilTranslator::getInstance()->setLocale($english_locale);
+    PhutilTranslator::getInstance()->setTranslations(
       array(
         '%d beer(s)' => array('%d beer', '%d beers'),
       ));
 
     $this->assertEqual('1 beer', pht('%d beer(s)', 1));
 
-    PhutilTranslator::getInstance()->setLanguage('cs');
-    PhutilTranslator::getInstance()->addTranslations(
+    $czech_locale = PhutilLocale::loadLocale('cs_CZ');
+    PhutilTranslator::getInstance()->setLocale($czech_locale);
+    PhutilTranslator::getInstance()->setTranslations(
       array(
         '%d beer(s)' => array('%d pivo', '%d piva', '%d piv'),
       ));

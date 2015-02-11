@@ -4,7 +4,9 @@ final class PhutilTranslator {
 
   static private $instance;
 
-  private $language = 'en';
+  private $locale;
+  private $localeCode;
+  private $shouldPostProcess;
   private $translations = array();
 
   public static function getInstance() {
@@ -18,8 +20,10 @@ final class PhutilTranslator {
     self::$instance = $instance;
   }
 
-  public function setLanguage($language) {
-    $this->language = $language;
+  public function setLocale(PhutilLocale $locale) {
+    $this->locale = $locale;
+    $this->localeCode = $locale->getLocaleCode();
+    $this->shouldPostProcess = $locale->shouldPostProcessTranslations();
     return $this;
   }
 
@@ -53,8 +57,8 @@ final class PhutilTranslator {
    * @param array Identifier in key, translation in value.
    * @return PhutilTranslator Provides fluent interface.
    */
-  public function addTranslations(array $translations) {
-    $this->translations = array_merge($this->translations, $translations);
+  public function setTranslations(array $translations) {
+    $this->translations = $translations;
     return $this;
   }
 
@@ -97,8 +101,12 @@ final class PhutilTranslator {
       $result = '[Invalid Translation!] '.$translation;
     }
 
-    if ($this->language == 'en-ac') {
-      $result = strtoupper($result);
+    if ($this->shouldPostProcess) {
+      $result = $this->locale->didTranslateString(
+        $text,
+        $translation,
+        $args,
+        $result);
     }
 
     if ($is_html) {
@@ -118,17 +126,23 @@ final class PhutilTranslator {
       $variant = $variant->getNumber();
     }
 
-    switch ($this->language) {
+    // TODO: Move these into PhutilLocale if benchmarks show we aren't
+    // eating too much of a performance cost.
 
-      case 'en':
-      case 'en-ac':
+    switch ($this->localeCode) {
+
+      case 'en_US':
+      case 'en_GB':
+      case 'en_W*':
+      case 'en_R*':
+      case 'en_A*':
         list($singular, $plural) = $translations;
         if ($variant == 1) {
           return $singular;
         }
         return $plural;
 
-      case 'cs':
+      case 'cs_CZ':
         if ($variant instanceof PhutilPerson) {
           list($male, $female) = $translations;
           if ($variant->getSex() == PhutilPerson::SEX_FEMALE) {

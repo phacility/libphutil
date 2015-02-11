@@ -3,8 +3,8 @@
 /**
  * Translate a string. It uses a translator set by
  * `PhutilTranslator::setInstance()` or translations specified by
- * `PhutilTranslator::getInstance()->addTranslations()` and language rules set
- * by `PhutilTranslator::getInstance()->setLanguage()`.
+ * `PhutilTranslator::getInstance()->setTranslations()` and language rules set
+ * by `PhutilTranslator::getInstance()->setLocale()`.
  *
  * @param string Translation identifier with `sprintf()` placeholders.
  * @param mixed Value to select the variant from (e.g. singular or plural).
