@@ -1,9 +1,6 @@
 {
   "exclude": [
-    "(^externals/)",
-    "(^src/console/__tests__/wrap/.*\\.txt(\\.expect)?$)",
-    "(^src/markup/engine/__tests__/remarkup/.*\\.txt$)",
-    "(^src/markup/syntax/highlighter/__tests__/xhpast/.*\\.(expect|source)$)"
+    "(^externals/)"
   ],
   "linters": {
     "chmod": {
@@ -41,21 +38,7 @@
       "type": "spelling"
     },
     "text": {
-      "type": "text",
-      "exclude": [
-        "(^support/xhpast/\\w+\\.(hpp|l|y)$)",
-        "(^\\.arclint$)"
-      ]
-    },
-    "text-without-length": {
-      "type": "text",
-      "severity": {
-        "3": "disabled"
-      },
-      "include": [
-        "(^support/xhpast/\\w+\\.(hpp|l|y)$)",
-        "(^\\.arclint$)"
-      ]
+      "type": "text"
     },
     "xhpast": {
       "type": "xhpast",
