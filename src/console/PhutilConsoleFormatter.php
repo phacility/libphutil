@@ -30,6 +30,8 @@ final class PhutilConsoleFormatter {
 
       if (phutil_is_windows() && $term !== 'cygwin' && $term !== 'ansi') {
         self::$disableANSI = true;
+      } else if (!defined('STDOUT')) {
+        self::$disableANSI = true;
       } else if (function_exists('posix_isatty') && !posix_isatty(STDOUT)) {
         self::$disableANSI = true;
       } else {
