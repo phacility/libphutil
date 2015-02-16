@@ -46,6 +46,10 @@ abstract class AASTNode {
     return $this->typeID;
   }
 
+  public function getTree() {
+    return $this->tree;
+  }
+
   public function getTypeName() {
     if (empty($this->typeName)) {
       $this->typeName =
