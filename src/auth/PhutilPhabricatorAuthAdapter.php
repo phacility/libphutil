@@ -35,7 +35,7 @@ final class PhutilPhabricatorAuthAdapter extends PhutilOAuthAuthAdapter {
   }
 
   public function getAccountEmail() {
-    return null;
+    return $this->getOAuthAccountData('primaryEmail');
   }
 
   public function getAccountName() {
@@ -51,7 +51,7 @@ final class PhutilPhabricatorAuthAdapter extends PhutilOAuthAuthAdapter {
   }
 
   public function getAccountRealName() {
-    return $this->getOAuthAccountData('userName');
+    return $this->getOAuthAccountData('realName');
   }
 
   protected function getAuthenticateBaseURI() {
