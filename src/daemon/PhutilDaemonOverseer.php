@@ -460,12 +460,11 @@ EOHELP
 
     $processes = array_filter(explode("\n", trim($processes)));
     foreach ($processes as $process) {
-      list($pid, $command) = explode(' ', $process, 2);
+      list($pid, $command) = preg_split('/\s+/', trim($process), 2);
 
+      $pattern = '/((launch|exec)_daemon.php|phd-daemon)/';
       $matches = null;
-      if (!preg_match('/((launch|exec)_daemon.php|phd-daemon)/',
-                      $command,
-                      $matches)) {
+      if (!preg_match($pattern, $command, $matches)) {
         continue;
       }
 
@@ -481,7 +480,7 @@ EOHELP
       }
 
       $results[(int)$pid] = array(
-        'type'    => $type,
+        'type' => $type,
         'command' => $command,
         'pid' => (int) $pid,
       );
