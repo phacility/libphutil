@@ -15,6 +15,7 @@ final class PhutilDaemonOverseer {
   const RESTART_WAIT        = 5;
 
   private $captureBufferSize = 65536;
+  private $stdoutBuffer;
 
   private $deadline;
   private $deadlineTimeout  = 86400;
@@ -187,7 +188,6 @@ EOHELP
       ));
 
     declare(ticks = 1);
-    pcntl_signal(SIGUSR1, array($this, 'didReceiveKeepaliveSignal'));
     pcntl_signal(SIGUSR2, array($this, 'didReceiveNotifySignal'));
 
     pcntl_signal(SIGINT,  array($this, 'didReceiveGracefulSignal'));
@@ -259,11 +259,12 @@ EOHELP
           $result = $future->resolve(1);
 
           list($stdout, $stderr) = $future->read();
-          $stdout = trim($stdout);
           $stderr = trim($stderr);
+
           if (strlen($stdout)) {
-            $this->logMessage('STDO', $stdout);
+            $this->didReadStdout($stdout);
           }
+
           if (strlen($stderr)) {
             $this->logMessage('STDE', $stderr);
           }
@@ -310,15 +311,42 @@ EOHELP
     exit(0);
   }
 
+  private function didReadStdout($data) {
+    $this->stdoutBuffer .= $data;
+    while (true) {
+      $pos = strpos($this->stdoutBuffer, "\n");
+      if ($pos === false) {
+        break;
+      }
+      $message = substr($this->stdoutBuffer, 0, $pos);
+      $this->stdoutBuffer = substr($this->stdoutBuffer, $pos + 1);
+
+      $structure = @json_decode($message, true);
+      if (!is_array($structure)) {
+        $structure = array();
+      }
+
+      switch (idx($structure, 0)) {
+        case PhutilDaemon::MESSAGETYPE_STDOUT:
+          $this->logMessage('STDO', idx($structure, 1));
+          break;
+        case PhutilDaemon::MESSAGETYPE_HEARTBEAT:
+          $this->deadline = time() + $this->deadlineTimeout;
+          break;
+        default:
+          // If we can't parse this or it isn't a message we understand, just
+          // emit the raw message.
+          $this->logMessage('STDO', pht('<Malformed> %s', $message));
+          break;
+      }
+    }
+  }
+
   public function didReceiveNotifySignal($signo) {
     $pid = $this->childPID;
     if ($pid) {
       posix_kill($pid, $signo);
     }
-  }
-
-  public function didReceiveKeepaliveSignal($signo) {
-    $this->deadline = time() + $this->deadlineTimeout;
   }
 
   public function didReceiveGracefulSignal($signo) {

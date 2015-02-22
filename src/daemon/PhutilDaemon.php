@@ -3,9 +3,15 @@
 /**
  * Scaffolding for implementing robust background processing scripts.
  *
+ *
+ * @task overseer Communicating With the Overseer
+ *
  * @stable
  */
 abstract class PhutilDaemon {
+
+  const MESSAGETYPE_STDOUT = 'stdout';
+  const MESSAGETYPE_HEARTBEAT = 'heartbeat';
 
   private $argv;
   private $traceMode;
@@ -26,7 +32,6 @@ abstract class PhutilDaemon {
   private static $sighandlerInstalled;
 
   final public function __construct(array $argv) {
-
     declare(ticks = 1);
     $this->argv = $argv;
 
@@ -41,12 +46,17 @@ abstract class PhutilDaemon {
     // Without discard mode, this consumes unbounded amounts of memory. Keep
     // memory bounded.
     PhutilServiceProfiler::getInstance()->enableDiscardMode();
+
+    $this->beginStdoutCapture();
+  }
+
+  final public function __destruct() {
+    $this->endStdoutCapture();
   }
 
   final public function stillWorking() {
-    if (!posix_isatty(STDOUT)) {
-      posix_kill(posix_getppid(), SIGUSR1);
-    }
+    $this->emitOverseerMessage(self::MESSAGETYPE_HEARTBEAT, null);
+
     if ($this->traceMemory) {
       $memuse = number_format(memory_get_usage() / 1024, 1);
       $daemon = get_class($this);
@@ -141,5 +151,41 @@ abstract class PhutilDaemon {
       fprintf(STDERR, '%s', "<VERB> {$daemon} {$message}\n");
     }
   }
+
+
+/* -(  Communicating With the Overseer  )------------------------------------ */
+
+
+  private function beginStdoutCapture() {
+    ob_start(array($this, 'didReceiveStdout'), 2);
+  }
+
+  private function endStdoutCapture() {
+    ob_end_flush();
+  }
+
+  public function didReceiveStdout($data) {
+    if (!strlen($data)) {
+      return '';
+    }
+    return $this->encodeOverseerMessage(self::MESSAGETYPE_STDOUT, $data);
+  }
+
+  private function encodeOverseerMessage($type, $data) {
+    $structure = array($type);
+
+    if ($data !== null) {
+      $structure[] = $data;
+    }
+
+    return json_encode($structure)."\n";
+  }
+
+  private function emitOverseerMessage($type, $data) {
+    $this->endStdoutCapture();
+    echo $this->encodeOverseerMessage($type, $data);
+    $this->beginStdoutCapture();
+  }
+
 
 }
