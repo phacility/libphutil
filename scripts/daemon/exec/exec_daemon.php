@@ -60,6 +60,7 @@ PhutilTypeSpec::checkMap(
     'log' => 'optional string|null',
     'argv' => 'optional list<wild>',
     'load' => 'optional list<string>',
+    'autoscale' => 'optional wild',
   ));
 
 $log = idx($config, 'log');
@@ -108,6 +109,11 @@ if ($trace_memory) {
 
 if ($verbose) {
   $daemon->setVerbose(true);
+}
+
+$autoscale = idx($config, 'autoscale');
+if ($autoscale) {
+  $daemon->setAutoscaleProperties($autoscale);
 }
 
 $daemon->execute();

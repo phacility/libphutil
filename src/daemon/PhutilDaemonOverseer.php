@@ -23,6 +23,7 @@ final class PhutilDaemonOverseer {
   private $err = 0;
   private $lastPidfile;
   private $startEpoch;
+  private $autoscale = array();
 
   public function __construct(array $argv) {
     PhutilServiceProfiler::getInstance()->enableDiscardMode();
@@ -157,6 +158,11 @@ EOHELP
     $this->daemons = array();
 
     foreach ($this->config['daemons'] as $config) {
+      $config += array(
+        'argv' => array(),
+        'autoscale' => array(),
+      );
+
       $daemon = new PhutilDaemonHandle(
         $this,
         $config['class'],
@@ -165,15 +171,13 @@ EOHELP
           'log' => $this->log,
           'argv' => $config['argv'],
           'load' => $this->libraries,
+          'autoscale' => $config['autoscale'],
         ));
 
       $daemon->setSilent((!$this->traceMode && !$this->verbose));
       $daemon->setTraceMemory($this->traceMemory);
 
-      $this->daemons[] = array(
-        'config' => $config,
-        'handle' => $daemon,
-      );
+      $this->addDaemon($daemon, $config);
     }
 
     while (true) {
@@ -183,9 +187,14 @@ EOHELP
         if ($daemon->isRunning()) {
           $futures[] = $daemon->getFuture();
         }
+
+        if ($daemon->isDone()) {
+          $this->removeDaemon($daemon);
+        }
       }
 
       $this->updatePidfile();
+      $this->updateAutoscale();
 
       if ($futures) {
         $iter = id(new FutureIterator($futures))
@@ -202,6 +211,111 @@ EOHELP
     }
 
     exit($this->err);
+  }
+
+  private function addDaemon(PhutilDaemonHandle $daemon, array $config) {
+    $id = $daemon->getDaemonID();
+    $this->daemons[$id] = array(
+      'handle' => $daemon,
+      'config' => $config,
+    );
+
+    $autoscale_group = $this->getAutoscaleGroup($daemon);
+    if ($autoscale_group) {
+      $this->autoscale[$autoscale_group][$id] = true;
+    }
+
+    return $this;
+  }
+
+  private function removeDaemon(PhutilDaemonHandle $daemon) {
+    $id = $daemon->getDaemonID();
+
+    $autoscale_group = $this->getAutoscaleGroup($daemon);
+    if ($autoscale_group) {
+      unset($this->autoscale[$autoscale_group][$id]);
+    }
+
+    unset($this->daemons[$id]);
+
+    return $this;
+  }
+
+  private function getAutoscaleGroup(PhutilDaemonHandle $daemon) {
+    return $this->getAutoscaleProperty($daemon, 'group');
+  }
+
+  private function getAutoscaleProperty(
+    PhutilDaemonHandle $daemon,
+    $key,
+    $default = null) {
+
+    $id = $daemon->getDaemonID();
+    $autoscale = $this->daemons[$id]['config']['autoscale'];
+    return idx($autoscale, $key, $default);
+  }
+
+  public function didBeginWork(PhutilDaemonHandle $daemon) {
+    $id = $daemon->getDaemonID();
+    $busy = idx($this->daemons[$daemon->getDaemonID()], 'busy');
+    if (!$busy) {
+      $this->daemons[$id]['busy'] = time();
+    }
+  }
+
+  public function didBeginIdle(PhutilDaemonHandle $daemon) {
+    $id = $daemon->getDaemonID();
+    unset($this->daemons[$id]['busy']);
+  }
+
+  public function updateAutoscale() {
+    foreach ($this->autoscale as $group => $daemons) {
+      $daemon = $this->daemons[head_key($daemons)]['handle'];
+      $scaleup_duration = $this->getAutoscaleProperty($daemon, 'up', 2);
+      $max_pool_size = $this->getAutoscaleProperty($daemon, 'pool', 8);
+
+      // Don't scale a group if it is already at the maximum pool size.
+      if (count($daemons) >= $max_pool_size) {
+        continue;
+      }
+
+      $should_scale = true;
+      foreach ($daemons as $daemon_id => $ignored) {
+        $busy = idx($this->daemons[$daemon_id], 'busy');
+        if (!$busy) {
+          // At least one daemon in the group hasn't reported that it has
+          // started work.
+          $should_scale = false;
+          break;
+        }
+
+        if ((time() - $busy) < $scaleup_duration) {
+          // At least one daemon in the group was idle recently, so we have
+          // not fullly
+          $should_scale = false;
+          break;
+        }
+      }
+
+      if ($should_scale) {
+        $config = $this->daemons[$daemon_id]['config'];
+
+        $config['autoscale']['clone'] = true;
+
+        $clone = new PhutilDaemonHandle(
+          $this,
+          $config['class'],
+          $this->argv,
+          array(
+            'log' => $this->log,
+            'argv' => $config['argv'],
+            'load' => $this->libraries,
+            'autoscale' => $config['autoscale'],
+          ));
+
+        $this->addDaemon($clone, $config);
+      }
+    }
   }
 
   public function didReceiveNotifySignal($signo) {

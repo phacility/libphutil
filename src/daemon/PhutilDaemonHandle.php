@@ -18,6 +18,7 @@ final class PhutilDaemonHandle {
   private $stdoutBuffer;
   private $restartAt;
   private $silent;
+  private $shouldRestart = true;
   private $shouldShutdown;
   private $future;
   private $traceMemory;
@@ -47,6 +48,10 @@ final class PhutilDaemonHandle {
     return (bool)$this->future;
   }
 
+  public function isDone() {
+    return (!$this->shouldRestart && !$this->isRunning());
+  }
+
   public function getFuture() {
     return $this->future;
   }
@@ -73,6 +78,9 @@ final class PhutilDaemonHandle {
     $this->updateMemory();
 
     if (!$this->isRunning()) {
+      if (!$this->shouldRestart) {
+        return;
+      }
       if (!$this->restartAt || (time() < $this->restartAt)) {
         return;
       }
@@ -313,6 +321,18 @@ final class PhutilDaemonHandle {
           break;
         case PhutilDaemon::MESSAGETYPE_HEARTBEAT:
           $this->deadline = time() + $this->getRequiredHeartbeatFrequency();
+          break;
+        case PhutilDaemon::MESSAGETYPE_BUSY:
+          $this->overseer->didBeginWork($this);
+          break;
+        case PhutilDaemon::MESSAGETYPE_IDLE:
+          $this->overseer->didBeginIdle($this);
+          break;
+        case PhutilDaemon::MESSAGETYPE_DOWN:
+          // The daemon is exiting because it doesn't have enough work and it
+          // is trying to scale the pool down. We should not restart it.
+          $this->shouldRestart = false;
+          $this->shouldShutdown = true;
           break;
         default:
           // If we can't parse this or it isn't a message we understand, just
