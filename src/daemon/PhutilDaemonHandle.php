@@ -158,6 +158,14 @@ final class PhutilDaemonHandle {
     return substr(getmypid().':'.Filesystem::readRandomCharacters(12), 0, 12);
   }
 
+  public function getDaemonID() {
+    return $this->daemonID;
+  }
+
+  public function getPID() {
+    return $this->pid;
+  }
+
   private function getCaptureBufferSize() {
     return 65535;
   }

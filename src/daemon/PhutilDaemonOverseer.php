@@ -11,21 +11,22 @@ final class PhutilDaemonOverseer {
   private $inGracefulShutdown;
   private static $instance;
 
-  private $daemon;
+  private $config;
   private $daemons = array();
   private $traceMode;
   private $traceMemory;
   private $daemonize;
-  private $phddir;
+  private $piddir;
   private $log;
   private $libraries = array();
   private $verbose;
   private $err = 0;
+  private $lastPidfile;
+  private $startEpoch;
 
   public function __construct(array $argv) {
     PhutilServiceProfiler::getInstance()->enableDiscardMode();
 
-    $original_argv = $argv;
     $args = new PhutilArgumentParser($argv);
     $args->setTagline('daemon overseer');
     $args->setSynopsis(<<<EOHELP
@@ -34,25 +35,11 @@ final class PhutilDaemonOverseer {
 EOHELP
       );
     $args->parseStandardArguments();
-    $args->parsePartial(
+    $args->parse(
       array(
         array(
           'name' => 'trace-memory',
           'help' => 'Enable debug memory tracing.',
-        ),
-        array(
-          'name'  => 'log',
-          'param' => 'file',
-          'help'  => 'Send output to __file__.',
-        ),
-        array(
-          'name'  => 'daemonize',
-          'help'  => 'Run in the background.',
-        ),
-        array(
-          'name'  => 'phd',
-          'param' => 'dir',
-          'help'  => 'Write PID information to __dir__.',
         ),
         array(
           'name'  => 'verbose',
@@ -65,21 +52,8 @@ EOHELP
           'help' => pht(
             'Optional process label. Makes "ps" nicer, no behavioral effects.'),
         ),
-        array(
-          'name' => 'load-phutil-library',
-          'param' => 'library',
-          'repeat' => true,
-          'help' => 'Load __library__.',
-        ),
       ));
     $argv = array();
-
-    $more = $args->getUnconsumedArgumentVector();
-
-    $this->daemon = array_shift($more);
-    if (!$this->daemon) {
-      $args->printHelpAndExit();
-    }
 
     if ($args->getArg('trace')) {
       $this->traceMode = true;
@@ -91,18 +65,6 @@ EOHELP
       $this->traceMemory = true;
       $argv[] = '--trace-memory';
     }
-
-    if ($args->getArg('load-phutil-library')) {
-      foreach ($args->getArg('load-phutil-library') as $library) {
-        $this->libraries[] = $library;
-      }
-    }
-
-    $log = $args->getArg('log');
-    if ($log) {
-      $this->log = $log;
-    }
-
     $verbose = $args->getArg('verbose');
     if ($verbose) {
       $this->verbose = true;
@@ -115,10 +77,20 @@ EOHELP
       $argv[] = $label;
     }
 
-    $this->daemonize = $args->getArg('daemonize');
-    $this->phddir = $args->getArg('phd');
     $this->argv = $argv;
-    $this->moreArgs = coalesce($more, array());
+
+    if (function_exists('posix_isatty') && posix_isatty(STDIN)) {
+      fprintf(STDERR, pht('Reading daemon configuration from stdin...')."\n");
+    }
+    $config = @file_get_contents('php://stdin');
+    $config = id(new PhutilJSONParser())->parse($config);
+
+    $this->libraries = idx($config, 'load');
+    $this->log = idx($config, 'log');
+    $this->daemonize = idx($config, 'daemonize');
+    $this->piddir = idx($config, 'piddir');
+
+    $this->config = $config;
 
     if (self::$instance) {
       throw new Exception(
@@ -127,10 +99,12 @@ EOHELP
 
     self::$instance = $this;
 
+    $this->startEpoch = time();
+
     // Check this before we daemonize, since if it's an issue the child will
     // exit immediately.
-    if ($this->phddir) {
-      $dir = $this->phddir;
+    if ($this->piddir) {
+      $dir = $this->piddir;
       try {
         Filesystem::assertWritable($dir);
       } catch (Exception $ex) {
@@ -140,17 +114,19 @@ EOHELP
       }
     }
 
-    if ($log) {
+    if (!idx($config, 'daemons')) {
+      throw new PhutilArgumentUsageException(
+        pht('You must specify at least one daemon to start!'));
+    }
+
+    if ($this->log) {
       // NOTE: Now that we're committed to daemonizing, redirect the error
       // log if we have a `--log` parameter. Do this at the last moment
       // so as many setup issues as possible are surfaced.
-      ini_set('error_log', $log);
+      ini_set('error_log', $this->log);
     }
 
-    error_log("Bringing daemon '{$this->daemon}' online...");
-
     if ($this->daemonize) {
-
       // We need to get rid of these or the daemon will hang when we TERM it
       // waiting for something to read the buffers. TODO: Learn how unix works.
       fclose(STDOUT);
@@ -165,18 +141,6 @@ EOHELP
       }
     }
 
-    if ($this->phddir) {
-      $desc = array(
-        'name'            => $this->daemon,
-        'argv'            => $this->moreArgs,
-        'pid'             => getmypid(),
-        'start'           => time(),
-      );
-      Filesystem::writeFile(
-        $this->phddir.'/daemon.'.getmypid(),
-        json_encode($desc));
-    }
-
     declare(ticks = 1);
     pcntl_signal(SIGUSR2, array($this, 'didReceiveNotifySignal'));
 
@@ -184,29 +148,44 @@ EOHELP
     pcntl_signal(SIGTERM, array($this, 'didReceiveTerminalSignal'));
   }
 
+  public function addLibrary($library) {
+    $this->libraries[] = $library;
+    return $this;
+  }
+
   public function run() {
-    $daemon = new PhutilDaemonHandle(
-      $this,
-      $this->daemon,
-      $this->argv,
-      array(
-        'log' => $this->log,
-        'argv' => $this->moreArgs,
-        'load' => $this->libraries,
-      ));
+    $this->daemons = array();
 
-    $daemon->setSilent((!$this->traceMode && !$this->verbose));
-    $daemon->setTraceMemory($this->traceMemory);
+    foreach ($this->config['daemons'] as $config) {
+      $daemon = new PhutilDaemonHandle(
+        $this,
+        $config['class'],
+        $this->argv,
+        array(
+          'log' => $this->log,
+          'argv' => $config['argv'],
+          'load' => $this->libraries,
+        ));
 
-    $this->daemons = array($daemon);
+      $daemon->setSilent((!$this->traceMode && !$this->verbose));
+      $daemon->setTraceMemory($this->traceMemory);
+
+      $this->daemons[] = array(
+        'config' => $config,
+        'handle' => $daemon,
+      );
+    }
+
     while (true) {
       $futures = array();
-      foreach ($this->daemons as $daemon) {
+      foreach ($this->getDaemonHandles() as $daemon) {
         $daemon->update();
         if ($daemon->isRunning()) {
           $futures[] = $daemon->getFuture();
         }
       }
+
+      $this->updatePidfile();
 
       if ($futures) {
         $iter = id(new FutureIterator($futures))
@@ -226,7 +205,7 @@ EOHELP
   }
 
   public function didReceiveNotifySignal($signo) {
-    foreach ($this->daemons as $daemon) {
+    foreach ($this->getDaemonHandles() as $daemon) {
       $daemon->didReceiveNotifySignal($signo);
     }
   }
@@ -238,7 +217,7 @@ EOHELP
     }
     $this->inGracefulShutdown = true;
 
-    foreach ($this->daemons as $daemon) {
+    foreach ($this->getDaemonHandles() as $daemon) {
       $daemon->didReceiveGracefulSignal($signo);
     }
   }
@@ -250,11 +229,14 @@ EOHELP
     }
     $this->inAbruptShutdown = true;
 
-    foreach ($this->daemons as $daemon) {
+    foreach ($this->getDaemonHandles() as $daemon) {
       $daemon->didReceiveTerminalSignal($signo);
     }
   }
 
+  private function getDaemonHandles() {
+    return ipull($this->daemons, 'handle');
+  }
 
   /**
    * Identify running daemons by examining the process table. This isn't
@@ -316,6 +298,42 @@ EOHELP
     }
 
     return $results;
+  }
+
+  private function updatePidfile() {
+    if (!$this->piddir) {
+      return;
+    }
+
+    $daemons = array();
+
+    foreach ($this->daemons as $daemon) {
+      $handle = $daemon['handle'];
+      $config = $daemon['config'];
+
+      if (!$handle->isRunning()) {
+        continue;
+      }
+
+      $daemons[] = array(
+        'pid' => $handle->getPID(),
+        'id' => $handle->getDaemonID(),
+        'config' => $config,
+      );
+    }
+
+    $pidfile = array(
+      'pid' => getmypid(),
+      'start' => $this->startEpoch,
+      'config' => $this->config,
+      'daemons' => $daemons,
+    );
+
+    if ($pidfile !== $this->lastPidfile) {
+      $this->lastPidfile = $pidfile;
+      $pidfile_path = $this->piddir.'/daemon.'.getmypid();
+      Filesystem::writeFile($pidfile_path, json_encode($pidfile));
+    }
   }
 
 }
