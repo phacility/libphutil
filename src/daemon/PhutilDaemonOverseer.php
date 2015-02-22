@@ -5,37 +5,20 @@
  */
 final class PhutilDaemonOverseer {
 
-  const EVENT_DID_LAUNCH    = 'daemon.didLaunch';
-  const EVENT_DID_LOG       = 'daemon.didLogMessage';
-  const EVENT_DID_HEARTBEAT = 'daemon.didHeartbeat';
-  const EVENT_WILL_GRACEFUL = 'daemon.willGraceful';
-  const EVENT_WILL_EXIT     = 'daemon.willExit';
-
-  const HEARTBEAT_WAIT      = 120;
-  const RESTART_WAIT        = 5;
-
-  private $captureBufferSize = 65536;
-  private $stdoutBuffer;
-
-  private $deadline;
-  private $deadlineTimeout  = 86400;
-  private $killDelay        = 3;
-  private $heartbeat;
-
-  private $daemon;
   private $argv;
   private $moreArgs;
-  private $childPID;
   private $inAbruptShutdown;
   private $inGracefulShutdown;
   private static $instance;
 
+  private $daemon;
+  private $daemons = array();
   private $traceMode;
   private $traceMemory;
   private $daemonize;
   private $phddir;
   private $verbose;
-  private $daemonID;
+  private $err = 0;
 
   public function __construct(array $argv) {
     PhutilServiceProfiler::getInstance()->enableDiscardMode();
@@ -179,14 +162,6 @@ EOHELP
         json_encode($desc));
     }
 
-    $this->daemonID = $this->generateDaemonID();
-    $this->dispatchEvent(
-      self::EVENT_DID_LAUNCH,
-      array(
-        'argv' => array_slice($original_argv, 1),
-        'explicitArgv' => $this->moreArgs,
-      ));
-
     declare(ticks = 1);
     pcntl_signal(SIGUSR2, array($this, 'didReceiveNotifySignal'));
 
@@ -195,157 +170,45 @@ EOHELP
   }
 
   public function run() {
-    if ($this->shouldRunSilently()) {
-      echo "Running daemon '{$this->daemon}' silently. Use '--trace' or ".
-           "'--verbose' to produce debugging output.\n";
-    }
+    $daemon = new PhutilDaemonHandle(
+      $this,
+      $this->daemon,
+      $this->argv,
+      $this->moreArgs);
 
-    $root = phutil_get_library_root('phutil');
-    $root = dirname($root);
+    $daemon->setSilent((!$this->traceMode && !$this->verbose));
+    $daemon->setTraceMemory($this->traceMemory);
 
-    $exec_dir = $root.'/scripts/daemon/exec/';
-
-    // NOTE: PHP implements proc_open() by running 'sh -c'. On most systems this
-    // is bash, but on Ubuntu it's dash. When you proc_open() using bash, you
-    // get one new process (the command you ran). When you proc_open() using
-    // dash, you get two new processes: the command you ran and a parent
-    // "dash -c" (or "sh -c") process. This means that the child process's PID
-    // is actually the 'dash' PID, not the command's PID. To avoid this, use
-    // 'exec' to replace the shell process with the real process; without this,
-    // the child will call posix_getppid(), be given the pid of the 'sh -c'
-    // process, and send it SIGUSR1 to keepalive which will terminate it
-    // immediately. We also won't be able to do process group management because
-    // the shell process won't properly posix_setsid() so the pgid of the child
-    // won't be meaningful.
-
-    // Format the exec command, which looks something like:
-    //
-    //   exec ./exec_daemon DaemonName --trace -- --no-discovery
-
-    $argv = array();
-    $argv[] = csprintf('exec ./exec_daemon.php %s', $this->daemon);
-    foreach ($this->argv as $k => $arg) {
-      $argv[] = csprintf('%s', $arg);
-    }
-    $argv[] = '--';
-    foreach ($this->moreArgs as $k => $arg) {
-      $argv[] = csprintf('%s', $arg);
-    }
-    $command = implode(' ', $argv);
-
+    $this->daemons = array($daemon);
     while (true) {
-      $this->logMessage('INIT', 'Starting process.');
-
-      $future = new ExecFuture('%C', $command);
-      $future->setCWD($exec_dir);
-      $future->setStdoutSizeLimit($this->captureBufferSize);
-      $future->setStderrSizeLimit($this->captureBufferSize);
-
-      $this->deadline = time() + $this->deadlineTimeout;
-      $this->heartbeat = time() + self::HEARTBEAT_WAIT;
-
-      $future->isReady();
-      $this->childPID = $future->getPID();
-
-      do {
-        do {
-          if ($this->traceMemory) {
-            $memuse = number_format(memory_get_usage() / 1024, 1);
-            $this->logMessage('RAMS', 'Overseer Memory Usage: '.$memuse.' KB');
-          }
-
-          // We need a shortish timeout here so we can run the tick handler
-          // frequently in order to process signals.
-          $result = $future->resolve(1);
-
-          list($stdout, $stderr) = $future->read();
-          $stderr = trim($stderr);
-
-          if (strlen($stdout)) {
-            $this->didReadStdout($stdout);
-          }
-
-          if (strlen($stderr)) {
-            $this->logMessage('STDE', $stderr);
-          }
-          $future->discardBuffers();
-
-          if ($result !== null) {
-            list($err) = $result;
-            if ($err) {
-              $this->logMessage(
-                'FAIL',
-                'Process exited with error '.$err.'.',
-                $err);
-            } else {
-              $this->logMessage('DONE', 'Process exited successfully.');
-            }
-            break 2;
-          }
-          if ($this->heartbeat < time()) {
-            $this->heartbeat = time() + self::HEARTBEAT_WAIT;
-            $this->dispatchEvent(self::EVENT_DID_HEARTBEAT);
-          }
-        } while (time() < $this->deadline);
-
-        $this->logMessage('HANG', 'Hang detected. Restarting process.');
-        $this->annihilateProcessGroup();
-      } while (false);
-
-      if ($this->inGracefulShutdown) {
-        // If we just exited because of a graceful shutdown, break now.
-        break;
+      $futures = array();
+      foreach ($this->daemons as $daemon) {
+        $daemon->update();
+        if ($daemon->isRunning()) {
+          $futures[] = $daemon->getFuture();
+        }
       }
 
-      $this->logMessage('WAIT', 'Waiting to restart process.');
-      sleep(self::RESTART_WAIT);
-
-      if ($this->inGracefulShutdown) {
-        // If we were awakend by a graceful shutdown, break now.
-        break;
+      if ($futures) {
+        $iter = id(new FutureIterator($futures))
+          ->setUpdateInterval(1);
+        foreach ($iter as $future) {
+          break;
+        }
+      } else {
+        if ($this->inGracefulShutdown) {
+          break;
+        }
+        sleep(1);
       }
     }
 
-    // This is a clean exit after a graceful shutdown.
-    $this->dispatchEvent(self::EVENT_WILL_EXIT);
-    exit(0);
-  }
-
-  private function didReadStdout($data) {
-    $this->stdoutBuffer .= $data;
-    while (true) {
-      $pos = strpos($this->stdoutBuffer, "\n");
-      if ($pos === false) {
-        break;
-      }
-      $message = substr($this->stdoutBuffer, 0, $pos);
-      $this->stdoutBuffer = substr($this->stdoutBuffer, $pos + 1);
-
-      $structure = @json_decode($message, true);
-      if (!is_array($structure)) {
-        $structure = array();
-      }
-
-      switch (idx($structure, 0)) {
-        case PhutilDaemon::MESSAGETYPE_STDOUT:
-          $this->logMessage('STDO', idx($structure, 1));
-          break;
-        case PhutilDaemon::MESSAGETYPE_HEARTBEAT:
-          $this->deadline = time() + $this->deadlineTimeout;
-          break;
-        default:
-          // If we can't parse this or it isn't a message we understand, just
-          // emit the raw message.
-          $this->logMessage('STDO', pht('<Malformed> %s', $message));
-          break;
-      }
-    }
+    exit($this->err);
   }
 
   public function didReceiveNotifySignal($signo) {
-    $pid = $this->childPID;
-    if ($pid) {
-      posix_kill($pid, $signo);
+    foreach ($this->daemons as $daemon) {
+      $daemon->didReceiveNotifySignal($signo);
     }
   }
 
@@ -356,101 +219,20 @@ EOHELP
     }
     $this->inGracefulShutdown = true;
 
-    $signame = phutil_get_signal_name($signo);
-    if ($signame) {
-      $sigmsg = pht(
-        'Graceful shutdown in response to signal %d (%s).',
-        $signo,
-        $signame);
-    } else {
-      $sigmsg = pht(
-        'Graceful shutdown in response to signal %d.',
-        $signo);
+    foreach ($this->daemons as $daemon) {
+      $daemon->didReceiveGracefulSignal($signo);
     }
-
-    $this->logMessage('DONE', $sigmsg, $signo);
-
-    $this->gracefulProcessGroup();
   }
 
   public function didReceiveTerminalSignal($signo) {
+    $this->err = 128 + $signo;
     if ($this->inAbruptShutdown) {
-      exit(128 + $signo);
+      exit($this->err);
     }
     $this->inAbruptShutdown = true;
 
-    $signame = phutil_get_signal_name($signo);
-    if ($signame) {
-      $sigmsg = "Shutting down in response to signal {$signo} ({$signame}).";
-    } else {
-      $sigmsg = "Shutting down in response to signal {$signo}.";
-    }
-
-    $this->logMessage('EXIT', $sigmsg, $signo);
-
-    @fflush(STDOUT);
-    @fflush(STDERR);
-    @fclose(STDOUT);
-    @fclose(STDERR);
-    $this->annihilateProcessGroup();
-
-    $this->dispatchEvent(self::EVENT_WILL_EXIT);
-
-    exit(128 + $signo);
-  }
-
-  private function logMessage($type, $message, $context = null) {
-    if (!$this->shouldRunSilently()) {
-      echo date('Y-m-d g:i:s A').' ['.$type.'] '.$message."\n";
-    }
-
-    $this->dispatchEvent(
-      self::EVENT_DID_LOG,
-      array(
-        'type' => $type,
-        'message' => $message,
-        'context' => $context,
-      ));
-  }
-
-  private function shouldRunSilently() {
-    if ($this->traceMode || $this->verbose) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  private function annihilateProcessGroup() {
-    $pid = $this->childPID;
-    $pgid = posix_getpgid($pid);
-    if ($pid && $pgid) {
-
-      // NOTE: On Ubuntu, 'kill' does not recognize the use of "--" to
-      // explicitly delineate PID/PGIDs from signals. We don't actually need it,
-      // so use the implicit "kill -TERM -pgid" form instead of the explicit
-      // "kill -TERM -- -pgid" form.
-      exec("kill -TERM -{$pgid}");
-      sleep($this->killDelay);
-
-      // On OSX, we'll get a permission error on stderr if the SIGTERM was
-      // successful in ending the life of the process group, presumably because
-      // all that's left is the daemon itself as a zombie waiting for us to
-      // reap it. However, we still need to issue this command for process
-      // groups that resist SIGTERM. Rather than trying to figure out if the
-      // process group is still around or not, just SIGKILL unconditionally and
-      // ignore any error which may be raised.
-      exec("kill -KILL -{$pgid} 2>/dev/null");
-      $this->childPID = null;
-    }
-  }
-
-
-  private function gracefulProcessGroup() {
-    $pid = $this->childPID;
-    $pgid = posix_getpgid($pid);
-    if ($pid && $pgid) {
-      exec("kill -INT -{$pgid}");
+    foreach ($this->daemons as $daemon) {
+      $daemon->didReceiveTerminalSignal($signo);
     }
   }
 
@@ -515,40 +297,6 @@ EOHELP
     }
 
     return $results;
-  }
-
-
-  /**
-   * Generate a unique ID for this daemon.
-   *
-   * @return string A unique daemon ID.
-   */
-  private function generateDaemonID() {
-    return substr(getmypid().':'.Filesystem::readRandomCharacters(12), 0, 12);
-  }
-
-
-  /**
-   * Dispatch an event to event listeners.
-   *
-   * @param  string Event type.
-   * @param  dict   Event parameters.
-   * @return void
-   */
-  private function dispatchEvent($type, array $params = array()) {
-    $data = array(
-      'id' => $this->daemonID,
-      'daemonClass' => $this->daemon,
-      'childPID' => $this->childPID,
-    ) + $params;
-
-    $event = new PhutilEvent($type, $data);
-
-    try {
-      PhutilEventEngine::dispatchEvent($event);
-    } catch (Exception $ex) {
-      phlog($ex);
-    }
   }
 
 }

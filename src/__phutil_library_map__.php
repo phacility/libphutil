@@ -137,6 +137,7 @@ phutil_register_library_map(array(
     'PhutilCsprintfTestCase' => 'xsprintf/__tests__/PhutilCsprintfTestCase.php',
     'PhutilCzechLocale' => 'internationalization/locales/PhutilCzechLocale.php',
     'PhutilDaemon' => 'daemon/PhutilDaemon.php',
+    'PhutilDaemonHandle' => 'daemon/PhutilDaemonHandle.php',
     'PhutilDaemonOverseer' => 'daemon/PhutilDaemonOverseer.php',
     'PhutilDefaultSyntaxHighlighter' => 'markup/syntax/highlighter/PhutilDefaultSyntaxHighlighter.php',
     'PhutilDefaultSyntaxHighlighterEngine' => 'markup/syntax/engine/PhutilDefaultSyntaxHighlighterEngine.php',
