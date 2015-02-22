@@ -187,5 +187,22 @@ abstract class PhutilDaemon {
     $this->beginStdoutCapture();
   }
 
+  public static function errorListener($event, $value, array $metadata) {
+    // If the caller has redirected the error log to a file, PHP won't output
+    // messages to stderr, so the overseer can't capture them. Install a
+    // listener which just  echoes errors to stderr, so the overseer is always
+    // aware of errors.
+
+    $console = PhutilConsole::getConsole();
+    $message = idx($metadata, 'default_message');
+
+    if ($message) {
+      $console->writeErr("%s\n", $message);
+    }
+    if (idx($metadata, 'trace')) {
+      $trace = PhutilErrorHandler::formatStacktrace($metadata['trace']);
+      $console->writeErr("%s\n", $trace);
+    }
+  }
 
 }

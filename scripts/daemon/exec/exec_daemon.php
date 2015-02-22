@@ -28,41 +28,48 @@ $args->parse(
       'help' => 'Enable debug memory tracing.',
     ),
     array(
-      'name'  => 'log',
-      'param' => 'file',
-      'help'  => 'Send output to __file__.',
-    ),
-    array(
-      'name'    => 'load-phutil-library',
-      'param'   => 'library',
-      'repeat'  => true,
-      'help' => 'Load __library__.',
-    ),
-    array(
       'name' => 'verbose',
       'help'  => 'Enable verbose activity logging.',
     ),
     array(
-      'name'     => 'argv',
+      'name' => 'label',
+      'short' => 'l',
+      'param' => 'label',
+      'help' => pht(
+        'Optional process label. Makes "ps" nicer, no behavioral effects.'),
+    ),
+    array(
+      'name'     => 'daemon',
       'wildcard' => true,
     ),
   ));
 
 $trace_memory = $args->getArg('trace-memory');
-$trace_mode   = $args->getArg('trace') || $trace_memory;
-$verbose      = $args->getArg('verbose');
+$trace_mode = $args->getArg('trace') || $trace_memory;
+$verbose = $args->getArg('verbose');
 
-$log = $args->getArg('log');
+if (function_exists('posix_isatty') && posix_isatty(STDIN)) {
+  fprintf(STDERR, pht('Reading daemon configuration from stdin...')."\n");
+}
+$config = @file_get_contents('php://stdin');
+$config = id(new PhutilJSONParser())->parse($config);
+
+PhutilTypeSpec::checkMap(
+  $config,
+  array(
+    'log' => 'optional string|null',
+    'argv' => 'optional list<wild>',
+    'load' => 'optional list<string>',
+  ));
+
+$log = idx($config, 'log');
+
 if ($log) {
   ini_set('error_log', $log);
-  $echo_to_stderr = true;
-} else {
-  $echo_to_stderr = false;
+  PhutilErrorHandler::setErrorListener(array('PhutilDaemon', 'errorListener'));
 }
 
-$load = $args->getArg('load-phutil-library');
-$argv = $args->getArg('argv');
-
+$load = idx($config, 'load', array());
 foreach ($load as $library) {
   $library = Filesystem::resolvePath($library);
   phutil_load_library($library);
@@ -70,40 +77,35 @@ foreach ($load as $library) {
 
 PhutilErrorHandler::initialize();
 
-function phutil_daemon_error_listener($event, $value, array $metadata) {
-  $console = PhutilConsole::getConsole();
-  $message = idx($metadata, 'default_message');
-
-  if ($message) {
-    $console->writeErr("%s\n", $message);
-  }
-  if (idx($metadata, 'trace')) {
-    $trace = PhutilErrorHandler::formatStacktrace($metadata['trace']);
-    $console->writeErr("%s\n", $trace);
-  }
-}
-
-if ($echo_to_stderr) {
-  // If the caller has used `--log` to redirect the error log to a file, PHP
-  // won't output it to stderr so the overseer can't capture it and won't be
-  // able to send it to the web console. Install a listener which just echoes
-  // errors to stderr, so we always get all the messages in the log and over
-  // stdio, so they'll show up in the web console.
-  PhutilErrorHandler::setErrorListener('phutil_daemon_error_listener');
-}
-
-$daemon = array_shift($argv);
+$daemon = $args->getArg('daemon');
 if (!$daemon) {
-  $args->printHelpAndExit();
+  throw new PhutilArgumentUsageException(
+    pht('Specify which class of daemon to start.'));
+} else if (count($daemon) > 1) {
+  throw new PhutilArgumentUsageException(
+    pht('Specify exactly one daemon to start.'));
+} else {
+  $daemon = head($daemon);
+  if (!class_exists($daemon)) {
+    throw new PhutilArgumentUsageException(
+      pht('No class "%s" exists in any known library.', $daemon));
+  } else if (!is_subclass_of($daemon, 'PhutilDaemon')) {
+    throw new PhutilArgumentUsageException(
+      pht('Class "%s" is not a subclass of "%s".', $daemon, 'PhutilDaemon'));
+  }
 }
 
+$argv = idx($config, 'argv', array());
 $daemon = newv($daemon, array($argv));
+
 if ($trace_mode) {
   $daemon->setTraceMode();
 }
+
 if ($trace_memory) {
   $daemon->setTraceMemory();
 }
+
 if ($verbose) {
   $daemon->setVerbose(true);
 }

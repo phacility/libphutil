@@ -17,6 +17,8 @@ final class PhutilDaemonOverseer {
   private $traceMemory;
   private $daemonize;
   private $phddir;
+  private $log;
+  private $libraries = array();
   private $verbose;
   private $err = 0;
 
@@ -57,6 +59,13 @@ EOHELP
           'help'  => 'Enable verbose activity logging.',
         ),
         array(
+          'name' => 'label',
+          'short' => 'l',
+          'param' => 'label',
+          'help' => pht(
+            'Optional process label. Makes "ps" nicer, no behavioral effects.'),
+        ),
+        array(
           'name' => 'load-phutil-library',
           'param' => 'library',
           'repeat' => true,
@@ -85,13 +94,13 @@ EOHELP
 
     if ($args->getArg('load-phutil-library')) {
       foreach ($args->getArg('load-phutil-library') as $library) {
-        $argv[] = '--load-phutil-library='.$library;
+        $this->libraries[] = $library;
       }
     }
 
     $log = $args->getArg('log');
     if ($log) {
-      $argv[] = '--log='.$log;
+      $this->log = $log;
     }
 
     $verbose = $args->getArg('verbose');
@@ -100,10 +109,16 @@ EOHELP
       $argv[] = '--verbose';
     }
 
-    $this->daemonize  = $args->getArg('daemonize');
-    $this->phddir     = $args->getArg('phd');
-    $this->argv       = $argv;
-    $this->moreArgs   = coalesce($more, array());
+    $label = $args->getArg('label');
+    if ($label) {
+      $argv[] = '-l';
+      $argv[] = $label;
+    }
+
+    $this->daemonize = $args->getArg('daemonize');
+    $this->phddir = $args->getArg('phd');
+    $this->argv = $argv;
+    $this->moreArgs = coalesce($more, array());
 
     if (self::$instance) {
       throw new Exception(
@@ -174,7 +189,11 @@ EOHELP
       $this,
       $this->daemon,
       $this->argv,
-      $this->moreArgs);
+      array(
+        'log' => $this->log,
+        'argv' => $this->moreArgs,
+        'load' => $this->libraries,
+      ));
 
     $daemon->setSilent((!$this->traceMode && !$this->verbose));
     $daemon->setTraceMemory($this->traceMemory);

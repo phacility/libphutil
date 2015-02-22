@@ -26,12 +26,12 @@ final class PhutilDaemonHandle {
     PhutilDaemonOverseer $overseer,
     $daemon_class,
     array $argv,
-    array $more) {
+    array $config) {
 
     $this->overseer = $overseer;
     $this->daemonClass = $daemon_class;
     $this->argv = $argv;
-    $this->more = $more;
+    $this->config = $config;
     $this->restartAt = time();
 
     $this->daemonID = $this->generateDaemonID();
@@ -39,7 +39,7 @@ final class PhutilDaemonHandle {
       self::EVENT_DID_LAUNCH,
       array(
         'argv' => $this->argv,
-        'explicitArgv' => $this->more,
+        'explicitArgv' => idx($this->config, 'argv'),
       ));
   }
 
@@ -185,7 +185,7 @@ final class PhutilDaemonHandle {
 
   private function newExecFuture() {
     $class = $this->daemonClass;
-    $argv = array_merge($this->argv, array('--'), $this->more);
+    $argv = $this->argv;
     $buffer_size = $this->getCaptureBufferSize();
 
     // NOTE: PHP implements proc_open() by running 'sh -c'. On most systems this
@@ -204,7 +204,8 @@ final class PhutilDaemonHandle {
     return id(new ExecFuture('exec ./exec_daemon.php %s %Ls', $class, $argv))
       ->setCWD($this->getDaemonCWD())
       ->setStdoutSizeLimit($buffer_size)
-      ->setStderrSizeLimit($buffer_size);
+      ->setStderrSizeLimit($buffer_size)
+      ->write(json_encode($this->config));
   }
 
   /**
