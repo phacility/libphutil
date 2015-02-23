@@ -368,6 +368,7 @@ abstract class PhutilDaemon {
         'down' => 'optional int',
         'pool' => 'optional int',
         'clone' => 'optional bool',
+        'reserve' => 'optional float',
       ));
 
     $this->autoscaleProperties = $autoscale_properties;

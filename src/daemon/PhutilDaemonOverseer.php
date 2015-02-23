@@ -273,6 +273,7 @@ EOHELP
       $daemon = $this->daemons[head_key($daemons)]['handle'];
       $scaleup_duration = $this->getAutoscaleProperty($daemon, 'up', 2);
       $max_pool_size = $this->getAutoscaleProperty($daemon, 'pool', 8);
+      $reserve = $this->getAutoscaleProperty($daemon, 'reserve', 0);
 
       // Don't scale a group if it is already at the maximum pool size.
       if (count($daemons) >= $max_pool_size) {
@@ -297,6 +298,22 @@ EOHELP
         }
       }
 
+      // If we have a configured memory reserve for this pool, it tells us that
+      // we should not scale up unless there's at least that much memory left
+      // on the system (for example, a reserve of 0.25 means that 25% of system
+      // memory must be free to autoscale).
+      if ($should_scale && $reserve) {
+        // On some systems this may be slightly more expensive than other
+        // checks, so only do it once we're prepared to scale up.
+        $memory = PhutilSystem::getSystemMemoryInformation();
+        $free_ratio = ($memory['free'] / $memory['total']);
+
+        // If we don't have enough free memory, don't scale.
+        if ($free_ratio <= $reserve) {
+          continue;
+        }
+      }
+
       if ($should_scale) {
         $config = $this->daemons[$daemon_id]['config'];
 
@@ -314,6 +331,11 @@ EOHELP
           ));
 
         $this->addDaemon($clone, $config);
+
+        // Don't scale more than one pool up per iteration. Otherwise, we could
+        // break the memory barrier if we have a lot of pools and scale them
+        // all up at once.
+        return;
       }
     }
   }
