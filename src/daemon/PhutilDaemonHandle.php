@@ -352,6 +352,11 @@ final class PhutilDaemonHandle {
 
   public function didReceiveGracefulSignal($signo) {
     $this->shouldShutdown = true;
+    if (!$this->isRunning()) {
+      // If we aren't running a daemon, emit this event now. Otherwise, we'll
+      // emit it when the daemon exits.
+      $this->dispatchEvent(self::EVENT_WILL_EXIT);
+    }
 
     $signame = phutil_get_signal_name($signo);
     if ($signame) {
