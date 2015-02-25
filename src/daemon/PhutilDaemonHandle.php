@@ -271,15 +271,6 @@ final class PhutilDaemonHandle {
     }
   }
 
-
-  private function gracefulProcessGroup() {
-    $pid = $this->pid;
-    $pgid = posix_getpgid($pid);
-    if ($pid && $pgid) {
-      exec("kill -INT -{$pgid}");
-    }
-  }
-
   private function updateMemory() {
     if ($this->traceMemory) {
       $memuse = number_format(memory_get_usage() / 1024, 1);
@@ -371,7 +362,9 @@ final class PhutilDaemonHandle {
     }
 
     $this->logMessage('DONE', $sigmsg, $signo);
-    $this->gracefulProcessGroup();
+
+    $pid = $this->pid;
+    exec("kill -INT {$pid}");
   }
 
   public function didReceiveTerminalSignal($signo) {
