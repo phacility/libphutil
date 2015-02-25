@@ -287,6 +287,19 @@ final class PhutilErrorHandler {
    */
   public static function formatStacktrace($trace) {
     $result = array();
+
+    $libinfo = self::getLibraryVersions();
+    if ($libinfo) {
+      foreach ($libinfo as $key => $dict) {
+        $info = array();
+        foreach ($dict as $dkey => $dval) {
+          $info[] = $dkey.'='.$dval;
+        }
+        $libinfo[$key] = $key.'('.implode(', ', $info).')';
+      }
+      $result[] = implode(', ', $libinfo);
+    }
+
     foreach ($trace as $key => $entry) {
       $line = '  #'.$key.' ';
       if (isset($entry['class'])) {
@@ -438,6 +451,70 @@ final class PhutilErrorHandler {
     }
 
     return $path;
+  }
+
+  public static function getLibraryVersions() {
+    $libinfo = array();
+
+    $bootloader = PhutilBootloader::getInstance();
+    foreach ($bootloader->getAllLibraries() as $library) {
+      $root = phutil_get_library_root($library);
+      $try_paths = array(
+        $root,
+        dirname($root),
+      );
+      $libinfo[$library] = array();
+
+      $get_refs = array('master');
+      foreach ($try_paths as $try_path) {
+        // Try to read what the HEAD of the repository is pointed at. This is
+        // normally the name of a branch ("ref").
+        $try_file = $try_path.'/.git/HEAD';
+        if (@file_exists($try_file)) {
+          $head = @file_get_contents($try_file);
+          $matches = null;
+          if (preg_match('(^ref: refs/heads/(.*)$)', trim($head), $matches)) {
+            $libinfo[$library]['head'] = trim($matches[1]);
+            $get_refs[] = trim($matches[1]);
+          } else {
+            $libinfo[$library]['head'] = trim($head);
+          }
+          break;
+        }
+      }
+
+      // Try to read which commit relevant branch heads are at.
+      foreach (array_unique($get_refs) as $ref) {
+        foreach ($try_paths as $try_path) {
+          $try_file = $try_path.'/.git/refs/heads/'.$ref;
+          if (@file_exists($try_file)) {
+            $hash = @file_get_contents($try_file);
+            if ($hash) {
+              $libinfo[$library]['ref.'.$ref] = substr(trim($hash), 0, 12);
+              break;
+            }
+          }
+        }
+      }
+
+      // Look for extension files.
+      $custom = @scandir($root.'/extensions/');
+      if ($custom) {
+        $count = 0;
+        foreach ($custom as $custom_path) {
+          if (preg_match('/\.php$/', $custom_path)) {
+            $count++;
+          }
+        }
+        if ($count) {
+          $libinfo[$library]['custom'] = $count;
+        }
+      }
+    }
+
+    ksort($libinfo);
+
+    return $libinfo;
   }
 
 }
