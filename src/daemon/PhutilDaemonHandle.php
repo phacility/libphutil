@@ -341,6 +341,34 @@ final class PhutilDaemonHandle {
     }
   }
 
+  public function didReceiveReloadSignal($signo) {
+    $signame = phutil_get_signal_name($signo);
+    if ($signame) {
+      $sigmsg = pht(
+        'Reloading in response to signal %d (%s).',
+        $signo,
+        $signame);
+    } else {
+      $sigmsg = pht(
+        'Reloading in response to signal %d.',
+        $signo);
+    }
+
+    $this->logMessage('RELO', $sigmsg, $signo);
+
+    // This signal means "stop the current process gracefully, then launch
+    // a new identical process once it exits". This can be used to update
+    // daemons after code changes (the new processes will run the new code)
+    // without aborting any running tasks.
+
+    // We SIGINT the daemon but don't set the shutdown flag, so it will
+    // naturally be restarted after it exits, as though it had exited after an
+    // unhandled exception.
+
+    $pid = $this->pid;
+    exec("kill -INT {$pid}");
+  }
+
   public function didReceiveGracefulSignal($signo) {
     $this->shouldShutdown = true;
     if (!$this->isRunning()) {

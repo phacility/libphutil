@@ -145,6 +145,7 @@ EOHELP
     declare(ticks = 1);
     pcntl_signal(SIGUSR2, array($this, 'didReceiveNotifySignal'));
 
+    pcntl_signal(SIGHUP,  array($this, 'didReceiveReloadSignal'));
     pcntl_signal(SIGINT,  array($this, 'didReceiveGracefulSignal'));
     pcntl_signal(SIGTERM, array($this, 'didReceiveTerminalSignal'));
   }
@@ -343,6 +344,12 @@ EOHELP
   public function didReceiveNotifySignal($signo) {
     foreach ($this->getDaemonHandles() as $daemon) {
       $daemon->didReceiveNotifySignal($signo);
+    }
+  }
+
+  public function didReceiveReloadSignal($signo) {
+    foreach ($this->getDaemonHandles() as $daemon) {
+      $daemon->didReceiveReloadSignal($signo);
     }
   }
 
