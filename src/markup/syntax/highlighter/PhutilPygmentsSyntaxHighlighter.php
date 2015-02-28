@@ -171,6 +171,7 @@ final class PhutilPygmentsSyntaxHighlighter {
       'rbx' => 'rb',
       'rest' => 'rst',
       'rl' => 'ragel-em',
+      'robot' => 'robotframework',
       'Rout' => 'rconsole',
       'rss' => 'xml',
       's' => 'gas',
