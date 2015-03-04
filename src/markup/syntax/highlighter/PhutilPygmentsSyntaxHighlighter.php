@@ -195,6 +195,7 @@ final class PhutilPygmentsSyntaxHighlighter {
       'vapi' => 'vala',
       'vb' => 'vb.net',
       'vert' => 'glsl',
+      'vhd' => 'vhdl',
       'vimrc' => 'vim',
       'vm' => 'velocity',
       'weechatlog' => 'irc',
