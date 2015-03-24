@@ -85,10 +85,14 @@ final class PhutilDefaultSyntaxHighlighterEngine
              ->getHighlightFuture($source);
     }
 
-    if ($have_pygments) {
-      return id(new PhutilPygmentsSyntaxHighlighter())
-        ->setConfig('language', $language)
-        ->getHighlightFuture($source);
+    // Don't invoke Pygments for plain text, since it's expensive and has
+    // no effect.
+    if ($language !== 'text' && $language !== 'txt') {
+      if ($have_pygments) {
+        return id(new PhutilPygmentsSyntaxHighlighter())
+          ->setConfig('language', $language)
+          ->getHighlightFuture($source);
+      }
     }
 
     return id(new PhutilDefaultSyntaxHighlighter())
