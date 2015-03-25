@@ -61,6 +61,32 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('@', $uri->getUser());
     $this->assertEqual('@', $uri->getPass());
     $this->assertEqual('http://%40:%40@domain.com/', (string)$uri);
+
+    // These tests are covering cases where cURL and parse_url() behavior
+    // may differ in potentially dangerous ways. See T6755 for discussion.
+
+    // In general, we defuse these attacks by emitting URIs which escape
+    // special characters so that they are interpreted unambiguously by
+    // cURL in the same way that parse_url() interpreted them.
+
+    $uri = new PhutilURI('http://u:p@evil.com?@good.com');
+    $this->assertEqual('u', $uri->getUser());
+    $this->assertEqual('p', $uri->getPass());
+    $this->assertEqual('evil.com', $uri->getDomain());
+    $this->assertEqual('http://u:p@evil.com?%40good.com=', (string)$uri);
+
+    $uri = new PhutilURI('http://good.com#u:p@evil.com/');
+    $this->assertEqual('good.com#u', $uri->getUser());
+    $this->assertEqual('p', $uri->getPass());
+    $this->assertEqual('evil.com', $uri->getDomain());
+    $this->assertEqual('http://good.com%23u:p@evil.com/', (string)$uri);
+
+    $uri = new PhutilURI('http://good.com?u:p@evil.com/');
+    $this->assertEqual('', $uri->getUser());
+    $this->assertEqual('', $uri->getPass());
+    $this->assertEqual('good.com', $uri->getDomain());
+    $this->assertEqual('http://good.com?u%3Ap%40evil.com%2F=', (string)$uri);
+
   }
 
   public function testURIGeneration() {
