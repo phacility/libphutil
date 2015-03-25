@@ -40,10 +40,15 @@ final class HTTPFutureHTTPResponseStatus extends HTTPFutureResponseStatus {
 
   public function isError() {
     if ($this->expect === null) {
-        return ($this->getStatusCode() < 200) || ($this->getStatusCode() > 299);
+      return ($this->getStatusCode() < 200) || ($this->getStatusCode() > 299);
     }
 
     return !in_array($this->getStatusCode(), $this->expect, true);
+  }
+
+  public function isRedirect() {
+    $code = $this->getStatusCode();
+    return ($code >= 300 && $code < 400);
   }
 
   public function isTimeout() {

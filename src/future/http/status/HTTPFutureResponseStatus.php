@@ -33,6 +33,10 @@ abstract class HTTPFutureResponseStatus extends Exception {
   abstract public function isError();
   abstract public function isTimeout();
 
+  public function isRedirect() {
+    return false;
+  }
+
   abstract protected function getErrorCodeType($code);
   abstract protected function getErrorCodeDescription($code);
 
