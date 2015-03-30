@@ -4702,6 +4702,16 @@
       "max": null,
       "ref": "intl"
     },
+    "intlcal_get_repeated_wall_time_option": {
+      "min": "5.5.0",
+      "max": null,
+      "ref": "intl"
+    },
+    "intlcal_get_skipped_wall_time_option": {
+      "min": "5.5.0",
+      "max": null,
+      "ref": "intl"
+    },
     "intlcal_get_time": {
       "min": "5.5.0",
       "max": null,
@@ -4772,6 +4782,16 @@
       "max": null,
       "ref": "intl"
     },
+    "intlcal_set_repeated_wall_time_option": {
+      "min": "5.5.0",
+      "max": null,
+      "ref": "intl"
+    },
+    "intlcal_set_skipped_wall_time_option": {
+      "min": "5.5.0",
+      "max": null,
+      "ref": "intl"
+    },
     "intlcal_set_time": {
       "min": "5.5.0",
       "max": null,
@@ -4823,6 +4843,11 @@
       "ref": "intl"
     },
     "intltz_create_time_zone": {
+      "min": "5.5.0",
+      "max": null,
+      "ref": "intl"
+    },
+    "intltz_create_time_zone_id_enumeration": {
       "min": "5.5.0",
       "max": null,
       "ref": "intl"
@@ -4882,7 +4907,17 @@
       "max": null,
       "ref": "intl"
     },
+    "intltz_get_region": {
+      "min": "5.5.0",
+      "max": null,
+      "ref": "intl"
+    },
     "intltz_get_tz_data_version": {
+      "min": "5.5.0",
+      "max": null,
+      "ref": "intl"
+    },
+    "intltz_get_unknown": {
       "min": "5.5.0",
       "max": null,
       "ref": "intl"
@@ -10114,7 +10149,7 @@
     },
     "php_egg_logo_guid": {
       "min": "4.0.3",
-      "max": "5.4.36",
+      "max": "5.4.37",
       "ref": "standard"
     },
     "php_ini_loaded_file": {
@@ -10129,12 +10164,12 @@
     },
     "php_logo_guid": {
       "min": "4.0.0",
-      "max": "5.4.36",
+      "max": "5.4.37",
       "ref": "standard"
     },
     "php_real_logo_guid": {
       "min": "4.0.0",
-      "max": "5.4.36",
+      "max": "5.4.37",
       "ref": "standard"
     },
     "php_sapi_name": {
@@ -13909,7 +13944,7 @@
     },
     "zend_logo_guid": {
       "min": "4.0.0",
-      "max": "5.4.36",
+      "max": "5.4.37",
       "ref": "standard"
     },
     "zend_thread_id": {
@@ -15480,7 +15515,7 @@
   },
   "interfaces": {
     "ArrayAccess": {
-      "min": "5.3.0",
+      "min": "5.1.0",
       "max": null
     },
     "Countable": {
@@ -15492,11 +15527,11 @@
       "max": null
     },
     "Iterator": {
-      "min": "5.3.0",
+      "min": "5.1.0",
       "max": null
     },
     "IteratorAggregate": {
-      "min": "5.3.0",
+      "min": "5.1.0",
       "max": null
     },
     "JsonSerializable": {
@@ -15560,7 +15595,7 @@
       "max": null
     },
     "Traversable": {
-      "min": "5.3.0",
+      "min": "5.1.0",
       "max": null
     },
     "http\\Exception": {
@@ -16127,23 +16162,23 @@
     },
     "CURLCLOSEPOLICY_CALLBACK": {
       "min": "4.0.2",
-      "max": "5.5.20"
+      "max": "5.5.21"
     },
     "CURLCLOSEPOLICY_LEAST_RECENTLY_USED": {
       "min": "4.0.2",
-      "max": "5.5.20"
+      "max": "5.5.21"
     },
     "CURLCLOSEPOLICY_LEAST_TRAFFIC": {
       "min": "4.0.2",
-      "max": "5.5.20"
+      "max": "5.5.21"
     },
     "CURLCLOSEPOLICY_OLDEST": {
       "min": "4.0.2",
-      "max": "5.5.20"
+      "max": "5.5.21"
     },
     "CURLCLOSEPOLICY_SLOWEST": {
       "min": "4.0.2",
-      "max": "5.5.20"
+      "max": "5.5.21"
     },
     "CURLE_ABORTED_BY_CALLBACK": {
       "min": "4.0.2",
@@ -16739,7 +16774,7 @@
     },
     "CURLOPT_CLOSEPOLICY": {
       "min": "4.0.2",
-      "max": "5.5.20"
+      "max": "5.5.21"
     },
     "CURLOPT_CONNECTTIMEOUT": {
       "min": "4.0.2",
@@ -18817,8 +18852,76 @@
       "min": "5.2.4",
       "max": null
     },
+    "IDNA_CHECK_BIDI": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_CHECK_CONTEXTJ": {
+      "min": "5.4.0",
+      "max": null
+    },
     "IDNA_DEFAULT": {
       "min": "5.2.4",
+      "max": null
+    },
+    "IDNA_ERROR_BIDI": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_CONTEXTJ": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_DISALLOWED": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_DOMAIN_NAME_TOO_LONG": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_EMPTY_LABEL": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_HYPHEN_3_4": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_INVALID_ACE_LABEL": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_LABEL_HAS_DOT": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_LABEL_TOO_LONG": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_LEADING_COMBINING_MARK": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_LEADING_HYPHEN": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_PUNYCODE": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_ERROR_TRAILING_HYPHEN": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_NONTRANSITIONAL_TO_ASCII": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "IDNA_NONTRANSITIONAL_TO_UNICODE": {
+      "min": "5.4.0",
       "max": null
     },
     "IDNA_USE_STD3_RULES": {
@@ -19329,11 +19432,19 @@
       "min": "4.0.0",
       "max": null
     },
+    "INTL_ICU_DATA_VERSION": {
+      "min": "5.3.7",
+      "max": null
+    },
     "INTL_ICU_VERSION": {
       "min": "5.3.7",
       "max": null
     },
     "INTL_IDNA_VARIANT_2003": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "INTL_IDNA_VARIANT_UTS46": {
       "min": "5.4.0",
       "max": null
     },
@@ -21482,7 +21593,7 @@
       "max": null
     },
     "PATHINFO_FILENAME": {
-      "min": "4.0.0",
+      "min": "5.2.0RC1",
       "max": null
     },
     "PATH_SEPARATOR": {
@@ -25946,6 +26057,50 @@
       "max": null
     },
     "U_FMT_PARSE_ERROR_START": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_ACE_PREFIX_ERROR": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_CHECK_BIDI_ERROR": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_DOMAIN_NAME_TOO_LONG_ERROR": {
+      "min": "5.4.0",
+      "max": null
+    },
+    "U_IDNA_ERROR_LIMIT": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_ERROR_START": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_LABEL_TOO_LONG_ERROR": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_PROHIBITED_ERROR": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_STD3_ASCII_RULES_ERROR": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_UNASSIGNED_ERROR": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_VERIFICATION_ERROR": {
+      "min": "5.2.0",
+      "max": null
+    },
+    "U_IDNA_ZERO_LENGTH_LABEL_ERROR": {
       "min": "5.2.0",
       "max": null
     },
