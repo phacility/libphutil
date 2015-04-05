@@ -6,6 +6,13 @@
     "chmod": {
       "type": "chmod"
     },
+    "cppcheck": {
+      "type": "cppcheck",
+      "include": [
+        "(\\.cpp$)",
+        "(\\.hpp$)"
+      ]
+    },
     "filename": {
       "type": "filename"
     },
