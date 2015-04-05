@@ -151,23 +151,6 @@ abstract class AASTTree {
     return $this->stream;
   }
 
-  public function renderAsText() {
-    return $this->executeRenderAsText(array($this->getRootNode()), 0);
-  }
-
-  protected function executeRenderAsText($list, $depth) {
-    $return = '';
-    foreach ($list as $node) {
-      if ($depth) {
-        $return .= str_repeat('  ', $depth);
-      }
-      $return .= $node->getDescription()."\n";
-      $return .= $this->executeRenderAsText($node->getChildren(), $depth + 1);
-    }
-    return $return;
-  }
-
-
   public function getOffsetToLineNumberMap() {
     if ($this->lineMap === null) {
       $src = $this->rawSource;

@@ -9,20 +9,6 @@ final class AASTNodeList implements Countable, Iterator {
 
   protected function __construct() {}
 
-  public function getDescription() {
-    if (empty($this->list)) {
-      return pht('an empty node list');
-    }
-
-    $desc = array();
-    $desc[] = pht('a list of %s nodes:', new PhutilNumber(count($this->list)));
-    foreach ($this->list as $node) {
-      $desc[] = '  '.$node->getDescription().';';
-    }
-
-    return implode("\n", $desc);
-  }
-
   protected function newList(array $nodes) {
     return AASTNodeList::newFromTreeAndNodes($this->tree, $nodes);
   }
