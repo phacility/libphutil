@@ -10,14 +10,21 @@
 class yy_extra_type {
   public:
     yy_extra_type() {
+      first_lineno = 0;
       lineno = 1;
       terminated = false;
       used = false;
+      last_token = -1;
+      insert_token = -1;
+      heredoc_yyleng = -1;
+      heredoc_data = (char *) 0;
       short_tags = true;
       asp_tags = false;
       idx_expr = false;
       include_debug = false;
       expecting_xhp_class_statements = false;
+      old_expecting_xhp_class_statements = false;
+      used_attributes = false;
       list_size = 0;
       colon_hack = false;
       pushStack();
@@ -26,7 +33,6 @@ class yy_extra_type {
     bool short_tags; // `short_open_tag` in php.ini
     bool asp_tags; // `asp_tags` in php.ini
     bool idx_expr; // allow code like `foo()['bar']`
-    bool include_debug; // include line numbers and file names in XHP object creation
     size_t first_lineno; // line number before scanning the current token
     size_t lineno; // current line number being scanned.
     std::string error; // description of error (if terminated true)
@@ -34,15 +40,20 @@ class yy_extra_type {
     bool used; // were any XHP-specific extensions found in this code?
     int last_token; // the last token to be returned by the scanner
     int insert_token; // insert this token without reading from buffer
-    size_t heredoc_yyleng; // last length of yytext while scannling
+    size_t heredoc_yyleng; // last length of yytext while scanning
     const char* heredoc_data; // where our heredoc data starts
     std::string heredoc_label; // heredoc sentinel label
     std::stack<int> curly_stack; // tokens appearing before a {
     bool expecting_xhp_class_statements; // when we're one level deep in a class
-    bool old_expecting_xhp_class_statements; // store old value while inside class method
     bool used_attributes; // did this class use the `attribute` keyword
     unsigned int list_size;
     bool colon_hack;
+
+    // Include line numbers and file names in XHP object creation.
+    bool include_debug;
+
+    // Store old value while inside class method.
+    bool old_expecting_xhp_class_statements;
 
     xhpast::token_list_t token_list;
 

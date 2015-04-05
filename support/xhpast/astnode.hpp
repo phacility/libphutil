@@ -20,6 +20,7 @@ namespace xhpast {
       Token(unsigned int type, char *value, unsigned int n) :
         type(type),
         value(value),
+        lineno(0),
         n(n) {
       }
   };
@@ -60,7 +61,10 @@ namespace xhpast {
       }
 
       Node *appendChildren(Node *node) {
-        for (node_list_t::iterator ii = node->children.begin(); ii != node->children.end(); ++ii) {
+        for (node_list_t::iterator ii = node->children.begin();
+          ii != node->children.end();
+          ++ii) {
+
           this->appendChild(*ii);
         }
         return this;
@@ -80,7 +84,10 @@ namespace xhpast {
 
       Node *expandRange(Node *n) {
         if (!n) {
-          fprintf(stderr, "Trying to expandRange() a null node to one of type %d\n", this->type);
+          fprintf(
+            stderr,
+            "Trying to expandRange() a null node to one of type %d\n",
+            this->type);
           exit(1);
         };
 

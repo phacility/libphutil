@@ -9,7 +9,8 @@
   if (!yyg->yy_more_len) \
     yyextra->first_lineno = yyextra->lineno;
 #define pttok(t, txt) \
-  yyextra->token_list.push_back(new xhpast::Token(t, txt, yyextra->list_size++)); \
+  yyextra->token_list.push_back( \
+    new xhpast::Token(t, txt, yyextra->list_size++)); \
   *yylval = new xhpast::Node(0, yyextra->list_size - 1);
 #define ptok(t) \
   pttok(t, yytext);
@@ -303,7 +304,8 @@ NEWLINE ("\r\n"|"\n"|"\r")
  /* Casts */
 <PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>{
   "("{TABS_AND_SPACES}(int|integer){TABS_AND_SPACES}")" tok(T_INT_CAST);
-  "("{TABS_AND_SPACES}(real|double|float){TABS_AND_SPACES}")" tok(T_DOUBLE_CAST);
+  "("{TABS_AND_SPACES}(real|double|float){TABS_AND_SPACES}")"
+    tok(T_DOUBLE_CAST);
   "("{TABS_AND_SPACES}(string|binary){TABS_AND_SPACES}")" tok(T_STRING_CAST);
   "("{TABS_AND_SPACES}array{TABS_AND_SPACES}")" tok(T_ARRAY_CAST);
   "("{TABS_AND_SPACES}object{TABS_AND_SPACES}")" tok(T_OBJECT_CAST);
@@ -311,7 +313,8 @@ NEWLINE ("\r\n"|"\n"|"\r")
   "("{TABS_AND_SPACES}unset{TABS_AND_SPACES}")" tok(T_UNSET_CAST);
 }
 
- /* Scalars (parsing these doesn't really matter since we just pass them through literally) */
+// Scalars (parsing these doesn't really matter since we just pass
+// them through literally)
 <PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>{
   {LNUM}|{HNUM}|{BNUM} tok(T_LNUMBER);
   {DNUM}|{EXPONENT_DNUM} tok(T_DNUMBER);
@@ -328,7 +331,9 @@ NEWLINE ("\r\n"|"\n"|"\r")
 }
 
  /* (HERE|NOW)DOC's */
-<PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>b?"<<<"{TABS_AND_SPACES} {
+<PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>b?"<<<
+  "{TABS_AND_SPACES} {
+
   push_state(PHP_HEREDOC_START);
   yyextra->heredoc_yyleng = yyleng;
   yymore();
@@ -339,7 +344,9 @@ NEWLINE ("\r\n"|"\n"|"\r")
     // yytext will actually start at the "<<<" and not the label. Use of
     // heredoc_yyleng jumps past that. Then we add 1 to get past the " or '. The
     // match is similar to calculate length.
-    yyextra->heredoc_label = string(yytext + yyextra->heredoc_yyleng + 1, yyleng - yyextra->heredoc_yyleng - 2);
+    yyextra->heredoc_label = string(
+      yytext + yyextra->heredoc_yyleng + 1,
+      yyleng - yyextra->heredoc_yyleng - 2);
     set_state(PHP_HEREDOC_NSTART);
     yyextra->heredoc_yyleng = yyleng;
     yymore();
@@ -358,10 +365,17 @@ NEWLINE ("\r\n"|"\n"|"\r")
 }
 <PHP_HEREDOC_NEWLINE>{
   {LABEL};?{NEWLINE} {
-    if (strncmp(yyextra->heredoc_label.c_str(), yytext + yyextra->heredoc_yyleng, yyextra->heredoc_label.size()) == 0) {
+    if (strncmp(
+      yyextra->heredoc_label.c_str(),
+      yytext + yyextra->heredoc_yyleng, yyextra->heredoc_label.size()) == 0) {
+
       switch (yytext[yyextra->heredoc_yyleng + yyextra->heredoc_label.size()]) {
         case ';': case '\n': case '\r':
-          yyless(yyleng - (yyleng - yyextra->heredoc_yyleng - yyextra->heredoc_label.size()));
+          yyless(
+            yyleng - (
+              yyleng -
+              yyextra->heredoc_yyleng -
+              yyextra->heredoc_label.size()));
           pop_state();
           tok(T_HEREDOC);
       }
@@ -491,7 +505,11 @@ static inline void yy_scan_newlines(const char* text, struct yyguts_t* yyg) {
 
 void xhp_new_push_state(int s, struct yyguts_t* yyg) {
 #ifdef DEBUG
-  fprintf(stderr, "--> PUSH(%s -> %s)\n", yy_state_name(YY_START), yy_state_name(s));
+  fprintf(
+    stderr,
+    "--> PUSH(%s -> %s)\n",
+    yy_state_name(YY_START),
+    yy_state_name(s));
 #endif
   yy_push_state(s, yyg);
 }
@@ -502,7 +520,11 @@ void xhp_new_pop_state(struct yyguts_t* yyg) {
 #endif
   yy_pop_state(yyg);
 #ifdef DEBUG
-  fprintf(stderr, "--> POP(%s -> %s)\n", yy_state_name(s), yy_state_name(YY_START));
+  fprintf(
+    stderr,
+    "--> POP(%s -> %s)\n",
+    yy_state_name(s),
+    yy_state_name(YY_START));
 #endif
 }
 

@@ -12,10 +12,8 @@ int xhpast_process(std::string &in);
 void print_node(xhpast::Node *node);
 
 int main(int argc, char* argv[]) {
-  vector<string> files;
-
   if (argc != 1) {
-    //coupling: modify also libphutil/src/parser/xhpast/bin/PhutilXHPASTBinary.php
+    // Coupling: modify also src/parser/xhpast/bin/PhutilXHPASTBinary.php
     cout << "5.5.8/1h\n";
     return 0;
   }
@@ -98,19 +96,20 @@ int xhpast_process(std::string &in) {
 
 void print_node(xhpast::Node *node) {
   int l = -1;
-  int r = -1;
   if (node->l_tok != -1) {
     l = node->l_tok;
   }
 
   if (l == -1) {
-    printf("[%d]", node->type);
+    printf("[%u]", node->type);
   } else {
+    int r = -1;
+
     if (node->r_tok != -1) {
       r = node->r_tok;
     }
 
-    printf("[%d, %d, %d", node->type, l, r);
+    printf("[%u, %d, %d", node->type, l, r);
     if (!node->children.empty()) {
       printf(", [");
       for (xhpast::node_list_t::iterator ii = node->children.begin();;) {

@@ -82,7 +82,17 @@ static void replacestr(string &source, const string &find, const string &rep) {
 %left T_LOGICAL_XOR
 %left T_LOGICAL_AND
 %right T_PRINT
-%left '=' T_PLUS_EQUAL T_MINUS_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_CONCAT_EQUAL T_MOD_EQUAL T_AND_EQUAL T_OR_EQUAL T_XOR_EQUAL T_SL_EQUAL T_SR_EQUAL
+%left '=' T_PLUS_EQUAL
+  T_MINUS_EQUAL
+  T_MUL_EQUAL
+  T_DIV_EQUAL
+  T_CONCAT_EQUAL
+  T_MOD_EQUAL
+  T_AND_EQUAL
+  T_OR_EQUAL
+  T_XOR_EQUAL
+  T_SL_EQUAL
+  T_SR_EQUAL
 %left '?' ':'
 %left T_BOOLEAN_OR
 %left T_BOOLEAN_AND
@@ -96,7 +106,18 @@ static void replacestr(string &source, const string &find, const string &rep) {
 %left '*' '/' '%'
 %right '!'
 %nonassoc T_INSTANCEOF
-%right '~' T_INC T_DEC T_INT_CAST T_DOUBLE_CAST T_STRING_CAST T_UNICODE_CAST T_BINARY_CAST T_ARRAY_CAST T_OBJECT_CAST T_BOOL_CAST T_UNSET_CAST '@'
+%right '~' T_INC
+  T_DEC
+  T_INT_CAST
+  T_DOUBLE_CAST
+  T_STRING_CAST
+  T_UNICODE_CAST
+  T_BINARY_CAST
+  T_ARRAY_CAST
+  T_OBJECT_CAST
+  T_BOOL_CAST
+  T_UNSET_CAST
+  '@'
 %right '['
 %nonassoc T_NEW T_CLONE
 %token T_EXIT
@@ -115,7 +136,8 @@ static void replacestr(string &source, const string &find, const string &rep) {
 %token T_CHARACTER /* unused in vanilla PHP */
 %token T_BAD_CHARACTER /* unused in vanilla PHP */
 %token T_ENCAPSED_AND_WHITESPACE /* unused in XHP: ` ` in `" "` */
-%token T_CONSTANT_ENCAPSED_STRING /* overloaded in XHP; replaces '"' encaps_list '"' */
+%token T_CONSTANT_ENCAPSED_STRING /* overloaded in XHP;
+  replaces '"' encaps_list '"' */
 %token T_BACKTICKS_EXPR /* new in XHP; replaces '`' backticks_expr '`' */
 %token T_ECHO
 %token T_DO
@@ -171,7 +193,8 @@ static void replacestr(string &source, const string &find, const string &rep) {
 %token T_WHITESPACE
 %token T_START_HEREDOC /* unused in XHP; replaced with T_HEREDOC */
 %token T_END_HEREDOC /* unused in XHP; replaced with T_HEREDOC */
-%token T_HEREDOC /* new in XHP; replaces start_heredoc encaps_list T_END_HEREDOC */
+%token T_HEREDOC /* new in XHP;
+  replaces start_heredoc encaps_list T_END_HEREDOC */
 %token T_DOLLAR_OPEN_CURLY_BRACES /* unused in XHP: `${` in `"${foo}"` */
 %token T_CURLY_OPEN /* unused in XHP: `{$` in `"{$foo}"` */
 %token T_PAAMAYIM_NEKUDOTAYIM
@@ -383,7 +406,11 @@ unticked_statement:
 
     $$ = NNEW(n_STATEMENT)->appendChild($$);
   }
-| T_IF '(' expr ')' ':' inner_statement_list new_elseif_list new_else_single T_ENDIF ';' {
+| T_IF '(' expr ')' ':'
+  inner_statement_list
+  new_elseif_list
+  new_else_single
+  T_ENDIF ';' {
 
     $$ = NNEW(n_CONDITION_LIST);
     NTYPE($1, n_IF);
@@ -515,7 +542,8 @@ unticked_statement:
     $$ = NNEW(n_STATEMENT)->appendChild($3);
     NMORE($$, $5);
   }
-| T_FOREACH '(' variable T_AS foreach_variable foreach_optional_arg ')' foreach_statement {
+| T_FOREACH '(' variable T_AS foreach_variable foreach_optional_arg ')'
+  foreach_statement {
     NTYPE($1, n_FOREACH);
     NSPAN($2, n_FOREACH_EXPRESSION, $7);
     $2->appendChild($3);
@@ -532,7 +560,8 @@ unticked_statement:
 
     $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
-| T_FOREACH '(' expr_without_variable T_AS variable foreach_optional_arg ')' foreach_statement {
+| T_FOREACH '(' expr_without_variable T_AS variable foreach_optional_arg ')'
+  foreach_statement {
     NTYPE($1, n_FOREACH);
     NSPAN($2, n_FOREACH_EXPRESSION, $7);
     $2->appendChild($3);
@@ -558,7 +587,11 @@ unticked_statement:
     $$ = NNEW(n_STATEMENT)->appendChild(NNEW(n_EMPTY));
     NMORE($$, $1);
   }
-| T_TRY '{' inner_statement_list '}' T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' additional_catches finally_statement {
+| T_TRY '{' inner_statement_list '}'
+  T_CATCH '(' fully_qualified_class_name T_VARIABLE ')'
+  '{' inner_statement_list '}'
+  additional_catches
+  finally_statement {
     NTYPE($1, n_TRY);
     $1->appendChild(NEXPAND($2, $3, $4));
 
@@ -622,7 +655,8 @@ non_empty_additional_catches:
 ;
 
 additional_catch:
-  T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' {
+  T_CATCH '(' fully_qualified_class_name T_VARIABLE ')'
+  '{' inner_statement_list '}' {
     NTYPE($1, n_CATCH);
     $1->appendChild($3);
     $1->appendChild(NTYPE($4, n_VARIABLE));
@@ -665,7 +699,8 @@ is_reference:
 ;
 
 unticked_function_declaration_statement:
-  function is_reference T_STRING '(' parameter_list ')' '{' inner_statement_list '}' {
+  function is_reference T_STRING
+  '(' parameter_list ')' '{' inner_statement_list '}' {
     NSPAN($1, n_FUNCTION_DECLARATION, $9);
     $1->appendChild(NNEW(n_EMPTY));
     $1->appendChild($2);
@@ -679,7 +714,8 @@ unticked_function_declaration_statement:
 ;
 
 unticked_class_declaration_statement:
-  class_entry_type T_STRING extends_from implements_list '{' class_statement_list '}' {
+  class_entry_type T_STRING extends_from implements_list
+  '{' class_statement_list '}' {
     $$ = NNEW(n_CLASS_DECLARATION);
     $$->appendChild($1);
     $$->appendChild(NTYPE($2, n_CLASS_NAME));
@@ -1007,7 +1043,8 @@ non_empty_parameter_list:
 
     $$ = $1->appendChild($$);
   }
-| non_empty_parameter_list ',' optional_class_type '&' T_VARIABLE '=' static_scalar {
+| non_empty_parameter_list ',' optional_class_type '&'
+  T_VARIABLE '=' static_scalar {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($3);
     $$->appendChild(NTYPE($4, n_VARIABLE_REFERENCE));
@@ -1016,7 +1053,8 @@ non_empty_parameter_list:
 
     $$ = $1->appendChild($$);
   }
-| non_empty_parameter_list ',' optional_class_type T_VARIABLE '=' static_scalar {
+| non_empty_parameter_list ',' optional_class_type
+  T_VARIABLE '=' static_scalar {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($3);
     $$->appendChild(NTYPE($4, n_VARIABLE));
@@ -1159,10 +1197,12 @@ class_statement:
     $$ = $1;
   }
 | method_modifiers function {
-    yyextra->old_expecting_xhp_class_statements = yyextra->expecting_xhp_class_statements;
+    yyextra->old_expecting_xhp_class_statements =
+      yyextra->expecting_xhp_class_statements;
     yyextra->expecting_xhp_class_statements = false;
   } is_reference T_STRING '(' parameter_list ')' method_body {
-    yyextra->expecting_xhp_class_statements = yyextra->old_expecting_xhp_class_statements;
+    yyextra->expecting_xhp_class_statements =
+      yyextra->old_expecting_xhp_class_statements;
 
     $$ = NNEW(n_METHOD_DECLARATION);
     NMORE($$, $2);
@@ -1819,7 +1859,10 @@ expr_without_variable:
     $1->appendChild(NNEW(n_EMPTY));
     $$ = $1;
   }
-| function is_reference '(' parameter_list ')' lexical_vars '{' inner_statement_list '}' {
+| function is_reference
+  '(' parameter_list ')'
+  lexical_vars
+  '{' inner_statement_list '}' {
     NSPAN($1, n_FUNCTION_DECLARATION, $9);
     $1->appendChild(NNEW(n_EMPTY));
     $1->appendChild($2);
@@ -1830,7 +1873,10 @@ expr_without_variable:
 
     $$ = $1;
   }
-| T_STATIC function is_reference '(' parameter_list ')' lexical_vars '{' inner_statement_list '}' {
+| T_STATIC function is_reference
+  '(' parameter_list ')'
+  lexical_vars
+  '{' inner_statement_list '}' {
     NSPAN($2, n_FUNCTION_DECLARATION, $10);
     NMORE($2, $1);
 
@@ -1918,7 +1964,8 @@ function_call:
     $$->appendChild($1);
     $$->appendChild(NEXPAND($2, $3, $4));
   }
-| T_NAMESPACE T_NS_SEPARATOR namespace_name '(' function_call_parameter_list ')' {
+| T_NAMESPACE T_NS_SEPARATOR namespace_name
+  '(' function_call_parameter_list ')' {
     NMORE($3, $1);
     $$ = NNEW(n_FUNCTION_CALL);
     $$->appendChild($3);
@@ -1930,7 +1977,8 @@ function_call:
     $$->appendChild($2);
     $$->appendChild(NEXPAND($3, $4, $5));
   }
-| class_name T_PAAMAYIM_NEKUDOTAYIM T_STRING '(' function_call_parameter_list ')' {
+| class_name T_PAAMAYIM_NEKUDOTAYIM T_STRING
+  '(' function_call_parameter_list ')' {
     $$ = NNEW(n_CLASS_STATIC_ACCESS);
     $$->appendChild($1);
     $$->appendChild(NTYPE($3, n_STRING));
@@ -1938,7 +1986,8 @@ function_call:
     $$ = NNEW(n_FUNCTION_CALL)->appendChild($$);
     $$->appendChild(NEXPAND($4, $5, $6));
   }
-| variable_class_name T_PAAMAYIM_NEKUDOTAYIM T_STRING '(' function_call_parameter_list ')' {
+| variable_class_name T_PAAMAYIM_NEKUDOTAYIM T_STRING
+  '(' function_call_parameter_list ')' {
     $$ = NNEW(n_CLASS_STATIC_ACCESS);
     $$->appendChild($1);
     $$->appendChild(NTYPE($3, n_STRING));
@@ -1946,7 +1995,8 @@ function_call:
     $$ = NNEW(n_FUNCTION_CALL)->appendChild($$);
     $$->appendChild(NEXPAND($4, $5, $6));
   }
-| variable_class_name T_PAAMAYIM_NEKUDOTAYIM variable_without_objects '(' function_call_parameter_list ')' {
+| variable_class_name T_PAAMAYIM_NEKUDOTAYIM variable_without_objects
+  '(' function_call_parameter_list ')' {
     $$ = NNEW(n_CLASS_STATIC_ACCESS);
     $$->appendChild($1);
     $$->appendChild(NTYPE($3, n_STRING));
@@ -1954,7 +2004,8 @@ function_call:
     $$ = NNEW(n_FUNCTION_CALL)->appendChild($$);
     $$->appendChild(NEXPAND($4, $5, $6));
   }
-| class_name T_PAAMAYIM_NEKUDOTAYIM variable_without_objects '(' function_call_parameter_list ')' {
+| class_name T_PAAMAYIM_NEKUDOTAYIM variable_without_objects
+  '(' function_call_parameter_list ')' {
     $$ = NNEW(n_CLASS_STATIC_ACCESS);
     $$->appendChild($1);
     $$->appendChild(NTYPE($3, n_STRING));
@@ -2006,11 +2057,17 @@ class_name_reference:
 ;
 
 dynamic_class_name_reference:
-  base_variable T_OBJECT_OPERATOR object_property dynamic_class_name_variable_properties {
+  base_variable
+  T_OBJECT_OPERATOR
+  object_property
+  dynamic_class_name_variable_properties {
     $$ = NNEW(n_OBJECT_PROPERTY_ACCESS);
     $$->appendChild($1);
     $$->appendChild($3);
-    for (xhpast::node_list_t::iterator ii = $4->children.begin(); ii != $4->children.end(); ++ii) {
+    for (xhpast::node_list_t::iterator ii = $4->children.begin();
+      ii != $4->children.end();
+      ++ii) {
+
       $$ = NNEW(n_OBJECT_PROPERTY_ACCESS)->appendChild($$);
       $$->appendChild(*ii);
     }
@@ -2170,7 +2227,11 @@ possible_comma:
 ;
 
 non_empty_static_array_pair_list:
-  non_empty_static_array_pair_list ',' static_scalar T_DOUBLE_ARROW static_scalar {
+  non_empty_static_array_pair_list
+  ','
+  static_scalar
+  T_DOUBLE_ARROW
+  static_scalar {
     $$ = NNEW(n_ARRAY_VALUE);
     $$->appendChild($3);
     $$->appendChild($5);
@@ -2218,7 +2279,10 @@ rw_variable:
 ;
 
 variable:
-  base_variable_with_function_calls T_OBJECT_OPERATOR object_property method_or_not variable_properties {
+  base_variable_with_function_calls
+  T_OBJECT_OPERATOR
+  object_property method_or_not
+  variable_properties {
     $$ = NNEW(n_OBJECT_PROPERTY_ACCESS);
     $$->appendChild($1);
     $$->appendChild($3);
@@ -2228,7 +2292,10 @@ variable:
       $$->appendChild($4);
     }
 
-    for (xhpast::node_list_t::iterator ii = $5->children.begin(); ii != $5->children.end(); ++ii) {
+    for (xhpast::node_list_t::iterator ii = $5->children.begin();
+      ii != $5->children.end();
+      ++ii) {
+
       if ((*ii)->type == n_CALL_PARAMETER_LIST) {
         $$ = NNEW(n_METHOD_CALL)->appendChild($$);
         $$->appendChild((*ii));
