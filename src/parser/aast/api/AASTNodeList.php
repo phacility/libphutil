@@ -58,18 +58,6 @@ final class AASTNodeList implements Countable, Iterator {
     return $this;
   }
 
-  protected function executeSelectDescendantsOfType($node, $type) {
-    $results = array();
-    foreach ($node->getChildren() as $id => $child) {
-      if ($child->getTypeID() == $type) {
-        $results[$id] = $child;
-      } else {
-        $results += $this->executeSelectDescendantsOfType($child, $type);
-      }
-    }
-    return $results;
-  }
-
   public function getTokens() {
     $tokens = array();
     foreach ($this->list as $node) {
