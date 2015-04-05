@@ -7629,10 +7629,4 @@ const char* yytokname(int tok) {
   }
   return yytname[YYTRANSLATE(tok)];
 }
-
-
-/*
- * vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2
- */
-
 /* @generated */
