@@ -34,23 +34,23 @@ abstract class AASTNode {
     $this->tree = $tree;
   }
 
-  public function getParentNode() {
+  public final function getParentNode() {
     return $this->parentNode;
   }
 
-  public function getID() {
+  public final function getID() {
     return $this->id;
   }
 
-  public function getTypeID() {
+  public final function getTypeID() {
     return $this->typeID;
   }
 
-  public function getTree() {
+  public final function getTree() {
     return $this->tree;
   }
 
-  public function getTypeName() {
+  public final function getTypeName() {
     if (empty($this->typeName)) {
       $this->typeName =
         $this->tree->getNodeTypeNameFromTypeID($this->getTypeID());
@@ -58,7 +58,7 @@ abstract class AASTNode {
     return $this->typeName;
   }
 
-  public function getChildren() {
+  public final function getChildren() {
     return $this->children;
   }
 
@@ -250,11 +250,11 @@ abstract class AASTNode {
     return pht('a node of type %s: "%s"', $this->getTypeName(), $concrete);
   }
 
-  protected function getTypeIDFromTypeName($type_name) {
+  protected final function getTypeIDFromTypeName($type_name) {
     return $this->tree->getNodeTypeIDFromTypeName($type_name);
   }
 
-  public function getOffset() {
+  public final function getOffset() {
     $stream = $this->tree->getRawTokenStream();
     if (empty($stream[$this->l])) {
       return null;
@@ -262,7 +262,7 @@ abstract class AASTNode {
     return $stream[$this->l]->getOffset();
   }
 
-  public function getLength() {
+  public final function getLength() {
     $stream = $this->tree->getRawTokenStream();
     if (empty($stream[$this->r])) {
       return null;
@@ -288,11 +288,11 @@ abstract class AASTNode {
     return array($before, $after);
   }
 
-  public function getLineNumber() {
+  public final function getLineNumber() {
     return idx($this->tree->getOffsetToLineNumberMap(), $this->getOffset());
   }
 
-  public function getEndLineNumber() {
+  public final function getEndLineNumber() {
     return idx(
       $this->tree->getOffsetToLineNumberMap(),
       $this->getOffset() + $this->getLength());

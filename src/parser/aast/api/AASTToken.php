@@ -17,11 +17,11 @@ abstract class AASTToken {
     $this->tree = $tree;
   }
 
-  public function getTokenID() {
+  public final function getTokenID() {
     return $this->id;
   }
 
-  public function getTypeID() {
+  public final function getTypeID() {
     return $this->typeID;
   }
 
@@ -32,11 +32,11 @@ abstract class AASTToken {
     return $this->typeName;
   }
 
-  public function getValue() {
+  public final function getValue() {
     return $this->value;
   }
 
-  public function getOffset() {
+  public final function getOffset() {
     return $this->offset;
   }
 
