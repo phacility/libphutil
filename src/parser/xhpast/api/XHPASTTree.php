@@ -14,12 +14,7 @@ final class XHPASTTree extends AASTTree {
     return new XHPASTNode($id, $data, $tree);
   }
 
-  public function newToken(
-    $id,
-    $type,
-    $value,
-    $offset,
-    AASTTree $tree) {
+  public function newToken($id, $type, $value, $offset, AASTTree $tree) {
     return new XHPASTToken($id, $type, $value, $offset, $tree);
   }
 

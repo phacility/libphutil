@@ -3,8 +3,10 @@
 final class XHPASTNode extends AASTNode {
 
   public function isStaticScalar() {
-    return ($this->getTypeName() == 'n_STRING_SCALAR' ||
-            $this->getTypeName() == 'n_NUMERIC_SCALAR');
+    return in_array($this->getTypeName(), array(
+      'n_STRING_SCALAR',
+      'n_NUMERIC_SCALAR',
+    ));
   }
 
   public function getDocblockToken() {
@@ -55,7 +57,7 @@ final class XHPASTNode extends AASTNode {
           case 'null':
             return null;
           default:
-            throw new Exception('Unrecognized symbol name.');
+            throw new Exception(pht('Unrecognized symbol name.'));
         }
         break;
       case 'n_UNARY_PREFIX_EXPRESSION':
@@ -69,7 +71,8 @@ final class XHPASTNode extends AASTNode {
             return $operand->evalStatic();
             break;
           default:
-            throw new Exception('Unexpected operator in static expression.');
+            throw new Exception(
+              pht('Unexpected operator in static expression.'));
         }
         break;
       case 'n_ARRAY_LITERAL':
@@ -141,7 +144,7 @@ final class XHPASTNode extends AASTNode {
         break;
 
       default:
-        throw new Exception('Unexpected type '.$this->getTypeName().'.');
+        throw new Exception(pht('Unexpected type %s.', $this->getTypeName()));
     }
 
     // We extract just the variable names and ignore properties and array keys.
