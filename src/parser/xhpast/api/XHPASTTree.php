@@ -35,7 +35,8 @@ final class XHPASTTree extends AASTTree {
     $tree = XHPASTTree::newFromData($string);
     $statements = $tree->getRootNode()->selectDescendantsOfType('n_STATEMENT');
     if (count($statements) != 1) {
-      throw new Exception('String does not parse into exactly one statement!');
+      throw new Exception(
+        pht('String does not parse into exactly one statement!'));
     }
     // Return the first one, trying to use reset() with iterators ends in tears.
     foreach ($statements as $statement) {
@@ -59,7 +60,11 @@ final class XHPASTTree extends AASTTree {
           throw new XHPASTSyntaxErrorException($matches[2], trim($stderr));
         }
       }
-      throw new Exception("XHPAST failed to parse file data {$err}: {$stderr}");
+      throw new Exception(
+        pht(
+          'XHPAST failed to parse file data %d: %s',
+          $err,
+          $stderr));
     }
 
     $data = null;
