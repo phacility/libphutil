@@ -78,8 +78,11 @@ abstract class AASTNode {
     $child = $this->getChildByIndex($index);
     if ($child->getTypeName() != $type) {
       throw new Exception(
-        "Child in position '{$index}' is not of type '{$type}': ".
-        $this->getDescription());
+        pht(
+          "Child in position '%d' is not of type '%s': %s",
+          $index,
+          $type,
+          $this->getDescription()));
     }
 
     return $child;
@@ -96,7 +99,7 @@ abstract class AASTNode {
       ++$idx;
     }
 
-    throw new Exception("No child with index '{$index}'.");
+    throw new Exception(pht("No child with index '%d'.", $index));
   }
 
   /**
@@ -244,7 +247,7 @@ abstract class AASTNode {
 
     $concrete = addcslashes($concrete, "\\\n\"");
 
-    return 'a node of type '.$this->getTypeName().': "'.$concrete.'"';
+    return pht('a node of type %s: "%s"', $this->getTypeName(), $concrete);
   }
 
   protected function getTypeIDFromTypeName($type_name) {
