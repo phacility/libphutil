@@ -28,11 +28,7 @@ final class AASTNodeList implements Countable, Iterator {
   }
 
   public function selectDescendantsOfType($type_name) {
-    $results = array();
-    foreach ($this->list as $id => $node) {
-      $results += $node->selectDescendantsOfType($type_name)->getRawNodes();
-    }
-    return $this->newList($results);
+    return $this->selectDescendantsOfTypes(array($type_name));
   }
 
   public function selectDescendantsOfTypes(array $type_names) {
