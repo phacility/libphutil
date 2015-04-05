@@ -4,6 +4,7 @@ abstract class AASTToken {
 
   protected $id;
   protected $typeID;
+  protected $typeName;
   protected $value;
   protected $offset;
   protected $tree;
@@ -11,8 +12,8 @@ abstract class AASTToken {
   public function __construct($id, $type, $value, $offset, AASTTree $tree) {
     $this->id = $id;
     $this->typeID = $type;
-    $this->offset = $offset;
     $this->value = $value;
+    $this->offset = $offset;
     $this->tree = $tree;
   }
 
