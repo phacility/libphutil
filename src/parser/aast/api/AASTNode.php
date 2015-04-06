@@ -239,6 +239,23 @@ abstract class AASTNode {
     return implode('', mpull($tokens, 'getValue'));
   }
 
+  public function getIndentation() {
+    $tokens = $this->getTokens();
+    $left = head($tokens);
+
+    while ($left &&
+           (!$left->isAnyWhitespace() ||
+            strpos($left->getValue(), "\n") === false)) {
+      $left = $left->getPrevToken();
+    }
+
+    if (!$left) {
+      return null;
+    }
+
+    return preg_replace("/^.*\n/s", '', $left->getValue());
+  }
+
   public function getDescription() {
     $concrete = $this->getConcreteString();
     if (strlen($concrete) > 75) {
