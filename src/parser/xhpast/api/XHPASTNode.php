@@ -106,6 +106,14 @@ final class XHPASTNode extends AASTNode {
   }
 
   public function isConstantString() {
+    return $this->checkIsConstantString(array());
+  }
+
+  public function isConstantStringWithMagicConstants() {
+    return $this->checkIsConstantString(array('n_MAGIC_SCALAR'));
+  }
+
+  private function checkIsConstantString(array $additional_types) {
     switch ($this->getTypeName()) {
       case 'n_HEREDOC':
       case 'n_STRING_SCALAR':
@@ -116,13 +124,17 @@ final class XHPASTNode extends AASTNode {
           if ($child->getTypeName() == 'n_OPERATOR') {
             continue;
           }
-          if (!$child->isConstantString()) {
+          if (!$child->checkIsConstantString($additional_types)) {
             return false;
           }
         }
         return true;
 
       default:
+        if (in_array($this->getTypeName(), $additional_types)) {
+          return true;
+        }
+
         return false;
     }
   }
