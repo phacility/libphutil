@@ -6,6 +6,10 @@ require_once dirname(__FILE__).'/__init_script__.php';
 $target = 'resources/php_compat_info.json';
 echo "Purpose: Updates {$target} used by ArcanistXHPASTLinter.\n";
 
+// PHP CompatInfo is installed via Composer.
+//
+// You should symlink the Composer vendor directory to
+// libphutil/externals/includes/vendor`.
 require_once 'vendor/autoload.php';
 
 $output = array();
@@ -15,64 +19,58 @@ $output['functions'] = array();
 $output['classes'] = array();
 $output['interfaces'] = array();
 $output['constants'] = array();
-$output['classMethods'] = array();
 
-$loader = new \Bartlett\CompatInfo\Reference\ReferenceLoader();
-$prefetch = new \Bartlett\CompatInfo\Reference\Strategy\PreFetchStrategy();
-$loader->register($prefetch);
-$references = $loader->getProvidedReferences();
+/**
+ * Transform compatibility info into a slightly different format.
+ *
+ * The data returned by PHP CompatInfo is slightly odd in that null data is
+ * represented by an empty string.
+ *
+ * @param  map<string, string>
+ * @return map<string, string | null>
+ */
+function parse_compat_info(array $compat) {
+  return array(
+    'ext.name' => $compat['ext.name'],
+    'ext.min' => nonempty($compat['ext.min'], null),
+    'ext.max' => nonempty($compat['ext.max'], null),
+    'php.min' => nonempty($compat['php.min'], null),
+    'php.max' => nonempty($compat['php.max'], null),
+  );
+}
 
-foreach ($references as $reference) {
-  $reference_name = ucfirst(str_replace(' ', '', $reference->name));
-  $class_name = "\\Bartlett\\CompatInfo\\Reference".
-                "\\Extension\\{$reference_name}Extension";
-  $reference = new $class_name();
+$client = new \Bartlett\Reflect\Client();
+$api = $client->api('reference');
 
-  foreach ($reference->getFunctions() as $function => $compat) {
-    $output['functions'][$function] = array(
-      'min' => nonempty($compat['php.min'], null),
-      'max' => nonempty($compat['php.max'], null),
-      'ref' => $reference->getName(),
-    );
+foreach ($api->dir() as $extension) {
+  $result = $api->show(
+    $extension->name,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true);
+
+  foreach ($result['constants'] as $constant => $compat) {
+    $output['constants'][$constant] = parse_compat_info($compat);
+  }
+
+  foreach ($result['functions'] as $function => $compat) {
+    $output['functions'][$function] = parse_compat_info($compat);
 
     if (idx($compat, 'parameters')) {
-      $output['params'][$function] = array_map(
-        'trim', explode(',', $compat['parameters']));
+      $output['params'][$function] = explode(', ', $compat['parameters']);
     }
   }
 
-  foreach ($reference->getInterfaces() as $interface => $compat) {
-    $output['interfaces'][$interface] = array(
-      'min' => nonempty($compat['php.min'], null),
-      'max' => nonempty($compat['php.max'], null),
-    );
+  foreach ($result['classes'] as $class => $compat) {
+    $output['classes'][$class] = parse_compat_info($compat);
   }
 
-  foreach ($reference->getClasses() as $class => $compat) {
-    $output['classes'][$class] = array(
-      'min' => nonempty($compat['php.min'], null),
-      'max' => nonempty($compat['php.max'], null),
-    );
-  }
-
-  foreach ($reference->getConstants() as $constant => $compat) {
-    $output['constants'][$constant] = array(
-      'min' => nonempty($compat['php.min'], null),
-      'max' => nonempty($compat['php.max'], null),
-    );
-  }
-
-  foreach ($reference->getClassMethods() as $class => $methods) {
-    if (!array_key_exists($class, $output['classMethods'])) {
-      $output['classMethods'][$class] = array();
-    }
-
-    foreach ($methods as $method => $compat) {
-      $output['classMethods'][$class][$method] = array(
-        'min' => nonempty($compat['php.min'], null),
-        'max' => nonempty($compat['php.max'], null),
-      );
-    }
+  foreach ($result['interfaces'] as $interface => $compat) {
+    $output['interfaces'][$interface] = parse_compat_info($compat);
   }
 }
 
@@ -81,9 +79,10 @@ ksort($output['functions']);
 ksort($output['classes']);
 ksort($output['interfaces']);
 ksort($output['constants']);
-ksort($output['classMethods']);
 
 // Grepped from PHP Manual.
+// TODO: Can we get this from PHP CompatInfo?
+// See https://github.com/llaville/php-compat-info/issues/185.
 $output['functions_windows'] = array(
   'apache_child_terminate' => false,
   'chroot' => false,
