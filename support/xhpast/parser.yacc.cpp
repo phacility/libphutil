@@ -940,50 +940,50 @@ static const yytype_int16 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   194,   194,   200,   203,   209,   212,   218,   219,   220,
-     221,   226,   233,   239,   247,   253,   260,   263,   270,   275,
-     281,   287,   297,   304,   314,   317,   323,   324,   325,   326,
-     334,   335,   341,   344,   347,   353,   356,   386,   401,   408,
-     416,   429,   436,   443,   450,   457,   464,   471,   478,   485,
-     490,   495,   500,   504,   508,   512,   518,   535,   551,   557,
-     561,   575,   583,   594,   595,   601,   604,   614,   618,   625,
-     636,   640,   647,   651,   655,   659,   662,   668,   682,   693,
-     708,   712,   719,   726,   733,   736,   742,   746,   749,   757,
-     760,   768,   771,   777,   780,   786,   787,   795,   796,   804,
-     805,   813,   814,   822,   828,   839,   842,   852,   857,   869,
-     872,   880,   890,   891,   895,   896,   904,   907,   917,   920,
-     930,   933,   941,   944,   952,   953,   959,   967,   976,   985,
-     993,  1001,  1010,  1019,  1030,  1033,  1036,  1039,  1045,  1046,
-    1052,  1055,  1058,  1063,  1066,  1069,  1077,  1081,  1088,  1091,
-    1095,  1102,  1110,  1118,  1126,  1137,  1140,  1146,  1154,  1158,
-    1161,  1161,  1181,  1189,  1192,  1198,  1201,  1207,  1210,  1216,
-    1220,  1227,  1230,  1236,  1244,  1248,  1255,  1259,  1265,  1273,
-    1279,  1288,  1291,  1299,  1302,  1308,  1309,  1316,  1319,  1326,
-    1330,  1336,  1337,  1338,  1339,  1340,  1341,  1345,  1352,  1359,
-    1366,  1376,  1385,  1397,  1400,  1407,  1410,  1415,  1418,  1425,
-    1433,  1439,  1449,  1463,  1468,  1474,  1480,  1486,  1492,  1498,
-    1504,  1510,  1516,  1522,  1528,  1534,  1539,  1544,  1549,  1554,
-    1560,  1566,  1572,  1578,  1584,  1590,  1596,  1602,  1628,  1634,
-    1640,  1646,  1652,  1658,  1664,  1670,  1675,  1680,  1685,  1690,
-    1696,  1702,  1708,  1714,  1720,  1726,  1732,  1738,  1744,  1745,
-    1746,  1752,  1758,  1759,  1764,  1769,  1774,  1779,  1784,  1789,
-    1794,  1799,  1804,  1808,  1809,  1810,  1811,  1816,  1822,  1833,
-    1853,  1859,  1865,  1871,  1880,  1884,  1887,  1895,  1898,  1903,
-    1907,  1916,  1921,  1927,  1933,  1941,  1949,  1957,  1965,  1973,
-    1976,  1979,  1983,  1990,  1993,  1997,  2004,  2005,  2009,  2018,
-    2022,  2025,  2031,  2037,  2040,  2044,  2052,  2055,  2061,  2064,
-    2067,  2070,  2073,  2076,  2079,  2082,  2085,  2088,  2091,  2094,
-    2100,  2101,  2102,  2106,  2110,  2115,  2120,  2126,  2132,  2136,
-    2144,  2145,  2146,  2147,  2150,  2153,  2157,  2160,  2166,  2169,
-    2173,  2180,  2187,  2194,  2204,  2205,  2209,  2213,  2217,  2221,
-    2241,  2245,  2248,  2254,  2264,  2270,  2279,  2285,  2286,  2287,
-    2293,  2294,  2309,  2314,  2322,  2326,  2332,  2341,  2342,  2343,
-    2347,  2348,  2351,  2363,  2367,  2373,  2379,  2383,  2386,  2394,
-    2397,  2403,  2404,  2408,  2414,  2420,  2424,  2428,  2434,  2437,
-    2452,  2455,  2462,  2463,  2468,  2474,  2477,  2483,  2490,  2497,
-    2504,  2511,  2518,  2525,  2532,  2542,  2552,  2562,  2565,  2568,
-    2578,  2581,  2587,  2591,  2597,  2602,  2608,  2614,  2620,  2629,
-    2635,  2644,  2653,  2658
+       0,   217,   217,   223,   226,   232,   235,   241,   242,   243,
+     244,   249,   256,   262,   270,   276,   283,   286,   293,   298,
+     304,   310,   320,   327,   337,   340,   346,   347,   348,   349,
+     357,   358,   364,   367,   370,   376,   379,   409,   428,   435,
+     443,   456,   463,   470,   477,   484,   491,   498,   505,   512,
+     517,   522,   527,   531,   535,   539,   545,   563,   580,   586,
+     590,   608,   616,   627,   628,   634,   637,   647,   651,   658,
+     670,   674,   681,   685,   689,   693,   696,   702,   717,   729,
+     744,   748,   755,   762,   769,   772,   778,   782,   785,   793,
+     796,   804,   807,   813,   816,   822,   823,   831,   832,   840,
+     841,   849,   850,   858,   864,   875,   878,   888,   893,   905,
+     908,   916,   926,   927,   931,   932,   940,   943,   953,   956,
+     966,   969,   977,   980,   988,   989,   995,  1003,  1012,  1021,
+    1029,  1037,  1046,  1056,  1068,  1071,  1074,  1077,  1083,  1084,
+    1090,  1093,  1096,  1101,  1104,  1107,  1115,  1119,  1126,  1129,
+    1133,  1140,  1148,  1156,  1164,  1175,  1178,  1184,  1192,  1196,
+    1199,  1199,  1221,  1229,  1232,  1238,  1241,  1247,  1250,  1256,
+    1260,  1267,  1270,  1276,  1284,  1288,  1295,  1299,  1305,  1313,
+    1319,  1328,  1331,  1339,  1342,  1348,  1349,  1356,  1359,  1366,
+    1370,  1376,  1377,  1378,  1379,  1380,  1381,  1385,  1392,  1399,
+    1406,  1416,  1425,  1437,  1440,  1447,  1450,  1455,  1458,  1465,
+    1473,  1479,  1489,  1503,  1508,  1514,  1520,  1526,  1532,  1538,
+    1544,  1550,  1556,  1562,  1568,  1574,  1579,  1584,  1589,  1594,
+    1600,  1606,  1612,  1618,  1624,  1630,  1636,  1642,  1668,  1674,
+    1680,  1686,  1692,  1698,  1704,  1710,  1715,  1720,  1725,  1730,
+    1736,  1742,  1748,  1754,  1760,  1766,  1772,  1778,  1784,  1785,
+    1786,  1792,  1798,  1799,  1804,  1809,  1814,  1819,  1824,  1829,
+    1834,  1839,  1844,  1848,  1849,  1850,  1851,  1856,  1862,  1876,
+    1899,  1905,  1911,  1917,  1926,  1930,  1933,  1941,  1944,  1949,
+    1953,  1962,  1967,  1974,  1980,  1989,  1998,  2007,  2016,  2024,
+    2027,  2030,  2034,  2041,  2044,  2048,  2055,  2056,  2060,  2075,
+    2079,  2082,  2088,  2094,  2097,  2101,  2109,  2112,  2118,  2121,
+    2124,  2127,  2130,  2133,  2136,  2139,  2142,  2145,  2148,  2151,
+    2157,  2158,  2159,  2163,  2167,  2172,  2177,  2183,  2189,  2193,
+    2201,  2202,  2203,  2204,  2207,  2210,  2214,  2217,  2223,  2226,
+    2230,  2241,  2248,  2255,  2265,  2266,  2270,  2274,  2278,  2282,
+    2308,  2312,  2315,  2321,  2331,  2337,  2346,  2352,  2353,  2354,
+    2360,  2361,  2376,  2381,  2389,  2393,  2399,  2408,  2409,  2410,
+    2414,  2415,  2418,  2430,  2434,  2440,  2446,  2450,  2453,  2461,
+    2464,  2470,  2471,  2475,  2481,  2487,  2491,  2495,  2501,  2504,
+    2519,  2522,  2529,  2530,  2535,  2541,  2544,  2550,  2557,  2564,
+    2571,  2578,  2585,  2592,  2599,  2609,  2619,  2629,  2632,  2635,
+    2645,  2648,  2654,  2658,  2664,  2669,  2675,  2681,  2687,  2696,
+    2702,  2711,  2720,  2725
 };
 #endif
 
@@ -3929,42 +3929,42 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 194 "parser.y"
+#line 217 "parser.y"
     {
     *root = NNEW(n_PROGRAM)->appendChild((yyvsp[(1) - (1)]));
   ;}
     break;
 
   case 3:
-#line 200 "parser.y"
+#line 223 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (2)])->appendChild((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 4:
-#line 203 "parser.y"
+#line 226 "parser.y"
     {
     (yyval) = NNEW(n_STATEMENT_LIST);
   ;}
     break;
 
   case 5:
-#line 209 "parser.y"
+#line 232 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_SYMBOL_NAME);
   ;}
     break;
 
   case 6:
-#line 212 "parser.y"
+#line 235 "parser.y"
     {
     (yyval) = NMORE((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 10:
-#line 221 "parser.y"
+#line 244 "parser.y"
     {
     (yyvsp[(1) - (4)]) = NSPAN((yyvsp[(1) - (4)]), n_HALT_COMPILER, (yyvsp[(3) - (4)]));
     (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[(1) - (4)]));
@@ -3973,7 +3973,7 @@ yyreduce:
     break;
 
   case 11:
-#line 226 "parser.y"
+#line 249 "parser.y"
     {
     NSPAN((yyvsp[(1) - (3)]), n_NAMESPACE, (yyvsp[(2) - (3)]));
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -3984,7 +3984,7 @@ yyreduce:
     break;
 
   case 12:
-#line 233 "parser.y"
+#line 256 "parser.y"
     {
   NSPAN((yyvsp[(1) - (5)]), n_NAMESPACE, (yyvsp[(5) - (5)]));
   (yyvsp[(1) - (5)])->appendChild((yyvsp[(2) - (5)]));
@@ -3994,7 +3994,7 @@ yyreduce:
     break;
 
   case 13:
-#line 239 "parser.y"
+#line 262 "parser.y"
     {
   NSPAN((yyvsp[(1) - (4)]), n_NAMESPACE, (yyvsp[(4) - (4)]));
   (yyvsp[(1) - (4)])->appendChild(NNEW(n_EMPTY));
@@ -4006,7 +4006,7 @@ yyreduce:
     break;
 
   case 14:
-#line 247 "parser.y"
+#line 270 "parser.y"
     {
   NSPAN((yyvsp[(1) - (3)]), n_USE, (yyvsp[(2) - (3)]));
   (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -4016,7 +4016,7 @@ yyreduce:
     break;
 
   case 15:
-#line 253 "parser.y"
+#line 276 "parser.y"
     {
   (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[(1) - (2)]));
   NMORE((yyval), (yyvsp[(2) - (2)]));
@@ -4024,14 +4024,14 @@ yyreduce:
     break;
 
   case 16:
-#line 260 "parser.y"
+#line 283 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 17:
-#line 263 "parser.y"
+#line 286 "parser.y"
     {
     (yyval) = NNEW(n_USE_LIST);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -4039,7 +4039,7 @@ yyreduce:
     break;
 
   case 18:
-#line 270 "parser.y"
+#line 293 "parser.y"
     {
     (yyval) = NNEW(n_USE);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -4048,7 +4048,7 @@ yyreduce:
     break;
 
   case 19:
-#line 275 "parser.y"
+#line 298 "parser.y"
     {
     (yyval) = NNEW(n_USE);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -4058,7 +4058,7 @@ yyreduce:
     break;
 
   case 20:
-#line 281 "parser.y"
+#line 304 "parser.y"
     {
     (yyval) = NNEW(n_USE);
     NMORE((yyvsp[(2) - (2)]), (yyvsp[(1) - (2)]));
@@ -4068,7 +4068,7 @@ yyreduce:
     break;
 
   case 21:
-#line 287 "parser.y"
+#line 310 "parser.y"
     {
     (yyval) = NNEW(n_USE);
     NMORE((yyvsp[(2) - (4)]), (yyvsp[(1) - (4)]));
@@ -4079,7 +4079,7 @@ yyreduce:
     break;
 
   case 22:
-#line 297 "parser.y"
+#line 320 "parser.y"
     {
     NMORE((yyval), (yyvsp[(5) - (5)]));
     (yyval)->appendChild(
@@ -4090,7 +4090,7 @@ yyreduce:
     break;
 
   case 23:
-#line 304 "parser.y"
+#line 327 "parser.y"
     {
     NSPAN((yyval), n_CONSTANT_DECLARATION_LIST, (yyvsp[(4) - (4)]));
     (yyval)->appendChild(
@@ -4101,21 +4101,21 @@ yyreduce:
     break;
 
   case 24:
-#line 314 "parser.y"
+#line 337 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (2)])->appendChild((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 25:
-#line 317 "parser.y"
+#line 340 "parser.y"
     {
     (yyval) = NNEW(n_STATEMENT_LIST);
   ;}
     break;
 
   case 29:
-#line 326 "parser.y"
+#line 349 "parser.y"
     {
   (yyvsp[(1) - (4)]) = NSPAN((yyvsp[(1) - (4)]), n_HALT_COMPILER, (yyvsp[(3) - (4)]));
   (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[(1) - (4)]));
@@ -4124,7 +4124,7 @@ yyreduce:
     break;
 
   case 31:
-#line 335 "parser.y"
+#line 358 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_STRING);
     (yyval) = NNEW(n_LABEL);
@@ -4134,35 +4134,35 @@ yyreduce:
     break;
 
   case 32:
-#line 341 "parser.y"
+#line 364 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_OPEN_TAG);
   ;}
     break;
 
   case 33:
-#line 344 "parser.y"
+#line 367 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_OPEN_TAG);
   ;}
     break;
 
   case 34:
-#line 347 "parser.y"
+#line 370 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_CLOSE_TAG);
   ;}
     break;
 
   case 35:
-#line 353 "parser.y"
+#line 376 "parser.y"
     {
     (yyval) = NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 36:
-#line 356 "parser.y"
+#line 379 "parser.y"
     {
     (yyval) = NNEW(n_CONDITION_LIST);
 
@@ -4196,7 +4196,7 @@ yyreduce:
     break;
 
   case 37:
-#line 386 "parser.y"
+#line 413 "parser.y"
     {
 
     (yyval) = NNEW(n_CONDITION_LIST);
@@ -4215,7 +4215,7 @@ yyreduce:
     break;
 
   case 38:
-#line 401 "parser.y"
+#line 428 "parser.y"
     {
     NTYPE((yyvsp[(1) - (5)]), n_WHILE);
     (yyvsp[(1) - (5)])->appendChild(NSPAN((yyvsp[(2) - (5)]), n_CONTROL_CONDITION, (yyvsp[(4) - (5)]))->appendChild((yyvsp[(3) - (5)])));
@@ -4226,7 +4226,7 @@ yyreduce:
     break;
 
   case 39:
-#line 408 "parser.y"
+#line 435 "parser.y"
     {
     NTYPE((yyvsp[(1) - (7)]), n_DO_WHILE);
     (yyvsp[(1) - (7)])->appendChild((yyvsp[(2) - (7)]));
@@ -4238,7 +4238,7 @@ yyreduce:
     break;
 
   case 40:
-#line 416 "parser.y"
+#line 443 "parser.y"
     {
     NTYPE((yyvsp[(1) - (9)]), n_FOR);
 
@@ -4255,7 +4255,7 @@ yyreduce:
     break;
 
   case 41:
-#line 429 "parser.y"
+#line 456 "parser.y"
     {
     NTYPE((yyvsp[(1) - (5)]), n_SWITCH);
     (yyvsp[(1) - (5)])->appendChild(NSPAN((yyvsp[(2) - (5)]), n_CONTROL_CONDITION, (yyvsp[(4) - (5)]))->appendChild((yyvsp[(3) - (5)])));
@@ -4266,7 +4266,7 @@ yyreduce:
     break;
 
   case 42:
-#line 436 "parser.y"
+#line 463 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_BREAK);
     (yyvsp[(1) - (2)])->appendChild(NNEW(n_EMPTY));
@@ -4277,7 +4277,7 @@ yyreduce:
     break;
 
   case 43:
-#line 443 "parser.y"
+#line 470 "parser.y"
     {
     NTYPE((yyvsp[(1) - (3)]), n_BREAK);
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -4288,7 +4288,7 @@ yyreduce:
     break;
 
   case 44:
-#line 450 "parser.y"
+#line 477 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_CONTINUE);
     (yyvsp[(1) - (2)])->appendChild(NNEW(n_EMPTY));
@@ -4299,7 +4299,7 @@ yyreduce:
     break;
 
   case 45:
-#line 457 "parser.y"
+#line 484 "parser.y"
     {
     NTYPE((yyvsp[(1) - (3)]), n_CONTINUE);
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -4310,7 +4310,7 @@ yyreduce:
     break;
 
   case 46:
-#line 464 "parser.y"
+#line 491 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_RETURN);
     (yyvsp[(1) - (2)])->appendChild(NNEW(n_EMPTY));
@@ -4321,7 +4321,7 @@ yyreduce:
     break;
 
   case 47:
-#line 471 "parser.y"
+#line 498 "parser.y"
     {
     NTYPE((yyvsp[(1) - (3)]), n_RETURN);
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -4332,7 +4332,7 @@ yyreduce:
     break;
 
   case 48:
-#line 478 "parser.y"
+#line 505 "parser.y"
     {
     NTYPE((yyvsp[(1) - (3)]), n_RETURN);
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -4343,7 +4343,7 @@ yyreduce:
     break;
 
   case 49:
-#line 485 "parser.y"
+#line 512 "parser.y"
     {
     NMORE((yyvsp[(2) - (3)]), (yyvsp[(1) - (3)]));
     (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[(2) - (3)]));
@@ -4352,7 +4352,7 @@ yyreduce:
     break;
 
   case 50:
-#line 490 "parser.y"
+#line 517 "parser.y"
     {
     NMORE((yyvsp[(2) - (3)]), (yyvsp[(1) - (3)]));
     (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[(2) - (3)]));
@@ -4361,7 +4361,7 @@ yyreduce:
     break;
 
   case 51:
-#line 495 "parser.y"
+#line 522 "parser.y"
     {
     NMORE((yyvsp[(2) - (3)]), (yyvsp[(1) - (3)]));
     (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[(2) - (3)]));
@@ -4370,7 +4370,7 @@ yyreduce:
     break;
 
   case 52:
-#line 500 "parser.y"
+#line 527 "parser.y"
     {
     NTYPE((yyvsp[(1) - (1)]), n_INLINE_HTML);
     (yyval) = (yyvsp[(1) - (1)]);
@@ -4378,7 +4378,7 @@ yyreduce:
     break;
 
   case 53:
-#line 504 "parser.y"
+#line 531 "parser.y"
     {
     (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[(1) - (2)]));
     NMORE((yyval), (yyvsp[(2) - (2)]));
@@ -4386,7 +4386,7 @@ yyreduce:
     break;
 
   case 54:
-#line 508 "parser.y"
+#line 535 "parser.y"
     {
     (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[(1) - (2)]));
     NMORE((yyval), (yyvsp[(2) - (2)]));
@@ -4394,7 +4394,7 @@ yyreduce:
     break;
 
   case 55:
-#line 512 "parser.y"
+#line 539 "parser.y"
     {
     NMORE((yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]));
     NMORE((yyvsp[(3) - (5)]), (yyvsp[(1) - (5)]));
@@ -4404,7 +4404,7 @@ yyreduce:
     break;
 
   case 56:
-#line 518 "parser.y"
+#line 546 "parser.y"
     {
     NTYPE((yyvsp[(1) - (8)]), n_FOREACH);
     NSPAN((yyvsp[(2) - (8)]), n_FOREACH_EXPRESSION, (yyvsp[(7) - (8)]));
@@ -4425,7 +4425,7 @@ yyreduce:
     break;
 
   case 57:
-#line 535 "parser.y"
+#line 564 "parser.y"
     {
     NTYPE((yyvsp[(1) - (8)]), n_FOREACH);
     NSPAN((yyvsp[(2) - (8)]), n_FOREACH_EXPRESSION, (yyvsp[(7) - (8)]));
@@ -4445,7 +4445,7 @@ yyreduce:
     break;
 
   case 58:
-#line 551 "parser.y"
+#line 580 "parser.y"
     {
     NTYPE((yyvsp[(1) - (5)]), n_DECLARE);
     (yyvsp[(1) - (5)])->appendChild((yyvsp[(3) - (5)]));
@@ -4455,7 +4455,7 @@ yyreduce:
     break;
 
   case 59:
-#line 557 "parser.y"
+#line 586 "parser.y"
     {
     (yyval) = NNEW(n_STATEMENT)->appendChild(NNEW(n_EMPTY));
     NMORE((yyval), (yyvsp[(1) - (1)]));
@@ -4463,7 +4463,7 @@ yyreduce:
     break;
 
   case 60:
-#line 561 "parser.y"
+#line 594 "parser.y"
     {
     NTYPE((yyvsp[(1) - (14)]), n_TRY);
     (yyvsp[(1) - (14)])->appendChild(NEXPAND((yyvsp[(2) - (14)]), (yyvsp[(3) - (14)]), (yyvsp[(4) - (14)])));
@@ -4481,7 +4481,7 @@ yyreduce:
     break;
 
   case 61:
-#line 575 "parser.y"
+#line 608 "parser.y"
     {
   NTYPE((yyvsp[(1) - (3)]), n_THROW);
   (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -4493,7 +4493,7 @@ yyreduce:
     break;
 
   case 62:
-#line 583 "parser.y"
+#line 616 "parser.y"
     {
   NTYPE((yyvsp[(1) - (3)]), n_GOTO);
   NTYPE((yyvsp[(2) - (3)]), n_STRING);
@@ -4505,21 +4505,21 @@ yyreduce:
     break;
 
   case 64:
-#line 595 "parser.y"
+#line 628 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 65:
-#line 601 "parser.y"
+#line 634 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 66:
-#line 604 "parser.y"
+#line 637 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_FINALLY);
     (yyvsp[(1) - (4)])->appendChild((yyvsp[(3) - (4)]));
@@ -4529,7 +4529,7 @@ yyreduce:
     break;
 
   case 67:
-#line 614 "parser.y"
+#line 647 "parser.y"
     {
     (yyval) = NNEW(n_CATCH_LIST);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -4537,7 +4537,7 @@ yyreduce:
     break;
 
   case 68:
-#line 618 "parser.y"
+#line 651 "parser.y"
     {
     (yyvsp[(1) - (2)])->appendChild((yyvsp[(2) - (2)]));
     (yyval) = (yyvsp[(1) - (2)]);
@@ -4545,7 +4545,7 @@ yyreduce:
     break;
 
   case 69:
-#line 625 "parser.y"
+#line 659 "parser.y"
     {
     NTYPE((yyvsp[(1) - (8)]), n_CATCH);
     (yyvsp[(1) - (8)])->appendChild((yyvsp[(3) - (8)]));
@@ -4557,7 +4557,7 @@ yyreduce:
     break;
 
   case 70:
-#line 636 "parser.y"
+#line 670 "parser.y"
     {
     (yyval) = NNEW(n_UNSET_LIST);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -4565,7 +4565,7 @@ yyreduce:
     break;
 
   case 71:
-#line 640 "parser.y"
+#line 674 "parser.y"
     {
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
     (yyval) = (yyvsp[(1) - (3)]);
@@ -4573,21 +4573,21 @@ yyreduce:
     break;
 
   case 75:
-#line 659 "parser.y"
+#line 693 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 76:
-#line 662 "parser.y"
+#line 696 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_REFERENCE);
   ;}
     break;
 
   case 77:
-#line 668 "parser.y"
+#line 703 "parser.y"
     {
     NSPAN((yyvsp[(1) - (9)]), n_FUNCTION_DECLARATION, (yyvsp[(9) - (9)]));
     (yyvsp[(1) - (9)])->appendChild(NNEW(n_EMPTY));
@@ -4602,7 +4602,7 @@ yyreduce:
     break;
 
   case 78:
-#line 682 "parser.y"
+#line 718 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_DECLARATION);
     (yyval)->appendChild((yyvsp[(1) - (7)]));
@@ -4617,7 +4617,7 @@ yyreduce:
     break;
 
   case 79:
-#line 693 "parser.y"
+#line 729 "parser.y"
     {
     (yyval) = NNEW(n_INTERFACE_DECLARATION);
     (yyval)->appendChild(NNEW(n_CLASS_ATTRIBUTES));
@@ -4633,7 +4633,7 @@ yyreduce:
     break;
 
   case 80:
-#line 708 "parser.y"
+#line 744 "parser.y"
     {
     NTYPE((yyvsp[(1) - (1)]), n_CLASS_ATTRIBUTES);
     (yyval) = (yyvsp[(1) - (1)]);
@@ -4641,7 +4641,7 @@ yyreduce:
     break;
 
   case 81:
-#line 712 "parser.y"
+#line 748 "parser.y"
     {
     NTYPE((yyvsp[(2) - (2)]), n_CLASS_ATTRIBUTES);
     NMORE((yyvsp[(2) - (2)]), (yyvsp[(1) - (2)]));
@@ -4652,7 +4652,7 @@ yyreduce:
     break;
 
   case 82:
-#line 719 "parser.y"
+#line 755 "parser.y"
     {
     NTYPE((yyvsp[(2) - (2)]), n_CLASS_ATTRIBUTES);
     NMORE((yyvsp[(2) - (2)]), (yyvsp[(1) - (2)]));
@@ -4663,7 +4663,7 @@ yyreduce:
     break;
 
   case 83:
-#line 726 "parser.y"
+#line 762 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_ATTRIBUTES);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (1)]), n_STRING));
@@ -4671,28 +4671,28 @@ yyreduce:
     break;
 
   case 84:
-#line 733 "parser.y"
+#line 769 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 85:
-#line 736 "parser.y"
+#line 772 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (2)]), n_EXTENDS_LIST)->appendChild((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 87:
-#line 746 "parser.y"
+#line 782 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 88:
-#line 749 "parser.y"
+#line 785 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_EXTENDS_LIST);
     (yyvsp[(1) - (2)])->appendChildren((yyvsp[(2) - (2)]));
@@ -4701,14 +4701,14 @@ yyreduce:
     break;
 
   case 89:
-#line 757 "parser.y"
+#line 793 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 90:
-#line 760 "parser.y"
+#line 796 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_IMPLEMENTS_LIST);
     (yyvsp[(1) - (2)])->appendChildren((yyvsp[(2) - (2)]));
@@ -4717,35 +4717,35 @@ yyreduce:
     break;
 
   case 91:
-#line 768 "parser.y"
+#line 804 "parser.y"
     {
     (yyval) = NNEW(n_IMPLEMENTS_LIST)->appendChild((yyvsp[(1) - (1)]));
   ;}
     break;
 
   case 92:
-#line 771 "parser.y"
+#line 807 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 93:
-#line 777 "parser.y"
+#line 813 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 94:
-#line 780 "parser.y"
+#line 816 "parser.y"
     {
     (yyval) = (yyvsp[(2) - (2)]);
   ;}
     break;
 
   case 96:
-#line 787 "parser.y"
+#line 823 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_VARIABLE_REFERENCE);
     (yyvsp[(1) - (2)])->appendChild((yyvsp[(2) - (2)]));
@@ -4754,7 +4754,7 @@ yyreduce:
     break;
 
   case 98:
-#line 796 "parser.y"
+#line 832 "parser.y"
     {
   NMORE((yyvsp[(2) - (4)]), (yyvsp[(1) - (4)]));
   NMORE((yyvsp[(2) - (4)]), (yyvsp[(4) - (4)]));
@@ -4763,7 +4763,7 @@ yyreduce:
     break;
 
   case 100:
-#line 805 "parser.y"
+#line 841 "parser.y"
     {
   NMORE((yyvsp[(2) - (4)]), (yyvsp[(1) - (4)]));
   NMORE((yyvsp[(2) - (4)]), (yyvsp[(4) - (4)]));
@@ -4772,7 +4772,7 @@ yyreduce:
     break;
 
   case 102:
-#line 814 "parser.y"
+#line 850 "parser.y"
     {
   NMORE((yyvsp[(2) - (4)]), (yyvsp[(1) - (4)]));
   NMORE((yyvsp[(2) - (4)]), (yyvsp[(4) - (4)]));
@@ -4781,7 +4781,7 @@ yyreduce:
     break;
 
   case 103:
-#line 822 "parser.y"
+#line 858 "parser.y"
     {
     (yyval) = NNEW(n_DECLARE_DECLARATION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (3)]), n_STRING));
@@ -4791,7 +4791,7 @@ yyreduce:
     break;
 
   case 104:
-#line 828 "parser.y"
+#line 864 "parser.y"
     {
     (yyval) = NNEW(n_DECLARE_DECLARATION);
     (yyval)->appendChild(NTYPE((yyvsp[(3) - (5)]), n_STRING));
@@ -4803,14 +4803,14 @@ yyreduce:
     break;
 
   case 105:
-#line 839 "parser.y"
+#line 875 "parser.y"
     {
     (yyval) = NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 106:
-#line 842 "parser.y"
+#line 878 "parser.y"
     {
     // ...why does this rule exist?
 
@@ -4824,7 +4824,7 @@ yyreduce:
     break;
 
   case 107:
-#line 852 "parser.y"
+#line 888 "parser.y"
     {
     NMORE((yyvsp[(2) - (4)]), (yyvsp[(4) - (4)]));
     NMORE((yyvsp[(2) - (4)]), (yyvsp[(1) - (4)]));
@@ -4833,7 +4833,7 @@ yyreduce:
     break;
 
   case 108:
-#line 857 "parser.y"
+#line 893 "parser.y"
     {
     NTYPE((yyvsp[(2) - (5)]), n_STATEMENT);
     (yyvsp[(1) - (5)])->appendChild(NNEW(n_EMPTY));
@@ -4846,14 +4846,14 @@ yyreduce:
     break;
 
   case 109:
-#line 869 "parser.y"
+#line 905 "parser.y"
     {
     (yyval) = NNEW(n_STATEMENT_LIST);
   ;}
     break;
 
   case 110:
-#line 872 "parser.y"
+#line 908 "parser.y"
     {
     NTYPE((yyvsp[(2) - (5)]), n_CASE);
     (yyvsp[(2) - (5)])->appendChild((yyvsp[(3) - (5)]));
@@ -4865,7 +4865,7 @@ yyreduce:
     break;
 
   case 111:
-#line 880 "parser.y"
+#line 916 "parser.y"
     {
     NTYPE((yyvsp[(2) - (4)]), n_DEFAULT);
     (yyvsp[(2) - (4)])->appendChild((yyvsp[(4) - (4)]));
@@ -4876,7 +4876,7 @@ yyreduce:
     break;
 
   case 115:
-#line 896 "parser.y"
+#line 932 "parser.y"
     {
   NMORE((yyvsp[(2) - (4)]), (yyvsp[(4) - (4)]));
   NMORE((yyvsp[(2) - (4)]), (yyvsp[(1) - (4)]));
@@ -4885,14 +4885,14 @@ yyreduce:
     break;
 
   case 116:
-#line 904 "parser.y"
+#line 940 "parser.y"
     {
     (yyval) = NNEW(n_CONDITION_LIST);
   ;}
     break;
 
   case 117:
-#line 907 "parser.y"
+#line 943 "parser.y"
     {
     NTYPE((yyvsp[(2) - (6)]), n_ELSEIF);
     (yyvsp[(2) - (6)])->appendChild(NSPAN((yyvsp[(3) - (6)]), n_CONTROL_CONDITION, (yyvsp[(5) - (6)]))->appendChild((yyvsp[(4) - (6)])));
@@ -4903,14 +4903,14 @@ yyreduce:
     break;
 
   case 118:
-#line 917 "parser.y"
+#line 953 "parser.y"
     {
     (yyval) = NNEW(n_CONDITION_LIST);
   ;}
     break;
 
   case 119:
-#line 920 "parser.y"
+#line 956 "parser.y"
     {
     NTYPE((yyvsp[(2) - (7)]), n_ELSEIF);
     (yyvsp[(2) - (7)])->appendChild((yyvsp[(4) - (7)]));
@@ -4921,14 +4921,14 @@ yyreduce:
     break;
 
   case 120:
-#line 930 "parser.y"
+#line 966 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 121:
-#line 933 "parser.y"
+#line 969 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_ELSE);
     (yyvsp[(1) - (2)])->appendChild((yyvsp[(2) - (2)]));
@@ -4937,14 +4937,14 @@ yyreduce:
     break;
 
   case 122:
-#line 941 "parser.y"
+#line 977 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 123:
-#line 944 "parser.y"
+#line 980 "parser.y"
     {
     NTYPE((yyvsp[(1) - (3)]), n_ELSE);
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
@@ -4953,14 +4953,14 @@ yyreduce:
     break;
 
   case 125:
-#line 953 "parser.y"
+#line 989 "parser.y"
     {
     (yyval) = NNEW(n_DECLARATION_PARAMETER_LIST);
   ;}
     break;
 
   case 126:
-#line 959 "parser.y"
+#line 995 "parser.y"
     {
     (yyval) = NNEW(n_DECLARATION_PARAMETER);
     (yyval)->appendChild((yyvsp[(1) - (2)]));
@@ -4972,7 +4972,7 @@ yyreduce:
     break;
 
   case 127:
-#line 967 "parser.y"
+#line 1003 "parser.y"
     {
     (yyval) = NNEW(n_DECLARATION_PARAMETER);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -4985,7 +4985,7 @@ yyreduce:
     break;
 
   case 128:
-#line 976 "parser.y"
+#line 1012 "parser.y"
     {
     (yyval) = NNEW(n_DECLARATION_PARAMETER);
     (yyval)->appendChild((yyvsp[(1) - (5)]));
@@ -4998,7 +4998,7 @@ yyreduce:
     break;
 
   case 129:
-#line 985 "parser.y"
+#line 1021 "parser.y"
     {
     (yyval) = NNEW(n_DECLARATION_PARAMETER);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -5010,7 +5010,7 @@ yyreduce:
     break;
 
   case 130:
-#line 993 "parser.y"
+#line 1029 "parser.y"
     {
     (yyval) = NNEW(n_DECLARATION_PARAMETER);
     (yyval)->appendChild((yyvsp[(3) - (4)]));
@@ -5022,7 +5022,7 @@ yyreduce:
     break;
 
   case 131:
-#line 1001 "parser.y"
+#line 1037 "parser.y"
     {
     (yyval) = NNEW(n_DECLARATION_PARAMETER);
     (yyval)->appendChild((yyvsp[(3) - (5)]));
@@ -5035,7 +5035,7 @@ yyreduce:
     break;
 
   case 132:
-#line 1010 "parser.y"
+#line 1047 "parser.y"
     {
     (yyval) = NNEW(n_DECLARATION_PARAMETER);
     (yyval)->appendChild((yyvsp[(3) - (7)]));
@@ -5048,7 +5048,7 @@ yyreduce:
     break;
 
   case 133:
-#line 1019 "parser.y"
+#line 1057 "parser.y"
     {
     (yyval) = NNEW(n_DECLARATION_PARAMETER);
     (yyval)->appendChild((yyvsp[(3) - (6)]));
@@ -5060,56 +5060,56 @@ yyreduce:
     break;
 
   case 134:
-#line 1030 "parser.y"
+#line 1068 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 135:
-#line 1033 "parser.y"
+#line 1071 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (1)]);
   ;}
     break;
 
   case 136:
-#line 1036 "parser.y"
+#line 1074 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_TYPE_NAME);
   ;}
     break;
 
   case 137:
-#line 1039 "parser.y"
+#line 1077 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_TYPE_NAME);
   ;}
     break;
 
   case 139:
-#line 1046 "parser.y"
+#line 1084 "parser.y"
     {
     (yyval) = NNEW(n_CALL_PARAMETER_LIST);
   ;}
     break;
 
   case 140:
-#line 1052 "parser.y"
+#line 1090 "parser.y"
     {
     (yyval) = NNEW(n_CALL_PARAMETER_LIST)->appendChild((yyvsp[(1) - (1)]));
   ;}
     break;
 
   case 141:
-#line 1055 "parser.y"
+#line 1093 "parser.y"
     {
     (yyval) = NNEW(n_CALL_PARAMETER_LIST)->appendChild((yyvsp[(1) - (1)]));
   ;}
     break;
 
   case 142:
-#line 1058 "parser.y"
+#line 1096 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_VARIABLE_REFERENCE);
     (yyvsp[(1) - (2)])->appendChild((yyvsp[(2) - (2)]));
@@ -5118,21 +5118,21 @@ yyreduce:
     break;
 
   case 143:
-#line 1063 "parser.y"
+#line 1101 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 144:
-#line 1066 "parser.y"
+#line 1104 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 145:
-#line 1069 "parser.y"
+#line 1107 "parser.y"
     {
     NTYPE((yyvsp[(3) - (4)]), n_VARIABLE_REFERENCE);
     (yyvsp[(3) - (4)])->appendChild((yyvsp[(4) - (4)]));
@@ -5141,7 +5141,7 @@ yyreduce:
     break;
 
   case 146:
-#line 1077 "parser.y"
+#line 1115 "parser.y"
     {
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
     (yyval) = (yyvsp[(1) - (3)]);
@@ -5149,7 +5149,7 @@ yyreduce:
     break;
 
   case 147:
-#line 1081 "parser.y"
+#line 1119 "parser.y"
     {
     (yyval) = NNEW(n_GLOBAL_DECLARATION_LIST);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -5157,14 +5157,14 @@ yyreduce:
     break;
 
   case 148:
-#line 1088 "parser.y"
+#line 1126 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_VARIABLE);
   ;}
     break;
 
   case 149:
-#line 1091 "parser.y"
+#line 1129 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (2)]), n_VARIABLE_VARIABLE);
     (yyval)->appendChild((yyvsp[(2) - (2)]));
@@ -5172,7 +5172,7 @@ yyreduce:
     break;
 
   case 150:
-#line 1095 "parser.y"
+#line 1133 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (4)]), n_VARIABLE_VARIABLE);
     (yyval)->appendChild((yyvsp[(3) - (4)]));
@@ -5180,7 +5180,7 @@ yyreduce:
     break;
 
   case 151:
-#line 1102 "parser.y"
+#line 1140 "parser.y"
     {
     NTYPE((yyvsp[(3) - (3)]), n_VARIABLE);
     (yyval) = NNEW(n_STATIC_DECLARATION);
@@ -5192,7 +5192,7 @@ yyreduce:
     break;
 
   case 152:
-#line 1110 "parser.y"
+#line 1148 "parser.y"
     {
     NTYPE((yyvsp[(3) - (5)]), n_VARIABLE);
     (yyval) = NNEW(n_STATIC_DECLARATION);
@@ -5204,7 +5204,7 @@ yyreduce:
     break;
 
   case 153:
-#line 1118 "parser.y"
+#line 1156 "parser.y"
     {
     NTYPE((yyvsp[(1) - (1)]), n_VARIABLE);
     (yyval) = NNEW(n_STATIC_DECLARATION);
@@ -5216,7 +5216,7 @@ yyreduce:
     break;
 
   case 154:
-#line 1126 "parser.y"
+#line 1164 "parser.y"
     {
     NTYPE((yyvsp[(1) - (3)]), n_VARIABLE);
     (yyval) = NNEW(n_STATIC_DECLARATION);
@@ -5228,21 +5228,21 @@ yyreduce:
     break;
 
   case 155:
-#line 1137 "parser.y"
+#line 1175 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (2)])->appendChild((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 156:
-#line 1140 "parser.y"
+#line 1178 "parser.y"
     {
     (yyval) = NNEW(n_STATEMENT_LIST);
   ;}
     break;
 
   case 157:
-#line 1146 "parser.y"
+#line 1184 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_MEMBER_DECLARATION_LIST);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5254,7 +5254,7 @@ yyreduce:
     break;
 
   case 158:
-#line 1154 "parser.y"
+#line 1192 "parser.y"
     {
     (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[(1) - (2)]));
     NMORE((yyval), (yyvsp[(2) - (2)]));
@@ -5262,24 +5262,26 @@ yyreduce:
     break;
 
   case 159:
-#line 1158 "parser.y"
+#line 1196 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (1)]);
   ;}
     break;
 
   case 160:
-#line 1161 "parser.y"
+#line 1199 "parser.y"
     {
-    yyextra->old_expecting_xhp_class_statements = yyextra->expecting_xhp_class_statements;
+    yyextra->old_expecting_xhp_class_statements =
+      yyextra->expecting_xhp_class_statements;
     yyextra->expecting_xhp_class_statements = false;
   ;}
     break;
 
   case 161:
-#line 1164 "parser.y"
+#line 1203 "parser.y"
     {
-    yyextra->expecting_xhp_class_statements = yyextra->old_expecting_xhp_class_statements;
+    yyextra->expecting_xhp_class_statements =
+      yyextra->old_expecting_xhp_class_statements;
 
     (yyval) = NNEW(n_METHOD_DECLARATION);
     NMORE((yyval), (yyvsp[(2) - (9)]));
@@ -5295,7 +5297,7 @@ yyreduce:
     break;
 
   case 162:
-#line 1181 "parser.y"
+#line 1221 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (3)]), n_TRAIT_USE);
     (yyval)->appendChildren((yyvsp[(2) - (3)]));
@@ -5304,49 +5306,49 @@ yyreduce:
     break;
 
   case 163:
-#line 1189 "parser.y"
+#line 1229 "parser.y"
     {
     (yyval) = NNEW(n_TRAIT_USE_LIST)->appendChild((yyvsp[(1) - (1)]));
   ;}
     break;
 
   case 164:
-#line 1192 "parser.y"
+#line 1232 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 165:
-#line 1198 "parser.y"
+#line 1238 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 166:
-#line 1201 "parser.y"
+#line 1241 "parser.y"
     {
     (yyval) = NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 167:
-#line 1207 "parser.y"
+#line 1247 "parser.y"
     {
     (yyval) = NNEW(n_TRAIT_ADAPTATION_LIST);
   ;}
     break;
 
   case 168:
-#line 1210 "parser.y"
+#line 1250 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (1)]);
   ;}
     break;
 
   case 169:
-#line 1216 "parser.y"
+#line 1256 "parser.y"
     {
     (yyval) = NNEW(n_TRAIT_ADAPTATION_LIST);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -5354,7 +5356,7 @@ yyreduce:
     break;
 
   case 170:
-#line 1220 "parser.y"
+#line 1260 "parser.y"
     {
     (yyvsp[(1) - (2)])->appendChild((yyvsp[(2) - (2)]));
     (yyval) = (yyvsp[(1) - (2)]);
@@ -5362,21 +5364,21 @@ yyreduce:
     break;
 
   case 171:
-#line 1227 "parser.y"
+#line 1267 "parser.y"
     {
     (yyval) = NMORE((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 172:
-#line 1230 "parser.y"
+#line 1270 "parser.y"
     {
     (yyval) = NMORE((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 173:
-#line 1236 "parser.y"
+#line 1276 "parser.y"
     {
     (yyval) = NNEW(n_TRAIT_INSTEADOF);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5385,7 +5387,7 @@ yyreduce:
     break;
 
   case 174:
-#line 1244 "parser.y"
+#line 1284 "parser.y"
     {
     (yyval) = NNEW(n_TRAIT_REFERENCE_LIST);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -5393,7 +5395,7 @@ yyreduce:
     break;
 
   case 175:
-#line 1248 "parser.y"
+#line 1288 "parser.y"
     {
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
     (yyval) = (yyvsp[(1) - (3)]);
@@ -5401,7 +5403,7 @@ yyreduce:
     break;
 
   case 176:
-#line 1255 "parser.y"
+#line 1295 "parser.y"
     {
     (yyval) = NNEW(n_TRAIT_METHOD_REFERENCE);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (1)]), n_STRING));
@@ -5409,14 +5411,14 @@ yyreduce:
     break;
 
   case 177:
-#line 1259 "parser.y"
+#line 1299 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (1)]);
   ;}
     break;
 
   case 178:
-#line 1265 "parser.y"
+#line 1305 "parser.y"
     {
     NTYPE((yyvsp[(2) - (3)]), n_TRAIT_METHOD_REFERENCE);
     NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), NTYPE((yyvsp[(3) - (3)]), n_STRING));
@@ -5425,7 +5427,7 @@ yyreduce:
     break;
 
   case 179:
-#line 1273 "parser.y"
+#line 1313 "parser.y"
     {
     (yyval) = NNEW(n_TRAIT_AS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -5435,7 +5437,7 @@ yyreduce:
     break;
 
   case 180:
-#line 1279 "parser.y"
+#line 1319 "parser.y"
     {
     (yyval) = NNEW(n_TRAIT_AS);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5445,14 +5447,14 @@ yyreduce:
     break;
 
   case 181:
-#line 1288 "parser.y"
+#line 1328 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 182:
-#line 1291 "parser.y"
+#line 1331 "parser.y"
     {
     (yyval) = NNEW(n_METHOD_MODIFIER_LIST);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (1)]), n_STRING));
@@ -5460,21 +5462,21 @@ yyreduce:
     break;
 
   case 183:
-#line 1299 "parser.y"
+#line 1339 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 184:
-#line 1302 "parser.y"
+#line 1342 "parser.y"
     {
     (yyval) = NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 186:
-#line 1309 "parser.y"
+#line 1349 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_MEMBER_MODIFIER_LIST);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (1)]), n_STRING));
@@ -5482,14 +5484,14 @@ yyreduce:
     break;
 
   case 187:
-#line 1316 "parser.y"
+#line 1356 "parser.y"
     {
     (yyval) = NNEW(n_METHOD_MODIFIER_LIST);
   ;}
     break;
 
   case 188:
-#line 1319 "parser.y"
+#line 1359 "parser.y"
     {
     NTYPE((yyvsp[(1) - (1)]), n_METHOD_MODIFIER_LIST);
     (yyval) = (yyvsp[(1) - (1)]);
@@ -5497,7 +5499,7 @@ yyreduce:
     break;
 
   case 189:
-#line 1326 "parser.y"
+#line 1366 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_MEMBER_MODIFIER_LIST);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (1)]), n_STRING));
@@ -5505,14 +5507,14 @@ yyreduce:
     break;
 
   case 190:
-#line 1330 "parser.y"
+#line 1370 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (2)])->appendChild(NTYPE((yyvsp[(2) - (2)]), n_STRING));
   ;}
     break;
 
   case 197:
-#line 1345 "parser.y"
+#line 1385 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_MEMBER_DECLARATION);
     (yyval)->appendChild(NTYPE((yyvsp[(3) - (3)]), n_VARIABLE));
@@ -5523,7 +5525,7 @@ yyreduce:
     break;
 
   case 198:
-#line 1352 "parser.y"
+#line 1392 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_MEMBER_DECLARATION);
     (yyval)->appendChild(NTYPE((yyvsp[(3) - (5)]), n_VARIABLE));
@@ -5534,7 +5536,7 @@ yyreduce:
     break;
 
   case 199:
-#line 1359 "parser.y"
+#line 1399 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_MEMBER_DECLARATION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (1)]), n_VARIABLE));
@@ -5545,7 +5547,7 @@ yyreduce:
     break;
 
   case 200:
-#line 1366 "parser.y"
+#line 1406 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_MEMBER_DECLARATION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (3)]), n_VARIABLE));
@@ -5556,7 +5558,7 @@ yyreduce:
     break;
 
   case 201:
-#line 1376 "parser.y"
+#line 1416 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_CONSTANT_DECLARATION);
     (yyval)->appendChild(NTYPE((yyvsp[(3) - (5)]), n_STRING));
@@ -5569,7 +5571,7 @@ yyreduce:
     break;
 
   case 202:
-#line 1385 "parser.y"
+#line 1425 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_CLASS_CONSTANT_DECLARATION_LIST);
     (yyval) = NNEW(n_CLASS_CONSTANT_DECLARATION);
@@ -5582,14 +5584,14 @@ yyreduce:
     break;
 
   case 203:
-#line 1397 "parser.y"
+#line 1437 "parser.y"
     {
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 204:
-#line 1400 "parser.y"
+#line 1440 "parser.y"
     {
     (yyval) = NNEW(n_ECHO_LIST);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -5597,21 +5599,21 @@ yyreduce:
     break;
 
   case 205:
-#line 1407 "parser.y"
+#line 1447 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 207:
-#line 1415 "parser.y"
+#line 1455 "parser.y"
     {
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 208:
-#line 1418 "parser.y"
+#line 1458 "parser.y"
     {
     (yyval) = NNEW(n_EXPRESSION_LIST);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -5619,7 +5621,7 @@ yyreduce:
     break;
 
   case 209:
-#line 1425 "parser.y"
+#line 1465 "parser.y"
     {
     NTYPE((yyvsp[(1) - (6)]), n_LIST);
     (yyvsp[(1) - (6)])->appendChild(NEXPAND((yyvsp[(2) - (6)]), (yyvsp[(3) - (6)]), (yyvsp[(4) - (6)])));
@@ -5631,7 +5633,7 @@ yyreduce:
     break;
 
   case 210:
-#line 1433 "parser.y"
+#line 1473 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5641,7 +5643,7 @@ yyreduce:
     break;
 
   case 211:
-#line 1439 "parser.y"
+#line 1479 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -5655,7 +5657,7 @@ yyreduce:
     break;
 
   case 212:
-#line 1449 "parser.y"
+#line 1489 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (6)]));
@@ -5673,7 +5675,7 @@ yyreduce:
     break;
 
   case 213:
-#line 1463 "parser.y"
+#line 1503 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -5682,7 +5684,7 @@ yyreduce:
     break;
 
   case 214:
-#line 1468 "parser.y"
+#line 1508 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5692,7 +5694,7 @@ yyreduce:
     break;
 
   case 215:
-#line 1474 "parser.y"
+#line 1514 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5702,7 +5704,7 @@ yyreduce:
     break;
 
   case 216:
-#line 1480 "parser.y"
+#line 1520 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5712,7 +5714,7 @@ yyreduce:
     break;
 
   case 217:
-#line 1486 "parser.y"
+#line 1526 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5722,7 +5724,7 @@ yyreduce:
     break;
 
   case 218:
-#line 1492 "parser.y"
+#line 1532 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5732,7 +5734,7 @@ yyreduce:
     break;
 
   case 219:
-#line 1498 "parser.y"
+#line 1538 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5742,7 +5744,7 @@ yyreduce:
     break;
 
   case 220:
-#line 1504 "parser.y"
+#line 1544 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5752,7 +5754,7 @@ yyreduce:
     break;
 
   case 221:
-#line 1510 "parser.y"
+#line 1550 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5762,7 +5764,7 @@ yyreduce:
     break;
 
   case 222:
-#line 1516 "parser.y"
+#line 1556 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5772,7 +5774,7 @@ yyreduce:
     break;
 
   case 223:
-#line 1522 "parser.y"
+#line 1562 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5782,7 +5784,7 @@ yyreduce:
     break;
 
   case 224:
-#line 1528 "parser.y"
+#line 1568 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5792,7 +5794,7 @@ yyreduce:
     break;
 
   case 225:
-#line 1534 "parser.y"
+#line 1574 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_POSTFIX_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (2)]));
@@ -5801,7 +5803,7 @@ yyreduce:
     break;
 
   case 226:
-#line 1539 "parser.y"
+#line 1579 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -5810,7 +5812,7 @@ yyreduce:
     break;
 
   case 227:
-#line 1544 "parser.y"
+#line 1584 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_POSTFIX_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (2)]));
@@ -5819,7 +5821,7 @@ yyreduce:
     break;
 
   case 228:
-#line 1549 "parser.y"
+#line 1589 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -5828,7 +5830,7 @@ yyreduce:
     break;
 
   case 229:
-#line 1554 "parser.y"
+#line 1594 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5838,7 +5840,7 @@ yyreduce:
     break;
 
   case 230:
-#line 1560 "parser.y"
+#line 1600 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5848,7 +5850,7 @@ yyreduce:
     break;
 
   case 231:
-#line 1566 "parser.y"
+#line 1606 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5858,7 +5860,7 @@ yyreduce:
     break;
 
   case 232:
-#line 1572 "parser.y"
+#line 1612 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5868,7 +5870,7 @@ yyreduce:
     break;
 
   case 233:
-#line 1578 "parser.y"
+#line 1618 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5878,7 +5880,7 @@ yyreduce:
     break;
 
   case 234:
-#line 1584 "parser.y"
+#line 1624 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5888,7 +5890,7 @@ yyreduce:
     break;
 
   case 235:
-#line 1590 "parser.y"
+#line 1630 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5898,7 +5900,7 @@ yyreduce:
     break;
 
   case 236:
-#line 1596 "parser.y"
+#line 1636 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5908,7 +5910,7 @@ yyreduce:
     break;
 
   case 237:
-#line 1602 "parser.y"
+#line 1642 "parser.y"
     {
 
     /* The concatenation operator generates n_CONCATENATION_LIST instead of
@@ -5938,7 +5940,7 @@ yyreduce:
     break;
 
   case 238:
-#line 1628 "parser.y"
+#line 1668 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5948,7 +5950,7 @@ yyreduce:
     break;
 
   case 239:
-#line 1634 "parser.y"
+#line 1674 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5958,7 +5960,7 @@ yyreduce:
     break;
 
   case 240:
-#line 1640 "parser.y"
+#line 1680 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5968,7 +5970,7 @@ yyreduce:
     break;
 
   case 241:
-#line 1646 "parser.y"
+#line 1686 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5978,7 +5980,7 @@ yyreduce:
     break;
 
   case 242:
-#line 1652 "parser.y"
+#line 1692 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5988,7 +5990,7 @@ yyreduce:
     break;
 
   case 243:
-#line 1658 "parser.y"
+#line 1698 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -5998,7 +6000,7 @@ yyreduce:
     break;
 
   case 244:
-#line 1664 "parser.y"
+#line 1704 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6008,7 +6010,7 @@ yyreduce:
     break;
 
   case 245:
-#line 1670 "parser.y"
+#line 1710 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -6017,7 +6019,7 @@ yyreduce:
     break;
 
   case 246:
-#line 1675 "parser.y"
+#line 1715 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -6026,7 +6028,7 @@ yyreduce:
     break;
 
   case 247:
-#line 1680 "parser.y"
+#line 1720 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -6035,7 +6037,7 @@ yyreduce:
     break;
 
   case 248:
-#line 1685 "parser.y"
+#line 1725 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -6044,7 +6046,7 @@ yyreduce:
     break;
 
   case 249:
-#line 1690 "parser.y"
+#line 1730 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6054,7 +6056,7 @@ yyreduce:
     break;
 
   case 250:
-#line 1696 "parser.y"
+#line 1736 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6064,7 +6066,7 @@ yyreduce:
     break;
 
   case 251:
-#line 1702 "parser.y"
+#line 1742 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6074,7 +6076,7 @@ yyreduce:
     break;
 
   case 252:
-#line 1708 "parser.y"
+#line 1748 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6084,7 +6086,7 @@ yyreduce:
     break;
 
   case 253:
-#line 1714 "parser.y"
+#line 1754 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6094,7 +6096,7 @@ yyreduce:
     break;
 
   case 254:
-#line 1720 "parser.y"
+#line 1760 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6104,7 +6106,7 @@ yyreduce:
     break;
 
   case 255:
-#line 1726 "parser.y"
+#line 1766 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6114,7 +6116,7 @@ yyreduce:
     break;
 
   case 256:
-#line 1732 "parser.y"
+#line 1772 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6124,7 +6126,7 @@ yyreduce:
     break;
 
   case 257:
-#line 1738 "parser.y"
+#line 1778 "parser.y"
     {
     (yyval) = NNEW(n_BINARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6134,7 +6136,7 @@ yyreduce:
     break;
 
   case 260:
-#line 1746 "parser.y"
+#line 1786 "parser.y"
     {
     (yyval) = NNEW(n_TERNARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (5)]));
@@ -6144,7 +6146,7 @@ yyreduce:
     break;
 
   case 261:
-#line 1752 "parser.y"
+#line 1792 "parser.y"
     {
     (yyval) = NNEW(n_TERNARY_EXPRESSION);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -6154,7 +6156,7 @@ yyreduce:
     break;
 
   case 263:
-#line 1759 "parser.y"
+#line 1799 "parser.y"
     {
     (yyval) = NNEW(n_CAST_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_CAST));
@@ -6163,7 +6165,7 @@ yyreduce:
     break;
 
   case 264:
-#line 1764 "parser.y"
+#line 1804 "parser.y"
     {
     (yyval) = NNEW(n_CAST_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_CAST));
@@ -6172,7 +6174,7 @@ yyreduce:
     break;
 
   case 265:
-#line 1769 "parser.y"
+#line 1809 "parser.y"
     {
     (yyval) = NNEW(n_CAST_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_CAST));
@@ -6181,7 +6183,7 @@ yyreduce:
     break;
 
   case 266:
-#line 1774 "parser.y"
+#line 1814 "parser.y"
     {
     (yyval) = NNEW(n_CAST_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_CAST));
@@ -6190,7 +6192,7 @@ yyreduce:
     break;
 
   case 267:
-#line 1779 "parser.y"
+#line 1819 "parser.y"
     {
     (yyval) = NNEW(n_CAST_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_CAST));
@@ -6199,7 +6201,7 @@ yyreduce:
     break;
 
   case 268:
-#line 1784 "parser.y"
+#line 1824 "parser.y"
     {
     (yyval) = NNEW(n_CAST_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_CAST));
@@ -6208,7 +6210,7 @@ yyreduce:
     break;
 
   case 269:
-#line 1789 "parser.y"
+#line 1829 "parser.y"
     {
     (yyval) = NNEW(n_CAST_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_CAST));
@@ -6217,7 +6219,7 @@ yyreduce:
     break;
 
   case 270:
-#line 1794 "parser.y"
+#line 1834 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -6226,7 +6228,7 @@ yyreduce:
     break;
 
   case 271:
-#line 1799 "parser.y"
+#line 1839 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -6235,7 +6237,7 @@ yyreduce:
     break;
 
   case 272:
-#line 1804 "parser.y"
+#line 1844 "parser.y"
     {
     NTYPE((yyvsp[(1) - (1)]), n_BACKTICKS_EXPRESSION);
     (yyval) = (yyvsp[(1) - (1)]);
@@ -6243,7 +6245,7 @@ yyreduce:
     break;
 
   case 276:
-#line 1811 "parser.y"
+#line 1851 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -6252,7 +6254,7 @@ yyreduce:
     break;
 
   case 277:
-#line 1816 "parser.y"
+#line 1856 "parser.y"
     {
     NTYPE((yyvsp[(1) - (1)]), n_YIELD);
     (yyvsp[(1) - (1)])->appendChild(NNEW(n_EMPTY));
@@ -6262,7 +6264,7 @@ yyreduce:
     break;
 
   case 278:
-#line 1822 "parser.y"
+#line 1865 "parser.y"
     {
     NSPAN((yyvsp[(1) - (9)]), n_FUNCTION_DECLARATION, (yyvsp[(9) - (9)]));
     (yyvsp[(1) - (9)])->appendChild(NNEW(n_EMPTY));
@@ -6277,7 +6279,7 @@ yyreduce:
     break;
 
   case 279:
-#line 1833 "parser.y"
+#line 1879 "parser.y"
     {
     NSPAN((yyvsp[(2) - (10)]), n_FUNCTION_DECLARATION, (yyvsp[(10) - (10)]));
     NMORE((yyvsp[(2) - (10)]), (yyvsp[(1) - (10)]));
@@ -6298,7 +6300,7 @@ yyreduce:
     break;
 
   case 280:
-#line 1853 "parser.y"
+#line 1899 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_YIELD);
     (yyvsp[(2) - (2)])->appendChild(NNEW(n_EMPTY));
@@ -6308,7 +6310,7 @@ yyreduce:
     break;
 
   case 281:
-#line 1859 "parser.y"
+#line 1905 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_YIELD);
     (yyvsp[(2) - (2)])->appendChild(NNEW(n_EMPTY));
@@ -6318,7 +6320,7 @@ yyreduce:
     break;
 
   case 282:
-#line 1865 "parser.y"
+#line 1911 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_YIELD);
     (yyvsp[(1) - (4)])->appendChild((yyvsp[(2) - (4)]));
@@ -6328,7 +6330,7 @@ yyreduce:
     break;
 
   case 283:
-#line 1871 "parser.y"
+#line 1917 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_YIELD);
     (yyvsp[(1) - (4)])->appendChild((yyvsp[(2) - (4)]));
@@ -6338,14 +6340,14 @@ yyreduce:
     break;
 
   case 285:
-#line 1884 "parser.y"
+#line 1930 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 286:
-#line 1887 "parser.y"
+#line 1933 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_LEXICAL_VARIABLE_LIST);
     (yyvsp[(1) - (4)])->appendChildren((yyvsp[(3) - (4)]));
@@ -6354,14 +6356,14 @@ yyreduce:
     break;
 
   case 287:
-#line 1895 "parser.y"
+#line 1941 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (3)])->appendChild(NTYPE((yyvsp[(3) - (3)]), n_VARIABLE));
   ;}
     break;
 
   case 288:
-#line 1898 "parser.y"
+#line 1944 "parser.y"
     {
     NTYPE((yyvsp[(3) - (4)]), n_VARIABLE_REFERENCE);
     (yyvsp[(3) - (4)])->appendChild(NTYPE((yyvsp[(4) - (4)]), n_VARIABLE));
@@ -6370,7 +6372,7 @@ yyreduce:
     break;
 
   case 289:
-#line 1903 "parser.y"
+#line 1949 "parser.y"
     {
     (yyval) = NNEW(n_LEXICAL_VARIABLE_LIST);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (1)]), n_VARIABLE));
@@ -6378,7 +6380,7 @@ yyreduce:
     break;
 
   case 290:
-#line 1907 "parser.y"
+#line 1953 "parser.y"
     {
     NTYPE((yyvsp[(1) - (2)]), n_VARIABLE_REFERENCE);
     (yyvsp[(1) - (2)])->appendChild(NTYPE((yyvsp[(2) - (2)]), n_VARIABLE));
@@ -6388,7 +6390,7 @@ yyreduce:
     break;
 
   case 291:
-#line 1916 "parser.y"
+#line 1962 "parser.y"
     {
     (yyval) = NNEW(n_FUNCTION_CALL);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -6397,7 +6399,7 @@ yyreduce:
     break;
 
   case 292:
-#line 1921 "parser.y"
+#line 1968 "parser.y"
     {
     NMORE((yyvsp[(3) - (6)]), (yyvsp[(1) - (6)]));
     (yyval) = NNEW(n_FUNCTION_CALL);
@@ -6407,7 +6409,7 @@ yyreduce:
     break;
 
   case 293:
-#line 1927 "parser.y"
+#line 1974 "parser.y"
     {
     NMORE((yyvsp[(2) - (5)]), (yyvsp[(1) - (5)]));
     (yyval) = NNEW(n_FUNCTION_CALL);
@@ -6417,7 +6419,7 @@ yyreduce:
     break;
 
   case 294:
-#line 1933 "parser.y"
+#line 1981 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_STATIC_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (6)]));
@@ -6429,7 +6431,7 @@ yyreduce:
     break;
 
   case 295:
-#line 1941 "parser.y"
+#line 1990 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_STATIC_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (6)]));
@@ -6441,7 +6443,7 @@ yyreduce:
     break;
 
   case 296:
-#line 1949 "parser.y"
+#line 1999 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_STATIC_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (6)]));
@@ -6453,7 +6455,7 @@ yyreduce:
     break;
 
   case 297:
-#line 1957 "parser.y"
+#line 2008 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_STATIC_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (6)]));
@@ -6465,7 +6467,7 @@ yyreduce:
     break;
 
   case 298:
-#line 1965 "parser.y"
+#line 2016 "parser.y"
     {
     (yyval) = NNEW(n_FUNCTION_CALL);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -6474,21 +6476,21 @@ yyreduce:
     break;
 
   case 299:
-#line 1973 "parser.y"
+#line 2024 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_CLASS_NAME);
   ;}
     break;
 
   case 300:
-#line 1976 "parser.y"
+#line 2027 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_CLASS_NAME);
   ;}
     break;
 
   case 301:
-#line 1979 "parser.y"
+#line 2030 "parser.y"
     {
     NMORE((yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]));
     (yyval) = NTYPE((yyvsp[(3) - (3)]), n_CLASS_NAME);
@@ -6496,7 +6498,7 @@ yyreduce:
     break;
 
   case 302:
-#line 1983 "parser.y"
+#line 2034 "parser.y"
     {
     NMORE((yyvsp[(2) - (2)]), (yyvsp[(1) - (2)]));
     (yyval) = NTYPE((yyvsp[(2) - (2)]), n_CLASS_NAME);
@@ -6504,14 +6506,14 @@ yyreduce:
     break;
 
   case 303:
-#line 1990 "parser.y"
+#line 2041 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_CLASS_NAME);
   ;}
     break;
 
   case 304:
-#line 1993 "parser.y"
+#line 2044 "parser.y"
     {
     NMORE((yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]));
     (yyval) = NTYPE((yyvsp[(3) - (3)]), n_CLASS_NAME);
@@ -6519,7 +6521,7 @@ yyreduce:
     break;
 
   case 305:
-#line 1997 "parser.y"
+#line 2048 "parser.y"
     {
     NMORE((yyvsp[(2) - (2)]), (yyvsp[(1) - (2)]));
     (yyval) = NTYPE((yyvsp[(2) - (2)]), n_CLASS_NAME);
@@ -6527,12 +6529,15 @@ yyreduce:
     break;
 
   case 308:
-#line 2009 "parser.y"
+#line 2063 "parser.y"
     {
     (yyval) = NNEW(n_OBJECT_PROPERTY_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
     (yyval)->appendChild((yyvsp[(3) - (4)]));
-    for (xhpast::node_list_t::iterator ii = (yyvsp[(4) - (4)])->children.begin(); ii != (yyvsp[(4) - (4)])->children.end(); ++ii) {
+    for (xhpast::node_list_t::iterator ii = (yyvsp[(4) - (4)])->children.begin();
+      ii != (yyvsp[(4) - (4)])->children.end();
+      ++ii) {
+
       (yyval) = NNEW(n_OBJECT_PROPERTY_ACCESS)->appendChild((yyval));
       (yyval)->appendChild(*ii);
     }
@@ -6540,35 +6545,35 @@ yyreduce:
     break;
 
   case 310:
-#line 2022 "parser.y"
+#line 2079 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (2)])->appendChild((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 311:
-#line 2025 "parser.y"
+#line 2082 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 312:
-#line 2031 "parser.y"
+#line 2088 "parser.y"
     {
     (yyval) = (yyvsp[(2) - (2)]);
   ;}
     break;
 
   case 313:
-#line 2037 "parser.y"
+#line 2094 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 314:
-#line 2040 "parser.y"
+#line 2097 "parser.y"
     {
     NSPAN((yyvsp[(1) - (2)]), n_EMPTY, (yyvsp[(2) - (2)]));
     (yyval) = (yyvsp[(1) - (2)]);
@@ -6576,7 +6581,7 @@ yyreduce:
     break;
 
   case 315:
-#line 2044 "parser.y"
+#line 2101 "parser.y"
     {
     NSPAN((yyvsp[(1) - (3)]), n_PARENTHETICAL_EXPRESSION, (yyvsp[(3) - (3)]));
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -6585,105 +6590,105 @@ yyreduce:
     break;
 
   case 316:
-#line 2052 "parser.y"
+#line 2109 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 317:
-#line 2055 "parser.y"
+#line 2112 "parser.y"
     {
     (yyval) = NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 318:
-#line 2061 "parser.y"
+#line 2118 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_NUMERIC_SCALAR);
   ;}
     break;
 
   case 319:
-#line 2064 "parser.y"
+#line 2121 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_NUMERIC_SCALAR);
   ;}
     break;
 
   case 320:
-#line 2067 "parser.y"
+#line 2124 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_STRING_SCALAR);
   ;}
     break;
 
   case 321:
-#line 2070 "parser.y"
+#line 2127 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_MAGIC_SCALAR);
   ;}
     break;
 
   case 322:
-#line 2073 "parser.y"
+#line 2130 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_MAGIC_SCALAR);
   ;}
     break;
 
   case 323:
-#line 2076 "parser.y"
+#line 2133 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_MAGIC_SCALAR);
   ;}
     break;
 
   case 324:
-#line 2079 "parser.y"
+#line 2136 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_MAGIC_SCALAR);
   ;}
     break;
 
   case 325:
-#line 2082 "parser.y"
+#line 2139 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_MAGIC_SCALAR);
   ;}
     break;
 
   case 326:
-#line 2085 "parser.y"
+#line 2142 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_MAGIC_SCALAR);
   ;}
     break;
 
   case 327:
-#line 2088 "parser.y"
+#line 2145 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_MAGIC_SCALAR);
   ;}
     break;
 
   case 328:
-#line 2091 "parser.y"
+#line 2148 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_MAGIC_SCALAR);
   ;}
     break;
 
   case 329:
-#line 2094 "parser.y"
+#line 2151 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_HEREDOC);
   ;}
     break;
 
   case 332:
-#line 2102 "parser.y"
+#line 2159 "parser.y"
     {
     NMORE((yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]));
     (yyval) = (yyvsp[(3) - (3)]);
@@ -6691,7 +6696,7 @@ yyreduce:
     break;
 
   case 333:
-#line 2106 "parser.y"
+#line 2163 "parser.y"
     {
     NMORE((yyvsp[(2) - (2)]), (yyvsp[(1) - (2)]));
     (yyval) = (yyvsp[(2) - (2)]);
@@ -6699,7 +6704,7 @@ yyreduce:
     break;
 
   case 334:
-#line 2110 "parser.y"
+#line 2167 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -6708,7 +6713,7 @@ yyreduce:
     break;
 
   case 335:
-#line 2115 "parser.y"
+#line 2172 "parser.y"
     {
     (yyval) = NNEW(n_UNARY_PREFIX_EXPRESSION);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (2)]), n_OPERATOR));
@@ -6717,7 +6722,7 @@ yyreduce:
     break;
 
   case 336:
-#line 2120 "parser.y"
+#line 2177 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_ARRAY_LITERAL);
     (yyvsp[(1) - (4)])->appendChild((yyvsp[(3) - (4)]));
@@ -6727,7 +6732,7 @@ yyreduce:
     break;
 
   case 337:
-#line 2126 "parser.y"
+#line 2183 "parser.y"
     {
     NTYPE((yyvsp[(1) - (3)]), n_ARRAY_LITERAL);
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -6737,7 +6742,7 @@ yyreduce:
     break;
 
   case 339:
-#line 2136 "parser.y"
+#line 2193 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_STATIC_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6746,42 +6751,42 @@ yyreduce:
     break;
 
   case 343:
-#line 2147 "parser.y"
+#line 2204 "parser.y"
     {
     (yyval) = NMORE((yyvsp[(3) - (3)]), (yyvsp[(1) - (3)]));
   ;}
     break;
 
   case 344:
-#line 2150 "parser.y"
+#line 2207 "parser.y"
     {
     (yyval) = NMORE((yyvsp[(2) - (2)]), (yyvsp[(1) - (2)]));
   ;}
     break;
 
   case 346:
-#line 2157 "parser.y"
+#line 2214 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE_LIST);
   ;}
     break;
 
   case 347:
-#line 2160 "parser.y"
+#line 2217 "parser.y"
     {
     (yyval) = NMORE((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 348:
-#line 2166 "parser.y"
+#line 2223 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 350:
-#line 2173 "parser.y"
+#line 2234 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild((yyvsp[(3) - (5)]));
@@ -6792,7 +6797,7 @@ yyreduce:
     break;
 
   case 351:
-#line 2180 "parser.y"
+#line 2241 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild(NNEW(n_EMPTY));
@@ -6803,7 +6808,7 @@ yyreduce:
     break;
 
   case 352:
-#line 2187 "parser.y"
+#line 2248 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6814,7 +6819,7 @@ yyreduce:
     break;
 
   case 353:
-#line 2194 "parser.y"
+#line 2255 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild(NNEW(n_EMPTY));
@@ -6825,7 +6830,7 @@ yyreduce:
     break;
 
   case 359:
-#line 2221 "parser.y"
+#line 2285 "parser.y"
     {
     (yyval) = NNEW(n_OBJECT_PROPERTY_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (5)]));
@@ -6836,7 +6841,10 @@ yyreduce:
       (yyval)->appendChild((yyvsp[(4) - (5)]));
     }
 
-    for (xhpast::node_list_t::iterator ii = (yyvsp[(5) - (5)])->children.begin(); ii != (yyvsp[(5) - (5)])->children.end(); ++ii) {
+    for (xhpast::node_list_t::iterator ii = (yyvsp[(5) - (5)])->children.begin();
+      ii != (yyvsp[(5) - (5)])->children.end();
+      ++ii) {
+
       if ((*ii)->type == n_CALL_PARAMETER_LIST) {
         (yyval) = NNEW(n_METHOD_CALL)->appendChild((yyval));
         (yyval)->appendChild((*ii));
@@ -6849,21 +6857,21 @@ yyreduce:
     break;
 
   case 361:
-#line 2245 "parser.y"
+#line 2312 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (2)])->appendChildren((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 362:
-#line 2248 "parser.y"
+#line 2315 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 363:
-#line 2254 "parser.y"
+#line 2321 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
     (yyval)->appendChild((yyvsp[(2) - (3)]));
@@ -6874,7 +6882,7 @@ yyreduce:
     break;
 
   case 364:
-#line 2264 "parser.y"
+#line 2331 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -6884,7 +6892,7 @@ yyreduce:
     break;
 
   case 365:
-#line 2270 "parser.y"
+#line 2337 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -6894,21 +6902,21 @@ yyreduce:
     break;
 
   case 366:
-#line 2279 "parser.y"
+#line 2346 "parser.y"
     {
     (yyval) = NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 369:
-#line 2287 "parser.y"
+#line 2354 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 371:
-#line 2294 "parser.y"
+#line 2361 "parser.y"
     {
     xhpast::Node *last = (yyvsp[(1) - (2)]);
     NMORE((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
@@ -6924,7 +6932,7 @@ yyreduce:
     break;
 
   case 372:
-#line 2309 "parser.y"
+#line 2376 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_STATIC_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6933,7 +6941,7 @@ yyreduce:
     break;
 
   case 373:
-#line 2314 "parser.y"
+#line 2381 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_STATIC_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -6942,7 +6950,7 @@ yyreduce:
     break;
 
   case 375:
-#line 2326 "parser.y"
+#line 2393 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -6952,7 +6960,7 @@ yyreduce:
     break;
 
   case 376:
-#line 2332 "parser.y"
+#line 2399 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -6962,14 +6970,14 @@ yyreduce:
     break;
 
   case 381:
-#line 2348 "parser.y"
+#line 2415 "parser.y"
     {
     (yyval) = NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 382:
-#line 2351 "parser.y"
+#line 2418 "parser.y"
     {
     xhpast::Node *last = (yyvsp[(1) - (2)]);
     NMORE((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
@@ -6985,7 +6993,7 @@ yyreduce:
     break;
 
   case 384:
-#line 2367 "parser.y"
+#line 2434 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -6995,7 +7003,7 @@ yyreduce:
     break;
 
   case 385:
-#line 2373 "parser.y"
+#line 2440 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -7005,14 +7013,14 @@ yyreduce:
     break;
 
   case 387:
-#line 2383 "parser.y"
+#line 2450 "parser.y"
     {
     NTYPE((yyvsp[(1) - (1)]), n_VARIABLE);
   ;}
     break;
 
   case 388:
-#line 2386 "parser.y"
+#line 2453 "parser.y"
     {
     NSPAN((yyvsp[(1) - (4)]), n_VARIABLE_EXPRESSION, (yyvsp[(4) - (4)]));
     (yyvsp[(1) - (4)])->appendChild((yyvsp[(3) - (4)]));
@@ -7021,21 +7029,21 @@ yyreduce:
     break;
 
   case 389:
-#line 2394 "parser.y"
+#line 2461 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 390:
-#line 2397 "parser.y"
+#line 2464 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (1)]);
   ;}
     break;
 
   case 393:
-#line 2408 "parser.y"
+#line 2475 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -7045,7 +7053,7 @@ yyreduce:
     break;
 
   case 394:
-#line 2414 "parser.y"
+#line 2481 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -7055,7 +7063,7 @@ yyreduce:
     break;
 
   case 396:
-#line 2424 "parser.y"
+#line 2491 "parser.y"
     {
     NTYPE((yyvsp[(1) - (1)]), n_STRING);
     (yyval) = (yyvsp[(1) - (1)]);
@@ -7063,21 +7071,21 @@ yyreduce:
     break;
 
   case 397:
-#line 2428 "parser.y"
+#line 2495 "parser.y"
     {
   (yyval) = NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 398:
-#line 2434 "parser.y"
+#line 2501 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (1)]), n_VARIABLE_VARIABLE);
   ;}
     break;
 
   case 399:
-#line 2437 "parser.y"
+#line 2504 "parser.y"
     {
     (yyvsp[(2) - (2)]) = NTYPE((yyvsp[(2) - (2)]), n_VARIABLE_VARIABLE);
 
@@ -7093,14 +7101,14 @@ yyreduce:
     break;
 
   case 400:
-#line 2452 "parser.y"
+#line 2519 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 401:
-#line 2455 "parser.y"
+#line 2522 "parser.y"
     {
     (yyval) = NNEW(n_ASSIGNMENT_LIST);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -7108,7 +7116,7 @@ yyreduce:
     break;
 
   case 403:
-#line 2463 "parser.y"
+#line 2530 "parser.y"
     {
     (yyval) = NNEW(n_LIST);
     (yyval)->appendChild((yyvsp[(3) - (4)]));
@@ -7117,28 +7125,28 @@ yyreduce:
     break;
 
   case 404:
-#line 2468 "parser.y"
+#line 2535 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
   ;}
     break;
 
   case 405:
-#line 2474 "parser.y"
+#line 2541 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE_LIST);
   ;}
     break;
 
   case 406:
-#line 2477 "parser.y"
+#line 2544 "parser.y"
     {
     (yyval) = NMORE((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 407:
-#line 2483 "parser.y"
+#line 2550 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild((yyvsp[(3) - (5)]));
@@ -7149,7 +7157,7 @@ yyreduce:
     break;
 
   case 408:
-#line 2490 "parser.y"
+#line 2557 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild(NNEW(n_EMPTY));
@@ -7160,7 +7168,7 @@ yyreduce:
     break;
 
   case 409:
-#line 2497 "parser.y"
+#line 2564 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -7171,7 +7179,7 @@ yyreduce:
     break;
 
   case 410:
-#line 2504 "parser.y"
+#line 2571 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild(NNEW(n_EMPTY));
@@ -7182,7 +7190,7 @@ yyreduce:
     break;
 
   case 411:
-#line 2511 "parser.y"
+#line 2578 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild((yyvsp[(3) - (6)]));
@@ -7193,7 +7201,7 @@ yyreduce:
     break;
 
   case 412:
-#line 2518 "parser.y"
+#line 2585 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild(NNEW(n_EMPTY));
@@ -7204,7 +7212,7 @@ yyreduce:
     break;
 
   case 413:
-#line 2525 "parser.y"
+#line 2592 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -7215,7 +7223,7 @@ yyreduce:
     break;
 
   case 414:
-#line 2532 "parser.y"
+#line 2599 "parser.y"
     {
     (yyval) = NNEW(n_ARRAY_VALUE);
     (yyval)->appendChild(NNEW(n_EMPTY));
@@ -7226,7 +7234,7 @@ yyreduce:
     break;
 
   case 415:
-#line 2542 "parser.y"
+#line 2609 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_SYMBOL_NAME);
 
@@ -7240,7 +7248,7 @@ yyreduce:
     break;
 
   case 416:
-#line 2552 "parser.y"
+#line 2619 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_SYMBOL_NAME);
 
@@ -7254,21 +7262,21 @@ yyreduce:
     break;
 
   case 417:
-#line 2562 "parser.y"
+#line 2629 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (2)]), n_INCLUDE_FILE)->appendChild((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 418:
-#line 2565 "parser.y"
+#line 2632 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (2)]), n_INCLUDE_FILE)->appendChild((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 419:
-#line 2568 "parser.y"
+#line 2635 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_SYMBOL_NAME);
 
@@ -7282,21 +7290,21 @@ yyreduce:
     break;
 
   case 420:
-#line 2578 "parser.y"
+#line 2645 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (2)]), n_INCLUDE_FILE)->appendChild((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 421:
-#line 2581 "parser.y"
+#line 2648 "parser.y"
     {
     (yyval) = NTYPE((yyvsp[(1) - (2)]), n_INCLUDE_FILE)->appendChild((yyvsp[(2) - (2)]));
   ;}
     break;
 
   case 422:
-#line 2587 "parser.y"
+#line 2654 "parser.y"
     {
     (yyval) = NNEW(n_EMPTY);
     (yyval)->appendChild((yyvsp[(1) - (1)]));
@@ -7304,14 +7312,14 @@ yyreduce:
     break;
 
   case 423:
-#line 2591 "parser.y"
+#line 2658 "parser.y"
     {
     (yyval) = (yyvsp[(1) - (3)])->appendChild((yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 424:
-#line 2597 "parser.y"
+#line 2664 "parser.y"
     {
     NSPAN((yyvsp[(1) - (3)]), n_PARENTHETICAL_EXPRESSION, (yyvsp[(3) - (3)]));
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -7320,14 +7328,14 @@ yyreduce:
     break;
 
   case 425:
-#line 2602 "parser.y"
+#line 2669 "parser.y"
     {
     (yyval) = NEXPAND((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
   ;}
     break;
 
   case 426:
-#line 2608 "parser.y"
+#line 2675 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -7337,7 +7345,7 @@ yyreduce:
     break;
 
   case 427:
-#line 2614 "parser.y"
+#line 2681 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (4)]));
@@ -7347,7 +7355,7 @@ yyreduce:
     break;
 
   case 428:
-#line 2620 "parser.y"
+#line 2687 "parser.y"
     {
     (yyval) = NNEW(n_INDEX_ACCESS);
     (yyval)->appendChild(NTYPE((yyvsp[(1) - (4)]), n_STRING_SCALAR));
@@ -7357,7 +7365,7 @@ yyreduce:
     break;
 
   case 429:
-#line 2629 "parser.y"
+#line 2696 "parser.y"
     {
     NTYPE((yyvsp[(1) - (4)]), n_ARRAY_LITERAL);
     (yyvsp[(1) - (4)])->appendChild((yyvsp[(3) - (4)]));
@@ -7367,7 +7375,7 @@ yyreduce:
     break;
 
   case 430:
-#line 2635 "parser.y"
+#line 2702 "parser.y"
     {
     NTYPE((yyvsp[(1) - (3)]), n_ARRAY_LITERAL);
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -7377,7 +7385,7 @@ yyreduce:
     break;
 
   case 431:
-#line 2644 "parser.y"
+#line 2711 "parser.y"
     {
     NTYPE((yyvsp[(1) - (3)]), n_NEW);
     (yyvsp[(1) - (3)])->appendChild((yyvsp[(2) - (3)]));
@@ -7387,7 +7395,7 @@ yyreduce:
     break;
 
   case 432:
-#line 2653 "parser.y"
+#line 2720 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_STATIC_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -7396,7 +7404,7 @@ yyreduce:
     break;
 
   case 433:
-#line 2658 "parser.y"
+#line 2725 "parser.y"
     {
     (yyval) = NNEW(n_CLASS_STATIC_ACCESS);
     (yyval)->appendChild((yyvsp[(1) - (3)]));
@@ -7406,7 +7414,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 7410 "parser.yacc.cpp"
+#line 7418 "parser.yacc.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -7620,7 +7628,7 @@ yyreturn:
 }
 
 
-#line 2665 "parser.y"
+#line 2732 "parser.y"
 
 
 const char* yytokname(int tok) {
@@ -7629,4 +7637,5 @@ const char* yytokname(int tok) {
   }
   return yytname[YYTRANSLATE(tok)];
 }
+
 /* @generated */

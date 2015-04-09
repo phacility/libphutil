@@ -313,8 +313,8 @@ NEWLINE ("\r\n"|"\n"|"\r")
   "("{TABS_AND_SPACES}unset{TABS_AND_SPACES}")" tok(T_UNSET_CAST);
 }
 
-// Scalars (parsing these doesn't really matter since we just pass
-// them through literally)
+ /* Scalars (parsing these doesn't really matter since we just pass them
+    through literally) */
 <PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>{
   {LNUM}|{HNUM}|{BNUM} tok(T_LNUMBER);
   {DNUM}|{EXPONENT_DNUM} tok(T_DNUMBER);
@@ -331,8 +331,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
 }
 
  /* (HERE|NOW)DOC's */
-<PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>b?"<<<
-  "{TABS_AND_SPACES} {
+<PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>b?"<<<"{TABS_AND_SPACES} {
 
   push_state(PHP_HEREDOC_START);
   yyextra->heredoc_yyleng = yyleng;
