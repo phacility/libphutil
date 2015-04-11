@@ -304,8 +304,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
  /* Casts */
 <PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>{
   "("{TABS_AND_SPACES}(int|integer){TABS_AND_SPACES}")" tok(T_INT_CAST);
-  "("{TABS_AND_SPACES}(real|double|float){TABS_AND_SPACES}")"
-    tok(T_DOUBLE_CAST);
+  "("{TABS_AND_SPACES}(real|double|float){TABS_AND_SPACES}")" tok(T_DOUBLE_CAST);
   "("{TABS_AND_SPACES}(string|binary){TABS_AND_SPACES}")" tok(T_STRING_CAST);
   "("{TABS_AND_SPACES}array{TABS_AND_SPACES}")" tok(T_ARRAY_CAST);
   "("{TABS_AND_SPACES}object{TABS_AND_SPACES}")" tok(T_OBJECT_CAST);
