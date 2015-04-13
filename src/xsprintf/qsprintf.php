@@ -136,6 +136,9 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         case 'd': //  ...integers.
           $value = implode(', ', array_map('intval', $value));
           break;
+        case 'f': // ...floats.
+          $value = implode(', ', array_map('floatval', $value));
+          break;
         case 's': // ...strings.
           foreach ($value as $k => $v) {
             $value[$k] = "'".$escaper->escapeUTF8String((string)$v)."'";
@@ -243,6 +246,7 @@ function _qsprintf_check_type($value, $type, $query) {
     case 'Ls':
     case 'LC':
     case 'LB':
+    case 'Lf':
       if (!is_array($value)) {
         throw new AphrontParameterQueryException(
           $query,
@@ -278,6 +282,7 @@ function _qsprintf_check_scalar_type($value, $type, $query) {
       break;
 
     case 'Ld':
+    case 'Lf':
     case 'd':
     case 'f':
       if (!is_null($value) && !is_numeric($value)) {
