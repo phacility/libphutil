@@ -102,7 +102,7 @@ final class PhutilArgumentSpecification {
   public static function newSpecsFromList(array $specs) {
     foreach ($specs as $key => $spec) {
       if (is_array($spec)) {
-        $specs[$key] = PhutilArgumentSpecification::newQuickSpec(
+        $specs[$key] = self::newQuickSpec(
           $spec);
       }
     }

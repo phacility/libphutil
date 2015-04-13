@@ -60,7 +60,7 @@ function phutil_format_relative_time_detailed($duration, $levels = 2) {
       $remainder);
     $duration = $remainder;
     $this_level++;
-  };
+  }
 
   if ($is_negative) {
     $detailed_relative_time .= ' ago';

@@ -349,7 +349,7 @@ final class PhutilErrorHandler {
     $timestamp = strftime('%Y-%m-%d %H:%M:%S');
 
     switch ($event) {
-      case PhutilErrorHandler::ERROR:
+      case self::ERROR:
         $default_message = sprintf(
           '[%s] ERROR %d: %s at [%s:%d]',
           $timestamp,
@@ -362,7 +362,7 @@ final class PhutilErrorHandler {
         error_log($default_message);
         self::outputStacktrace($metadata['trace']);
         break;
-      case PhutilErrorHandler::EXCEPTION:
+      case self::EXCEPTION:
         $messages = array();
         $current = $value;
         do {
@@ -385,7 +385,7 @@ final class PhutilErrorHandler {
         error_log($default_message);
         self::outputStacktrace(self::getRootException($value)->getTrace());
         break;
-      case PhutilErrorHandler::PHLOG:
+      case self::PHLOG:
         $default_message = sprintf(
           '[%s] PHLOG: %s at [%s:%d]',
           $timestamp,
@@ -396,7 +396,7 @@ final class PhutilErrorHandler {
         $metadata['default_message'] = $default_message;
         error_log($default_message);
         break;
-      case PhutilErrorHandler::DEPRECATED:
+      case self::DEPRECATED:
         $default_message = sprintf(
           '[%s] DEPRECATED: %s is deprecated; %s',
           $timestamp,

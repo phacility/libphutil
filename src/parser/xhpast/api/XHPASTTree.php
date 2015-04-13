@@ -27,7 +27,7 @@ final class XHPASTTree extends AASTTree {
 
   public static function newStatementFromString($string) {
     $string = '<?php '.rtrim($string, ';').";\n";
-    $tree = XHPASTTree::newFromData($string);
+    $tree = self::newFromData($string);
     $statements = $tree->getRootNode()->selectDescendantsOfType('n_STATEMENT');
     if (count($statements) != 1) {
       throw new Exception(

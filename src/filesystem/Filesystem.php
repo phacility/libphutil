@@ -170,7 +170,7 @@ final class Filesystem {
    * @task file
    */
   public static function writeUniqueFile($base, $data) {
-    $full_path = Filesystem::resolvePath($base);
+    $full_path = self::resolvePath($base);
     $sequence = 0;
     assert_stringlike($data);
     // Try 'file', 'file.1', 'file.2', etc., until something doesn't exist.
@@ -308,7 +308,7 @@ final class Filesystem {
    */
   private static function executeRemovePath($path) {
     if (is_dir($path) && !is_link($path)) {
-      foreach (Filesystem::listDirectory($path, true) as $child) {
+      foreach (self::listDirectory($path, true) as $child) {
         self::executeRemovePath($path.DIRECTORY_SEPARATOR.$child);
       }
       $ok = rmdir($path);
@@ -599,7 +599,7 @@ final class Filesystem {
 
     if (is_dir($path)) {
       if ($umask) {
-        Filesystem::changePermissions($path, $umask);
+        self::changePermissions($path, $umask);
       }
       return $path;
     }
@@ -628,7 +628,7 @@ final class Filesystem {
     // the process's umask in the usual way: the permissions of the created
     // directory are (mode & ~umask & 0777)."'
     if ($umask) {
-      Filesystem::changePermissions($path, $umask);
+      self::changePermissions($path, $umask);
     }
 
     return $path;
@@ -914,8 +914,8 @@ final class Filesystem {
 
       // If `where %s` could not find anything, check for relative binary
       if ($err) {
-        $path = Filesystem::resolvePath($binary);
-        if (Filesystem::pathExists($path)) {
+        $path = self::resolvePath($binary);
+        if (self::pathExists($path)) {
           return $path;
         }
         return null;
@@ -942,8 +942,8 @@ final class Filesystem {
    * @task path
    */
   public static function pathsAreEquivalent($u, $v) {
-    $u = Filesystem::resolvePath($u);
-    $v = Filesystem::resolvePath($v);
+    $u = self::resolvePath($u);
+    $v = self::resolvePath($v);
 
     $real_u = realpath($u);
     $real_v = realpath($v);

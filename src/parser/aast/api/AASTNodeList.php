@@ -10,7 +10,7 @@ final class AASTNodeList implements Countable, Iterator {
   protected function __construct() {}
 
   protected function newList(array $nodes) {
-    return AASTNodeList::newFromTreeAndNodes($this->tree, $nodes);
+    return self::newFromTreeAndNodes($this->tree, $nodes);
   }
 
   public function selectDescendantsOfType($type_name) {
