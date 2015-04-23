@@ -795,7 +795,7 @@ final class PhutilArgumentParser {
    */
   public function shutdownProfiler() {
     $data = xhprof_disable();
-    $data = serialize($data);
+    $data = json_encode($data);
     Filesystem::writeFile($this->getArg('xprofile'), $data);
   }
 
