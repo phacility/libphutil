@@ -363,8 +363,6 @@ phutil_register_library_map(array(
     'XsprintfUnknownConversionException' => 'xsprintf/exception/XsprintfUnknownConversionException.php',
   ),
   'function' => array(
-    '_qsprintf_check_scalar_type' => 'xsprintf/qsprintf.php',
-    '_qsprintf_check_type' => 'xsprintf/qsprintf.php',
     'array_fuse' => 'utils/utils.php',
     'array_interleave' => 'utils/utils.php',
     'array_mergev' => 'utils/utils.php',
@@ -460,6 +458,8 @@ phutil_register_library_map(array(
     'phutil_var_export' => 'utils/utils.php',
     'ppull' => 'utils/utils.php',
     'qsprintf' => 'xsprintf/qsprintf.php',
+    'qsprintf_check_scalar_type' => 'xsprintf/qsprintf.php',
+    'qsprintf_check_type' => 'xsprintf/qsprintf.php',
     'queryfx' => 'xsprintf/queryfx.php',
     'queryfx_all' => 'xsprintf/queryfx.php',
     'queryfx_one' => 'xsprintf/queryfx.php',

@@ -126,7 +126,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
       break;
 
     case 'L': // List of..
-      _qsprintf_check_type($value, "L{$next}", $pattern);
+      qsprintf_check_type($value, "L{$next}", $pattern);
       $pattern = substr_replace($pattern, '', $pos, 1);
       $length  = strlen($pattern);
       $type = 's';
@@ -164,7 +164,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
   }
 
   if (!$done) {
-    _qsprintf_check_type($value, $type, $pattern);
+    qsprintf_check_type($value, $type, $pattern);
     switch ($type) {
       case 's': // String
         if ($nullable && $value === null) {
@@ -240,7 +240,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
   $pattern[$pos] = $type;
 }
 
-function _qsprintf_check_type($value, $type, $query) {
+function qsprintf_check_type($value, $type, $query) {
   switch ($type) {
     case 'Ld':
     case 'Ls':
@@ -259,16 +259,16 @@ function _qsprintf_check_type($value, $type, $query) {
       }
 
       foreach ($value as $scalar) {
-        _qsprintf_check_scalar_type($scalar, $type, $query);
+        qsprintf_check_scalar_type($scalar, $type, $query);
       }
       break;
     default:
-      _qsprintf_check_scalar_type($value, $type, $query);
+      qsprintf_check_scalar_type($value, $type, $query);
       break;
   }
 }
 
-function _qsprintf_check_scalar_type($value, $type, $query) {
+function qsprintf_check_scalar_type($value, $type, $query) {
   switch ($type) {
     case 'Q':
     case 'LC':
