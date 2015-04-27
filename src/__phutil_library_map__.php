@@ -467,8 +467,6 @@ phutil_register_library_map(array(
     'vcsprintf' => 'xsprintf/csprintf.php',
     'vjsprintf' => 'xsprintf/jsprintf.php',
     'vqsprintf' => 'xsprintf/qsprintf.php',
-    'vqueryfx' => 'xsprintf/queryfx.php',
-    'vqueryfx_all' => 'xsprintf/queryfx.php',
     'vurisprintf' => 'xsprintf/urisprintf.php',
     'xhp_parser_node_constants' => 'parser/xhpast/parser_nodes.php',
     'xhpast_parser_token_constants' => 'parser/xhpast/parser_tokens.php',
@@ -483,8 +481,8 @@ phutil_register_library_map(array(
   ),
   'xmap' => array(
     'AASTNodeList' => array(
-      'Iterator',
       'Countable',
+      'Iterator',
     ),
     'AbstractDirectedGraphTestCase' => 'PhutilTestCase',
     'AphrontAccessDeniedQueryException' => 'AphrontRecoverableQueryException',

@@ -6,11 +6,6 @@ function queryfx(AphrontDatabaseConnection $conn, $sql /* , ... */) {
   $conn->executeRawQuery($query);
 }
 
-function vqueryfx(AphrontDatabaseConnection $conn, $sql, array $argv) {
-  array_unshift($argv, $conn, $sql);
-  call_user_func_array('queryfx', $argv);
-}
-
 function queryfx_all(AphrontDatabaseConnection $conn, $sql /* , ... */) {
   $argv = func_get_args();
   call_user_func_array('queryfx', $argv);
@@ -26,10 +21,4 @@ function queryfx_one(AphrontDatabaseConnection $conn, $sql /* , ... */) {
     return reset($ret);
   }
   return null;
-}
-
-function vqueryfx_all(AphrontDatabaseConnection $conn, $sql, array $argv) {
-  array_unshift($argv, $conn, $sql);
-  call_user_func_array('queryfx', $argv);
-  return $conn->selectAllResults();
 }
