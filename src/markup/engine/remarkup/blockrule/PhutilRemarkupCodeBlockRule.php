@@ -155,8 +155,13 @@ final class PhutilRemarkupCodeBlockRule extends PhutilRemarkupBlockRule {
         $options['name']);
     }
 
+    $class = 'remarkup-code-block';
+    if ($options['counterexample']) {
+      $class = 'remarkup-code-block code-block-counterexample';
+    }
+
     $attributes = array(
-        'class' => 'remarkup-code-block',
+        'class' => $class,
         'data-code-lang' => $options['lang'],
         'data-sigil' => 'remarkup-code-block',
     );
