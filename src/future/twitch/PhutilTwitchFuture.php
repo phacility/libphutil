@@ -73,9 +73,13 @@ final class PhutilTwitchFuture extends FutureProxy {
       throw $status;
     }
 
-    $data = json_decode($body, true);
-    if (!is_array($data)) {
-      throw new Exception("Expected JSON response from Twitch, got: {$body}");
+    $data = null;
+    try {
+      $data = phutil_json_decode($body);
+    } catch (PhutilJSONParserException $ex) {
+      throw new PhutilProxyException(
+        pht('Expected JSON response from Twitch.'),
+        $ex);
     }
 
     if (idx($data, 'error')) {

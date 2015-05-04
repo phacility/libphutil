@@ -74,11 +74,12 @@ final class PhutilJSONProtocolChannel extends PhutilProtocolChannel {
           $data = substr($this->buf, 0, $this->byteLengthOfNextChunk);
           $this->buf = substr($this->buf, $this->byteLengthOfNextChunk);
 
-          $obj = json_decode($data, true);
-          if (!is_array($obj)) {
-            throw new Exception("Failed to decode JSON object: {$data}");
-          } else {
-            $objects[] = $obj;
+          try {
+            $objects[] = phutil_json_decode($data);
+          } catch (PhutilJSONParserException $ex) {
+            throw new PhutilProxyException(
+              pht('Failed to decode JSON object.'),
+              $ex);
           }
 
           $this->mode = self::MODE_LENGTH;

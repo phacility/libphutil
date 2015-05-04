@@ -446,18 +446,20 @@ final class ExecFuture extends Future {
         $stdout,
         $stderr);
     }
-    $object = json_decode($stdout, true);
-    if (!is_array($object)) {
+    try {
+      return phutil_json_decode($stdout);
+    } catch (PhutilJSONParserException $ex) {
       $cmd = $this->command;
       throw new CommandException(
-        "JSON command '{$cmd}' did not produce a valid JSON object on stdout: ".
-        $stdout,
+        pht(
+          "JSON command '%s' did not produce a valid JSON object on stdout: %s",
+          $cmd,
+          $stdout),
         $cmd,
         0,
         $stdout,
         $stderr);
     }
-    return $object;
   }
 
   /**

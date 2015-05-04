@@ -88,11 +88,13 @@ final class PhutilFacebookAuthAdapter extends PhutilOAuthAuthAdapter {
     $uri->setQueryParam('fields', implode(',', $fields));
     list($body) = id(new HTTPSFuture($uri))->resolvex();
 
-    $data = json_decode($body, true);
-    if (!is_array($data)) {
-      throw new Exception(
-        'Expected valid JSON response from Facebook account data request, '.
-        'got: '.$body);
+    $data = null;
+    try {
+      $data = phutil_json_decode($body);
+    } catch (PhutilJSONParserException $ex) {
+      throw new PhutilProxyException(
+        pht('Expected valid JSON response from Facebook account data request.'),
+        $ex);
     }
 
     if ($this->requireSecureBrowsing) {

@@ -95,21 +95,25 @@ final class PHPASTParserTestCase extends PhutilTestCase {
         $dir = dirname(__FILE__).'/data/';
         $expect = Filesystem::readFile($dir.$expect_name);
 
-        $expect = json_decode($expect, true);
-        if (!is_array($expect)) {
-          throw new Exception(
+        try {
+          $expect = phutil_json_decode($expect);
+        } catch (PhutilJSONParserException $ex) {
+          throw new PhutilProxyException(
             pht(
               'Test ".expect" file "%s" for test "%s" is not valid JSON.',
               $expect_name,
-              $name));
+              $name),
+            $ex);
         }
 
-        $stdout = json_decode($stdout, true);
-        if (!is_array($stdout)) {
-          throw new Exception(
+        try {
+          $stdout = phutil_json_decode($stdout);
+        } catch (PhutilJSONParserException $ex) {
+          throw new PhutilProxyException(
             pht(
               'Output for test file "%s" is not valid JSON.',
-              $name));
+              $name),
+            $ex);
         }
 
         $json = new PhutilJSON();

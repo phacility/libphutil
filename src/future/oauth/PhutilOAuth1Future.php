@@ -270,11 +270,12 @@ final class PhutilOAuth1Future extends FutureProxy {
     $result = $this->getProxiedFuture()->resolvex();
     $result = $this->didReceiveResult($result);
     list($body) = $result;
-    $data = json_decode($body, true);
-    if (!is_array($data)) {
-      throw new Exception("Expected JSON, got: {$body}!");
+
+    try {
+      return phutil_json_decode($body);
+    } catch (PhutilJSONParserException $ex) {
+      throw new PhutilProxyException(pht('Expected JSON.'), $ex);
     }
-    return $data;
   }
 
 

@@ -198,8 +198,9 @@ final class PhutilLibraryMapBuilder {
 
     $symbol_cache = array();
     if ($cache) {
-      $symbol_cache = json_decode($cache, true);
-      if (!is_array($symbol_cache)) {
+      try {
+        $symbol_cache = phutil_json_decode($cache);
+      } catch (PhutilJSONParserException $ex) {
         $symbol_cache = array();
       }
     }

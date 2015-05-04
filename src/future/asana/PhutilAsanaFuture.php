@@ -61,9 +61,13 @@ final class PhutilAsanaFuture extends FutureProxy {
       throw $status;
     }
 
-    $data = json_decode($body, true);
-    if (!is_array($data)) {
-      throw new Exception("Expected JSON response from Asana, got: {$body}");
+    $data = null;
+    try {
+      $data = phutil_json_decode($body);
+    } catch (PhutilJSONParserException $ex) {
+      throw new PhutilProxyException(
+        pht('Expected JSON response from Asana.'),
+        $ex);
     }
 
     if (idx($data, 'errors')) {

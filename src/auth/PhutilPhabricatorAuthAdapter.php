@@ -83,14 +83,16 @@ final class PhutilPhabricatorAuthAdapter extends PhutilOAuthAuthAdapter {
       ->setQueryParam('access_token', $this->getAccessToken());
     list($body) = id(new HTTPSFuture($uri))->resolvex();
 
-    $data = json_decode($body, true);
-    if (!is_array($data)) {
+    try {
+      $data = phutil_json_decode($body);
+      return $data['result'];
+    } catch (PhutilJSONParserException $ex) {
       throw new Exception(
-        'Expected valid JSON response from Phabricator user.whoami request, '.
-        'got: '.$body);
+        pht(
+          'Expected valid JSON response from Phabricator %s request.',
+          'user.whoami'),
+        $ex);
     }
-
-    return $data['result'];
   }
 
   private function getPhabricatorURI($path) {

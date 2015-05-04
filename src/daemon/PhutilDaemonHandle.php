@@ -301,8 +301,9 @@ final class PhutilDaemonHandle {
       $message = substr($this->stdoutBuffer, 0, $pos);
       $this->stdoutBuffer = substr($this->stdoutBuffer, $pos + 1);
 
-      $structure = @json_decode($message, true);
-      if (!is_array($structure)) {
+      try {
+        $structure = phutil_json_decode($message);
+      } catch (PhutilJSONParserException $ex) {
         $structure = array();
       }
 
