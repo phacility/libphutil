@@ -19,7 +19,7 @@ final class PhutilRemarkupMonospaceRule extends PhutilRemarkupRule {
       $text);
   }
 
-  protected function markupMonospacedText($matches) {
+  protected function markupMonospacedText(array $matches) {
     if ($this->getEngine()->isTextMode()) {
       $result = $matches[0];
 

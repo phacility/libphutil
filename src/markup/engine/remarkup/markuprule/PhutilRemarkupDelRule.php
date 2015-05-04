@@ -17,7 +17,7 @@ final class PhutilRemarkupDelRule extends PhutilRemarkupRule {
       $text);
   }
 
-  protected function applyCallback($matches) {
+  protected function applyCallback(array $matches) {
     return hsprintf('<del>%s</del>', $matches[1]);
   }
 

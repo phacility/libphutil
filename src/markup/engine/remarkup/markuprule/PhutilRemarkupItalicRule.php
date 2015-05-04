@@ -17,7 +17,7 @@ final class PhutilRemarkupItalicRule extends PhutilRemarkupRule {
       $text);
   }
 
-  protected function applyCallback($matches) {
+  protected function applyCallback(array $matches) {
     return hsprintf('<em>%s</em>', $matches[1]);
   }
 

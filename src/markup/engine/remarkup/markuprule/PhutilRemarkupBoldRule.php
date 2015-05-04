@@ -17,7 +17,7 @@ final class PhutilRemarkupBoldRule extends PhutilRemarkupRule {
       $text);
   }
 
-  protected function applyCallback($matches) {
+  protected function applyCallback(array $matches) {
     return hsprintf('<strong>%s</strong>', $matches[1]);
   }
 

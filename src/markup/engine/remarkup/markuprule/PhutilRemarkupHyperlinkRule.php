@@ -31,7 +31,7 @@ final class PhutilRemarkupHyperlinkRule extends PhutilRemarkupRule {
     return $text;
   }
 
-  protected function markupHyperlink($matches) {
+  protected function markupHyperlink(array $matches) {
     $protocols = $this->getEngine()->getConfig(
       'uri.allowed-protocols',
       array());

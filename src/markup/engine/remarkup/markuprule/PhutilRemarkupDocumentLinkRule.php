@@ -7,7 +7,6 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
   }
 
   public function apply($text) {
-
     // Handle mediawiki-style links: [[ href | name ]]
     $text = preg_replace_callback(
       '@\B\\[\\[([^|\\]]+)(?:\\|([^\\]]+))?\\]\\]\B@U',
@@ -75,7 +74,7 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
     }
   }
 
-  public function markupAlternateLink($matches) {
+  public function markupAlternateLink(array $matches) {
     $uri = trim($matches[2]);
 
     // NOTE: We apply some special rules to avoid false positives here. The
@@ -104,7 +103,7 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
       ));
   }
 
-  public function markupDocumentLink($matches) {
+  public function markupDocumentLink(array $matches) {
     $uri = trim($matches[1]);
     $name = trim(idx($matches, 2, $uri));
 

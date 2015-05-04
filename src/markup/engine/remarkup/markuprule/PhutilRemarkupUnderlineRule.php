@@ -17,7 +17,7 @@ final class PhutilRemarkupUnderlineRule extends PhutilRemarkupRule {
       $text);
   }
 
-  protected function applyCallback($matches) {
+  protected function applyCallback(array $matches) {
     return hsprintf('<u>%s</u>', $matches[1]);
   }
 
