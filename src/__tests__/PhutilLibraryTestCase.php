@@ -70,15 +70,13 @@ class PhutilLibraryTestCase extends PhutilTestCase {
       $interfaces = $class->getInterfaces();
 
       foreach ($class->getMethods() as $method) {
-        $visibility = $this->getVisibility($method);
         $method_name = $method->getName();
 
         foreach (array_merge($parents, $interfaces) as $extends) {
           if ($extends->hasMethod($method_name)) {
             $xmethod = $extends->getMethod($method_name);
-            $xvisibility = $this->getVisibility($xmethod);
 
-            if ($xvisibility != $visibility) {
+            if (!$this->compareVisibility($xmethod, $method)) {
               $failures[] = pht(
                 'Class "%s" implements method "%s" with the wrong visibility. '.
                 'The method has visibility "%s", but it is defined in parent '.
@@ -86,9 +84,9 @@ class PhutilLibraryTestCase extends PhutilTestCase {
                 'overrides another must always have the same visibility.',
                 $class_name,
                 $method_name,
-                $visibility,
+                $this->getVisibility($method),
                 $extends->getName(),
-                $xvisibility);
+                $this->getVisibility($xmethod));
             }
 
             // We found a declaration somewhere, so stop looking.
@@ -116,6 +114,23 @@ class PhutilLibraryTestCase extends PhutilTestCase {
   protected function getLibraryRoot() {
     $caller = id(new ReflectionClass($this))->getFileName();
     return phutil_get_library_root_for_path($caller);
+  }
+
+  private function compareVisibility(
+    ReflectionMethod $parent_method,
+    ReflectionMethod $method) {
+
+    static $bitmask;
+
+    if ($bitmask === null) {
+      $bitmask  = ReflectionMethod::IS_PUBLIC;
+      $bitmask += ReflectionMethod::IS_PROTECTED;
+      $bitmask += ReflectionMethod::IS_PRIVATE;
+    }
+
+    $parent_modifiers = $parent_method->getModifiers();
+    $modifiers = $method->getModifiers();
+    return !(($parent_modifiers ^ $modifiers) & $bitmask);
   }
 
   private function getVisibility(ReflectionMethod $method) {
