@@ -76,9 +76,12 @@ function xsprintf_javascript($userdata, &$pattern, &$pos, &$value, &$length) {
     case 'd':
       if ($value > 0x1FFFFFFFFFFFFF) {
         throw new RangeException(
-          "You are passing an integer to jsprintf() which is so large it can ".
-          "not be represented without loss of precision by Javascript's ".
-          "native Number class. Use %# instead.");
+          pht(
+            "You are passing an integer to %s which is so large it can ".
+            "not be represented without loss of precision by Javascript's ".
+            "native %s class. Use %%# instead.",
+            'jsprintf()',
+            'Number'));
       }
       break;
   }

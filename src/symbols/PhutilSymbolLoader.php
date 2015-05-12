@@ -371,11 +371,11 @@ final class PhutilSymbolLoader {
     $load_failed = null;
     if ($is_function) {
       if (!function_exists($name)) {
-        $load_failed = 'function';
+        $load_failed = pht('function');
       }
     } else {
       if (!class_exists($name, false) && !interface_exists($name, false)) {
-        $load_failed = 'class or interface';
+        $load_failed = pht('class or interface');
       }
     }
 
@@ -384,9 +384,15 @@ final class PhutilSymbolLoader {
       throw new PhutilMissingSymbolException(
         $name,
         $load_failed,
-        "the symbol map for library '{$lib_name}' (at '{$lib_path}') claims ".
-        "this {$load_failed} is defined in '{$where}', but loading that ".
-        "source file did not cause the {$load_failed} to become defined.");
+        pht(
+          "the symbol map for library '%s' (at '%s') claims this %s is ".
+          "defined in '%s', but loading that source file did not cause the ".
+          "%s to become defined.",
+          $lib_name,
+          $lib_path,
+          $load_failed,
+          $where,
+          $load_failed));
     }
   }
 

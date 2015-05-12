@@ -61,7 +61,7 @@ final class CommandException extends Exception {
     $len = strlen($string);
     if ($len > $limit) {
       $cut = $len - $limit;
-      $suffix = '... ('.number_format($cut).' more bytes) ...';
+      $suffix = pht('... (%d more bytes) ...', number_format($cut));
       if ($cut > strlen($suffix)) {
         $string = substr($string, 0, $limit).$suffix;
       }

@@ -53,7 +53,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $this->assertEqual(
       $expected_output,
       $actual_output,
-      "Failed to markup HTML in file '{$file}'.");
+      pht("Failed to markup HTML in file '%s'.", $file));
 
     $engine->setMode(PhutilRemarkupEngine::MODE_TEXT);
     $actual_output = (string)$engine->markupText($input_remarkup);
@@ -61,7 +61,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $this->assertEqual(
       $expected_text,
       $actual_output,
-      "Failed to markup text in file '{$file}'.");
+      pht("Failed to markup text in file '%s'.", $file));
   }
 
   private function buildNewTestEngine() {

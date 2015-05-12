@@ -139,9 +139,9 @@ final class PhutilGoogleAuthAdapter extends PhutilOAuthAuthAdapter {
     if ($domain == 'usageLimits' && $reason == 'accessNotConfigured') {
       throw new PhutilAuthConfigurationException(
         pht(
-          'Google returned an "accessNotConfigured" error. This usually means '.
-          'you need to enable the "Google+ API" in your Google Cloud Console, '.
-          'under "APIs".'.
+          'Google returned an "%s" error. This usually means you need to '.
+          'enable the "Google+ API" in your Google Cloud Console, under '.
+          '"APIs".'.
           "\n\n".
           'Around March 2014, Google made some API changes which require this '.
           'configuration adjustment.'.
@@ -155,13 +155,14 @@ final class PhutilGoogleAuthAdapter extends PhutilOAuthAuthAdapter {
           '"Credentials". The Application ID this install is using is "%s".'.
           "\n\n".
           '(If you are unable to log into Phabricator, you can use '.
-          '"bin/auth recover" to recover access to an administrator '.
-          'account.)'.
+          '"%s" to recover access to an administrator account.)'.
           "\n\n".
           'Full HTTP Response'.
           "\n\n%s",
+          'accessNotConfigured',
           'https://console.developers.google.com/',
           $this->getClientID(),
+          'bin/auth recover',
           $raw_body));
     }
   }

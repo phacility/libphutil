@@ -148,7 +148,11 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
     $this->assertEqual(
       $expect,
       $cost,
-      "Edit distance of '{$x}' -> '{$y}' with costs ({$desc}).");
+      pht(
+        "Edit distance of '%s' -> '%s' with costs (%s).",
+        $x,
+        $y,
+        $desc));
   }
 
   private function assertEditString(
@@ -171,7 +175,11 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
     $this->assertEqual(
       $expect,
       $string,
-      "Edit string of '{$x}' -> '{$y}' with costs ({$desc}).");
+      pht(
+        "Edit string of '%s' -> '%s' with costs (%s).",
+        $x,
+        $y,
+        $desc));
   }
 
   private function buildMatrix($x, $y, $ins, $del, $rep, $trn, $alt) {
@@ -195,7 +203,5 @@ final class PhutilEditDistanceMatrixTestCase extends PhutilTestCase {
       ->setTransposeCost($trn)
       ->setAlterCost($alt);
   }
-
-
 
 }

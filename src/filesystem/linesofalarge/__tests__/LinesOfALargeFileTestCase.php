@@ -98,9 +98,9 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
     $this->assertEqual(
       $read,
       $lines,
-      'Write: '.id(new PhutilUTF8StringTruncator())
-      ->setMaximumGlyphs(32)
-      ->truncateString($write));
+      pht('Write: %s', id(new PhutilUTF8StringTruncator())
+        ->setMaximumGlyphs(32)
+        ->truncateString($write)));
   }
 
   public function allowCatsOnly($line) {
@@ -124,9 +124,9 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
     $this->assertEqual(
       $read,
       $lines,
-      'Write: '.id(new PhutilUTF8StringTruncator())
-      ->setMaximumGlyphs(32)
-      ->truncateString($write));
+      pht('Write: %s', id(new PhutilUTF8StringTruncator())
+        ->setMaximumGlyphs(32)
+        ->truncateString($write)));
   }
 
 }

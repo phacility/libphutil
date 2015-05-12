@@ -81,7 +81,7 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
       // Check that the value is a non-empty array.
       if (!is_array($value)) {
         throw new InvalidArgumentException(
-          "Expected an array for %L{$next} conversion.");
+          pht('Expected an array for %%L%s conversion.', $next));
       }
 
       switch ($next) {
@@ -119,7 +119,7 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
     case 'P':
       if (!($value instanceof PhutilOpaqueEnvelope)) {
         throw new InvalidArgumentException(
-          'Expected PhutilOpaqueEnvelope for %P conversion.');
+          pht('Expected %s for %%P conversion.', 'PhutilOpaqueEnvelope'));
       }
       if ($is_unmasked) {
         $value = $value->openEnvelope();

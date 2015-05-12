@@ -84,7 +84,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
   $prefix   = '';
 
   if (!($escaper instanceof PhutilQsprintfInterface)) {
-    throw new InvalidArgumentException('Invalid database escaper.');
+    throw new InvalidArgumentException(pht('Invalid database escaper.'));
   }
 
   switch ($type) {
@@ -105,7 +105,12 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
           }
           break;
         default:
-          throw new Exception('Unknown conversion, try %=d, %=s, or %=f.');
+          throw new Exception(
+            pht(
+              'Unknown conversion, try %s, %s, or %s.',
+              '%=d',
+              '%=s',
+              '%=f'));
       }
       break;
 
@@ -250,12 +255,12 @@ function qsprintf_check_type($value, $type, $query) {
       if (!is_array($value)) {
         throw new AphrontParameterQueryException(
           $query,
-          "Expected array argument for %{$type} conversion.");
+          pht('Expected array argument for %%%s conversion.', $type));
       }
       if (empty($value)) {
         throw new AphrontParameterQueryException(
           $query,
-          "Array for %{$type} conversion is empty.");
+          pht('Array for %%%s conversion is empty.', $type));
       }
 
       foreach ($value as $scalar) {
@@ -277,7 +282,7 @@ function qsprintf_check_scalar_type($value, $type, $query) {
       if (!is_string($value)) {
         throw new AphrontParameterQueryException(
           $query,
-          "Expected a string for %{$type} conversion.");
+          pht('Expected a string for %%%s conversion.', $type));
       }
       break;
 
@@ -288,7 +293,7 @@ function qsprintf_check_scalar_type($value, $type, $query) {
       if (!is_null($value) && !is_numeric($value)) {
         throw new AphrontParameterQueryException(
           $query,
-          "Expected a numeric scalar or null for %{$type} conversion.");
+          pht('Expected a numeric scalar or null for %%%s conversion.', $type));
       }
       break;
 
@@ -303,7 +308,7 @@ function qsprintf_check_scalar_type($value, $type, $query) {
       if (!is_null($value) && !is_scalar($value)) {
         throw new AphrontParameterQueryException(
           $query,
-          "Expected a scalar or null for %{$type} conversion.");
+          pht('Expected a scalar or null for %%%s conversion.', $type));
       }
       break;
 

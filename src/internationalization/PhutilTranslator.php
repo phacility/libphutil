@@ -98,7 +98,7 @@ final class PhutilTranslator {
       // too many parameters), show the bad template with a note instead of
       // returning an empty string. This makes it easier to figure out what
       // went wrong and fix it.
-      $result = '[Invalid Translation!] '.$translation;
+      $result = pht('[Invalid Translation!] %s', $translation);
     }
 
     if ($this->shouldPostProcess) {
@@ -161,7 +161,7 @@ final class PhutilTranslator {
         return $plural;
 
       default:
-        throw new Exception("Unknown language '{$this->language}'.");
+        throw new Exception(pht("Unknown language '%s'.", $this->language));
     }
   }
 

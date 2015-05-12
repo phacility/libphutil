@@ -6,7 +6,7 @@ final class PhutilKeyValueCacheNamespace extends PhutilKeyValueCacheProxy {
 
   public function setNamespace($namespace) {
     if (strpos($namespace, ':') !== false) {
-      throw new Exception('Namespace can\'t contain colons');
+      throw new Exception(pht("Namespace can't contain colons."));
     }
 
     $this->namespace = $namespace.':';
@@ -38,7 +38,7 @@ final class PhutilKeyValueCacheNamespace extends PhutilKeyValueCacheProxy {
 
   private function prefixKeys(array $keys) {
     if ($this->namespace == null) {
-      throw new Exception('Namespace not set');
+      throw new Exception(pht('Namespace not set.'));
     }
 
     $prefixed_keys = array();
@@ -51,7 +51,7 @@ final class PhutilKeyValueCacheNamespace extends PhutilKeyValueCacheProxy {
 
   private function unprefixKeys(array $keys) {
     if ($this->namespace == null) {
-      throw new Exception('Namespace not set');
+      throw new Exception(pht('Namespace not set.'));
     }
 
     $unprefixed_keys = array();

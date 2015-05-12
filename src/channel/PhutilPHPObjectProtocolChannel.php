@@ -73,7 +73,7 @@ final class PhutilPHPObjectProtocolChannel extends PhutilProtocolChannel {
 
           $obj = @unserialize($data);
           if ($obj === false) {
-            throw new Exception("Failed to unserialize object: {$data}");
+            throw new Exception(pht('Failed to unserialize object: %s', $data));
           } else {
             $objects[] = $obj;
           }

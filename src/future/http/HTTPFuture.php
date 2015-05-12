@@ -43,17 +43,20 @@ final class HTTPFuture extends BaseHTTPFuture {
   public function setURI($uri) {
     $parts = parse_url($uri);
     if (!$parts) {
-      throw new Exception("Could not parse URI '{$uri}'.");
+      throw new Exception(pht("Could not parse URI '%s'.", $uri));
     }
 
     if (empty($parts['scheme']) || $parts['scheme'] !== 'http') {
       throw new Exception(
-        "URI '{$uri}' must be fully qualified with 'http://' scheme.");
+        pht(
+          "URI '%s' must be fully qualified with '%s' scheme.",
+          $uri,
+          'http://'));
     }
 
     if (!isset($parts['host'])) {
       throw new Exception(
-        "URI '{$uri}' must be fully qualified and include host name.");
+        pht("URI '%s' must be fully qualified and include host name.", $uri));
     }
 
     $this->host = $parts['host'];
@@ -64,7 +67,7 @@ final class HTTPFuture extends BaseHTTPFuture {
 
     if (isset($parts['user']) || isset($parts['pass'])) {
       throw new Exception(
-        'HTTP Basic Auth is not supported by HTTPFuture.');
+        pht('HTTP Basic Auth is not supported by %s.', __CLASS__));
     }
 
     if (isset($parts['path'])) {
@@ -143,7 +146,7 @@ final class HTTPFuture extends BaseHTTPFuture {
       if (strlen($this->writeBuffer)) {
         $bytes = @fwrite($this->socket, $this->writeBuffer);
         if ($bytes === false) {
-          throw new Exception('Failed to write to buffer.');
+          throw new Exception(pht('Failed to write to buffer.'));
         } else if ($bytes) {
           $this->writeBuffer = substr($this->writeBuffer, $bytes);
         }
@@ -158,7 +161,7 @@ final class HTTPFuture extends BaseHTTPFuture {
       }
 
       if ($data === false) {
-        throw new Exception('Failed to read socket.');
+        throw new Exception(pht('Failed to read socket.'));
       }
     }
 
@@ -184,7 +187,7 @@ final class HTTPFuture extends BaseHTTPFuture {
 
     $ok = stream_set_blocking($socket, 0);
     if (!$ok) {
-      throw new Exception('Failed to set stream nonblocking.');
+      throw new Exception(pht('Failed to set stream nonblocking.'));
     }
 
     $this->writeBuffer = $this->buildHTTPRequest();

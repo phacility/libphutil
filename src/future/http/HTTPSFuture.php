@@ -162,9 +162,10 @@ final class HTTPSFuture extends BaseHTTPFuture {
     if (isset($this->files[$key])) {
       throw new Exception(
         pht(
-          'HTTPSFuture currently supports only one file attachment for each '.
+          '%s currently supports only one file attachment for each '.
           'parameter name. You are trying to attach two different files with '.
           'the same parameter, "%s".',
+          __CLASS__,
           $key));
     }
 
@@ -196,7 +197,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
       if (!self::$multi) {
         self::$multi = curl_multi_init();
         if (!self::$multi) {
-          throw new Exception('curl_multi_init() failed!');
+          throw new Exception(pht('%s failed!', 'curl_multi_init()'));
         }
       }
 
@@ -205,7 +206,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
       } else {
         $curl = curl_init();
         if (!$curl) {
-          throw new Exception('curl_init() failed!');
+          throw new Exception(pht('%s failed!', 'curl_init()'));
         }
       }
 
@@ -543,7 +544,8 @@ final class HTTPSFuture extends BaseHTTPFuture {
             pht(
               'Request specifies two values for key "%s", but parameter '.
               'names must be unique if you are posting file data due to '.
-              'limitations with cURL.'));
+              'limitations with cURL.',
+              $key));
         }
         $map[$key] = $value;
       }
@@ -559,10 +561,10 @@ final class HTTPSFuture extends BaseHTTPFuture {
       if (array_key_exists($name, $data)) {
         throw new Exception(
           pht(
-            'Request specifies a file with key "%s", but that key is '.
-            'also defined by normal request data. Due to limitations '.
-            'with cURL, requests that post file data must use unique '.
-            'keys.'));
+            'Request specifies a file with key "%s", but that key is also '.
+            'defined by normal request data. Due to limitations with cURL, '.
+            'requests that post file data must use unique keys.',
+            $name));
       }
 
       $tmp = new TempFile($info['name']);
@@ -603,9 +605,11 @@ final class HTTPSFuture extends BaseHTTPFuture {
         throw new Exception(
           pht(
             'Attempting to make an HTTP request, but query string data begins '.
-            'with "@". Prior to PHP 5.2.0 this reads files off disk, which '.
+            'with "%s". Prior to PHP 5.2.0 this reads files off disk, which '.
             'creates a wide attack window for security vulnerabilities. '.
-            'Upgrade PHP or avoid making cURL requests which begin with "@".'));
+            'Upgrade PHP or avoid making cURL requests which begin with "%s".',
+            '@',
+            '@'));
       }
 
       // This is safe if we're on PHP 5.2.0 or newer.
@@ -614,11 +618,11 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
     throw new Exception(
       pht(
-        'Attempting to make an HTTP request which includes file data, but '.
-        'the value of a query parameter begins with "@". PHP interprets '.
-        'these values to mean that it should read arbitrary files off disk '.
-        'and transmit them to remote servers. Declining to make this '.
-        'request.'));
+        'Attempting to make an HTTP request which includes file data, but the '.
+        'value of a query parameter begins with "%s". PHP interprets these '.
+        'values to mean that it should read arbitrary files off disk and '.
+        'transmit them to remote servers. Declining to make this request.',
+        '@'));
   }
 
 

@@ -102,7 +102,7 @@ function phutil_parse_bytes($input) {
 
   $matches = null;
   if (!preg_match('/^(?:\d+(?:[.]\d+)?)([kmgtp]?)b?$/i', $bytes, $matches)) {
-    throw new Exception("Unable to parse byte size '{$input}'!");
+    throw new Exception(pht("Unable to parse byte size '%s'!", $input));
   }
 
   $scale = array(

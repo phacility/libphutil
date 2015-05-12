@@ -220,7 +220,10 @@ final class PhutilOAuth1Future extends FutureProxy {
       case 'HMAC-SHA1':
         if (!$this->consumerSecret) {
           throw new Exception(
-            "Signature method 'HMAC-SHA1' requires setConsumerSecret()!");
+            pht(
+              "Signature method '%s' requires %s!",
+              'HMAC-SHA1',
+              'setConsumerSecret()'));
         }
 
         $hash = hash_hmac('sha1', $string, $key, true);
@@ -228,23 +231,26 @@ final class PhutilOAuth1Future extends FutureProxy {
       case 'RSA-SHA1':
         if (!$this->privateKey) {
           throw new Exception(
-            "Signature method 'RSA-SHA1' requires setPrivateKey()!");
+            pht(
+              "Signature method '%s' requires %s!",
+              'RSA-SHA1',
+              'setPrivateKey()'));
         }
 
         $cert = @openssl_pkey_get_private($this->privateKey->openEnvelope());
         if (!$cert) {
-          throw new Exception('openssl_pkey_get_private() failed!');
+          throw new Exception(pht('%S failed!', 'openssl_pkey_get_private()'));
         }
 
         $pkey = @openssl_get_privatekey($cert);
         if (!$pkey) {
-          throw new Exception('openssl_get_privatekey() failed!');
+          throw new Exception(pht('%s failed!', 'openssl_get_privatekey()'));
         }
 
         $signature = null;
         $ok = openssl_sign($string, $signature, $pkey, OPENSSL_ALGO_SHA1);
         if (!$ok) {
-          throw new Exception('openssl_sign() failed!');
+          throw new Exception(pht('%s failed!', 'openssl_sign()'));
         }
 
         openssl_free_key($pkey);
@@ -253,11 +259,14 @@ final class PhutilOAuth1Future extends FutureProxy {
       case 'PLAINTEXT':
         if (!$this->consumerSecret) {
           throw new Exception(
-            "Signature method 'PLAINTEXT' requires setConsumerSecret()!");
+            pht(
+              "Signature method '%s' requires %s!",
+              'PLAINTEXT',
+              'setConsumerSecret()'));
         }
         return $key;
       default:
-        throw new Exception("Unknown signature method '{$string}'!");
+        throw new Exception(pht("Unknown signature method '%s'!", $string));
     }
   }
 

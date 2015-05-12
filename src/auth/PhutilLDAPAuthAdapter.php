@@ -315,7 +315,7 @@ final class PhutilLDAPAuthAdapter extends PhutilAuthAdapter {
 
       if (!$conn) {
         throw new Exception(
-          "Unable to connect to LDAP server ({$host}:{$port}).");
+          pht('Unable to connect to LDAP server (%s:%d).', $host, $port));
       }
 
       $options = array(

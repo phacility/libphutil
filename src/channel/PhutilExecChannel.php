@@ -97,7 +97,7 @@ final class PhutilExecChannel extends PhutilChannel {
         call_user_func($this->stderrHandler, $this, $stderr);
       } else {
         throw new Exception(
-          "Unexpected output to stderr on exec channel: {$stderr}");
+          pht('Unexpected output to stderr on exec channel: %s', $stderr));
       }
     }
 
@@ -113,7 +113,7 @@ final class PhutilExecChannel extends PhutilChannel {
   }
 
   protected function writeBytes($bytes) {
-    throw new Exception('ExecFuture can not write bytes directly!');
+    throw new Exception(pht('%s can not write bytes directly!', 'ExecFuture'));
   }
 
   protected function getReadSockets() {

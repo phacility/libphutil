@@ -200,7 +200,7 @@ final class PhutilShellLexerTestCase extends PhutilTestCase {
           $file);
         break;
       default:
-        throw new Exception("No assertion block for test '{$file}'!");
+        throw new Exception(pht("No assertion block for test '%s'!", $file));
     }
   }
 

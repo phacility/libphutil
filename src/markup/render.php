@@ -68,10 +68,11 @@ function phutil_tag($tag, array $attributes = array(), $content = null) {
         if (preg_match('/^javascript:/i', $normalized_href)) {
           throw new Exception(
             pht(
-              "Attempting to render a tag with an 'href' attribute that ".
-              "begins with 'javascript:'. This is either a serious security ".
-              "concern or a serious architecture concern. Seek urgent ".
-              "remedy."));
+              "Attempting to render a tag with an '%s' attribute that begins ".
+              "with '%s'. This is either a serious security concern or a ".
+              "serious architecture concern. Seek urgent remedy.",
+              'href',
+              'javascript:'));
         }
       }
     }
@@ -141,11 +142,13 @@ function phutil_escape_html($string) {
         assert_stringlike($result);
         return phutil_escape_html((string)$result);
       } catch (Exception $ex) {
-        $class = get_class($string);
         throw new Exception(
-          "Object (of class '{$class}') implements ".
-          "PhutilSafeHTMLProducerInterface but did not return anything ".
-          "renderable from producePhutilSafeHTML().");
+          pht(
+            "Object (of class '%s') implements %s but did not return anything ".
+            "renderable from %s.",
+            get_class($string),
+            'PhutilSafeHTMLProducerInterface',
+            'producePhutilSafeHTML()'));
       }
     }
   } else if (is_array($string)) {

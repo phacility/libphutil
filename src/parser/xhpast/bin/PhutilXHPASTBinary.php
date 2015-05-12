@@ -44,7 +44,7 @@ final class PhutilXHPASTBinary {
 
     // Test the binary.
     if (!self::isAvailable()) {
-      throw new Exception(pht('xhpast is broken.'));
+      throw new Exception(pht('%s is broken.', 'xhpast'));
     }
 
     self::$version = null;
@@ -63,7 +63,7 @@ final class PhutilXHPASTBinary {
       "%s:\n\n  \$ %s\n",
       pht(
         "Your version of '%s' is unbuilt or out of date. Run this ".
-        "script to build it",
+        "script to build it.",
         'xhpast'),
       $make);
   }

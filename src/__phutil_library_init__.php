@@ -24,9 +24,12 @@ function __phutil_autoload($class_name) {
     if (!$symbols) {
       throw new PhutilMissingSymbolException(
         $class_name,
-        'class or interface',
-        "the class or interface '{$class_name}' is not defined in the library ".
-        "map for any loaded phutil library.");
+        pht('class or interface'),
+        pht(
+          "the class or interface '%s' is not defined in the library ".
+          "map for any loaded %s library.",
+          $class_name,
+          'phutil'));
     }
   } catch (PhutilMissingSymbolException $ex) {
     // If there are other SPL autoloaders installed, we need to give them a

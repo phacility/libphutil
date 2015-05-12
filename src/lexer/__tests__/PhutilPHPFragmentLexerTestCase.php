@@ -309,7 +309,7 @@ final class PhutilPHPFragmentLexerTestCase extends PhutilTestCase {
         $this->assertEqual(null, $caught);
         break;
       default:
-        throw new Exception("No assertion block for test '{$file}'!");
+        throw new Exception(pht("No assertion block for test '%s'!", $file));
     }
   }
 

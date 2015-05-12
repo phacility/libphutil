@@ -111,18 +111,18 @@ final class PhutilJIRAAuthAdapter extends PhutilOAuth1AuthAdapter {
 
     $res = openssl_pkey_new($config);
     if (!$res) {
-      throw new Exception('openssl_pkey_new() failed!');
+      throw new Exception(pht('%s failed!', 'openssl_pkey_new()'));
     }
 
     $private_key = null;
     $ok = openssl_pkey_export($res, $private_key);
     if (!$ok) {
-      throw new Exception('openssl_pkey_export() failed!');
+      throw new Exception(pht('%s failed!', 'openssl_pkey_export()'));
     }
 
     $public_key = openssl_pkey_get_details($res);
     if (!$ok || empty($public_key['key'])) {
-      throw new Exception('openssl_pkey_get_details() failed!');
+      throw new Exception(pht('%s failed!', 'openssl_pkey_get_details()'));
     }
     $public_key = $public_key['key'];
 

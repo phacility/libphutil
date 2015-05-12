@@ -100,8 +100,13 @@ abstract class PhutilChannelChannel extends PhutilChannel {
     // protected.
 
     throw new Exception(
-      'Do not call readBytes() or writeBytes() directly on a '.
-      'PhutilChannelChannel. Instead, call read() or write().');
+      pht(
+        'Do not call %s or %s directly on a %s. Instead, call %s or %s.',
+        'readBytes()',
+        'writeBytes()',
+        __CLASS__,
+        'read()',
+        'write()'));
   }
 
 }

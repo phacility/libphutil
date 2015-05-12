@@ -3,7 +3,6 @@
 /**
  * Daemon which is very busy every other minute. This will cause it to
  * autoscale up and down.
- *
  */
 final class PhutilHighIntensityIntervalDaemon extends PhutilTortureTestDaemon {
 
@@ -12,10 +11,10 @@ final class PhutilHighIntensityIntervalDaemon extends PhutilTortureTestDaemon {
       $m = (int)date('i');
       if ($m % 2) {
         $this->willBeginWork();
-        $this->log('Busy.');
+        $this->log(pht('Busy.'));
       } else {
         $this->willBeginIdle();
-        $this->log('Idle.');
+        $this->log(pht('Idle.'));
       }
       $this->sleep(1);
     }

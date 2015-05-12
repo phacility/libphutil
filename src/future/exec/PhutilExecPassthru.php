@@ -96,7 +96,11 @@ final class PhutilExecPassthru extends Phobject {
     $trap->destroy();
 
     if (!is_resource($proc)) {
-      throw new Exception("Failed to passthru proc_open(): {$errors}");
+      throw new Exception(
+        pht(
+          'Failed to passthru %s: %s',
+          'proc_open()',
+          $errors));
     }
 
     $err = proc_close($proc);

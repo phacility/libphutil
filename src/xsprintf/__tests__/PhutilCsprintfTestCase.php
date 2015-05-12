@@ -59,7 +59,7 @@ final class PhutilCsprintfTestCase extends PhutilTestCase {
 
   public function testEscapingIsRobust() {
     if (phutil_is_windows()) {
-      $this->assertSkipped("This test doesn't work on Windows.");
+      $this->assertSkipped(pht("This test doesn't work on Windows."));
     }
 
     // Escaping should be robust even when used to escape commands which take

@@ -32,47 +32,51 @@ final class HTTPFutureCURLResponseStatus extends HTTPFutureResponseStatus {
     }
 
     $map = array(
-      CURLE_COULDNT_RESOLVE_HOST =>
+      CURLE_COULDNT_RESOLVE_HOST => pht(
         'There was an error resolving the server hostname. Check that you are '.
         'connected to the internet and that DNS is correctly configured. (Did '.
-        'you add the domain to `/etc/hosts` on some other machine, but not '.
-        'this one?)',
+        'you add the domain to `%s` on some other machine, but not this one?)',
+        '/etc/hosts'),
 
-      CURLE_SSL_CACERT =>
+      CURLE_SSL_CACERT => pht(
         'There was an error verifying the SSL Certificate Authority while '.
         'negotiating the SSL connection. This usually indicates that you are '.
         'using a self-signed certificate but have not added your CA to the '.
-        'CA bundle. See instructions in "libphutil/resources/ssl/README".',
+        'CA bundle. See instructions in "%s".',
+        'libphutil/resources/ssl/README'),
 
       // Apparently there's no error constant for this? In cURL it's
       // CURLE_SSL_CACERT_BADFILE but there's no corresponding constant in
       // PHP.
-      77 =>
+      77 => pht(
         'The SSL CA Bundles that we tried to use could not be read or are '.
-        'not formatted correctly.',
+        'not formatted correctly.'),
 
-      CURLE_SSL_CONNECT_ERROR =>
+      CURLE_SSL_CONNECT_ERROR => pht(
         'There was an error negotiating the SSL connection. This usually '.
         'indicates that the remote host has a bad SSL certificate, or your '.
         'local host has some sort of SSL misconfiguration which prevents it '.
         'from accepting the CA. If you are using a self-signed certificate, '.
-        'see instructions in "libphutil/resources/ssl/README".',
+        'see instructions in "%s".',
+        'libphutil/resources/ssl/README'),
 
-      CURLE_OPERATION_TIMEOUTED =>
-        'The request took too long to complete.',
+      CURLE_OPERATION_TIMEOUTED => pht(
+        'The request took too long to complete.'),
 
-      CURLE_SSL_PEER_CERTIFICATE =>
+      CURLE_SSL_PEER_CERTIFICATE => pht(
         'There was an error verifying the SSL connection. This usually '.
         'indicates that the remote host has an SSL certificate for a '.
         'different domain name than you are connecting with. Make sure the '.
-        'certificate you have installed is signed for the correct domain.',
+        'certificate you have installed is signed for the correct domain.'),
     );
 
-    $default_message =
+    $default_message = pht(
       "The cURL library raised an error while making a request. You may be ".
-      "able to find more information about this error (error code: {$code}) ".
-      "on the cURL site: http://curl.haxx.se/libcurl/c/libcurl-errors.html#".
-      preg_replace('/[^A-Z]/', '', $constant_name);
+      'able to find more information about this error (error code: %d) '.
+      'on the cURL site: %s',
+      $code,
+      'http://curl.haxx.se/libcurl/c/libcurl-errors.html#'.
+      preg_replace('/[^A-Z]/', '', $constant_name));
 
     $detailed_message = idx($map, $code, $default_message);
 

@@ -29,8 +29,9 @@ final class PhutilIPAddress extends Phobject {
       throw new Exception(
         pht(
           'IP address "%s" is not properly formatted. Expected an IP '.
-          'address like "23.45.67.89".',
-          $str));
+          'address like "%s".',
+          $str,
+          '23.45.67.89'));
     }
 
     $parts = array_slice($matches, 1);

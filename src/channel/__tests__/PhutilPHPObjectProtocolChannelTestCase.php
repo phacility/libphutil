@@ -17,11 +17,11 @@ final class PhutilPHPObjectProtocolChannelTestCase extends PhutilTestCase {
 
     $this->assertTrue(
       (array)$object === (array)$result,
-      'Values are identical.');
+      pht('Values are identical.'));
 
     $this->assertFalse(
       $object === $result,
-      'Objects are not the same.');
+      pht('Objects are not the same.'));
   }
 
   public function testCloseSocketWriteChannel() {
@@ -41,7 +41,7 @@ final class PhutilPHPObjectProtocolChannelTestCase extends PhutilTestCase {
     // returning, which would be hard to diagnose. Since the current
     // implementation shuts down the entire channel, just test for that.
 
-    $this->assertFalse($xp->update(), 'Expected channel to close.');
+    $this->assertFalse($xp->update(), pht('Expected channel to close.'));
   }
 
   public function testCloseExecWriteChannel() {

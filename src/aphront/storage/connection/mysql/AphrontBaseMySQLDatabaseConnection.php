@@ -101,7 +101,7 @@ abstract class AphrontBaseMySQLDatabaseConnection
         if ($retries && $ex->getCode() == 2003) {
           $class = get_class($ex);
           $message = $ex->getMessage();
-          phlog("Retrying ({$retries}) after {$class}: {$message}");
+          phlog(pht('Retrying (%d) after %s: %s', $retries, $class, $message));
         } else {
           $profiler->endServiceCall($call_id, array());
           throw $ex;
@@ -140,7 +140,7 @@ abstract class AphrontBaseMySQLDatabaseConnection
     $result = array();
     $res = $this->lastResult;
     if ($res == null) {
-      throw new Exception('No query result to fetch from!');
+      throw new Exception(pht('No query result to fetch from!'));
     }
     while (($row = $this->fetchAssoc($res))) {
       $result[] = $row;
@@ -266,7 +266,7 @@ abstract class AphrontBaseMySQLDatabaseConnection
   protected function throwQueryException($connection) {
     if ($this->nextError) {
       $errno = $this->nextError;
-      $error = 'Simulated error.';
+      $error = pht('Simulated error.');
       $this->nextError = null;
     } else {
       $errno = $this->getErrorCode($connection);
@@ -282,8 +282,11 @@ abstract class AphrontBaseMySQLDatabaseConnection
       case 2013: // Connection Dropped
         throw new AphrontConnectionLostQueryException($exmsg);
       case 2006: // Gone Away
-        $more = "This error may occur if your MySQL 'wait_timeout' ".
-                "or 'max_allowed_packet' configuration values are set too low.";
+        $more = pht(
+          "This error may occur if your MySQL '%s' or '%s' ".
+          "configuration values are set too low.",
+          'wait_timeout',
+          'max_allowed_packet');
         throw new AphrontConnectionLostQueryException("{$exmsg}\n\n{$more}");
       case 1213: // Deadlock
       case 1205: // Lock wait timeout exceeded

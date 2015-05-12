@@ -133,7 +133,7 @@ abstract class PhutilProtocolChannel extends PhutilChannelChannel {
       self::waitForAny(array($this));
     }
 
-    throw new Exception('Channel closed while waiting for message!');
+    throw new Exception(pht('Channel closed while waiting for message!'));
   }
 
 }

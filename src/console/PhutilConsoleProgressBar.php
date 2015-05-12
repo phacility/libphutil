@@ -153,7 +153,7 @@ final class PhutilConsoleProgressBar extends Phobject {
     if ($this->drawn) {
       $this->eraseLine();
       if ($clean_exit) {
-        $console->writeErr("%s\n", 'Done.');
+        $console->writeErr("%s\n", pht('Done.'));
       }
     }
     $this->finished = true;

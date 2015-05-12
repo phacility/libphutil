@@ -67,7 +67,7 @@ final class PhutilSprite {
 
   public function getSourceFile($scale) {
     if (empty($this->sourceFiles[$scale])) {
-      throw new Exception("No source file for scale '{$scale}'!");
+      throw new Exception(pht("No source file for scale '%s'!", $scale));
     }
 
     return $this->sourceFiles[$scale];

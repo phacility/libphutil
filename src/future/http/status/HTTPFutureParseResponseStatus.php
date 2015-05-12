@@ -22,9 +22,9 @@ final class HTTPFutureParseResponseStatus extends HTTPFutureResponseStatus {
   }
 
   protected function getErrorCodeDescription($code) {
-    return
-      'The remote host returned something other than an HTTP response: '.
-      $this->rawResponse;
+    return pht(
+      'The remote host returned something other than an HTTP response: %s',
+      $this->rawResponse);
   }
 
 }

@@ -29,8 +29,10 @@ final class PhutilSystem extends Phobject {
     } else {
       throw new Exception(
         pht(
-          'Unable to access /proc/meminfo or `vm_stat` on this system to '.
-          'get system memory information.'));
+          'Unable to access %s or `%s` on this system to '.
+          'get system memory information.',
+          '/proc/meminfo',
+          'vm_stat'));
     }
   }
 
@@ -72,8 +74,9 @@ final class PhutilSystem extends Phobject {
       if (!array_key_exists($key, $map)) {
         throw new Exception(
           pht(
-            'Expected to find "%s" in "/proc/meminfo" output, but did not.',
-            $key));
+            'Expected to find "%s" in "%s" output, but did not.',
+            $key,
+            '/proc/meminfo'));
       }
     }
 
@@ -121,7 +124,9 @@ final class PhutilSystem extends Phobject {
     if (!$page_size) {
       throw new Exception(
         pht(
-          'Expected to find "page size" in `vm_stat` output, but did not.'));
+          'Expected to find "%s" in `%s` output, but did not.',
+          'page size',
+          'vm_stat'));
     }
 
     $expect = array(
@@ -134,8 +139,9 @@ final class PhutilSystem extends Phobject {
       if (!array_key_exists($key, $map)) {
         throw new Exception(
           pht(
-            'Expected to find "%s" in `vm_stat` output, but did not.',
-            $key));
+            'Expected to find "%s" in `%s` output, but did not.',
+            $key,
+            'vm_stat'));
       }
     }
 

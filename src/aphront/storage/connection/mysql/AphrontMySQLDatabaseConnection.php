@@ -31,8 +31,9 @@ final class AphrontMySQLDatabaseConnection
       // installed, which has bitten me on three separate occasions. Make sure
       // such failures are explicit and loud.
       throw new Exception(
-        'About to call mysql_connect(), but the PHP MySQL extension is not '.
-        'available!');
+        pht(
+          'About to call %s, but the PHP MySQL extension is not available!',
+          'mysql_connect()'));
     }
 
     $user = $this->getConfiguration('user');
@@ -61,8 +62,13 @@ final class AphrontMySQLDatabaseConnection
       $errno = mysql_errno();
       $error = mysql_error();
       throw new AphrontConnectionQueryException(
-        "Attempt to connect to {$user}@{$host} failed with error ".
-        "#{$errno}: {$error}.", $errno);
+        pht(
+          'Attempt to connect to %s@%s failed with error #%d: %s.',
+          $user,
+          $host,
+          $errno,
+          $error),
+        $errno);
     }
 
     if ($database !== null) {
@@ -117,7 +123,8 @@ final class AphrontMySQLDatabaseConnection
     }
 
     if (!$processed_all) {
-      throw new Exception('There are some results left in the result set.');
+      throw new Exception(
+        pht('There are some results left in the result set.'));
     }
 
     return $results;

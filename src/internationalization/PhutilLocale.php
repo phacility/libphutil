@@ -119,9 +119,10 @@ abstract class PhutilLocale extends Phobject {
         } else {
           throw new Exception(
             pht(
-              'Two subclasses of "PhutilLocale" ("%s" and "%s") define '.
+              'Two subclasses of "%s" ("%s" and "%s") define '.
               'locales with the same locale code ("%s"). Each locale must '.
               'have a unique locale code.',
+              __CLASS__,
               get_class($object),
               get_class($locale_map[$locale_code]),
               $locale_code));

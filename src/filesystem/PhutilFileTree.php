@@ -67,7 +67,7 @@ final class PhutilFileTree {
       if ($this->data) {
         $full_path = $this->getFullPath();
         throw new Exception(
-          "Duplicate insertion for path '{$full_path}'.");
+          pht("Duplicate insertion for path '%s'.", $full_path));
       }
       $this->data = $data;
       return;

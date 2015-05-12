@@ -12,7 +12,10 @@ final class PhutilBallOfPHP {
     $data = Filesystem::readFile($path);
     if (strncmp($data, "<?php\n", 6)) {
       throw new Exception(
-        "Expected file '{$path}' to begin \"<?php\\n\".");
+        pht(
+          "Expected file '%s' to begin `%s`.",
+          $path,
+          '<?php\n'));
     }
     $this->parts[] = substr($data, 6);
     return $this;

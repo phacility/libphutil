@@ -57,7 +57,8 @@ final class XHPASTTree extends AASTTree {
       }
       throw new Exception(
         pht(
-          'XHPAST failed to parse file data %d: %s',
+          '%s failed to parse file data %d: %s',
+          'XHPAST',
           $err,
           $stderr));
     }
@@ -67,7 +68,7 @@ final class XHPASTTree extends AASTTree {
       $data = phutil_json_decode($stdout);
     } catch (PhutilJSONParserException $ex) {
       throw new PhutilProxyException(
-        pht('XHPAST: failed to decode tree.'),
+        pht('%s: failed to decode tree.', 'XHPAST'),
         $ex);
     }
 

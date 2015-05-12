@@ -26,8 +26,8 @@ final class HTTPFutureCertificateResponseStatus
       "You can do this with `security add-trusted-cert` from the command ".
       "line, or by visiting the site in Safari and choosing to trust the ".
       "certificate permanently.\n\n".
-      'For more information, see instructions in '.
-      '"libphutil/resources/ssl/README".');
+      'For more information, see instructions in "%s".',
+      'libphutil/resources/ssl/README');
   }
 
 }

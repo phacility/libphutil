@@ -56,8 +56,11 @@ final class PhutilArgumentSpecification {
 
     foreach ($unrecognized as $key => $ignored) {
       throw new PhutilArgumentSpecificationException(
-        "Unrecognized key '{$key}' in argument specification. Recognized keys ".
-        "are: ".implode(', ', $recognized_keys).'.');
+        pht(
+          "Unrecognized key '%s' in argument specification. Recognized keys ".
+          "are: %s.",
+          $key,
+          implode(', ', $recognized_keys)));
     }
 
     $obj = new PhutilArgumentSpecification();
@@ -118,8 +121,10 @@ final class PhutilArgumentSpecification {
   private static function validateName($name) {
     if (!preg_match('/^[a-z0-9][a-z0-9-]*$/', $name)) {
       throw new PhutilArgumentSpecificationException(
-        "Argument names may only contain a-z, 0-9 and -, and must be ".
-        "at least one character long. '{$name}' is invalid.");
+        pht(
+          "Argument names may only contain a-z, 0-9 and -, and must be ".
+          "at least one character long. '%s' is invalid.",
+          $name));
     }
   }
 
@@ -145,13 +150,17 @@ final class PhutilArgumentSpecification {
   private static function validateShortAlias($alias) {
     if (strlen($alias) !== 1) {
       throw new PhutilArgumentSpecificationException(
-        "Argument short aliases must be exactly one character long. ".
-        "'{$alias}' is invalid.");
+        pht(
+          "Argument short aliases must be exactly one character long. ".
+          "'%s' is invalid.",
+          $alias));
     }
     if (!preg_match('/^[a-zA-Z0-9]$/', $alias)) {
       throw new PhutilArgumentSpecificationException(
-        "Argument short aliases may only be in a-z, A-Z and 0-9. ".
-        "'{$alias}' is invalid.");
+        pht(
+          "Argument short aliases may only be in a-z, A-Z and 0-9. ".
+          "'%s' is invalid.",
+          $alias));
     }
   }
 
@@ -228,29 +237,30 @@ final class PhutilArgumentSpecification {
   public function validate() {
     if ($this->name === null) {
       throw new PhutilArgumentSpecificationException(
-        "Argument specification MUST have a 'name'.");
+        pht("Argument specification MUST have a 'name'."));
     }
 
     if ($this->getWildcard()) {
       if ($this->getParamName()) {
         throw new PhutilArgumentSpecificationException(
-          'Wildcard arguments may not specify a parameter.');
+          pht('Wildcard arguments may not specify a parameter.'));
       }
       if ($this->getRepeatable()) {
         throw new PhutilArgumentSpecificationException(
-          'Wildcard arguments may not be repeatable.');
+          pht('Wildcard arguments may not be repeatable.'));
       }
     }
 
     if ($this->default !== null) {
       if ($this->getRepeatable()) {
         throw new PhutilArgumentSpecificationException(
-          'Repeatable arguments may not have a default (always array() for '.
-          'arguments which accept a parameter, or 0 for arguments which do '.
-          'not).');
+          pht(
+            'Repeatable arguments may not have a default (always array() for '.
+            'arguments which accept a parameter, or 0 for arguments which do '.
+            'not).'));
       } else if ($this->getParamName() === null) {
         throw new PhutilArgumentSpecificationException(
-          'Flag arguments may not have a default (always false).');
+          pht('Flag arguments may not have a default (always false).'));
       }
     }
   }

@@ -27,7 +27,7 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
     if (!preg_match('@^<table>(.*)</table>$@si', $text, $matches)) {
       return $this->fail(
         $text,
-        'Bad table (expected <table>...</table>)');
+        pht('Bad table (expected %s)', '<table>...</table>'));
     }
 
     $body = $matches[1];
@@ -39,14 +39,14 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
     if (!preg_match('@^'.$row_fragment.'+$@Usi', $body)) {
       return $this->fail(
         $body,
-        'Bad table syntax (expected rows <tr>...</tr>)');
+        pht('Bad table syntax (expected rows %s)', '<tr>...</tr>'));
     }
 
     // Capture the rows.
     $row_regex = '@'.$row_fragment.'@Usi';
     if (!preg_match_all($row_regex, $body, $matches, PREG_SET_ORDER)) {
       throw new Exception(
-        'Bug in Remarkup tables, parsing fails for input: '.$text);
+        pht('Bug in Remarkup tables, parsing fails for input: %s', $text));
     }
 
     $out_rows = array();
@@ -59,14 +59,14 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
       if (!preg_match('@^'.$cell_fragment.'+$@Usi', $content)) {
         return $this->fail(
           $content,
-          'Bad table syntax (expected cells <td>...</td>)');
+          pht('Bad table syntax (expected cells %s)', '<td>...</td>'));
       }
 
       // Capture the cells.
       $cell_regex = '@'.$cell_fragment.'@Usi';
       if (!preg_match_all($cell_regex, $content, $matches, PREG_SET_ORDER)) {
         throw new Exception(
-          'Bug in Remarkup tables, parsing fails for input: '.$text);
+          pht('Bug in Remarkup tables, parsing fails for input: %s', $text));
       }
 
       $out_cells = array();

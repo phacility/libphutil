@@ -20,7 +20,10 @@ final class AphrontDatabaseTransactionState {
   public function decreaseDepth() {
     if ($this->depth == 0) {
       throw new Exception(
-        'Too many calls to saveTransaction() or killTransaction()!');
+        pht(
+          'Too many calls to %s or %s!',
+          'saveTransaction()',
+          'killTransaction()'));
     }
 
     return --$this->depth;
@@ -37,7 +40,10 @@ final class AphrontDatabaseTransactionState {
 
   public function endReadLocking() {
     if ($this->readLockLevel == 0) {
-      throw new Exception('Too many calls to endReadLocking()!');
+      throw new Exception(
+        pht(
+          'Too many calls to %s!',
+          __FUNCTION__.'()'));
     }
     $this->readLockLevel--;
     return $this;
@@ -54,7 +60,10 @@ final class AphrontDatabaseTransactionState {
 
   public function endWriteLocking() {
     if ($this->writeLockLevel == 0) {
-      throw new Exception('Too many calls to endWriteLocking()!');
+      throw new Exception(
+        pht(
+          'Too many calls to %s!',
+          __FUNCTION__.'()'));
     }
     $this->writeLockLevel--;
     return $this;
@@ -67,19 +76,29 @@ final class AphrontDatabaseTransactionState {
   public function __destruct() {
     if ($this->depth) {
       throw new Exception(
-        'Process exited with an open transaction! The transaction will be '.
-        'implicitly rolled back. Calls to openTransaction() must always be '.
-        'paired with a call to saveTransaction() or killTransaction().');
+        pht(
+          'Process exited with an open transaction! The transaction '.
+          'will be implicitly rolled back. Calls to %s must always be '.
+          'paired with a call to %s or %s.',
+          'openTransaction()',
+          'saveTransaction()',
+          'killTransaction()'));
     }
     if ($this->readLockLevel) {
       throw new Exception(
-        'Process exited with an open read lock! Call to beginReadLocking() '.
-        'must always be paired with a call to endReadLocking().');
+        pht(
+          'Process exited with an open read lock! Call to %s '.
+          'must always be paired with a call to %s.',
+          'beginReadLocking()',
+          'endReadLocking()'));
     }
     if ($this->writeLockLevel) {
       throw new Exception(
-        'Process exited with an open write lock! Call to beginWriteLocking() '.
-        'must always be paired with a call to endWriteLocking().');
+        pht(
+          'Process exited with an open write lock! Call to %s '.
+          'must always be paired with a call to %s.',
+          'beginWriteLocking()',
+          'endWriteLocking()'));
     }
   }
 

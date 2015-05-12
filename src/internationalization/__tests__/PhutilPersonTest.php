@@ -14,7 +14,7 @@ final class PhutilPersonTest implements PhutilPerson {
   }
 
   public function __toString() {
-    return 'Test ('.$this->sex.')';
+    return pht('Test (%s)', $this->sex);
   }
 
 }

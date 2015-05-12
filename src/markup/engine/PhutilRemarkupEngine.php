@@ -103,7 +103,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
   public function popState($state) {
     if (empty($this->states[$state])) {
-      throw new Exception("State '{$state}' pushed more than popped!");
+      throw new Exception(pht("State '%s' pushed more than popped!", $state));
     }
     $this->states[$state]--;
     if (!$this->states[$state]) {
@@ -183,7 +183,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
       }
 
       if ($starting_cursor === $cursor) {
-        throw new Exception('Block in text did not match any block rule.');
+        throw new Exception(pht('Block in text did not match any block rule.'));
       }
     }
 

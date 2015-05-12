@@ -39,11 +39,11 @@ final class PhutilWordPressFuture extends FutureProxy {
       $params = $this->params;
 
       if (!$this->action) {
-        throw new Exception('You must setRawWordPressQuery()!');
+        throw new Exception(pht('You must %s!', 'setRawWordPressQuery()'));
       }
 
       if (!$this->accessToken) {
-        throw new Exception('You must setAccessToken()!');
+        throw new Exception(pht('You must %s!', 'setAccessToken()'));
       }
 
       $uri = new PhutilURI('https://public-api.wordpress.com/');

@@ -54,7 +54,7 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         $parser->parse($string),
-        "Correct parse of '{$string}'");
+        pht("Correct parse of '%s'", $string));
     }
   }
 
@@ -73,7 +73,7 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         $parser->parse($string),
-        "Correct case-sensitive parse of '{$string}'");
+        pht("Correct case-sensitive parse of '%s'", $string));
     }
   }
 
@@ -92,7 +92,7 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
       $this->assertEqual(
         array(),
         $parser->parse($input),
-        "Correct failing parse of invalid input: {$input}");
+        pht('Correct failing parse of invalid input: %s', $input));
     }
   }
 
@@ -112,7 +112,7 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         $parser->unparse($dict),
-        'Correct unparse of '.print_r($dict, true));
+        pht('Correct unparse of %s', print_r($dict, true)));
     }
 
     $bogus = array(
@@ -130,14 +130,14 @@ final class PhutilSimpleOptionsTestCase extends PhutilTestCase {
       }
       $this->assertTrue(
         $caught instanceof Exception,
-        'Correct throw on unparse of bad input.');
+        pht('Correct throw on unparse of bad input.'));
     }
 
     $parser = new PhutilSimpleOptions();
     $this->assertEqual(
       'a="\\}"',
       $parser->unparse(array('a' => '}'), '}'),
-      'Unparse with extra escape.');
+      pht('Unparse with extra escape.'));
   }
 
 }

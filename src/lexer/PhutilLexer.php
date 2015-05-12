@@ -109,12 +109,18 @@ abstract class PhutilLexer {
     if (!is_array($raw_rules)) {
       $type = gettype($raw_rules);
       throw new UnexpectedValueException(
-        "Expected {$class}->getRawRules() to return array, got {$type}.");
+        pht(
+          'Expected %s to return array, got %s.',
+          $class.'->getRawRules()',
+          $type));
     }
 
     if (empty($raw_rules['start'])) {
       throw new UnexpectedValueException(
-        "Expected {$class} rules to define rules for state 'start'.");
+        pht(
+          "Expected %s rules to define rules for state '%s'.",
+          $class,
+          'start'));
     }
 
     $processed_rules = array();
@@ -123,16 +129,24 @@ abstract class PhutilLexer {
       if (!is_array($rules)) {
         $type = gettype($rules);
         throw new UnexpectedValueException(
-          "Expected list of rules for state '{$state}' in {$class}, got ".
-          "{$type}.");
+          pht(
+            "Expected list of rules for state '%s' in %s, got %s.",
+            $state,
+            $class,
+            $type));
       }
 
       foreach ($rules as $key => $rule) {
         $n = count($rule);
         if ($n < 2 || $n > 4) {
           throw new UnexpectedValueException(
-            "Expected rule '{$key}' in state '{$state}' in {$class} to have ".
-            "2-4 elements (regex, token, [next state], [options]), got {$n}.");
+            pht(
+              "Expected rule '%s' in state '%s' in %s to have 2-4 elements ".
+              "(regex, token, [next state], [options]), got %d.",
+              $key,
+              $state,
+              $class,
+              $n));
         }
         $rule = array_values($rule);
         if (count($rule) == 2) {
@@ -150,15 +164,26 @@ abstract class PhutilLexer {
                   $value !== 'discard' &&
                   $value !== null) {
                 throw new UnexpectedValueException(
-                  "Rule '{$key}' in state '{$state}' in {$class} has unknown ".
-                  "context rule '{$value}', expected 'push', 'pop' or ".
-                  "'discard'.");
+                  pht(
+                    "Rule '%s' in state '%s' in %s has unknown ".
+                    "context rule '%s', expected '%s', '%s' or '%s'.",
+                    $key,
+                    $state,
+                    $class,
+                    $value,
+                    'push',
+                    'pop',
+                    'discard'));
               }
               break;
             default:
               throw new UnexpectedValueException(
-                "Rule '{$key}' in state '{$state}' in {$class} has unknown ".
-                "option '{$option}'.");
+                pht(
+                  "Rule '%s' in state '%s' in %s has unknown option '%s'.",
+                  $key,
+                  $state,
+                  $class,
+                  $option));
           }
         }
 
@@ -170,17 +195,27 @@ abstract class PhutilLexer {
         if (@preg_match($rule[0], '') === false) {
           $error = error_get_last();
           throw new UnexpectedValueException(
-            "Rule '{$key}' in state '{$state}' in {$class} defines an ".
-            "invalid regular expression ('{$rule[0]}'): ".
-            idx($error, 'message'));
+            pht(
+              "Rule '%s' in state '%s' in %s defines an ".
+              "invalid regular expression ('%s'): %s",
+              $key,
+              $state,
+              $class,
+              $rule[0],
+              idx($error, 'message')));
         }
 
         $next_state = $rule[2];
         if ($next_state !== null && $next_state !== '!pop') {
           if (empty($raw_rules[$next_state])) {
             throw new UnexpectedValueException(
-              "Rule '{$key}' in state '{$state}' in {$class} transitions to ".
-              "state '{$next_state}', but there are no rules for that state.");
+              pht(
+                "Rule '%s' in state '%s' in %s transitions to ".
+                "state '%s', but there are no rules for that state.",
+                $key,
+                $state,
+                $class,
+                $next_state));
           }
         }
 
@@ -236,8 +271,10 @@ abstract class PhutilLexer {
         if (!$match_length) {
           if ($next_state === null) {
             throw new UnexpectedValueException(
-              "Rule '{$regexp}' matched a zero-length token and causes no ".
-              "state transition.");
+              pht(
+                "Rule '%s' matched a zero-length token and causes no ".
+                "state transition.",
+                $regexp));
           }
         } else {
           $position += $match_length;
@@ -250,13 +287,13 @@ abstract class PhutilLexer {
           } else if ($copt == 'pop') {
             if (empty($context)) {
               throw new UnexpectedValueException(
-                "Rule '{$regexp}' popped empty context!");
+                pht("Rule '%s' popped empty context!", $regexp));
             }
             $token[] = array_pop($context);
           } else if ($copt == 'discard') {
             if (empty($context)) {
               throw new UnexpectedValueException(
-                "Rule '{$regexp}' discarded empty context!");
+                pht("Rule '%s' discarded empty context!", $regexp));
             }
             array_pop($context);
             $token[] = null;
@@ -272,7 +309,7 @@ abstract class PhutilLexer {
             array_pop($states);
             if (empty($states)) {
               throw new UnexpectedValueException(
-                "Rule '{$regexp}' popped off the last state.");
+                pht("Rule '%s' popped off the last state.", $regexp));
             }
           } else {
             $states[] = $next_state;
@@ -283,7 +320,7 @@ abstract class PhutilLexer {
       }
 
       throw new UnexpectedValueException(
-        "No lexer rule matched input at char {$position}.");
+        pht('No lexer rule matched input at char %d.', $position));
     }
 
     $this->lastState = $states;

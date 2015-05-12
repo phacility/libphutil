@@ -42,12 +42,13 @@ final class PhutilLibraryConflictException extends Exception {
     $this->oldPath = $old_path;
     $this->newPath = $new_path;
 
-    $message = "Library conflict! The library '{$library}' has already been ".
-               "loaded (from '{$old_path}') but is now being loaded again ".
-               "from a new location ('{$new_path}'). You can not load ".
-               "multiple copies of the same library into a program.";
-
-    parent::__construct($message);
+    parent::__construct(pht(
+      "Library conflict! The library '%s' has already been loaded (from '%s') ".
+      "but is now being loaded again from a new location ('%s'). You can not ".
+      "load multiple copies of the same library into a program.",
+      $library,
+      $old_path,
+      $new_path));
   }
 
   /**

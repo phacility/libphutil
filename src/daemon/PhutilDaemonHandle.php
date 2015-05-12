@@ -274,7 +274,7 @@ final class PhutilDaemonHandle {
   private function updateMemory() {
     if ($this->traceMemory) {
       $memuse = number_format(memory_get_usage() / 1024, 1);
-      $this->logMessage('RAMS', 'Overseer Memory Usage: '.$memuse.' KB');
+      $this->logMessage('RAMS', pht('Overseer Memory Usage: %d KB', $memuse));
     }
   }
 
@@ -399,9 +399,12 @@ final class PhutilDaemonHandle {
   public function didReceiveTerminalSignal($signo) {
     $signame = phutil_get_signal_name($signo);
     if ($signame) {
-      $sigmsg = "Shutting down in response to signal {$signo} ({$signame}).";
+      $sigmsg = pht(
+        'Shutting down in response to signal %s (%s).',
+        $signo,
+        $signame);
     } else {
-      $sigmsg = "Shutting down in response to signal {$signo}.";
+      $sigmsg = pht('Shutting down in response to signal %s.', $signo);
     }
 
     $this->logMessage('EXIT', $sigmsg, $signo);

@@ -75,8 +75,11 @@ abstract class AbstractDirectedGraph {
   final public function addNodes(array $nodes) {
     if ($this->graphLoaded) {
       throw new Exception(
-        'Call addNodes() before calling loadGraph(). You can not add more '.
-        'nodes once you have loaded the graph.');
+        pht(
+          'Call %s before calling %s. You can not add more nodes '.
+          'once you have loaded the graph.',
+          __FUNCTION__.'()',
+          'loadGraph()'));
     }
 
     $this->knownNodes += $nodes;
@@ -237,8 +240,10 @@ abstract class AbstractDirectedGraph {
       foreach ($load as $node) {
         if (!isset($new_nodes[$node]) || !is_array($new_nodes[$node])) {
           throw new Exception(
-            'loadEdges() must return an edge list array for each provided '.
-            'node, or the cycle detection algorithm may not terminate.');
+            pht(
+              '%s must return an edge list array for each provided '.
+              'node, or the cycle detection algorithm may not terminate.',
+              'loadEdges()'));
         }
       }
 
@@ -281,13 +286,17 @@ abstract class AbstractDirectedGraph {
   final public function detectCycles($node) {
     if (!$this->graphLoaded) {
       throw new Exception(
-        'Call loadGraph() to build the graph out before calling '.
-        'detectCycles().');
+        pht(
+          'Call %s to build the graph out before calling %s.',
+          'loadGraph()',
+          __FUNCTION__.'()'));
     }
     if (!isset($this->knownNodes[$node])) {
       throw new Exception(
-        "The node '{$node}' is not known. Call addNodes() to seed the graph ".
-        "with nodes.");
+        pht(
+          "The node '%s' is not known. Call %s to seed the graph with nodes.",
+          $node,
+          'addNodes()'));
     }
 
     $visited = array();

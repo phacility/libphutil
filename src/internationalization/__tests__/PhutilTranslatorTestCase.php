@@ -204,7 +204,11 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
         $this->assertEqual(
           $expect,
           $translator->validateTranslation($original, $translation),
-          "'{$original}' should be {$valid} with '{$translation}'.");
+          pht(
+            "'%s' should be %s with '%s'.",
+            $original,
+            $valid,
+            $translation));
       }
     }
   }

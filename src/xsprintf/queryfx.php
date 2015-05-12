@@ -16,7 +16,8 @@ function queryfx_one(AphrontDatabaseConnection $conn, $sql /* , ... */) {
   $argv = func_get_args();
   $ret = call_user_func_array('queryfx_all', $argv);
   if (count($ret) > 1) {
-    throw new AphrontCountQueryException('Query returned more than one row.');
+    throw new AphrontCountQueryException(
+      pht('Query returned more than one row.'));
   } else if (count($ret)) {
     return reset($ret);
   }

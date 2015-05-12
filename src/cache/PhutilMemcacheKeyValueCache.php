@@ -114,7 +114,10 @@ final class PhutilMemcacheKeyValueCache extends PhutilKeyValueCache {
     $n = count($this->servers);
 
     if (!$n) {
-      throw new Exception('Call setServers() before using Memcache!');
+      throw new Exception(
+        pht(
+          'Call %s before using Memcache!',
+          'setServers()'));
     }
 
     foreach ($keys as $key) {
@@ -139,7 +142,10 @@ final class PhutilMemcacheKeyValueCache extends PhutilKeyValueCache {
 
       if (!$conn) {
         throw new Exception(
-          "Unable to connect to memcache server ({$host}@{$port})!");
+          pht(
+            'Unable to connect to memcache server (%s:%d)!',
+            $host,
+            $port));
       }
 
       $this->connections[$server] = $conn;

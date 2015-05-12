@@ -23,7 +23,7 @@ abstract class FutureProxy extends Future {
 
   protected function getProxiedFuture() {
     if (!$this->proxied) {
-      throw new Exception('The proxied future has not been provided yet.');
+      throw new Exception(pht('The proxied future has not been provided yet.'));
     }
     return $this->proxied;
   }

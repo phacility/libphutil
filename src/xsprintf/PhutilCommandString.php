@@ -52,7 +52,7 @@ final class PhutilCommandString extends Phobject {
       case self::MODE_POWERSHELL:
         return self::escapePowershell($value);
       default:
-        throw new Exception('Unknown escaping mode!');
+        throw new Exception(pht('Unknown escaping mode!'));
     }
   }
 

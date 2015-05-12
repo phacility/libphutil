@@ -420,7 +420,7 @@ function isort(array $list, $index) {
  */
 function mfilter(array $list, $method, $negate = false) {
   if (!is_string($method)) {
-    throw new InvalidArgumentException('Argument method is not a string.');
+    throw new InvalidArgumentException(pht('Argument method is not a string.'));
   }
 
   $result = array();
@@ -465,7 +465,7 @@ function mfilter(array $list, $method, $negate = false) {
  */
 function ifilter(array $list, $index, $negate = false) {
   if (!is_scalar($index)) {
-    throw new InvalidArgumentException('Argument index is not a scalar.');
+    throw new InvalidArgumentException(pht('Argument index is not a scalar.'));
   }
 
   $result = array();
@@ -529,18 +529,23 @@ function assert_instances_of(array $arr, $class) {
       if (!is_array($object)) {
         $given = gettype($object);
         throw new InvalidArgumentException(
-          "Array item with key '{$key}' must be of type array, ".
-          "{$given} given.");
+          pht(
+            "Array item with key '%s' must be of type array, %s given.",
+            $key,
+            $given));
       }
 
     } else if (!($object instanceof $class)) {
       $given = gettype($object);
       if (is_object($object)) {
-        $given = 'instance of '.get_class($object);
+        $given = pht('instance of %s', get_class($object));
       }
       throw new InvalidArgumentException(
-        "Array item with key '{$key}' must be an instance of {$class}, ".
-        "{$given} given.");
+        pht(
+          "Array item with key '%s' must be an instance of %s, %s given.",
+          $key,
+          $class,
+          $given));
     }
   }
 
@@ -576,7 +581,9 @@ function assert_stringlike($parameter) {
   }
 
   throw new InvalidArgumentException(
-    'Argument must be scalar or object which implements __toString()!');
+    pht(
+      'Argument must be scalar or object which implements %s!',
+      '__toString()'));
 }
 
 /**
@@ -735,8 +742,9 @@ function array_mergev(array $arrayv) {
     if (!is_array($item)) {
       throw new InvalidArgumentException(
         pht(
-          'Expected all items passed to array_mergev() to be arrays, but '.
+          'Expected all items passed to %s to be arrays, but '.
           'argument with key "%s" has type "%s".',
+          __FUNCTION__.'()',
           $key,
           gettype($item)));
     }
@@ -991,7 +999,8 @@ function phutil_units($description) {
     throw new InvalidArgumentException(
       pht(
         'Unable to parse unit specification (expected a specification in the '.
-        'form "5 days in seconds"): %s',
+        'form "%s"): %s',
+        '5 days in seconds',
         $description));
   }
 

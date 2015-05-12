@@ -361,7 +361,7 @@ final class PhutilTypeSpec {
         }
         return $result;
       default:
-        throw new Exception("Unhandled parser rule '{$rule}'!");
+        throw new Exception(pht("Unhandled parser rule '%s'!", $rule));
     }
   }
 

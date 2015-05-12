@@ -36,8 +36,10 @@ final class PhutilBootloader {
   public function registerLibrary($name, $path) {
     if (basename($path) != '__phutil_library_init__.php') {
       throw new PhutilBootloaderException(
-        'Only directories with a __phutil_library_init__.php file may be '.
-        'registered as libphutil libraries.');
+        pht(
+          'Only directories with a %s file may be registered as %s libraries.',
+          '__phutil_library_init__.php',
+          'libphutil'));
     }
 
     $path = dirname($path);
@@ -119,7 +121,9 @@ final class PhutilBootloader {
         $okay = include $root.'/__phutil_library_map__.php';
         if (!$okay) {
           throw new PhutilBootloaderException(
-            "Include of '{$root}/__phutil_library_map__.php' failed!");
+            pht(
+              "Include of '%s' failed!",
+              "{$root}/__phutil_library_map__.php"));
         }
       }
 
@@ -133,7 +137,7 @@ final class PhutilBootloader {
       switch ($version) {
         case 1:
           throw new Exception(
-            'libphutil v1 libraries are no longer supported.');
+            pht('libphutil v1 libraries are no longer supported.'));
         case 2:
           // NOTE: In version 2 of the library format, all parents (both
           // classes and interfaces) are stored in the 'xmap'. The value is
@@ -146,7 +150,8 @@ final class PhutilBootloader {
           }
           break;
         default:
-          throw new Exception("Unsupported library version '{$version}'!");
+          throw new Exception(
+            pht("Unsupported library version '%s'!", $version));
       }
     }
 
@@ -177,7 +182,7 @@ final class PhutilBootloader {
   public function getLibraryRoot($name) {
     if (empty($this->registeredLibraries[$name])) {
       throw new PhutilBootloaderException(
-        "The phutil library '{$name}' has not been loaded!");
+        pht("The %s library '%s' has not been loaded!", 'phutil', $name));
     }
     return $this->registeredLibraries[$name];
   }
@@ -196,7 +201,7 @@ final class PhutilBootloader {
     $okay = $this->executeInclude($root.$path.'/__phutil_library_init__.php');
     if (!$okay) {
       throw new PhutilBootloaderException(
-        "Include of '{$path}/__phutil_library_init__.php' failed!");
+        pht("Include of '%s' failed!", "{$path}/__phutil_library_init__.php"));
     }
   }
 
@@ -204,7 +209,8 @@ final class PhutilBootloader {
     $path = $this->getLibraryRoot($library).'/'.$source;
     $okay = $this->executeInclude($path);
     if (!$okay) {
-      throw new PhutilBootloaderException("Include of '{$path}' failed!");
+      throw new PhutilBootloaderException(
+        pht("Include of '%s' failed!", $path));
     }
   }
 
@@ -227,7 +233,7 @@ final class PhutilBootloader {
     $ok = $this->executeInclude($path);
     if (!$ok) {
       throw new PhutilBootloaderException(
-        "Include of extension file '{$path}' failed!");
+        pht("Include of extension file '%s' failed!", $path));
     }
 
     $new_functions = get_defined_functions();

@@ -25,7 +25,7 @@ abstract class PhutilContextFreeGrammar {
 
   final protected function applyRules($input, &$count, array $rules) {
     if (++$count > $this->limit) {
-      throw new Exception('Token replacement count exceeded limit!');
+      throw new Exception(pht('Token replacement count exceeded limit!'));
     }
 
     $matches = null;
@@ -43,7 +43,7 @@ abstract class PhutilContextFreeGrammar {
       }
 
       if (empty($rules[$token_name])) {
-        throw new Exception("Invalid token '{$token_name}' in grammar.");
+        throw new Exception(pht("Invalid token '%s' in grammar.", $token_name));
       }
 
       $key = array_rand($rules[$token_name]);

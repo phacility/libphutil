@@ -42,7 +42,7 @@ final class Filesystem {
     if ($data === false) {
       throw new FilesystemException(
         $path,
-        "Failed to read file `{$path}'.");
+        pht("Failed to read file `%s'.", $path));
     }
 
     return $data;
@@ -91,7 +91,7 @@ final class Filesystem {
     if (@file_put_contents($path, $data) === false) {
       throw new FilesystemException(
         $path,
-        "Failed to write file `{$path}'.");
+        pht("Failed to write file `%s'.", $path));
     }
   }
 
@@ -127,8 +127,7 @@ final class Filesystem {
     if (!$temp) {
       throw new FilesystemException(
         $dir,
-        "unable to create temporary file in $dir"
-      );
+        pht('Unable to create temporary file in %s.', $dir));
     }
     try {
       self::writeFile($temp, $data);
@@ -140,8 +139,7 @@ final class Filesystem {
       if (!$ok) {
         throw new FilesystemException(
           $path,
-          "unable to move $temp to $path"
-        );
+          pht('Unable to move %s to %s.', $temp, $path));
       }
     } catch (Exception $e) {
       // Make best effort to remove temp file
@@ -235,18 +233,19 @@ final class Filesystem {
 
     if (($fh = fopen($path, 'a')) === false) {
       throw new FilesystemException(
-        $path, "Failed to open file `{$path}'.");
+        $path,
+        pht("Failed to open file `%s'.", $path));
     }
     $dlen = strlen($data);
     if (fwrite($fh, $data) !== $dlen) {
       throw new FilesystemException(
         $path,
-        "Failed to write {$dlen} bytes to `{$path}'.");
+        pht("Failed to write %d bytes to `%s'.", $dlen, $path));
     }
     if (!fflush($fh) || !fclose($fh)) {
       throw new FilesystemException(
         $path,
-        "Failed closing file `{$path}' after write.");
+        pht("Failed closing file `%s' after write.", $path));
     }
   }
 
@@ -262,7 +261,10 @@ final class Filesystem {
   public static function remove($path) {
     if (!strlen($path)) {
       // Avoid removing PWD.
-      throw new Exception('No path provided to remove().');
+      throw new Exception(
+        pht(
+          'No path provided to %s.',
+          __FUNCTION__.'()'));
     }
 
     $path = self::resolvePath($path);
@@ -292,7 +294,7 @@ final class Filesystem {
     if (!$ok) {
       throw new FilesystemException(
         $new,
-        "Failed to rename '{$old}' to '{$new}'!");
+        pht("Failed to rename '%s' to '%s'!", $old, $new));
     }
   }
 
@@ -315,14 +317,14 @@ final class Filesystem {
       if (!$ok) {
          throw new FilesystemException(
           $path,
-          "Failed to remove directory '{$path}'!");
+          pht("Failed to remove directory '%s'!", $path));
       }
     } else {
       $ok = unlink($path);
       if (!$ok) {
         throw new FilesystemException(
           $path,
-          "Failed to remove file '{$path}'!");
+          pht("Failed to remove file '%s'!", $path));
       }
     }
   }
@@ -346,7 +348,8 @@ final class Filesystem {
     if (!@chmod($path, $umask)) {
       $readable_umask = sprintf('%04o', $umask);
       throw new FilesystemException(
-        $path, "Failed to chmod `{$path}' to `{$readable_umask}'.");
+        $path,
+        pht("Failed to chmod `%s' to `%s'.", $path, $readable_umask));
     }
   }
 
@@ -370,7 +373,7 @@ final class Filesystem {
     if ($modified_time === false) {
       throw new FilesystemException(
         $path,
-        'Failed to read modified time for '.$path);
+        pht('Failed to read modified time for %s.', $path));
     }
 
     return $modified_time;
@@ -406,14 +409,16 @@ final class Filesystem {
 
       if ($data === false) {
         throw new Exception(
-          pht('openssl_random_pseudo_bytes() failed to generate entropy!'));
+          pht(
+            '%s failed to generate entropy!',
+            'openssl_random_pseudo_bytes()'));
       }
 
       if (strlen($data) != $number_of_bytes) {
         throw new Exception(
           pht(
-            'openssl_random_pseudo_bytes() returned an unexpected number of '.
-            'bytes (got %d, expected %d)!',
+            '%s returned an unexpected number of bytes (got %d, expected %d)!',
+            'openssl_random_pseudo_bytes()',
             strlen($data),
             $number_of_bytes));
       }
@@ -433,7 +438,7 @@ final class Filesystem {
       if (strlen($data) != $number_of_bytes) {
         throw new FilesystemException(
           '/dev/urandom',
-          'Failed to read random bytes!');
+          pht('Failed to read random bytes!'));
       }
       return $data;
     }
@@ -448,17 +453,20 @@ final class Filesystem {
     if (phutil_is_windows()) {
       throw new Exception(
         pht(
-          'Filesystem::readRandomBytes() requires the PHP OpenSSL extension '.
-          'to be installed and enabled to access an entropy source. On '.
-          'Windows, this extension is usually installed but not enabled by '.
-          'default. Enable it in your "php.ini".'));
+          '%s requires the PHP OpenSSL extension to be installed and enabled '.
+          'to access an entropy source. On Windows, this extension is usually '.
+          'installed but not enabled by default. Enable it in your "s".',
+          __METHOD__.'()',
+          'php.ini'));
     }
 
     throw new Exception(
       pht(
-        'Filesystem::readRandomBytes() requires the PHP OpenSSL extension '.
-        'or access to "/dev/urandom". Install or enable the OpenSSL '.
-        'extension, or make sure "/dev/urandom" is accessible.'));
+        '%s requires the PHP OpenSSL extension or access to "%s". Install or '.
+        'enable the OpenSSL extension, or make sure "%s" is accessible.',
+        __METHOD__.'()',
+        '/dev/urandom',
+        '/dev/urandom'));
   }
 
 
@@ -619,7 +627,7 @@ final class Filesystem {
     if (!mkdir($path, $umask)) {
       throw new FilesystemException(
         $path,
-        "Failed to create directory `{$path}'.");
+        pht("Failed to create directory `%s'.", $path));
     }
 
     // Need to change permissions explicitly because mkdir does something
@@ -653,7 +661,8 @@ final class Filesystem {
     $tmp = sys_get_temp_dir();
     if (!$tmp) {
       throw new FilesystemException(
-        $tmp, 'Unable to determine system temporary directory.');
+        $tmp,
+        pht('Unable to determine system temporary directory.'));
     }
 
     $base = $tmp.DIRECTORY_SEPARATOR.$prefix;
@@ -665,7 +674,7 @@ final class Filesystem {
         self::createDirectory($dir, $umask);
         break;
       } catch (FilesystemException $ex) {
-        //  Ignore.
+        // Ignore.
       }
     } while (--$tries);
 
@@ -708,7 +717,7 @@ final class Filesystem {
     if ($list === false) {
       throw new FilesystemException(
         $path,
-        "Unable to list contents of directory `{$path}'.");
+        pht("Unable to list contents of directory `%s'.", $path));
     }
 
     foreach ($list as $k => $v) {
@@ -974,7 +983,7 @@ final class Filesystem {
     if (!self::pathExists($path)) {
       throw new FilesystemException(
         $path,
-        "Filesystem entity `{$path}' does not exist.");
+        pht("Filesystem entity `%s' does not exist.", $path));
     }
   }
 
@@ -991,7 +1000,7 @@ final class Filesystem {
     if (file_exists($path) || is_link($path)) {
       throw new FilesystemException(
         $path,
-        "Path `{$path}' already exists!");
+        pht("Path `%s' already exists!", $path));
     }
   }
 
@@ -1008,7 +1017,7 @@ final class Filesystem {
     if (!is_file($path)) {
       throw new FilesystemException(
         $path,
-        "Requested path `{$path}' is not a file.");
+        pht("Requested path `%s' is not a file.", $path));
     }
   }
 
@@ -1025,7 +1034,7 @@ final class Filesystem {
     if (!is_dir($path)) {
       throw new FilesystemException(
         $path,
-        "Requested path `{$path}' is not a directory.");
+        pht("Requested path `%s' is not a directory.", $path));
     }
   }
 
@@ -1042,7 +1051,7 @@ final class Filesystem {
     if (!is_writable($path)) {
       throw new FilesystemException(
         $path,
-        "Requested path `{$path}' is not writable.");
+        pht("Requested path `%s' is not writable.", $path));
     }
   }
 
@@ -1059,7 +1068,7 @@ final class Filesystem {
     if (!is_readable($path)) {
       throw new FilesystemException(
         $path,
-        "Path `{$path}' is not readable.");
+        pht("Path `%s' is not readable.", $path));
     }
   }
 

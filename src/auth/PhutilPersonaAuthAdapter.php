@@ -55,12 +55,12 @@ final class PhutilPersonaAuthAdapter extends PhutilAuthAdapter {
 
       $audience = idx($response, 'audience');
       if ($audience != $this->audience) {
-        throw new Exception("Mismatched Persona audience: {$audience}");
+        throw new Exception(pht('Mismatched Persona audience: %s', $audience));
       }
 
       if (idx($response, 'status') !== 'okay') {
         $reason = idx($response, 'reason', 'Unknown');
-        throw new Exception("Persona login failed: {$reason}");
+        throw new Exception(pht('Persona login failed: %s', $reason));
       }
 
       $this->accountData = $response;

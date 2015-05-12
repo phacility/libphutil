@@ -78,7 +78,7 @@ final class PhutilInteractiveEditor {
 
     if ($err) {
       Filesystem::remove($tmp);
-      throw new Exception("Editor exited with an error code (#{$err}).");
+      throw new Exception(pht('Editor exited with an error code (#%d).', $err));
     }
 
     try {
@@ -171,7 +171,7 @@ final class PhutilInteractiveEditor {
 
 
   /**
-   * Get the current document name. See setName() for details.
+   * Get the current document name. See @{method:setName} for details.
    *
    * @return string  Current document name.
    *
@@ -275,8 +275,10 @@ final class PhutilInteractiveEditor {
     }
 
     throw new Exception(
-      'Unable to launch an interactive text editor. Set the EDITOR '.
-      'environment variable to an appropriate editor.');
+      pht(
+        'Unable to launch an interactive text editor. Set the %s '.
+        'environment variable to an appropriate editor.',
+        'EDITOR'));
   }
 
 }

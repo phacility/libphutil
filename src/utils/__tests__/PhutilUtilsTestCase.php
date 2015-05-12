@@ -178,7 +178,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
 
       $this->assertTrue(
         ($caught instanceof InvalidArgumentException),
-        "array_mergev() invalid on {$key}");
+        pht('%s invalid on %s', 'array_mergev()', $key));
     }
   }
 
@@ -371,7 +371,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         phutil_split_lines($input, $retain_endings = true),
-        "(Retained) ".addcslashes($input, "\r\n\\"));
+        pht('(Retained) %s', addcslashes($input, "\r\n\\")));
     }
 
     $discard_cases = array(
@@ -390,7 +390,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         phutil_split_lines($input, $retain_endings = false),
-        "(Discarded) ".addcslashes($input, "\r\n\\"));
+        pht('(Discarded) %s', addcslashes($input, "\r\n\\")));
     }
   }
 

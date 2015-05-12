@@ -78,7 +78,9 @@ final class PhutilSpriteSheet {
             $width = $sprite->getSourceW();
           } else if ($width !== $sprite->getSourceW()) {
             throw new Exception(
-              "All sprites in a 'repeat-x' sheet must have the same width.");
+              pht(
+                "All sprites in a '%s' sheet must have the same width.",
+                'repeat-x'));
           }
         }
         break;
@@ -92,12 +94,14 @@ final class PhutilSpriteSheet {
             $height = $sprite->getSourceH();
           } else if ($height !== $sprite->getSourceH()) {
             throw new Exception(
-              "All sprites in a 'repeat-y' sheet must have the same height.");
+              pht(
+                "All sprites in a '%s' sheet must have the same height.",
+                'repeat-y'));
           }
         }
         break;
       default:
-        throw new Exception("Unknown sprite sheet type '{$type}'!");
+        throw new Exception(pht("Unknown sprite sheet type '%s'!", $type));
     }
 
 
@@ -247,14 +251,14 @@ final class PhutilSpriteSheet {
 
   public function generateImage($path, $scale = 1) {
     $this->generate();
-    $this->log("Writing sprite '{$path}'...");
+    $this->log(pht("Writing sprite '%s'...", $path));
     imagepng($this->images[$scale], $path);
     return $this;
   }
 
   public function generateCSS($path) {
     $this->generate();
-    $this->log("Writing CSS '{$path}'...");
+    $this->log(pht("Writing CSS '%s'...", $path));
 
     $out = $this->css;
     $out = str_replace('{X}', imagesx($this->images[1]), $out);
@@ -357,16 +361,22 @@ final class PhutilSpriteSheet {
     $i_w = $this->sources[$file]['x'];
     if ($s_w > $i_w) {
       throw new Exception(
-        "Sprite source for '{$file}' is too small (expected width {$s_w}, ".
-        "found {$i_w}).");
+        pht(
+          "Sprite source for '%s' is too small (expected width %d, found %d).",
+          $file,
+          $s_w,
+          $i_w));
     }
 
     $s_h = $sprite->getSourceH() * $scale;
     $i_h = $this->sources[$file]['y'];
     if ($s_h > $i_h) {
       throw new Exception(
-        "Sprite source for '{$file}' is too small (expected height {$s_h}, ".
-        "found {$i_h}).");
+        pht(
+          "Sprite source for '%s' is too small (expected height %d, found %d).",
+          $file,
+          $s_h,
+          $i_h));
     }
 
     return $this->sources[$file]['image'];

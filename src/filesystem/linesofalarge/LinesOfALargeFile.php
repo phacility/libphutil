@@ -79,7 +79,7 @@ final class LinesOfALargeFile extends LinesOfALarge {
     if (!$this->handle) {
       throw new FilesystemException(
         $this->fileName,
-        'Failed to open file!');
+        pht('Failed to open file!'));
     }
   }
 
@@ -98,7 +98,7 @@ final class LinesOfALargeFile extends LinesOfALarge {
     if ($more === false) {
       throw new FilesystemException(
         $this->fileName,
-        'Failed to read file!');
+        pht('Failed to read file!'));
     }
     return $more;
   }

@@ -29,7 +29,7 @@ final class PhutilErrorHandlerTestCase extends PhutilTestCase {
     $old_log = ini_get('error_log');
     ini_set('error_log', (string)$temporary_log);
 
-      trigger_error('(A synthetic error emitted during a unit test.)');
+      trigger_error(pht('(A synthetic error emitted during a unit test.)'));
 
     ini_set('error_log', $old_log);
     return Filesystem::readFile($temporary_log);

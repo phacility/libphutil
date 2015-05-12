@@ -139,7 +139,7 @@ abstract class PhutilOAuth1AuthAdapter extends PhutilAuthAdapter {
     $confirmed = idx($data, 'oauth_callback_confirmed');
     if ($confirmed !== 'true') {
       throw new Exception(
-        "Expected 'oauth_callback_confirmed' to be 'true'!");
+        pht("Expected '%s' to be '%s'!", 'oauth_callback_confirmed', 'true'));
     }
 
     $this->readTokenAndTokenSecret($data);
@@ -154,10 +154,10 @@ abstract class PhutilOAuth1AuthAdapter extends PhutilAuthAdapter {
     $this->willFinishOAuthHandshake();
 
     if (!$this->getToken()) {
-      throw new Exception('Expected token to finish OAuth handshake!');
+      throw new Exception(pht('Expected token to finish OAuth handshake!'));
     }
     if (!$this->getVerifier()) {
-      throw new Exception('Expected verifier to finish OAuth handshake!');
+      throw new Exception(pht('Expected verifier to finish OAuth handshake!'));
     }
 
     $validate_uri = $this->getValidateTokenURI();
@@ -176,12 +176,13 @@ abstract class PhutilOAuth1AuthAdapter extends PhutilAuthAdapter {
   private function readTokenAndTokenSecret(array $data) {
     $token = idx($data, 'oauth_token');
     if (!$token) {
-      throw new Exception("Expected 'oauth_token' in response!");
+      throw new Exception(pht("Expected '%s' in response!", 'oauth_token'));
     }
 
     $token_secret = idx($data, 'oauth_token_secret');
     if (!$token_secret) {
-      throw new Exception("Expected 'oauth_token_secret' in response!");
+      throw new Exception(
+        pht("Expected '%s' in response!", 'oauth_token_secret'));
     }
 
     $this->setToken($token);

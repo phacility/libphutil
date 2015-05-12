@@ -27,8 +27,9 @@ final class PhutilCIDRBlock extends Phobject {
       throw new Exception(
         pht(
           'CIDR block "%s" is not formatted correctly. Expected an IP block '.
-          'in CIDR notation, like "172.30.0.0/16".',
-          $str));
+          'in CIDR notation, like "%s".',
+          $str,
+          '172.30.0.0/16'));
     }
 
     list($ip, $mask) = explode('/', $str);

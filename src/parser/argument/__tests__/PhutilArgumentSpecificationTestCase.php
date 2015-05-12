@@ -58,7 +58,7 @@ final class PhutilArgumentSpecificationTestCase extends PhutilTestCase {
       $this->assertEqual(
         !$valid,
         $caught instanceof Exception,
-        "Arg alias '{$alias}'.");
+        pht("Arg alias '%s'.", $alias));
     }
   }
 
@@ -134,7 +134,7 @@ final class PhutilArgumentSpecificationTestCase extends PhutilTestCase {
         $this->assertEqual(
           !$expect,
           $caught instanceof Exception,
-          'Spec validity for: '.print_r($spec, true));
+          pht('Spec validity for: %s', print_r($spec, true)));
       }
     }
   }

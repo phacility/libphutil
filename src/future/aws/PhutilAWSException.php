@@ -12,8 +12,8 @@ final class PhutilAWSException extends Exception {
     $this->params = $params;
 
     $desc = array();
-    $desc[] = 'AWS Request Failed';
-    $desc[] = 'HTTP Status Code: '.$http_status;
+    $desc[] = pht('AWS Request Failed');
+    $desc[] = pht('HTTP Status Code: %d', $http_status);
 
     if ($this->requestID) {
       $desc[] = 'AWS Request ID: '.$this->requestID;
@@ -26,7 +26,7 @@ final class PhutilAWSException extends Exception {
         }
       }
     } else {
-      $desc[] = 'Response Body: '.idx($params, 'body');
+      $desc[] = pht('Response Body: %s', idx($params, 'body'));
     }
 
     $desc = implode("\n", $desc);

@@ -48,7 +48,7 @@ final class PhutilOpaqueEnvelope {
    * @task envelope
    */
   public function __toString() {
-    return '<opaque envelope>';
+    return pht('<opaque envelope>');
   }
 
 

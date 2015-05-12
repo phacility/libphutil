@@ -15,7 +15,7 @@ EOJSON;
     $this->assertEqual(
       $expect,
       $serializer->encodeFormatted(array('x' => array())),
-      'Empty arrays should serialize as [], not {}.');
+      pht('Empty arrays should serialize as %s, not %s.', '[]', '{}'));
   }
 
 }

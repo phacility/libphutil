@@ -8,7 +8,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
     );
 
     $cycle = $this->findGraphCycle($graph);
-    $this->assertEqual(null, $cycle, 'Trivial Graph');
+    $this->assertEqual(null, $cycle, pht('Trivial Graph'));
   }
 
   public function testNoncyclicGraph() {
@@ -20,7 +20,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
     );
 
     $cycle = $this->findGraphCycle($graph);
-    $this->assertEqual(null, $cycle, 'Noncyclic Graph');
+    $this->assertEqual(null, $cycle, pht('Noncyclic Graph'));
   }
 
   public function testTrivialCyclicGraph() {
@@ -29,7 +29,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
     );
 
     $cycle = $this->findGraphCycle($graph);
-    $this->assertEqual(array('A', 'A'), $cycle, 'Trivial Cycle');
+    $this->assertEqual(array('A', 'A'), $cycle, pht('Trivial Cycle'));
   }
 
   public function testCyclicGraph() {
@@ -44,7 +44,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
     );
 
     $cycle = $this->findGraphCycle($graph);
-    $this->assertEqual(array('A', 'C', 'F', 'C'), $cycle, 'Cyclic Graph');
+    $this->assertEqual(array('A', 'C', 'F', 'C'), $cycle, pht('Cyclic Graph'));
   }
 
   public function testNonTreeGraph() {
@@ -57,7 +57,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
     );
 
     $cycle = $this->findGraphCycle($graph);
-    $this->assertEqual(null, $cycle, 'NonTreeGraph');
+    $this->assertEqual(null, $cycle, pht('Non-tree graph'));
   }
 
   public function testEdgeLoadFailure() {
@@ -74,7 +74,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
 
     $this->assertTrue(
       (bool)$raised,
-      'Exception raised by unloadable edges.');
+      pht('Exception raised by unloadable edges.'));
   }
 
   public function testTopographicSortTree() {
@@ -91,7 +91,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
     $this->assertEqual(
       array('A', 'C', 'B', 'E', 'D'),
       $sorted,
-      'Topographically sorted tree.');
+      pht('Topographically sorted tree.'));
 
     $graph = array(
       'A' => array('B', 'C'),
@@ -106,7 +106,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
     $this->assertEqual(
       array('A', 'B', 'C', 'D', 'E'),
       $sorted,
-      'Topographically sorted tree with nesting.');
+      pht('Topographically sorted tree with nesting.'));
   }
 
   public function testBestEffortTopographicSortTree() {

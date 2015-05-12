@@ -7,7 +7,8 @@ final class PHPASTParserTestCase extends PhutilTestCase {
       try {
         PhutilXHPASTBinary::build();
       } catch (Exception $ex) {
-        $this->assertSkipped(pht('xhpast is not built or not up to date.'));
+        $this->assertSkipped(
+          pht('%s is not built or not up to date.', 'xhpast'));
       }
     }
 

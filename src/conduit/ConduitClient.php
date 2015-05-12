@@ -24,7 +24,8 @@ final class ConduitClient {
   public function __construct($uri) {
     $this->uri = new PhutilURI($uri);
     if (!strlen($this->uri->getDomain())) {
-      throw new Exception("Conduit URI '{$uri}' must include a valid host.");
+      throw new Exception(
+        pht("Conduit URI '%s' must include a valid host.", $uri));
     }
     $this->host = $this->uri->getDomain();
   }
@@ -193,7 +194,8 @@ final class ConduitClient {
       $signature,
       $this->privateKey->openEnvelope());
     if (!$result) {
-      throw new Exception('Unable to sign Conduit request with signing key.');
+      throw new Exception(
+        pht('Unable to sign Conduit request with signing key.'));
     }
 
     return self::SIGNATURE_CONSIGN_1.base64_encode($signature);
@@ -212,8 +214,9 @@ final class ConduitClient {
       default:
         throw new Exception(
           pht(
-            'Unable to verify request signature, specified "auth.type" '.
+            'Unable to verify request signature, specified "%s" '.
             '("%s") is unknown.',
+            'auth.type',
             $auth_type));
     }
 
@@ -221,16 +224,18 @@ final class ConduitClient {
     if (!strlen($public_key)) {
       throw new Exception(
         pht(
-          'Unable to verify request signature, no "auth.key" present in '.
-          'request protocol information.'));
+          'Unable to verify request signature, no "%s" present in '.
+          'request protocol information.',
+          'auth.key'));
     }
 
     $signature = idx($meta, 'auth.signature');
     if (!strlen($signature)) {
       throw new Exception(
         pht(
-          'Unable to verify request signature, no "auth.signature" present '.
-          'in request protocol information.'));
+          'Unable to verify request signature, no "%s" present '.
+          'in request protocol information.',
+          'auth.signature'));
     }
 
     $prefix = self::SIGNATURE_CONSIGN_1;
@@ -270,8 +275,7 @@ final class ConduitClient {
       if (strlen($err)) {
         throw new Exception(
           pht(
-            'OpenSSL encountered an error verifying the request signature: '.
-            '%s',
+            'OpenSSL encountered an error verifying the request signature: %s',
             $err));
       } else {
         throw new Exception(

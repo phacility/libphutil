@@ -110,7 +110,8 @@ abstract class PhutilLock {
 
     $name = $lock->getName();
     if (self::getLock($name)) {
-      throw new Exception("Lock '{$name}' is already registered!");
+      throw new Exception(
+        pht("Lock '%s' is already registered!", $name));
     }
 
     self::$locks[$name] = $lock;
@@ -153,7 +154,7 @@ abstract class PhutilLock {
     if ($this->locked) {
       $name = $this->getName();
       throw new Exception(
-        "Lock '{$name}' has already been locked by this process.");
+        pht("Lock '%s' has already been locked by this process.", $name));
     }
 
     $profiler = PhutilServiceProfiler::getInstance();
@@ -193,7 +194,7 @@ abstract class PhutilLock {
     if (!$this->locked) {
       $name = $this->getName();
       throw new Exception(
-        "Lock '{$name} is not locked by this process!");
+        pht("Lock '%s is not locked by this process!", $name));
     }
 
     $this->doUnlock();

@@ -275,7 +275,7 @@ final class PhutilParserGeneratorTestCase extends PhutilTestCase {
         break;
     }
 
-    throw new Exception('Unexpected rule in ET grammar.');
+    throw new Exception(pht('Unexpected rule in ET grammar.'));
   }
 
   private function buildABCGenerator() {

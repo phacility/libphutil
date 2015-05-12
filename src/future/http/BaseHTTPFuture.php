@@ -96,10 +96,12 @@ abstract class BaseHTTPFuture extends Future {
     );
 
     if (empty($supported_methods[$method])) {
-      $method_list = implode(', ', array_keys($supported_methods));
       throw new Exception(
-        "The HTTP method '{$method}' is not supported. Supported HTTP methods ".
-        "are: {$method_list}.");
+        pht(
+          "The HTTP method '%s' is not supported. Supported HTTP methods ".
+          "are: %s.",
+          $method,
+          implode(', ', array_keys($supported_methods))));
     }
 
     $this->method = $method;
@@ -155,7 +157,7 @@ abstract class BaseHTTPFuture extends Future {
    */
   public function setData($data) {
     if (!is_string($data) && !is_array($data)) {
-      throw new Exception('Data parameter must be an array or string.');
+      throw new Exception(pht('Data parameter must be an array or string.'));
     }
     $this->data = $data;
     return $this;

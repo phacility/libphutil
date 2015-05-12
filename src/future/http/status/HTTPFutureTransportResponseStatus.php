@@ -21,21 +21,22 @@ final class HTTPFutureTransportResponseStatus extends HTTPFutureResponseStatus {
 
   protected function getErrorCodeDescription($code) {
     $map = array(
-      self::ERROR_TIMEOUT =>
-        'The request took too long to complete.',
-      self::ERROR_CONNECTION_ABORTED =>
-        'The remote host closed the connection before the request completed.',
-      self::ERROR_CONNECTION_REFUSED =>
+      self::ERROR_TIMEOUT => pht(
+        'The request took too long to complete.'),
+      self::ERROR_CONNECTION_ABORTED => pht(
+        'The remote host closed the connection before the request completed.'),
+      self::ERROR_CONNECTION_REFUSED => pht(
         'The remote host refused the connection. This usually means the '.
         'host is not running an HTTP server, or the network is blocking '.
         'connections from this machine. Verify you can connect to the '.
-        'remote host from this host.',
-      self::ERROR_CONNECTION_FAILED =>
+        'remote host from this host.'),
+      self::ERROR_CONNECTION_FAILED => pht(
         'Connection could not be initiated. This usually indicates a DNS '.
         'problem: verify the domain name is correct, that you can '.
         'perform a DNS lookup for it from this machine. (Did you add the '.
-        'domain to `/etc/hosts` on some other machine, but not this one?) '.
+        'domain to `%s` on some other machine, but not this one?) '.
         'This might also indicate that you specified the wrong port.',
+        '/etc/hosts'),
     );
     return idx($map, $code);
   }

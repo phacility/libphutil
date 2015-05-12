@@ -122,7 +122,7 @@ final class PhutilDeferredLog {
   public function setFile($file) {
     if ($this->didWrite) {
       throw new Exception(
-        'You can not change the logfile after a write has occurred!');
+        pht('You can not change the logfile after a write has occurred!'));
     }
     $this->file = $file;
     return $this;
@@ -189,7 +189,7 @@ final class PhutilDeferredLog {
         FILE_APPEND | LOCK_EX);
 
       if ($ok === false) {
-        $message = "Unable to write to logfile '{$this->file}'!";
+        $message = pht("Unable to write to logfile '%s'!", $this->file);
         if ($this->failQuietly) {
           phlog($message);
         } else {

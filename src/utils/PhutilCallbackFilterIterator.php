@@ -1,7 +1,7 @@
 <?php
 
 /**
- * NOTE: This class has the same purpose as CallbackFilterIterator in PHP 5.4.
+ * NOTE: This class has the same purpose as `CallbackFilterIterator` in PHP 5.4.
  */
 final class PhutilCallbackFilterIterator extends FilterIterator {
   private $callback;
@@ -13,7 +13,7 @@ final class PhutilCallbackFilterIterator extends FilterIterator {
   public function __construct(Iterator $iterator, $callback) {
     parent::__construct($iterator);
     if (!is_callable($callback)) {
-      throw new Exception('Callback must be callable.');
+      throw new Exception(pht('Callback must be callable.'));
     }
     $this->callback = $callback;
   }

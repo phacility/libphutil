@@ -40,18 +40,19 @@ EOHELP
       array(
         array(
           'name' => 'trace-memory',
-          'help' => 'Enable debug memory tracing.',
+          'help' => pht('Enable debug memory tracing.'),
         ),
         array(
           'name'  => 'verbose',
-          'help'  => 'Enable verbose activity logging.',
+          'help'  => pht('Enable verbose activity logging.'),
         ),
         array(
           'name' => 'label',
           'short' => 'l',
           'param' => 'label',
           'help' => pht(
-            'Optional process label. Makes "ps" nicer, no behavioral effects.'),
+            'Optional process label. Makes "%s" nicer, no behavioral effects.',
+            'ps'),
         ),
       ));
     $argv = array();
@@ -95,7 +96,7 @@ EOHELP
 
     if (self::$instance) {
       throw new Exception(
-        'You may not instantiate more than one Overseer per process.');
+        pht('You may not instantiate more than one Overseer per process.'));
     }
 
     self::$instance = $this;
@@ -110,8 +111,10 @@ EOHELP
         Filesystem::assertWritable($dir);
       } catch (Exception $ex) {
         throw new Exception(
-          "Specified daemon PID directory ('{$dir}') does not exist or is ".
-          "not writable by the daemon user!");
+          pht(
+            "Specified daemon PID directory ('%s') does not exist or is ".
+            "not writable by the daemon user!",
+            $dir));
       }
     }
 
@@ -136,7 +139,7 @@ EOHELP
 
       $pid = pcntl_fork();
       if ($pid === -1) {
-        throw new Exception('Unable to fork!');
+        throw new Exception(pht('Unable to fork!'));
       } else if ($pid) {
         exit(0);
       }

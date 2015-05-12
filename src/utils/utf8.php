@@ -319,7 +319,8 @@ function phutil_utf8v($string) {
       $ii += 1;
       continue;
     } else if ($byte < "\xC0") {
-      throw new Exception('Invalid UTF-8 string passed to phutil_utf8v().');
+      throw new Exception(
+        pht('Invalid UTF-8 string passed to %s.', __FUNCTION__));
     } else if ($byte <= "\xDF") {
       $seq_len = 2;
     } else if ($byte <= "\xEF") {
@@ -331,15 +332,18 @@ function phutil_utf8v($string) {
     } else if ($byte <= "\xFD") {
       $seq_len = 6;
     } else {
-      throw new Exception('Invalid UTF-8 string passed to phutil_utf8v().');
+      throw new Exception(
+        pht('Invalid UTF-8 string passed to %s.', __FUNCTION__));
     }
 
     if ($ii + $seq_len > $len) {
-      throw new Exception('Invalid UTF-8 string passed to phutil_utf8v().');
+      throw new Exception(
+        pht('Invalid UTF-8 string passed to %s.', __FUNCTION__));
     }
     for ($jj = 1; $jj < $seq_len; ++$jj) {
       if ($string[$ii + $jj] >= "\xC0") {
-        throw new Exception('Invalid UTF-8 string passed to phutil_utf8v().');
+        throw new Exception(
+          pht('Invalid UTF-8 string passed to %s.', __FUNCTION__));
       }
     }
     $res[] = substr($string, $ii, $seq_len);
@@ -515,13 +519,15 @@ function phutil_utf8_hard_wrap($string, $width) {
 function phutil_utf8_convert($string, $to_encoding, $from_encoding) {
   if (!$from_encoding) {
     throw new InvalidArgumentException(
-      'Attempting to convert a string encoding, but no source encoding '.
-      'was provided. Explicitly provide the source encoding.');
+      pht(
+        'Attempting to convert a string encoding, but no source encoding '.
+        'was provided. Explicitly provide the source encoding.'));
   }
   if (!$to_encoding) {
     throw new InvalidArgumentException(
-      'Attempting to convert a string encoding, but no target encoding '.
-      'was provided. Explicitly provide the target encoding.');
+      pht(
+        'Attempting to convert a string encoding, but no target encoding '.
+        'was provided. Explicitly provide the target encoding.'));
   }
 
   // Normalize encoding names so we can no-op the very common case of UTF8
@@ -534,10 +540,14 @@ function phutil_utf8_convert($string, $to_encoding, $from_encoding) {
 
   if (!function_exists('mb_convert_encoding')) {
     throw new Exception(
-      "Attempting to convert a string encoding from '{$from_encoding}' ".
-      "to '{$to_encoding}', but the 'mbstring' PHP extension is not ".
-      "available. Install mbstring to work with encodings other than ".
-      "UTF-8.");
+      pht(
+        "Attempting to convert a string encoding from '%s' to '%s', ".
+        "but the '%s' PHP extension is not available. Install %s to ".
+        "work with encodings other than UTF-8.",
+        $from_encoding,
+        $to_encoding,
+        'mbstring',
+        'mbstring'));
   }
 
   $result = @mb_convert_encoding($string, $to_encoding, $from_encoding);
@@ -545,11 +555,14 @@ function phutil_utf8_convert($string, $to_encoding, $from_encoding) {
   if ($result === false) {
     $message = error_get_last();
     if ($message) {
-      $message = idx($message, 'message', 'Unknown error.');
+      $message = idx($message, 'message', pht('Unknown error.'));
     }
     throw new Exception(
-      "String conversion from encoding '{$from_encoding}' to encoding ".
-      "'{$to_encoding}' failed: {$message}");
+      pht(
+        "String conversion from encoding '%s' to encoding '%s' failed: %s",
+        $from_encoding,
+        $to_encoding,
+        $message));
   }
 
   return $result;

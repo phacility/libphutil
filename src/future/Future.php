@@ -128,7 +128,7 @@ abstract class Future {
       //  long as we have a handler registered.
       if (function_exists('pcntl_signal')) {
         if (!pcntl_signal(SIGCHLD, array('Future', 'handleSIGCHLD'))) {
-          throw new Exception('Failed to install signal handler!');
+          throw new Exception(pht('Failed to install signal handler!'));
         }
       }
       self::$handlerInstalled = true;

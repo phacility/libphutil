@@ -215,7 +215,10 @@ final class PhutilConsole {
     } else if ($this->messages) {
       $message = array_shift($this->messages);
     } else {
-      throw new Exception('waitForMessage() called with no messages!');
+      throw new Exception(
+        pht(
+          '%s called with no messages!',
+          __FUNCTION__.'()'));
     }
 
     return $message;
@@ -232,7 +235,7 @@ final class PhutilConsole {
 
   private function enableMessageType($type) {
     if ($this->disabledTypes[$type] == 0) {
-      throw new Exception("Message type '{$type}' is already enabled!");
+      throw new Exception(pht("Message type '%s' is already enabled!", $type));
     }
     $this->disabledTypes[$type] -= 1;
     return $this;

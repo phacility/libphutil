@@ -84,7 +84,7 @@ final class FutureIterator implements Iterator {
       $this->futures[$key] = $future;
       $this->wait[] = $key;
     } else {
-      throw new Exception("Invalid key {$key}");
+      throw new Exception(pht('Invalid key %s', $key));
     }
 
     // Start running the future if we don't have $this->limit futures running

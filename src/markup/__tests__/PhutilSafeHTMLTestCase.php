@@ -4,7 +4,7 @@ final class PhutilSafeHTMLTestCase extends PhutilTestCase {
 
   public function testOperator() {
     if (!extension_loaded('operator')) {
-      $this->assertSkipped('Operator extension not available.');
+      $this->assertSkipped(pht('Operator extension not available.'));
     }
 
     $a = phutil_tag('a');

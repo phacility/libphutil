@@ -90,7 +90,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         phutil_utf8v_codepoints($str),
-        'Codepoint Vector of '.$str);
+        pht('Codepoint Vector of %s', $str));
     }
   }
 
@@ -117,7 +117,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         phutil_utf8_console_strlen($str),
-        'Console Length of '.$str);
+        pht('Console Length of %s', $str));
     }
   }
 
@@ -168,7 +168,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
         ->setMaximumGlyphs($length)
         ->setTerminator($terminal)
         ->truncateString($string);
-      $this->assertEqual($expect, $result, 'Shortening of '.$string);
+      $this->assertEqual($expect, $result, pht('Shortening of %s', $string));
     }
   }
 
@@ -207,19 +207,19 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
         ->setMaximumBytes($b_len)
         ->setTerminator('!')
         ->truncateString($input);
-      $this->assertEqual($b_out, $result, 'byte-short of '.$input);
+      $this->assertEqual($b_out, $result, pht('byte-short of %s', $input));
 
       $result = id(new PhutilUTF8StringTruncator())
         ->setMaximumCodepoints($p_len)
         ->setTerminator('!')
         ->truncateString($input);
-      $this->assertEqual($p_out, $result, 'codepoint-short of '.$input);
+      $this->assertEqual($p_out, $result, pht('codepoint-short of %s', $input));
 
       $result = id(new PhutilUTF8StringTruncator())
         ->setMaximumGlyphs($g_len)
         ->setTerminator('!')
         ->truncateString($input);
-      $this->assertEqual($g_out, $result, 'glyph-short of '.$input);
+      $this->assertEqual($g_out, $result, pht('glyph-short of %s', $input));
     }
   }
 
@@ -281,7 +281,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         phutil_utf8_hard_wrap_html($string, $width),
-        "Wrapping of '".$string."'");
+        pht("Wrapping of '%s'.", $string));
     }
   }
 
@@ -355,7 +355,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertTrue((bool)$caught, 'Requires source encoding.');
+    $this->assertTrue((bool)$caught, pht('Requires source encoding.'));
 
     $caught = null;
     try {
@@ -363,13 +363,13 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-    $this->assertTrue((bool)$caught, 'Requires target encoding.');
+    $this->assertTrue((bool)$caught, pht('Requires target encoding.'));
   }
 
 
   public function testUTF8Convert() {
     if (!function_exists('mb_convert_encoding')) {
-      $this->assertSkipped('Requires mbstring extension.');
+      $this->assertSkipped(pht('Requires %s extension.', 'mbstring'));
     }
 
     // "[ae]gis se[n]or [(c)] 1970 [+/-] 1 [degree]"
@@ -377,7 +377,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     $expect = "\xC3\xA6gis SE\xC3\x91OR \xC2\xA9 1970 \xC2\xB11\xC2\xB0";
     $output = phutil_utf8_convert($input, 'UTF-8', 'ISO-8859-1');
 
-    $this->assertEqual($expect, $output, 'Conversion from ISO-8859-1.');
+    $this->assertEqual($expect, $output, pht('Conversion from ISO-8859-1.'));
 
     $caught = null;
     try {
@@ -386,7 +386,7 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertTrue((bool)$caught, 'Conversion with bogus encoding.');
+    $this->assertTrue((bool)$caught, pht('Conversion with bogus encoding.'));
   }
 
 

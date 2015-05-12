@@ -5,7 +5,7 @@ final class AphrontParameterQueryException extends AphrontQueryException {
   private $query;
 
   public function __construct($query, $message) {
-    parent::__construct($message.' Query: '.$query);
+    parent::__construct(pht('%s Query: %s', $message, $query));
     $this->query = $query;
   }
 

@@ -164,7 +164,7 @@ class PhutilArgumentWorkflow {
   }
 
   public function execute(PhutilArgumentParser $args) {
-    throw new Exception("This workflow isn't executable!");
+    throw new Exception(pht("This workflow isn't executable!"));
   }
 
   /**

@@ -407,7 +407,7 @@ final class PhutilErrorHandler {
         error_log($default_message);
         break;
       default:
-        error_log('Unknown event '.$event);
+        error_log(pht('Unknown event %s', $event));
         break;
     }
 

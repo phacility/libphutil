@@ -414,7 +414,7 @@ final class ExecFuture extends Future {
     if ($err) {
       $cmd = $this->command;
       throw new CommandException(
-        "Command failed with error #{$err}!",
+        pht('Command failed with error #%d!', $err),
         $cmd,
         $err,
         $stdout,
@@ -439,8 +439,10 @@ final class ExecFuture extends Future {
     if (strlen($stderr)) {
       $cmd = $this->command;
       throw new CommandException(
-        "JSON command '{$cmd}' emitted text to stderr when none was expected: ".
-        $stderr,
+        pht(
+          "JSON command '%s' emitted text to stderr when none was expected: %d",
+          $cmd,
+          $stderr),
         $cmd,
         0,
         $stdout,
@@ -587,7 +589,7 @@ final class ExecFuture extends Future {
     do {
       $data = fread($stream, min($length, 64 * 1024));
       if (false === $data) {
-        throw new Exception('Failed to read from '.$description);
+        throw new Exception(pht('Failed to read from %s', $description));
       }
 
       $read_bytes = strlen($data);
@@ -733,7 +735,11 @@ final class ExecFuture extends Future {
       }
 
       if (!is_resource($proc)) {
-        throw new Exception("Failed to proc_open(): {$err}");
+        throw new Exception(
+          pht(
+            'Failed to %s: %s',
+            'proc_open()',
+            $err));
       }
 
       $this->pipes = $pipes;
@@ -751,7 +757,7 @@ final class ExecFuture extends Future {
             (!stream_set_blocking($stderr, false)) ||
             (!stream_set_blocking($stdin,  false))) {
           $this->__destruct();
-          throw new Exception('Failed to set streams nonblocking.');
+          throw new Exception(pht('Failed to set streams nonblocking.'));
         }
       }
 
@@ -771,7 +777,7 @@ final class ExecFuture extends Future {
 
       $bytes = fwrite($stdin, $write_segment);
       if ($bytes === false) {
-        throw new Exception('Unable to write to stdin!');
+        throw new Exception(pht('Unable to write to stdin!'));
       } else if ($bytes) {
         $this->stdin->removeBytesFromHead($bytes);
       } else {

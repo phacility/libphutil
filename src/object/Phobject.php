@@ -22,9 +22,8 @@ abstract class Phobject implements Iterator {
   public function __set($name, $value) {
     throw new DomainException(
       pht(
-        'Attempt to write to undeclared property %s::%s.',
-        get_class($this),
-        $name));
+        'Attempt to write to undeclared property %s.',
+        get_class($this).'::'.$name));
   }
 
   public function current() {
@@ -50,8 +49,7 @@ abstract class Phobject implements Iterator {
   private function throwOnAttemptedIteration() {
     throw new DomainException(
       pht(
-        'Attempting to iterate an object (of class %s) which is not '.
-        'iterable.',
+        'Attempting to iterate an object (of class %s) which is not iterable.',
         get_class($this)));
   }
 
