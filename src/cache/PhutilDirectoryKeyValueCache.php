@@ -169,10 +169,7 @@ final class PhutilDirectoryKeyValueCache extends PhutilKeyValueCache {
    */
   private function getCacheDirectory() {
     if (!$this->cacheDirectory) {
-      throw new Exception(
-        pht(
-          'Call %s before using a directory cache!',
-          'setCacheDirectory()'));
+      throw new PhutilInvalidStateException('setCacheDirectory');
     }
     return $this->cacheDirectory;
   }
@@ -237,11 +234,7 @@ final class PhutilDirectoryKeyValueCache extends PhutilKeyValueCache {
    */
   private function unlockCache() {
     if (!$this->lock) {
-      throw new Exception(
-        pht(
-          'Call %s before %s!',
-          'lockCache()',
-          __FUNCTION__.'()'));
+      throw new PhutilInvalidStateException('lockCache');
     }
 
     $this->lock->unlock();

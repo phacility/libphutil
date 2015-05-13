@@ -165,8 +165,7 @@ final class PhutilEditDistanceMatrix {
 
   private function requireSequences() {
     if ($this->x === null) {
-      throw new Exception(
-        pht('Call %s before performing useful work!', 'setSequences()'));
+      throw new PhutilInvalidStateException('setSequences');
     }
   }
 
@@ -292,8 +291,7 @@ final class PhutilEditDistanceMatrix {
 
   private function getTypeMatrix() {
     if (!$this->computeString) {
-      throw new Exception(
-        pht('Call %s before %s.', 'setComputeString()', 'getTypeMatrix()'));
+      throw new PhutilInvalidStateException('setComputeString');
     }
     if ($this->typeMatrix === null) {
       $this->computeMatrix($this->x, $this->y);

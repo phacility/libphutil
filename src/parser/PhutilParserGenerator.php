@@ -118,44 +118,28 @@ final class PhutilParserGenerator {
 
   public function getEOFSymbol() {
     if ($this->eofSymbol === null) {
-      throw new Exception(
-        pht(
-          'Call %s before %s!',
-          'processGrammar()',
-          __FUNCTION__.'()'));
+      throw new PhutilInvalidStateException('processGrammar');
     }
     return $this->eofSymbol;
   }
 
   public function getInitSymbol() {
     if ($this->initSymbol === null) {
-      throw new Exception(
-        pht(
-          'Call %s before %s!',
-          'processGrammar()',
-          __FUNCTION__.'()'));
+      throw new PhutilInvalidStateException('processGrammar');
     }
     return $this->initSymbol;
   }
 
   public function getEpsilonSymbol() {
     if ($this->epsilonSymbol === null) {
-      throw new Exception(
-        pht(
-          'Call %s before %s!',
-          'processGrammar()',
-          __FUNCTION__.'()'));
+      throw new PhutilInvalidStateException('processGrammar');
     }
     return $this->epsilonSymbol;
   }
 
   public function getEndSymbol() {
     if ($this->endSymbol === null) {
-      throw new Exception(
-        pht(
-          'Call %s before %s!',
-          'processGrammar()',
-          __FUNCTION__.'()'));
+      throw new PhutilInvalidStateException('processGrammar');
     }
     return $this->endSymbol;
   }
@@ -905,11 +889,7 @@ final class PhutilParserGenerator {
    */
   public function inspectRules() {
     if (!$this->rulesValidated) {
-      throw new Exception(
-        pht(
-          'Call %s before %s!',
-          'processGrammar()',
-          __FUNCTION__.'()'));
+      throw new PhutilInvalidStateException('processGrammar');
     }
     return $this->rules;
   }
@@ -920,11 +900,7 @@ final class PhutilParserGenerator {
    */
   public function inspectFirstTable() {
     if ($this->firstTable === null) {
-      throw new Exception(
-        pht(
-          'Call %s before %s!',
-          'processGrammar()',
-          __FUNCTION__.'()'));
+      throw new PhutilInvalidStateException('processGrammar');
     }
     return $this->firstTable;
   }

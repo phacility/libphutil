@@ -151,8 +151,7 @@ abstract class PhutilOAuthAuthAdapter extends PhutilAuthAdapter {
   protected function loadAccessTokenData() {
     $code = $this->getCode();
     if (!$code) {
-      throw new Exception(
-        pht('Call %s before accessing adapter information.', 'setCode()'));
+      throw new PhutilInvalidStateException('setCode');
     }
 
     $params = array(

@@ -177,11 +177,7 @@ final class PhutilOnDiskKeyValueCache extends PhutilKeyValueCache {
    */
   private function saveCache() {
     if (!$this->lock) {
-      throw new Exception(
-        pht(
-          'Call %s before %s!',
-          'loadCache($hold_lock=true)',
-          __FUNCTION__.'()'));
+      throw new PhutilInvalidStateException('loadCache');
     }
 
     // We're holding a lock so we're safe to do a write to a well-known file.
@@ -201,10 +197,7 @@ final class PhutilOnDiskKeyValueCache extends PhutilKeyValueCache {
    */
   private function getCacheFile() {
     if (!$this->cacheFile) {
-      throw new Exception(
-        pht(
-          'Call %s before using a disk cache!',
-          'setCacheFile()'));
+      throw new PhutilInvalidStateException('setCacheFile');
     }
     return $this->cacheFile;
   }
