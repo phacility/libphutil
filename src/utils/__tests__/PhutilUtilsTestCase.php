@@ -213,7 +213,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $inputs = array(
       'empty' => array(),
       'stdClass' => array($object, $object),
-      'PhutilUtilsTestCase' => array($object, $this),
+      __CLASS__ => array($object, $this),
       'array' => array(array(), array()),
       'integer' => array($object, 1),
     );

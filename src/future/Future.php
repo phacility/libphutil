@@ -127,7 +127,7 @@ abstract class Future {
       //  anything because the SIGCHLD will interrupt the stream_select(), as
       //  long as we have a handler registered.
       if (function_exists('pcntl_signal')) {
-        if (!pcntl_signal(SIGCHLD, array('Future', 'handleSIGCHLD'))) {
+        if (!pcntl_signal(SIGCHLD, array(__CLASS__, 'handleSIGCHLD'))) {
           throw new Exception(pht('Failed to install signal handler!'));
         }
       }

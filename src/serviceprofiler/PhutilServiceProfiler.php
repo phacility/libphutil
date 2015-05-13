@@ -58,7 +58,7 @@ final class PhutilServiceProfiler {
 
   public static function installEchoListener() {
     $instance = self::getInstance();
-    $instance->addListener(array('PhutilServiceProfiler', 'echoListener'));
+    $instance->addListener(array(__CLASS__, 'echoListener'));
   }
 
   public static function echoListener($type, $id, $data) {

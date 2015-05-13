@@ -109,7 +109,7 @@ final class HTTPFuture extends BaseHTTPFuture {
   }
 
   private function getDefaultUserAgent() {
-    return 'HTTPFuture/1.0';
+    return __CLASS__.'/1.0';
   }
 
   public function isReady() {

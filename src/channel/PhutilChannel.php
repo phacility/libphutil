@@ -130,8 +130,8 @@ abstract class PhutilChannel {
     array $writes,
     array $options = array()) {
 
-    assert_instances_of($reads, 'PhutilChannel');
-    assert_instances_of($writes, 'PhutilChannel');
+    assert_instances_of($reads, __CLASS__);
+    assert_instances_of($writes, __CLASS__);
 
     $read   = idx($options, 'read',     array());
     $write  = idx($options, 'write',    array());

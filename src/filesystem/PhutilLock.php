@@ -104,7 +104,7 @@ abstract class PhutilLock {
    */
   protected static function registerLock(PhutilLock $lock) {
     if (!self::$registeredShutdownFunction) {
-      register_shutdown_function(array('PhutilLock', 'unlockAll'));
+      register_shutdown_function(array(__CLASS__, 'unlockAll'));
       self::$registeredShutdownFunction = true;
     }
 

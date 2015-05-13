@@ -71,7 +71,7 @@ final class HTTPFutureCURLResponseStatus extends HTTPFutureResponseStatus {
     );
 
     $default_message = pht(
-      "The cURL library raised an error while making a request. You may be ".
+      'The cURL library raised an error while making a request. You may be '.
       'able to find more information about this error (error code: %d) '.
       'on the cURL site: %s',
       $code,

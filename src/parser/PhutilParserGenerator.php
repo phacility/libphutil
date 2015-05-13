@@ -807,7 +807,7 @@ final class PhutilParserGenerator {
   public function generateParserFunction($name) {
     $out = array();
     $out[] = 'function '.$name.'(array $tokens, $callback) {';
-    $out[] = '  return PhutilParserGenerator::parseTokensWithTables(';
+    $out[] = '  return '.__CLASS__.'::parseTokensWithTables(';
     $out[] = '    '.$this->formatAndIndent($this->actionTable, 4).',';
     $out[] = '    '.$this->formatAndIndent($this->gotoTable, 4).',';
     $out[] = '    '.$this->formatAndIndent($this->getEOFSymbol(), 4).',';

@@ -69,7 +69,7 @@ final class PhutilConsoleFormatter {
       $format = preg_replace($invert_re,    $invert,    $format);
       $format = preg_replace_callback(
         '@<(fg|bg):('.$colors.')>(.*)</\1>@sU',
-        array('PhutilConsoleFormatter', 'replaceColorCode'),
+        array(__CLASS__, 'replaceColorCode'),
         $format);
     }
 

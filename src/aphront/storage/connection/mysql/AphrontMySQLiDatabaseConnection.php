@@ -151,7 +151,7 @@ final class AphrontMySQLiDatabaseConnection
   }
 
   public static function resolveAsyncQueries(array $conns, array $asyncs) {
-    assert_instances_of($conns, 'AphrontMySQLiDatabaseConnection');
+    assert_instances_of($conns, __CLASS__);
     assert_instances_of($asyncs, 'mysqli');
 
     $read = $error = $reject = array();

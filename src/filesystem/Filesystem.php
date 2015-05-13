@@ -983,7 +983,7 @@ final class Filesystem {
     if (!self::pathExists($path)) {
       throw new FilesystemException(
         $path,
-        pht("Filesystem entity `%s' does not exist.", $path));
+        pht("File system entity `%s' does not exist.", $path));
     }
   }
 

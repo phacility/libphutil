@@ -56,7 +56,7 @@ final class PhutilGitHubAuthAdapter extends PhutilOAuthAuthAdapter {
     $future = new HTTPSFuture($uri);
 
     // NOTE: GitHub requires a User-Agent string.
-    $future->addHeader('User-Agent', 'PhutilGitHubAuthAdapter');
+    $future->addHeader('User-Agent', __CLASS__);
 
     list($body) = $future->resolvex();
 

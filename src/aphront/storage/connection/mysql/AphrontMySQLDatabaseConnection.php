@@ -145,7 +145,7 @@ final class AphrontMySQLDatabaseConnection
   public function executeParallelQueries(
     array $queries,
     array $conns = array()) {
-    assert_instances_of($conns, 'AphrontMySQLDatabaseConnection');
+    assert_instances_of($conns, __CLASS__);
 
     $map = array();
     $is_write = false;
