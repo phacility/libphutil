@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * IMPORTANT: Do not call any libphutil functions in this class, including
+ * functions like @{function:id}, @{function:idx} and @{function:pht}. They
+ * may not have loaded yet.
+ */
 final class PhutilBootloader {
 
   private static $instance;
@@ -36,10 +41,8 @@ final class PhutilBootloader {
   public function registerLibrary($name, $path) {
     if (basename($path) != '__phutil_library_init__.php') {
       throw new PhutilBootloaderException(
-        pht(
-          'Only directories with a %s file may be registered as %s libraries.',
-          '__phutil_library_init__.php',
-          'libphutil'));
+        'Only directories with a __phutil_library_init__.php file may be '.
+        'registered as libphutil libraries.');
     }
 
     $path = dirname($path);
@@ -121,15 +124,12 @@ final class PhutilBootloader {
         $okay = include $root.'/__phutil_library_map__.php';
         if (!$okay) {
           throw new PhutilBootloaderException(
-            pht(
-              "Include of '%s' failed!",
-              "{$root}/__phutil_library_map__.php"));
+            "Include of '{$root}/__phutil_library_map__.php' failed!");
         }
       }
 
       $map = $this->libraryMaps[$name];
 
-      // NOTE: We can't use "idx()" here because it may not be loaded yet.
       $version = isset($map['__library_version__'])
         ? $map['__library_version__']
         : 1;
@@ -137,7 +137,7 @@ final class PhutilBootloader {
       switch ($version) {
         case 1:
           throw new Exception(
-            pht('libphutil v1 libraries are no longer supported.'));
+            'libphutil v1 libraries are no longer supported.');
         case 2:
           // NOTE: In version 2 of the library format, all parents (both
           // classes and interfaces) are stored in the 'xmap'. The value is
@@ -150,8 +150,7 @@ final class PhutilBootloader {
           }
           break;
         default:
-          throw new Exception(
-            pht("Unsupported library version '%s'!", $version));
+          throw new Exception("Unsupported library version '{$version}'!");
       }
     }
 
@@ -182,7 +181,7 @@ final class PhutilBootloader {
   public function getLibraryRoot($name) {
     if (empty($this->registeredLibraries[$name])) {
       throw new PhutilBootloaderException(
-        pht("The %s library '%s' has not been loaded!", 'phutil', $name));
+        "The phutil library '{$name}' has not been loaded!");
     }
     return $this->registeredLibraries[$name];
   }
@@ -201,7 +200,7 @@ final class PhutilBootloader {
     $okay = $this->executeInclude($root.$path.'/__phutil_library_init__.php');
     if (!$okay) {
       throw new PhutilBootloaderException(
-        pht("Include of '%s' failed!", "{$path}/__phutil_library_init__.php"));
+        "Include of '{$path}/__phutil_library_init__.php' failed!");
     }
   }
 
@@ -209,8 +208,7 @@ final class PhutilBootloader {
     $path = $this->getLibraryRoot($library).'/'.$source;
     $okay = $this->executeInclude($path);
     if (!$okay) {
-      throw new PhutilBootloaderException(
-        pht("Include of '%s' failed!", $path));
+      throw new PhutilBootloaderException("Include of '{$path}' failed!");
     }
   }
 
@@ -233,7 +231,7 @@ final class PhutilBootloader {
     $ok = $this->executeInclude($path);
     if (!$ok) {
       throw new PhutilBootloaderException(
-        pht("Include of extension file '%s' failed!", $path));
+        "Include of extension file '{$path}' failed!");
     }
 
     $new_functions = get_defined_functions();
