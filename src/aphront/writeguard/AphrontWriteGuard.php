@@ -36,6 +36,7 @@ final class AphrontWriteGuard {
 
   private $callback;
   private $allowDepth = 0;
+  private $disposed;
 
 
 /* -(  Managing Write Guards  )---------------------------------------------- */
@@ -109,6 +110,7 @@ final class AphrontWriteGuard {
           'beginUnguardedWrites()',
           'endUnguardedWrites()'));
     }
+    $this->disposed = true;
     self::$instance = null;
   }
 
@@ -119,6 +121,7 @@ final class AphrontWriteGuard {
    * @return void
    */
   public function disposeAbruptly() {
+    $this->disposed = true;
     self::$instance = null;
   }
 
@@ -290,7 +293,7 @@ final class AphrontWriteGuard {
    * @task internal
    */
   public function __destruct() {
-    if (isset(self::$instance)) {
+    if (!$this->disposed) {
       throw new Exception(
         pht(
           '%s was not properly disposed of! Call %s on every %s object you '.
