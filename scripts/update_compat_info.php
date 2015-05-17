@@ -4,7 +4,12 @@
 require_once dirname(__FILE__).'/__init_script__.php';
 
 $target = 'resources/php_compat_info.json';
-echo "Purpose: Updates {$target} used by ArcanistXHPASTLinter.\n";
+echo phutil_console_format(
+  "%s\n",
+  pht(
+    'Purpose: Updates %s used by %s.',
+    $target,
+    'ArcanistXHPASTLinter'));
 
 // PHP CompatInfo is installed via Composer.
 //
@@ -51,6 +56,7 @@ foreach ($api->dir() as $extension) {
     true,
     true,
     true,
+    true,
     true);
 
   foreach ($result['constants'] as $constant => $compat) {
@@ -71,6 +77,22 @@ foreach ($api->dir() as $extension) {
 
   foreach ($result['interfaces'] as $interface => $compat) {
     $output['interfaces'][$interface] = parse_compat_info($compat);
+  }
+
+  foreach ($result['methods'] as $class => $methods) {
+    $output['methods'][$class] = array();
+
+    foreach ($methods as $method => $compat) {
+      $output['methods'][$class][$method] = parse_compat_info($compat);
+    }
+  }
+
+  foreach ($result['static methods'] as $class => $methods) {
+    $output['static_methods'][$class] = array();
+
+    foreach ($methods as $method => $compat) {
+      $output['static_methods'][$class][$method] = parse_compat_info($compat);
+    }
   }
 }
 
@@ -115,4 +137,4 @@ Filesystem::writeFile(
   phutil_get_library_root('phutil').'/../'.$target,
   id(new PhutilJSON())->encodeFormatted($output));
 
-echo "Done.\n";
+echo pht('Done.')."\n";
