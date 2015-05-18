@@ -88,7 +88,9 @@ final class PhutilConsoleServer {
           return call_user_func($this->handler, $message);
         } else {
           throw new Exception(
-            "Received unknown console message of type '{$type}'.");
+            pht(
+              "Received unknown console message of type '%s'.",
+              $type));
         }
 
     }

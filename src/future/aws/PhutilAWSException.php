@@ -16,10 +16,10 @@ final class PhutilAWSException extends Exception {
     $desc[] = pht('HTTP Status Code: %d', $http_status);
 
     if ($this->requestID) {
-      $desc[] = 'AWS Request ID: '.$this->requestID;
+      $desc[] = pht('AWS Request ID: %s', $this->requestID);
       $errors = idx($params, 'Errors');
       if ($errors) {
-        $desc[] = 'AWS Errors:';
+        $desc[] = pht('AWS Errors:');
         foreach ($errors as $error) {
           list($code, $message) = $error;
           $desc[] = "    - {$code}: {$message}\n";

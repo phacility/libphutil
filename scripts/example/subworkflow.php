@@ -4,7 +4,7 @@
 require_once dirname(dirname(__FILE__)).'/__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
-$args->setTagline('crazy workflow delgation');
+$args->setTagline(pht('crazy workflow delegation'));
 $args->setSynopsis(<<<EOHELP
 **subworkflow.php** do echo __args__ ...
   Echo some stuff using a convoluted series of delegate workflows.
@@ -47,7 +47,7 @@ final class PhutilDoExampleArgumentWorkflow extends PhutilArgumentWorkflow {
     $echo_workflow = id(new PhutilEchoExampleArgumentWorkflow())
       ->setName('echo')
       ->setExamples('**echo** __string__ ...')
-      ->setSynopsis('Echo __string__.');
+      ->setSynopsis(pht('Echo __string__.'));
 
     $args->parseWorkflows(
       array(
@@ -62,7 +62,7 @@ final class PhutilDoExampleArgumentWorkflow extends PhutilArgumentWorkflow {
 $do_workflow = id(new PhutilDoExampleArgumentWorkflow())
   ->setName('do')
   ->setExamples('**do** __thing__ ...')
-  ->setSynopsis('Do __thing__.');
+  ->setSynopsis(pht('Do __thing__.'));
 
 $args->parseWorkflows(
   array(

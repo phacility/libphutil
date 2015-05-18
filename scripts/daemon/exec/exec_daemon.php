@@ -6,12 +6,12 @@ require_once dirname(__FILE__).'/../../__init_script__.php';
 if (!posix_isatty(STDOUT)) {
   $sid = posix_setsid();
   if ($sid <= 0) {
-    throw new Exception('Failed to create new process session!');
+    throw new Exception(pht('Failed to create new process session!'));
   }
 }
 
 $args = new PhutilArgumentParser($argv);
-$args->setTagline('daemon executor');
+$args->setTagline(pht('daemon executor'));
 $args->setSynopsis(<<<EOHELP
 **exec_daemon.php** [__options__] __daemon__ ...
     Run an instance of __daemon__.
@@ -21,22 +21,23 @@ $args->parse(
   array(
     array(
       'name' => 'trace',
-      'help' => 'Enable debug tracing.',
+      'help' => pht('Enable debug tracing.'),
     ),
     array(
       'name' => 'trace-memory',
-      'help' => 'Enable debug memory tracing.',
+      'help' => pht('Enable debug memory tracing.'),
     ),
     array(
       'name' => 'verbose',
-      'help'  => 'Enable verbose activity logging.',
+      'help'  => pht('Enable verbose activity logging.'),
     ),
     array(
       'name' => 'label',
       'short' => 'l',
       'param' => 'label',
       'help' => pht(
-        'Optional process label. Makes "ps" nicer, no behavioral effects.'),
+        'Optional process label. Makes "%s" nicer, no behavioral effects.',
+        'ps'),
     ),
     array(
       'name'     => 'daemon',
@@ -89,10 +90,15 @@ if (!$daemon) {
   $daemon = head($daemon);
   if (!class_exists($daemon)) {
     throw new PhutilArgumentUsageException(
-      pht('No class "%s" exists in any known library.', $daemon));
+      pht(
+        'No class "%s" exists in any known library.',
+        $daemon));
   } else if (!is_subclass_of($daemon, 'PhutilDaemon')) {
     throw new PhutilArgumentUsageException(
-      pht('Class "%s" is not a subclass of "%s".', $daemon, 'PhutilDaemon'));
+      pht(
+        'Class "%s" is not a subclass of "%s".',
+        $daemon,
+        'PhutilDaemon'));
   }
 }
 

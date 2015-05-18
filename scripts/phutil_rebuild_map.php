@@ -4,7 +4,7 @@
 require_once dirname(__FILE__).'/__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
-$args->setTagline('rebuild the library map file');
+$args->setTagline(pht('rebuild the library map file'));
 $args->setSynopsis(<<<EOHELP
     **phutil_rebuild_map.php** [__options__] __root__
         Rebuild the library map file for a libphutil library.
@@ -17,28 +17,31 @@ $args->parse(
   array(
     array(
       'name'      => 'quiet',
-      'help'      => 'Do not write status messages to stderr.',
+      'help'      => pht('Do not write status messages to stderr.'),
     ),
     array(
       'name'      => 'drop-cache',
-      'help'      => 'Drop the symbol cache and rebuild the entire map from '.
-                     'scratch.',
+      'help'      => pht(
+        'Drop the symbol cache and rebuild the entire map from scratch.'),
     ),
     array(
       'name'      => 'limit',
       'param'     => 'N',
       'default'   => 8,
-      'help'      => 'Controls the number of symbol mapper subprocesses run '.
-                     'at once. Defaults to 8.',
+      'help'      => pht(
+        'Controls the number of symbol mapper subprocesses run at once. '.
+        'Defaults to 8.'),
     ),
     array(
       'name'      => 'show',
-      'help'      => 'Print symbol map to stdout instead of writing it to the '.
-                     'map file.',
+      'help'      => pht(
+        'Print symbol map to stdout instead of writing it to the map file.'),
     ),
     array(
       'name'      => 'ugly',
-      'help'      => 'Use faster but less readable serialization for --show.',
+      'help'      => pht(
+        'Use faster but less readable serialization for %s.',
+        '--show'),
     ),
     array(
       'name'      => 'root',
@@ -48,7 +51,7 @@ $args->parse(
 
 $root = $args->getArg('root');
 if (count($root) !== 1) {
-  throw new Exception('Provide exactly one library root!');
+  throw new Exception(pht('Provide exactly one library root!'));
 }
 $root = Filesystem::resolvePath(head($root));
 

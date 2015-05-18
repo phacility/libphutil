@@ -4,7 +4,7 @@
 require_once dirname(__FILE__).'/../__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
-$args->setTagline('test Filesystem::getMimeType()');
+$args->setTagline(pht('test %s', 'Filesystem::getMimeType()'));
 $args->setSynopsis(<<<EOHELP
 **mime.php** [__options__] __file__
     Determine the mime type of a file.
@@ -16,7 +16,8 @@ $args->parse(
     array(
       'name'  => 'default',
       'param' => 'mimetype',
-      'help'  => 'Use __mimetype__ as default instead of builtin default.',
+      'help'  => pht(
+        'Use __mimetype__ as default instead of built-in default.'),
     ),
     array(
       'name'     => 'file',

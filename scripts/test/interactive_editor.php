@@ -4,7 +4,7 @@
 require_once dirname(__FILE__).'/../__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
-$args->setTagline('test InteractiveEditor class');
+$args->setTagline(pht('test %s class', 'InteractiveEditor'));
 $args->setSynopsis(<<<EOHELP
 **interactive_editor.php** [__options__]
     Edit some content via the InteractiveEditor class. This script
@@ -18,18 +18,18 @@ $args->parse(
     array(
       'name'  => 'fallback',
       'param' => 'editor',
-      'help'  => 'Set the fallback editor.',
+      'help'  => pht('Set the fallback editor.'),
     ),
     array(
       'name'  => 'line',
       'short' => 'l',
       'param' => 'number',
-      'help'  => 'Open at line number __number__.',
+      'help'  => pht('Open at line number __number__.'),
     ),
     array(
       'name'  => 'name',
       'param' => 'filename',
-      'help'  => 'Set edited file name.',
+      'help'  => pht('Set edited file name.'),
     ),
   ));
 
@@ -38,9 +38,7 @@ if ($args->getArg('help')) {
 }
 
 $editor = new PhutilInteractiveEditor(
-  "The wizard quickly\n".
-  "jinxed the gnomes\n".
-  "before they vaporized.");
+  pht("The wizard quickly\njinxed the gnomes\nbefore they vaporized."));
 
 $name = $args->getArg('name');
 if ($name) {
@@ -58,4 +56,4 @@ if ($fallback) {
 }
 
 $result = $editor->editInteractively();
-echo "Edited Text:\n{$result}\n";
+echo pht('Edited Text:')."\n{$result}\n";

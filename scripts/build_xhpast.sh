@@ -4,4 +4,4 @@
 require_once dirname(__FILE__).'/__init_script__.php';
 
 PhutilXHPASTBinary::build();
-echo "Build successful!\n";
+echo pht('Build successful!')."\n";

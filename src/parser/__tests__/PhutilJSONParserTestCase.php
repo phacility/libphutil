@@ -37,7 +37,7 @@ final class PhutilJSONParserTestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         $parser->parse($input),
-        'Parsing JSON: '.$input);
+        pht('Parsing JSON: %s', $input));
     }
   }
 
@@ -123,7 +123,7 @@ final class PhutilJSONParserTestCase extends PhutilTestCase {
       $this->assertEqual(
         $expect,
         $parser->parse($input),
-        'Parsing JSON: '.$input);
+        pht('Parsing JSON: %s', $input));
 
       $parser->setAllowDuplicateKeys(false);
       $caught = null;

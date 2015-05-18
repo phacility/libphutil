@@ -4,7 +4,7 @@
 require_once dirname(__FILE__).'/../__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
-$args->setTagline('acquire and hold a lockfile');
+$args->setTagline(pht('acquire and hold a lockfile'));
 $args->setSynopsis(<<<EOHELP
 **lock.php** __file__ [__options__]
     Acquire a lockfile and hold it until told to unlock it.
@@ -16,16 +16,16 @@ $args->parseStandardArguments();
 $args->parse(array(
   array(
     'name'      => 'test',
-    'help'      => 'Instead of holding the lock, release it and exit.',
+    'help'      => pht('Instead of holding the lock, release it and exit.'),
   ),
   array(
     'name'      => 'hold',
-    'help'      => 'Hold indefinitely without prompting.',
+    'help'      => pht('Hold indefinitely without prompting.'),
   ),
   array(
     'name'      => 'wait',
     'param'     => 'n',
-    'help'      => 'Block for up to __n__ seconds waiting for the lock.',
+    'help'      => pht('Block for up to __n__ seconds waiting for the lock.'),
     'default'   => 0,
   ),
   array(
@@ -42,19 +42,24 @@ if (count($file) !== 1) {
 $file = head($file);
 
 $console = PhutilConsole::getConsole();
-$console->writeOut("This process has PID %d. Acquiring lock...\n", getmypid());
+$console->writeOut(
+  "%s\n",
+  pht('This process has PID %d. Acquiring lock...', getmypid()));
 
 $lock = PhutilFileLock::newForPath($file);
 
 try {
   $lock->lock($args->getArg('wait'));
 } catch (PhutilFileLockException $ex) {
-  $console->writeOut("**UNABLE TO ACQUIRE LOCK:** Lock is already held.\n");
+  $console->writeOut(
+    "**%s** %s\n",
+    pht('UNABLE TO ACQUIRE LOCK:'),
+    pht('Lock is already held.'));
   exit(1);
 }
 
 // NOTE: This string is magic, the unit tests look for it.
-$console->writeOut("LOCK ACQUIRED\n");
+$console->writeOut("%s\n", pht('LOCK ACQUIRED'));
 if ($args->getArg('test')) {
   $lock->unlock();
   exit(0);
@@ -66,12 +71,12 @@ if ($args->getArg('hold')) {
   }
 }
 
-while (!$console->confirm('Release lock?')) {
+while (!$console->confirm(pht('Release lock?'))) {
   // Keep asking until they say yes.
 }
 
-$console->writeOut("Unlocking...\n");
+$console->writeOut("%s\n", pht('Unlocking...'));
 $lock->unlock();
 
-$console->writeOut("Done.\n");
+$console->writeOut("%s\n", pht('Done.'));
 exit(0);

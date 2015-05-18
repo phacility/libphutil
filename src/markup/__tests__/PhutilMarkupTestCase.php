@@ -176,7 +176,7 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
         $this->assertEqual(
           $expect,
           $caught instanceof Exception,
-          "Rejected href: {$href}");
+          pht('Rejected href: %s', $href));
       }
     }
   }

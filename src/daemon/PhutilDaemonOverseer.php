@@ -29,7 +29,7 @@ final class PhutilDaemonOverseer {
     PhutilServiceProfiler::getInstance()->enableDiscardMode();
 
     $args = new PhutilArgumentParser($argv);
-    $args->setTagline('daemon overseer');
+    $args->setTagline(pht('daemon overseer'));
     $args->setSynopsis(<<<EOHELP
 **launch_daemon.php** [__options__] __daemon__
     Launch and oversee an instance of __daemon__.

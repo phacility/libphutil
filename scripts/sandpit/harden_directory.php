@@ -47,7 +47,7 @@ foreach ($hash_map as $path => $info) {
   if (!is_dir($dir)) {
     $ok = mkdir($dir, 0777, $recursive = true);
     if (!$ok) {
-      throw new Exception("Failed to make directory for '{$link}'!");
+      throw new Exception(pht("Failed to make directory for '%s'!", $link));
     }
   }
 
@@ -55,14 +55,14 @@ foreach ($hash_map as $path => $info) {
   if ($type == 'link') {
     $ok = symlink(readlink($soft.'/'.$path), $link);
     if (!$ok) {
-      throw new Exception("Failed to create symlink '{$link}'!");
+      throw new Exception(pht("Failed to create symlink '%s'!", $link));
     }
     continue;
   }
 
   if ($type === 'exec') {
     // Multiple hardlinks share a single executable bit, so we need to keep
-    // executable versions separate from nonexecutable versions.
+    // executable versions separate from non-executable versions.
     $obj .= '.x';
   }
 
@@ -89,23 +89,23 @@ foreach ($hash_map as $path => $info) {
   if ($stat === false) {
     $ok = mkdir(dirname($obj), 0777, $recursive = true);
     if (!$ok) {
-      throw new Exception("Failed to make directory for '{$obj}'.");
+      throw new Exception(pht("Failed to make directory for '%s'.", $obj));
     }
     $ok = copy($soft.'/'.$path, $obj);
     if (!$ok) {
-      throw new Exception("Failed to copy file '{$soft}/{$path}'!");
+      throw new Exception(pht("Failed to copy file '%s/%s'!", $soft, $path));
     }
     if ($type === 'exec') {
       $ok = chmod($obj, 0755);
       if (!$ok) {
-        throw new Exception("Failed to chmod file '{$obj}'!");
+        throw new Exception(pht("Failed to chmod file '%s'!", $obj));
       }
     }
   }
 
   $ok = link($obj, $link);
   if (!$ok) {
-    throw new Exception("Failed to hardlink '{$obj}' to '{$link}'!");
+    throw new Exception(pht("Failed to hardlink '%s' to '%s'!", $obj, $link));
   }
 }
 
@@ -133,7 +133,7 @@ function map_directory($dir) {
         $matches = null;
         $regexp  = '/^(\d{6}) (\w+) ([a-z0-9]{40})\t(.*)$/';
         if (!preg_match($regexp, $line, $matches)) {
-          throw new Exception("Unable to parse line '{$line}'!");
+          throw new Exception(pht("Unable to parse line '%s'!", $line));
         }
         $flag = $matches[1];
         $type = $matches[2];
@@ -149,7 +149,7 @@ function map_directory($dir) {
           $mask = (int)base_convert($flag, 8, 10);
           $type = 'file';
           if ($mask & 0111) {
-            echo "EXEC: {$file}\n";
+            echo pht('EXEC: %s', $file)."\n";
             $type = 'exec';
           } else if (($mask & 0120000) === 0120000) {
             $type = 'link';

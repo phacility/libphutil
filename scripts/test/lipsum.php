@@ -4,7 +4,7 @@
 require_once dirname(__FILE__).'/../__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
-$args->setTagline('test context-free grammars');
+$args->setTagline(pht('test context-free grammars'));
 $args->setSynopsis(<<<EOHELP
 **lipsum.php** __class__
     Generate output from a named context-free grammar.
@@ -34,8 +34,12 @@ $symbols = ipull($symbols, 'name', 'name');
 if (empty($symbols[$class])) {
   $available = implode(', ', array_keys($symbols));
   throw new PhutilArgumentUsageException(
-    "Class '{$class}' is not a defined, concrete subclass of ".
-    "PhutilContextFreeGrammar. Available classes are: {$available}");
+    pht(
+      "Class '%s' is not a defined, concrete subclass of %s. ".
+      "Available classes are: %s",
+      $class,
+      'PhutilContextFreeGrammar',
+      $available));
 }
 
 $object = newv($class, array());

@@ -31,7 +31,7 @@ final class PhageAgentTestCase extends PhutilTestCase {
         'stdout'  => "phage\n",
         'stderr'  => '',
       ),
-      "'echo phage' for {$name}");
+      pht("'%s' for %s", 'echo phage', $name));
 
     $agent->write(
       array(

@@ -11,5 +11,5 @@ execx('ls %s', '/tmp');
 exec_manual('sleep %d', 1);
 phutil_passthru('cat');
 
-echo "\n\nSERVICE CALL LOG\n";
+echo "\n\n".pht('SERVICE CALL LOG')."\n";
 var_dump(PhutilServiceProfiler::getInstance()->getServiceCallLog());

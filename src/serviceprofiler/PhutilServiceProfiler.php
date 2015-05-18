@@ -102,7 +102,7 @@ final class PhutilServiceProfiler {
           break;
         case 'conduit':
           if (isset($data['size'])) {
-            $desc = $data['method'].'() <bytes = '.$data['size'].'>';
+            $desc = $data['method'].'() '.pht('<bytes = %d>', $data['size']);
           } else {
             $desc = $data['method'].'()';
           }
@@ -113,14 +113,14 @@ final class PhutilServiceProfiler {
         case 'lint':
           $desc = $data['linter'];
           if (isset($data['paths'])) {
-            $desc .= ' <paths = '.count($data['paths']).'>';
+            $desc .= ' '.pht('<paths = %d>', count($data['paths']));
           }
           break;
         case 'lock':
           $desc = $data['name'];
           break;
         case 'event':
-          $desc = $data['kind'].' <listeners = '.$data['count'].'>';
+          $desc = $data['kind'].' '.pht('<listeners = %d>', $data['count']);
           break;
         case 'ldap':
           $call = idx($data, 'call', '?');
@@ -146,7 +146,9 @@ final class PhutilServiceProfiler {
           break;
       }
     } else if ($is_end) {
-      $desc = number_format((int)(1000000 * $data['duration'])).' us';
+      $desc = pht(
+        '%d us',
+        number_format((int)(1000000 * $data['duration'])));
     }
 
     $console = PhutilConsole::getConsole();

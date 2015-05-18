@@ -2,13 +2,13 @@
 <?php
 
 // We have to do this first before we load any symbols, because we define the
-// builtin symbol list through introspection.
+// built-in symbol list through introspection.
 $builtins = phutil_symbols_get_builtins();
 
 require_once dirname(__FILE__).'/__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
-$args->setTagline('identify symbols in a PHP source file');
+$args->setTagline(pht('identify symbols in a PHP source file'));
 $args->setSynopsis(<<<EOHELP
     **phutil_symbols.php** [__options__] __path.php__
         Identify the symbols (clases, functions and interfaces) in a PHP
@@ -36,23 +36,23 @@ $args->parse(
   array(
     array(
       'name'      => 'all',
-      'help'      => 'Report all symbols, including builtins and declared '.
-                     'externals.',
+      'help'      => pht(
+        'Report all symbols, including built-ins and declared externals.'),
     ),
     array(
       'name'      => 'ugly',
-      'help'      => 'Do not prettify JSON output.',
+      'help'      => pht('Do not prettify JSON output.'),
     ),
     array(
       'name'      => 'path',
       'wildcard'  => true,
-      'help'      => 'PHP Source file to analyze.',
+      'help'      => pht('PHP Source file to analyze.'),
     ),
   ));
 
 $paths = $args->getArg('path');
 if (count($paths) !== 1) {
-  throw new Exception('Specify exactly one path!');
+  throw new Exception(pht('Specify exactly one path!'));
 }
 $path = Filesystem::resolvePath(head($paths));
 
@@ -86,7 +86,7 @@ foreach ($namespaces as $namespace) {
 $uses = $root->selectDescendantsOfType('n_USE');
 foreach ($namespaces as $namespace) {
   phutil_fail_on_unsupported_feature(
-    $namespace, $path, pht('namespace `use` statements'));
+    $namespace, $path, pht('namespace `%s` statements', 'use'));
 }
 
 $possible_traits = $root->selectDescendantsOfType('n_CLASS_DECLARATION');
@@ -483,12 +483,14 @@ if ($args->getArg('ugly')) {
 
 function phutil_fail_on_unsupported_feature(XHPASTNode $node, $file, $what) {
   $line = $node->getLineNumber();
-  $message = phutil_console_wrap(pht(
-      '`arc liberate` has limited support for features introduced after PHP '.
-      '5.2.3. This library uses an unsupported feature (%s) on line %d of %s',
-    $what,
-    $line,
-    Filesystem::readablePath($file)));
+  $message = phutil_console_wrap(
+    pht(
+      '`%s` has limited support for features introduced after PHP 5.2.3. '.
+      'This library uses an unsupported feature (%s) on line %d of %s.',
+      'arc liberate',
+      $what,
+      $line,
+      Filesystem::readablePath($file)));
 
   $result = array(
     'error' => $message,

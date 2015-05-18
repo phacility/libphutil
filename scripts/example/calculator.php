@@ -4,7 +4,7 @@
 require_once dirname(dirname(__FILE__)).'/__init_script__.php';
 
 $args = new PhutilArgumentParser($argv);
-$args->setTagline('simple calculator example');
+$args->setTagline(pht('simple calculator example'));
 $args->setSynopsis(<<<EOHELP
 **calculator.php** __op__ __n__ ...
   Perform a calculation.
@@ -14,7 +14,7 @@ EOHELP
 $add_workflow = id(new PhutilArgumentWorkflow())
   ->setName('add')
   ->setExamples('**add** __n__ ...')
-  ->setSynopsis('Compute the sum of a list of numbers.')
+  ->setSynopsis(pht('Compute the sum of a list of numbers.'))
   ->setArguments(
     array(
       array(
@@ -26,7 +26,7 @@ $add_workflow = id(new PhutilArgumentWorkflow())
 $mul_workflow = id(new PhutilArgumentWorkflow())
   ->setName('mul')
   ->setExamples('**mul** __n__ ...')
-  ->setSynopsis('Compute the product of a list of numbers.')
+  ->setSynopsis(pht('Compute the product of a list of numbers.'))
   ->setArguments(
     array(
       array(
@@ -44,13 +44,13 @@ $flow = $args->parseWorkflows(
 
 $nums = $args->getArg('numbers');
 if (empty($nums)) {
-  echo "You must provide one or more numbers!\n";
+  echo pht('You must provide one or more numbers!')."\n";
   exit(1);
 }
 
 foreach ($nums as $num) {
   if (!is_numeric($num)) {
-    echo "Number '{$num}' is not numeric!\n";
+    echo pht("Number '%s' is not numeric!", $num)."\n";
     exit(1);
   }
 }

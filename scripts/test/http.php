@@ -21,7 +21,7 @@ $args->parse(
 $uri = $args->getArg('url');
 if (count($uri) !== 1) {
   throw new PhutilArgumentUsageException(
-    'Specify exactly one URL to retrieve.');
+    pht('Specify exactly one URL to retrieve.'));
 }
 $uri = head($uri);
 

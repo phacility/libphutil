@@ -6,20 +6,24 @@ require_once dirname(__FILE__).'/../__init_script__.php';
 $args = new PhutilArgumentParser($argv);
 $args->parseStandardArguments();
 
-echo "PROGRESS BAR TEST SCRIPT\n\n";
-echo "This script is a test script for `PhutilConsoleProgressBar`. It will ".
-     "draw some progress bars, and generally allow you to test bar behaviors ".
-     "and changes.\n\n";
-
-echo "GENERAL NOTES\n\n";
-echo "  - When run as `php -f progress_bar.php 2>&1 | more`, no progress bars ".
-     "should be shown (stderr is not a tty).\n";
-echo "  - When run in a narrow terminal, the bar should resize automatically ".
-     "to fit the terminal.\n";
-echo "  - When run with `--trace`, the bar should not be drawn.\n";
+echo pht(
+  "PROGRESS BAR TEST SCRIPT\n\n".
+  "This script is a test script for `%s`. It will draw some progress bars, ".
+  "and generally allow you to test bar behaviors and changes.",
+  'PhutilConsoleProgressBar');
+echo "\n\n";
+echo pht(
+  "GENERAL NOTES\n\n".
+  "  - When run as `%s`, no progress bars should be shown ".
+  "(stderr is not a tty).\n".
+  "  - When run in a narrow terminal, the bar should resize automatically ".
+  "to fit the terminal.\n".
+  "  - When run with `%s`, the bar should not be drawn.\n",
+  'php -f progress_bar.php 2>&1 | more',
+  '--trace');
 echo "\n\n";
 
-echo "STANDARD PROGRESS BAR\n";
+echo pht('STANDARD PROGRESS BAR')."\n";
 $n = 80;
 $bar = id(new PhutilConsoleProgressBar())
   ->setTotal($n);
@@ -29,14 +33,14 @@ for ($ii = 0; $ii < $n; $ii++) {
 }
 $bar->done();
 
-echo "\n";
-echo "INTERRUPTED PROGRESS BAR\n";
-echo "This bar will be interrupted by an exception.\n";
-echo "It should clean itself up.\n";
+echo "\n".pht(
+  "INTERRUPTED PROGRESS BAR\n".
+  "This bar will be interrupted by an exception.\n".
+  "It should clean itself up.")."\n";
 try {
   run_interrupt_bar();
 } catch (Exception $ex) {
-  echo "Caught exception!\n";
+  echo pht('Caught exception!')."\n";
 }
 
 
@@ -46,7 +50,7 @@ function run_interrupt_bar() {
 
   for ($ii = 0; $ii < 100; $ii++) {
     if ($ii === 20) {
-      throw new Exception('Boo!');
+      throw new Exception(pht('Boo!'));
     }
     $bar->update(1);
     usleep(10000);

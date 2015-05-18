@@ -101,7 +101,10 @@ abstract class PhutilOAuth1AuthAdapter extends PhutilAuthAdapter {
     if (strlen($consumer_key)) {
       $future->setConsumerKey($consumer_key);
     } else {
-      throw new Exception('setConsumerKey() is required!');
+      throw new Exception(
+        pht(
+          '%s is required!',
+          'setConsumerKey()'));
     }
 
     $consumer_secret = $this->getConsumerSecret();
