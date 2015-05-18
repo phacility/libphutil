@@ -32,7 +32,6 @@ final class AphrontWriteGuard {
 
   private static $instance;
   private static $allowUnguardedWrites = false;
-  private static $abruptExitlistenerIsInstalled = false;
 
   private $callback;
   private $allowDepth = 0;
@@ -78,11 +77,6 @@ final class AphrontWriteGuard {
           'indicates a serious error.',
           __CLASS__));
     }
-    if (!self::$abruptExitlistenerIsInstalled) {
-      self::$abruptExitlistenerIsInstalled = true;
-      $event_listener = new AphrontWriteGuardExitEventListener();
-      $event_listener->register();
-    }
     $this->callback = $callback;
     self::$instance = $this;
   }
@@ -109,16 +103,6 @@ final class AphrontWriteGuard {
           'beginUnguardedWrites()',
           'endUnguardedWrites()'));
     }
-    self::$instance = null;
-  }
-
-  /**
-   * This is used for clearing the write guard without performing any checks.
-   * This is used in conjunction with phutil_exit for abrupt exits.
-   *
-   * @return void
-   */
-  public function disposeAbruptly() {
     self::$instance = null;
   }
 

@@ -857,21 +857,6 @@ function phutil_is_hiphop_runtime() {
 }
 
 /**
- * Fire an event allowing any listeners to clear up any outstanding requirements
- * before the request completes abruptly.
- *
- * @param int|string $status
- */
-function phutil_exit($status = 0) {
-  $event = new PhutilEvent(
-    PhutilEventType::TYPE_WILLEXITABRUPTLY,
-    array('status' => $status));
-  PhutilEventEngine::dispatchEvent($event);
-
-  exit($status);
-}
-
-/**
  * Converts a string to a loggable one, with unprintables and newlines escaped.
  *
  * @param string  Any string.
