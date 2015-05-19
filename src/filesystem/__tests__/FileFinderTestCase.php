@@ -5,7 +5,7 @@ final class FileFinderTestCase extends PhutilTestCase {
   protected function getFinder() {
     $finder = new FileFinder(dirname(__FILE__).'/data');
     $finder->excludePath('./exclude')
-           ->excludePath('subdir.txt');
+      ->excludePath('subdir.txt');
     return $finder;
   }
 
@@ -65,7 +65,7 @@ final class FileFinderTestCase extends PhutilTestCase {
       $this->assertTrue(in_array('file.txt', $files));
       $this->assertTrue(in_array('.hidden.txt', $files));
       $this->assertTrue(
-          in_array('include_dir.txt/subdir.txt/alsoinclude.txt', $files));
+        in_array('include_dir.txt/subdir.txt/alsoinclude.txt', $files));
       $this->assertFalse(in_array('test', $files));
       $this->assertFalse(in_array('exclude/file.txt', $files));
       $this->assertFalse(in_array('include_dir.txt', $files));

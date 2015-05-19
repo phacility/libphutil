@@ -3,7 +3,6 @@
 final class PhutilLunarPhaseTestCase extends PhutilTestCase {
 
   public function testLunarPhases() {
-
     // Aug 11, 1999
     $moon = new PhutilLunarPhase(934354800);
     $this->assertFalse($moon->isFull());

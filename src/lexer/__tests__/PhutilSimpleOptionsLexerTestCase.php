@@ -23,8 +23,6 @@ final class PhutilSimpleOptionsLexerTestCase extends PhutilTestCase {
         array('word', '4', null),
       ),
       $this->getTokens('legs=4, LEGS=4'));
-
-
   }
 
   public function testSimpleOptionsLexerNiceTokens() {
