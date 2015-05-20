@@ -5,20 +5,35 @@
  */
 final class PhutilEditorConfig {
 
+  const CHARSET             = 'charset';
+  const END_OF_LINE         = 'end_of_line';
+  const INDENT_SIZE         = 'indent_size';
+  const INDENT_STYLE        = 'indent_style';
+  const FINAL_NEWLINE       = 'insert_final_newline';
+  const LINE_LENGTH         = 'max_line_length';
+  const TAB_WIDTH           = 'tab_width';
+  const TRAILING_WHITESPACE = 'trim_trailing_whitespace';
+
   /**
    * Valid properties.
    *
    * See http://editorconfig.org/#file-format-details.
    */
   private static $knownProperties = array(
-    'charset' => array('latin1', 'utf-8', 'utf-8-bom', 'utf-16be', 'utf-16le'),
-    'end_of_line' => array('lf', 'cr', 'crlf'),
-    'indent_size' => 'int|string',
-    'indent_style' => array('space', 'tab'),
-    'insert_final_newline' => 'bool',
-    'max_line_length' => 'int',
-    'tab_width' => 'int',
-    'trim_trailing_whitespace' => 'bool',
+    self::CHARSET => array(
+      'latin1',
+      'utf-8',
+      'utf-8-bom',
+      'utf-16be',
+      'utf-16le',
+    ),
+    self::END_OF_LINE => array('lf', 'cr', 'crlf'),
+    self::INDENT_SIZE => 'int|string',
+    self::INDENT_STYLE => array('space', 'tab'),
+    self::FINAL_NEWLINE => 'bool',
+    self::LINE_LENGTH => 'int',
+    self::TAB_WIDTH => 'int',
+    self::TRAILING_WHITESPACE => 'bool',
   );
 
   private $root;
@@ -47,21 +62,21 @@ final class PhutilEditorConfig {
     $props = $this->getProperties($path);
 
     switch ($key) {
-      case 'indent_size':
-        if (idx($props, 'indent_size') === null &&
-            idx($props, 'indent_style') === 'tab') {
+      case self::INDENT_SIZE:
+        if (idx($props, self::INDENT_SIZE) === null &&
+            idx($props, self::INDENT_STYLE) === 'tab') {
           return 'tab';
-        } else if (idx($props, 'indent_size') === 'tab' &&
-                   idx($props, 'tab_width') === null) {
-          return idx($props, 'tab_width');
+        } else if (idx($props, self::INDENT_SIZE) === 'tab' &&
+                   idx($props, self::TAB_WIDTH) === null) {
+          return idx($props, self::TAB_WIDTH);
         }
         break;
 
-      case 'tab_width':
-        if (idx($props, 'tab_width') === null &&
-            idx($props, 'indent_size') !== null &&
-            idx($props, 'indent_size') !== 'tab') {
-          return idx($props, 'indent_size');
+      case self::TAB_WIDTH:
+        if (idx($props, self::TAB_WIDTH) === null &&
+            idx($props, self::INDENT_SIZE) !== null &&
+            idx($props, self::INDENT_SIZE) !== 'tab') {
+          return idx($props, self::INDENT_SIZE);
         }
         break;
     }
