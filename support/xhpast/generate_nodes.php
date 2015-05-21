@@ -129,7 +129,7 @@ foreach ($map as $node => $value) {
   $hpp .= "#define {$node} {$value}\n";
 }
 file_put_contents('node_names.hpp', $hpp);
-echo pht('Wrote C++ definition.')."\n";
+echo "Wrote C++ definition.\n";
 
 $at = '@';
 $php =
@@ -143,4 +143,4 @@ foreach ($map as $node => $value) {
 $php .= "  );\n";
 $php .= "}\n";
 file_put_contents('parser_nodes.php', $php);
-echo pht('Wrote PHP definition.')."\n";
+echo "Wrote PHP definition.\n";
