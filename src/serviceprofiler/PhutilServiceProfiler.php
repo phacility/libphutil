@@ -147,8 +147,8 @@ final class PhutilServiceProfiler {
       }
     } else if ($is_end) {
       $desc = pht(
-        '%d us',
-        number_format((int)(1000000 * $data['duration'])));
+        '%s us',
+        new PhutilNumber((int)(1000000 * $data['duration'])));
     }
 
     $console = PhutilConsole::getConsole();
