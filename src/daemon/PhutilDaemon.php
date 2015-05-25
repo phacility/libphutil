@@ -101,14 +101,15 @@ abstract class PhutilDaemon {
     $this->emitOverseerMessage(self::MESSAGETYPE_HEARTBEAT, null);
 
     if ($this->traceMemory) {
-      $memuse = number_format(memory_get_usage() / 1024, 1);
       $daemon = get_class($this);
       fprintf(
         STDERR,
         "<%s> %s %s\n",
         '<RAMS>',
         $daemon,
-        pht('Memory Usage: %d KB', $memuse));
+        pht(
+          'Memory Usage: %s KB',
+          new PhutilNumber(memory_get_usage() / 1024, 1)));
     }
   }
 

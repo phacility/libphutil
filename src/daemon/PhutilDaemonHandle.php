@@ -273,8 +273,11 @@ final class PhutilDaemonHandle {
 
   private function updateMemory() {
     if ($this->traceMemory) {
-      $memuse = number_format(memory_get_usage() / 1024, 1);
-      $this->logMessage('RAMS', pht('Overseer Memory Usage: %d KB', $memuse));
+      $this->logMessage(
+        'RAMS',
+        pht(
+          'Overseer Memory Usage: %s KB',
+          new PhutilNumber(memory_get_usage() / 1024, 1)));
     }
   }
 

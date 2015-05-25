@@ -431,7 +431,7 @@ EOPHP;
     $this->log(pht('Finding source files...'));
     $source_map = $this->loadSourceFileMap();
     $this->log(
-      pht('Found %s files.', number_format(count($source_map))));
+      pht('Found %s files.', new PhutilNumber(count($source_map))));
 
     // Load the symbol cache with existing parsed symbols. This allows us
     // to remap libraries quickly by analyzing only changed files.
@@ -459,7 +459,7 @@ EOPHP;
       $futures[$file] = $this->buildSymbolAnalysisFuture($file);
     }
     $this->log(
-      pht('Found %d files in cache.', number_format(count($symbol_map))));
+      pht('Found %s files in cache.', new PhutilNumber(count($symbol_map))));
 
     // Run the analyzer on any files which need analysis.
     if ($futures) {
