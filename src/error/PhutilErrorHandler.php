@@ -251,7 +251,7 @@ final class PhutilErrorHandler {
       array(
         'file'  => $ex->getFile(),
         'line'  => $ex->getLine(),
-        'trace' => self::getRootException($ex)->getTrace(),
+        'trace' => self::getExceptionTrace($ex),
         'catch_trace' => debug_backtrace(),
       ));
 
@@ -302,6 +302,11 @@ final class PhutilErrorHandler {
 
     foreach ($trace as $key => $entry) {
       $line = '  #'.$key.' ';
+      if (!empty($entry['xid'])) {
+        if ($entry['xid'] != 1) {
+          $line .= '<#'.$entry['xid'].'> ';
+        }
+      }
       if (isset($entry['class'])) {
         $line .= $entry['class'].'::';
       }
@@ -383,7 +388,7 @@ final class PhutilErrorHandler {
 
         $metadata['default_message'] = $default_message;
         error_log($default_message);
-        self::outputStacktrace(self::getRootException($value)->getTrace());
+        self::outputStacktrace($metadata['trace']);
         break;
       case self::PHLOG:
         $default_message = sprintf(
@@ -515,6 +520,77 @@ final class PhutilErrorHandler {
     ksort($libinfo);
 
     return $libinfo;
+  }
+
+  /**
+   * Get a full trace across all proxied and aggregated exceptions.
+   *
+   * This attempts to build a set of stack frames which completely represent
+   * all of the places an exception came from, even if it came from multiple
+   * origins and has been aggregated or proxied.
+   *
+   * @param Exception Exception to retrieve a trace for.
+   * @return list<wild> List of stack frames.
+   */
+  public static function getExceptionTrace(Exception $ex) {
+    $id = 1;
+
+    // Keep track of discovered exceptions which we need to build traces for.
+    $stack = array(
+      array($id, $ex),
+    );
+
+    $frames = array();
+    while ($info = array_shift($stack)) {
+      list($xid, $ex) = $info;
+
+      // We're going from top-level exception down in bredth-first order, but
+      // want to build a trace in approximately standard order (deepest part of
+      // the call stack to most shallow) so we need to reverse each list of
+      // frames and then reverse everything at the end.
+
+      $ex_frames = array_reverse($ex->getTrace());
+      $ex_frames = array_values($ex_frames);
+      $last_key = (count($ex_frames) - 1);
+      foreach ($ex_frames as $frame_key => $frame) {
+        $frame['xid'] = $xid;
+
+        // If this is a child/previous exception and we're on the deepest frame
+        // and missing file/line data, fill it in from the exception itself.
+        if ($xid > 1 && ($frame_key == $last_key)) {
+          if (empty($frame['file'])) {
+            $frame['file'] = $ex->getFile();
+            $frame['line'] = $ex->getLine();
+          }
+        }
+
+        // Since the exceptions are likely to share the most shallow frames,
+        // try to add those to the trace only once.
+        if (isset($frame['file']) && isset($frame['line'])) {
+          $signature = $frame['file'].':'.$frame['line'];
+          if (empty($frames[$signature])) {
+            $frames[$signature] = $frame;
+          }
+        } else {
+          $frames[] = $frame;
+        }
+      }
+
+      // If this is a proxy exception, add the proxied exception.
+      $prev = self::getPreviousException($ex);
+      if ($prev) {
+        $stack[] = array(++$id, $prev);
+      }
+
+      // If this is an aggregate exception, add the child exceptions.
+      if ($ex instanceof PhutilAggregateException) {
+        foreach ($ex->getExceptions() as $child) {
+          $stack[] = array(++$id, $child);
+        }
+      }
+    }
+
+    return array_values(array_reverse($frames));
   }
 
 }
