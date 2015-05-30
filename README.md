@@ -44,7 +44,7 @@ A handful of solid utility functions.
 
 `libphutil` is used by
  - [Phabricator](https://secure.phabricator.com/diffusion/P/)
- - [Arcnaist](https://secure.phabricator.com/diffusion/ARC/)
+ - [Arcanist](https://secure.phabricator.com/diffusion/ARC/)
  - [Diviner](https://secure.phabricator.com/book/phabricator/article/diviner/)
 
 
