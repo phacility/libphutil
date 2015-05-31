@@ -3,10 +3,16 @@
 final class XHPASTNode extends AASTNode {
 
   public function isStaticScalar() {
-    return in_array($this->getTypeName(), array(
-      'n_STRING_SCALAR',
-      'n_NUMERIC_SCALAR',
-    ));
+    switch ($this->getTypeName()) {
+      case 'n_NUMERIC_SCALAR':
+        return true;
+
+      case 'n_STRING_SCALAR':
+        return $this->checkIsConstantString(array('n_MAGIC_SCALAR'));
+
+      default:
+        return false;
+    }
   }
 
   public function getDocblockToken() {
@@ -33,6 +39,12 @@ final class XHPASTNode extends AASTNode {
         return $this->getChildByIndex(0)->evalStatic();
         break;
       case 'n_STRING_SCALAR':
+        if (!$this->checkIsConstantString()) {
+          throw new Exception(
+            pht(
+              'Non-constant scalar strings cannot be statically evaluated.'));
+        }
+
         return (string)$this->getStringLiteralValue();
       case 'n_NUMERIC_SCALAR':
         $value = $this->getSemanticString();
@@ -106,14 +118,14 @@ final class XHPASTNode extends AASTNode {
   }
 
   public function isConstantString() {
-    return $this->checkIsConstantString(array());
+    return $this->checkIsConstantString();
   }
 
   public function isConstantStringWithMagicConstants() {
     return $this->checkIsConstantString(array('n_MAGIC_SCALAR'));
   }
 
-  private function checkIsConstantString(array $additional_types) {
+  private function checkIsConstantString(array $additional_types = array()) {
     switch ($this->getTypeName()) {
       case 'n_HEREDOC':
       case 'n_STRING_SCALAR':
