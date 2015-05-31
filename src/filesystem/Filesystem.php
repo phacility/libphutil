@@ -772,6 +772,20 @@ final class Filesystem {
 
 
   /**
+   * Checks if a path is specified as an absolute path.
+   *
+   * @param  string
+   * @return bool
+   */
+  public static function isAbsolutePath($path) {
+    if (phutil_is_windows()) {
+      return (bool)preg_match('/^[A-Za-z]+:/', $path);
+    } else {
+      return !strncmp($path, DIRECTORY_SEPARATOR, 1);
+    }
+  }
+
+  /**
    * Canonicalize a path by resolving it relative to some directory (by
    * default PWD), following parent symlinks and removing artifacts. If the
    * path is itself a symlink it is left unresolved.
@@ -782,11 +796,7 @@ final class Filesystem {
    * @task   path
    */
   public static function resolvePath($path, $relative_to = null) {
-    if (phutil_is_windows()) {
-      $is_absolute = preg_match('/^[A-Za-z]+:/', $path);
-    } else {
-      $is_absolute = !strncmp($path, DIRECTORY_SEPARATOR, 1);
-    }
+    $is_absolute = self::isAbsolutePath($path);
 
     if (!$is_absolute) {
       if (!$relative_to) {
