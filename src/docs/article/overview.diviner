@@ -23,12 +23,12 @@ libraries for <http://www.facebook.com/>.
 = Loading libphutil =
 
 To include libphutil in another project, include the
-##src/__phutil_library_init__.php## file:
+`src/__phutil_library_init__.php` file:
 
   require_once 'path/to/libphutil/src/__phutil_library_init__.php';
 
 This loads global functions and registers an autoload function with
-##spl_autoload_register()##, so you can also use classes.
+`spl_autoload_register()`, so you can also use classes.
 
 = Major Components =
 
@@ -43,7 +43,7 @@ Some of the major components of libphutil are:
   primitive in @{class:ExecFuture} which makes it far easier to write
   command-line scripts which execute system commands
   (see @{article:Command Execution});
-  - **@{function:xsprintf}**: allows you to define ##sprintf()##-style functions
+  - **@{function:xsprintf}**: allows you to define `sprintf()`-style functions
   which use custom conversions; and
   - **Library System**: an introspectable, inventoried system for organizing PHP
   code and managing dependencies, supported by static analysis.

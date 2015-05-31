@@ -27,7 +27,7 @@ manipulated with the same top-level constructs.
 = Basics =
 
 You create a future by instantiating the relevant class and ask it to return the
-result by calling ##resolve()##:
+result by calling `resolve()`:
 
   $gzip_future = new ExecFuture("gzip %s", $some_file);
   $gzip_future->start();
@@ -37,17 +37,17 @@ result by calling ##resolve()##:
 
   list($err, $stdout, $stderr) = $gzip_future->resolve();
 
-When you call ##resolve()##, the future blocks until the result is ready. You
-can test if a future's result is ready by calling ##isReady()##:
+When you call `resolve()`, the future blocks until the result is ready. You
+can test if a future's result is ready by calling `isReady()`:
 
   $is_ready = $gzip_future->isReady();
 
 Being "ready" indicates that the future's computation has completed and it will
-not need to block when you call ##resolve()##.
+not need to block when you call `resolve()`.
 
 Note that when you instantiate a future, it does not immediately initiate
-computation. You must call ##start()##, ##isReady()## or ##resolve()## to
-activate it. If you simply call ##resolve()## it will start, block until it is
+computation. You must call `start()`, `isReady()` or `resolve()` to
+activate it. If you simply call `resolve()` it will start, block until it is
 complete, and then return the result, acting in a completely synchronous way.
 
 See @{article:Command Execution} for more detailed documentation on how to
