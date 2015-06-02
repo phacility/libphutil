@@ -3,16 +3,10 @@
 final class XHPASTNode extends AASTNode {
 
   public function isStaticScalar() {
-    switch ($this->getTypeName()) {
-      case 'n_NUMERIC_SCALAR':
-        return true;
-
-      case 'n_STRING_SCALAR':
-        return $this->checkIsConstantString(array('n_MAGIC_SCALAR'));
-
-      default:
-        return false;
-    }
+    return in_array($this->getTypeName(), array(
+      'n_STRING_SCALAR',
+      'n_NUMERIC_SCALAR',
+    ));
   }
 
   public function getDocblockToken() {
@@ -39,12 +33,6 @@ final class XHPASTNode extends AASTNode {
         return $this->getChildByIndex(0)->evalStatic();
         break;
       case 'n_STRING_SCALAR':
-        if (!$this->checkIsConstantString()) {
-          throw new Exception(
-            pht(
-              'Non-constant scalar strings cannot be statically evaluated.'));
-        }
-
         return (string)$this->getStringLiteralValue();
       case 'n_NUMERIC_SCALAR':
         $value = $this->getSemanticString();
