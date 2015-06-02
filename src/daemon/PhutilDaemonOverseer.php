@@ -439,7 +439,7 @@ EOHELP
       $results[(int)$pid] = array(
         'type' => $type,
         'command' => $command,
-        'pid' => (int) $pid,
+        'pid' => (int)$pid,
       );
     }
 

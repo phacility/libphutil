@@ -2,7 +2,7 @@
 
 final class PhutilTranslator {
 
-  static private $instance;
+  private static $instance;
 
   private $locale;
   private $localeCode;

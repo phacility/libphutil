@@ -43,28 +43,28 @@ abstract class AASTTree {
     $this->buildTree(array($tree));
   }
 
-  public final function setTreeType($description) {
+  final public function setTreeType($description) {
     $this->treeType = $description;
     return $this;
   }
 
-  public final function getTreeType() {
+  final public function getTreeType() {
     return $this->treeType;
   }
 
-  public final function setTokenConstants(array $token_map) {
+  final public function setTokenConstants(array $token_map) {
     $this->tokenConstants = $token_map;
     $this->tokenReverseMap = array_flip($token_map);
     return $this;
   }
 
-  public final function setNodeConstants(array $node_map) {
+  final public function setNodeConstants(array $node_map) {
     $this->nodeConstants = $node_map;
     $this->nodeReverseMap = array_flip($node_map);
     return $this;
   }
 
-  public final function getNodeTypeNameFromTypeID($type_id) {
+  final public function getNodeTypeNameFromTypeID($type_id) {
     if (empty($this->nodeConstants[$type_id])) {
       $tree_type = $this->getTreeType();
       throw new Exception(
@@ -77,7 +77,7 @@ abstract class AASTTree {
     return $this->nodeConstants[$type_id];
   }
 
-  public final function getNodeTypeIDFromTypeName($type_name) {
+  final public function getNodeTypeIDFromTypeName($type_name) {
     if (empty($this->nodeReverseMap[$type_name])) {
       $tree_type = $this->getTreeType();
       throw new Exception(
@@ -89,7 +89,7 @@ abstract class AASTTree {
     return $this->nodeReverseMap[$type_name];
   }
 
-  public final function getTokenTypeNameFromTypeID($type_id) {
+  final public function getTokenTypeNameFromTypeID($type_id) {
     if (empty($this->tokenConstants[$type_id])) {
       $tree_type = $this->getTreeType();
       throw new Exception(
@@ -101,7 +101,7 @@ abstract class AASTTree {
     return $this->tokenConstants[$type_id];
   }
 
-  public final function getTokenTypeIDFromTypeName($type_name) {
+  final public function getTokenTypeIDFromTypeName($type_name) {
     if (empty($this->tokenReverseMap[$type_name])) {
       $tree_type = $this->getTreeType();
       throw new Exception(
@@ -126,7 +126,7 @@ abstract class AASTTree {
     unset($this->stream);
   }
 
-  public final function getRootNode() {
+  final public function getRootNode() {
     return $this->tree[0];
   }
 
@@ -156,7 +156,7 @@ abstract class AASTTree {
     return $result;
   }
 
-  public final function getRawTokenStream() {
+  final public function getRawTokenStream() {
     return $this->stream;
   }
 

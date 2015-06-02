@@ -34,23 +34,23 @@ abstract class AASTNode {
     $this->tree = $tree;
   }
 
-  public final function getParentNode() {
+  final public function getParentNode() {
     return $this->parentNode;
   }
 
-  public final function getID() {
+  final public function getID() {
     return $this->id;
   }
 
-  public final function getTypeID() {
+  final public function getTypeID() {
     return $this->typeID;
   }
 
-  public final function getTree() {
+  final public function getTree() {
     return $this->tree;
   }
 
-  public final function getTypeName() {
+  final public function getTypeName() {
     if (empty($this->typeName)) {
       $this->typeName =
         $this->tree->getNodeTypeNameFromTypeID($this->getTypeID());
@@ -58,7 +58,7 @@ abstract class AASTNode {
     return $this->typeName;
   }
 
-  public final function getChildren() {
+  final public function getChildren() {
     return $this->children;
   }
 
@@ -267,11 +267,11 @@ abstract class AASTNode {
     return pht('a node of type %s: "%s"', $this->getTypeName(), $concrete);
   }
 
-  protected final function getTypeIDFromTypeName($type_name) {
+  final protected function getTypeIDFromTypeName($type_name) {
     return $this->tree->getNodeTypeIDFromTypeName($type_name);
   }
 
-  public final function getOffset() {
+  final public function getOffset() {
     $stream = $this->tree->getRawTokenStream();
     if (empty($stream[$this->l])) {
       return null;
@@ -279,7 +279,7 @@ abstract class AASTNode {
     return $stream[$this->l]->getOffset();
   }
 
-  public final function getLength() {
+  final public function getLength() {
     $stream = $this->tree->getRawTokenStream();
     if (empty($stream[$this->r])) {
       return null;
@@ -305,11 +305,11 @@ abstract class AASTNode {
     return array($before, $after);
   }
 
-  public final function getLineNumber() {
+  final public function getLineNumber() {
     return idx($this->tree->getOffsetToLineNumberMap(), $this->getOffset());
   }
 
-  public final function getEndLineNumber() {
+  final public function getEndLineNumber() {
     return idx(
       $this->tree->getOffsetToLineNumberMap(),
       $this->getOffset() + $this->getLength());

@@ -104,7 +104,7 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
 
     foreach ($map as $expect => $tests) {
       if (is_int($expect)) {
-        $expect = (bool) $expect;
+        $expect = (bool)$expect;
       }
 
       foreach ($tests as $input) {

@@ -328,7 +328,7 @@ final class ConduitClient {
       $out[] = strlen($data);
       $out[] = ':';
       $out[] = $data;
-    } else if (is_integer($data)) {
+    } else if (is_int($data)) {
       $out[] = 'I';
       $out[] = strlen((string)$data);
       $out[] = ':';
