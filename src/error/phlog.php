@@ -20,12 +20,20 @@ function phlog($value/* , ... */) {
   );
 
   foreach (func_get_args() as $event) {
-    PhutilErrorHandler::dispatchErrorMessage(
-      $event instanceof Exception
-        ? PhutilErrorHandler::EXCEPTION
-        : PhutilErrorHandler::PHLOG,
-      $event,
-      $metadata);
+    $data = $metadata;
+    if ($event instanceof Exception) {
+      $type = PhutilErrorHandler::EXCEPTION;
+      // If this is an exception, proxy it and generate a composite trace which
+      // shows both where the phlog() was called and where the exception was
+      // originally thrown from.
+      $proxy = new PhutilProxyException('', $event);
+      $trace = PhutilErrorHandler::getExceptionTrace($proxy);
+      $data['trace'] = $trace;
+    } else {
+      $type = PhutilErrorHandler::PHLOG;
+    }
+
+    PhutilErrorHandler::dispatchErrorMessage($type, $event, $data);
   }
 
   return $value;
