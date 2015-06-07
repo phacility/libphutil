@@ -1,9 +1,6 @@
 <?php
 
-function phutil_get_library_root($library = null) {
-  if (!$library) {
-    $library = phutil_get_current_library_name();
-  }
+function phutil_get_library_root($library) {
   $bootloader = PhutilBootloader::getInstance();
   return $bootloader->getLibraryRoot($library);
 }
