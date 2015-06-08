@@ -9,8 +9,8 @@ This document provides a brief overview of the libphutil core utilities.
 
 = Language Capabilities =
 
-Functions @{function:id}, @{function:head} and @{function:newv} address language
-grammar and implementation limitations.
+Functions @{function:id}, @{function:head} and @{function:newv} address
+language grammar and implementation limitations.
 
 You can efficiently merge a vector of arrays with @{function:array_mergev}.
 
@@ -41,4 +41,5 @@ dictionary.
 = Lunar Phases =
 
 @{class:PhutilLunarPhase} calculates lunar phases, allowing you to harden an
-application against threats from werewolves, werebears, and other werecreatures.
+application against threats from werewolves, werebears, and other
+werecreatures.

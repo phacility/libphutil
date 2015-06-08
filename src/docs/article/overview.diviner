@@ -35,23 +35,23 @@ This loads global functions and registers an autoload function with
 Some of the major components of libphutil are:
 
   - **Core Utilities**: a collection of useful functions like @{function:ipull}
-  which simplify common data manipulation;
+    which simplify common data manipulation;
   - **Filesystem**: classes like @{class:Filesystem} which provide a strict API
-  for filesystem access and throw exceptions on failure, making it easier to
-  write robust code which interacts with files;
+    for filesystem access and throw exceptions on failure, making it easier to
+    write robust code which interacts with files;
   - **Command Execution**: libphutil provides a powerful system command
-  primitive in @{class:ExecFuture} which makes it far easier to write
-  command-line scripts which execute system commands
-  (see @{article:Command Execution});
+    primitive in @{class:ExecFuture} which makes it far easier to write
+    command-line scripts which execute system commands
+    (see @{article:Command Execution});
   - **@{function:xsprintf}**: allows you to define `sprintf()`-style functions
-  which use custom conversions; and
-  - **Library System**: an introspectable, inventoried system for organizing PHP
-  code and managing dependencies, supported by static analysis.
+    which use custom conversions; and
+  - **Library System**: an introspectable, inventoried system for organizing
+    PHP code and managing dependencies, supported by static analysis.
 
 = Extending and Contributing =
 
 Information on extending and contributing to libphutil is available in the
 Phabricator documentation:
 
-  - to get started as a contributor, see @{article@phabcontrib:Contributor
+  - To get started as a contributor, see @{article@phabcontrib:Contributor
     Introduction}.

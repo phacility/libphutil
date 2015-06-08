@@ -1,5 +1,5 @@
 @title Using Futures
-@group futures
+@group future
 
 Overview of how futures work in libphutil.
 
@@ -29,7 +29,7 @@ manipulated with the same top-level constructs.
 You create a future by instantiating the relevant class and ask it to return the
 result by calling `resolve()`:
 
-  $gzip_future = new ExecFuture("gzip %s", $some_file);
+  $gzip_future = new ExecFuture('gzip %s', $some_file);
   $gzip_future->start();
 
   // The future is now executing in the background, and you can continue
@@ -75,8 +75,8 @@ compressing one file, you want to compress several files. You can use the
 
 @{class:FutureIterator} takes a list of futures and runs them in parallel,
 **returning them in the order they resolve, NOT the original list order**. This
-allows your program to begin any followup computation as quickly as possible: if
-the slowest future in the list happens to be the first one, you can finish
+allows your program to begin any follow-up computation as quickly as possible:
+if the slowest future in the list happens to be the first one, you can finish
 processing all the other futures while waiting for it.
 
 You can also limit how many futures you want to run at once. For instance, to
