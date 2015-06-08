@@ -16,7 +16,7 @@ final class LinesOfALargeExecFutureTestCase extends PhutilTestCase {
   }
 
   public function testExecLargeFile() {
-    $line = 'The quick brown fox jumps over the lazy dog.';
+    $line = pht('The quick brown fox jumps over the lazy dog.');
     $n    = 100;
 
     $this->writeAndRead(

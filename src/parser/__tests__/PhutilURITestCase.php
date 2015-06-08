@@ -7,20 +7,20 @@ final class PhutilURITestCase extends PhutilTestCase {
 
   public function testURIParsing() {
     $uri = new PhutilURI('http://user:pass@host:99/path/?query=value#fragment');
-    $this->assertEqual('http', $uri->getProtocol(), 'protocol');
-    $this->assertEqual('user', $uri->getUser(), 'user');
-    $this->assertEqual('pass', $uri->getPass(), 'pass');
-    $this->assertEqual('host', $uri->getDomain(), 'domain');
-    $this->assertEqual('99', $uri->getPort(), 'port');
+    $this->assertEqual('http', $uri->getProtocol(), pht('protocol'));
+    $this->assertEqual('user', $uri->getUser(), pht('user'));
+    $this->assertEqual('pass', $uri->getPass(), pht('password'));
+    $this->assertEqual('host', $uri->getDomain(), pht('domain'));
+    $this->assertEqual('99', $uri->getPort(), pht('port'));
 
-    $this->assertEqual('/path/', $uri->getPath(), 'path');
+    $this->assertEqual('/path/', $uri->getPath(), pht('path'));
     $this->assertEqual(
       array(
         'query' => 'value',
       ),
       $uri->getQueryParams(),
       'query params');
-    $this->assertEqual('fragment', $uri->getFragment(), 'fragment');
+    $this->assertEqual('fragment', $uri->getFragment(), pht('fragment'));
     $this->assertEqual(
       'http://user:pass@host:99/path/?query=value#fragment',
       (string)$uri,
@@ -28,15 +28,18 @@ final class PhutilURITestCase extends PhutilTestCase {
 
 
     $uri = new PhutilURI('ssh://git@example.com/example/example.git');
-    $this->assertEqual('ssh', $uri->getProtocol(), 'protocol');
-    $this->assertEqual('git', $uri->getUser(), 'user');
-    $this->assertEqual('', $uri->getPass(), 'pass');
-    $this->assertEqual('example.com', $uri->getDomain(), 'domain');
+    $this->assertEqual('ssh', $uri->getProtocol(), pht('protocol'));
+    $this->assertEqual('git', $uri->getUser(), pht('user'));
+    $this->assertEqual('', $uri->getPass(), pht('password'));
+    $this->assertEqual('example.com', $uri->getDomain(), pht('domain'));
     $this->assertEqual('', $uri->getPort(), 'port');
 
-    $this->assertEqual('/example/example.git', $uri->getPath(), 'path');
-    $this->assertEqual(array(), $uri->getQueryParams(), 'query params');
-    $this->assertEqual('', $uri->getFragment(), 'fragment');
+    $this->assertEqual('/example/example.git', $uri->getPath(), pht('path'));
+    $this->assertEqual(
+      array(),
+      $uri->getQueryParams(),
+      pht('query parameters'));
+    $this->assertEqual('', $uri->getFragment(), pht('fragment'));
     $this->assertEqual(
       'ssh://git@example.com/example/example.git',
       (string)$uri,
@@ -127,14 +130,14 @@ final class PhutilURITestCase extends PhutilTestCase {
 
   public function testUnusualURIs() {
     $uri = new PhutilURI('file:///path/to/file');
-    $this->assertEqual('file', $uri->getProtocol(), 'protocol');
-    $this->assertEqual('', $uri->getDomain(), 'domain');
-    $this->assertEqual('/path/to/file', $uri->getPath(), 'path');
+    $this->assertEqual('file', $uri->getProtocol(), pht('protocol'));
+    $this->assertEqual('', $uri->getDomain(), pht('domain'));
+    $this->assertEqual('/path/to/file', $uri->getPath(), pht('path'));
 
     $uri = new PhutilURI('idea://open?x=/');
-    $this->assertEqual('idea', $uri->getProtocol(), 'protocol');
-    $this->assertEqual('open', $uri->getDomain(), 'domain');
-    $this->assertEqual('', $uri->getPath(), 'path');
+    $this->assertEqual('idea', $uri->getProtocol(), pht('protocol'));
+    $this->assertEqual('open', $uri->getDomain(), pht('domain'));
+    $this->assertEqual('', $uri->getPath(), pht('path'));
     $this->assertEqual(
       array(
         'x' => '/',

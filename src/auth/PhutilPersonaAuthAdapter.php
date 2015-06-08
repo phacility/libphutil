@@ -59,7 +59,7 @@ final class PhutilPersonaAuthAdapter extends PhutilAuthAdapter {
       }
 
       if (idx($response, 'status') !== 'okay') {
-        $reason = idx($response, 'reason', 'Unknown');
+        $reason = idx($response, 'reason', pht('Unknown'));
         throw new Exception(pht('Persona login failed: %s', $reason));
       }
 

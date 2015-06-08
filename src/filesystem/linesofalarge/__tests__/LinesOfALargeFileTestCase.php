@@ -52,7 +52,7 @@ final class LinesOfALargeFileTestCase extends PhutilTestCase {
   }
 
   public function testLargeFile() {
-    $line = 'The quick brown fox jumps over the lazy dog.';
+    $line = pht('The quick brown fox jumps over the lazy dog.');
     $n    = 100;
 
     $this->writeAndRead(

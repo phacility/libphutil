@@ -28,7 +28,7 @@ final class PhutilArgumentSpecificationTestCase extends PhutilTestCase {
       $this->assertEqual(
         !$valid,
         $caught instanceof Exception,
-        "Arg name '{$name}'.");
+        pht("Argument name '%s'.", $name));
     }
   }
 

@@ -22,7 +22,7 @@ $args->parse(
     array(
       'name'    => 'prompt',
       'param'   => 'text',
-      'default' => 'Enter some text:',
+      'default' => pht('Enter some text:'),
       'help'    => pht('Change the prompt text to __text__.'),
     ),
   ));
