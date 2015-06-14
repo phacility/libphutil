@@ -39,8 +39,6 @@
  *
  * @task overseer Communicating With the Overseer
  * @task autoscale Autoscaling Daemon Pools
- *
- * @stable
  */
 abstract class PhutilDaemon {
 

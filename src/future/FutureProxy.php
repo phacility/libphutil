@@ -3,8 +3,6 @@
 /**
  * Wraps another @{class:Future} and allows you to post-process its result once
  * it resolves.
- *
- * @stable
  */
 abstract class FutureProxy extends Future {
 

@@ -4,8 +4,6 @@
  * A 'future' or 'promise' is an object which represents the result of some
  * pending computation. For a more complete overview of futures, see
  * @{article:Using Futures}.
- *
- * @stable
  */
 abstract class Future {
 

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @stable
- */
 abstract class PhutilMarkupEngine {
 
   /**
