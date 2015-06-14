@@ -731,18 +731,23 @@ final class Filesystem {
 
 
   /**
-   * Return all directories between a path and "/". Iterating over them walks
-   * from the path to the root.
+   * Return all directories between a path and the specified root directory
+   * (defaulting to "/"). Iterating over them walks from the path to the root.
    *
-   * @param  string Path, absolute or relative to PWD.
-   * @return list   List of parent paths, including the provided path.
+   * @param  string        Path, absolute or relative to PWD.
+   * @param  string        The root directory.
+   * @return list<string>  List of parent paths, including the provided path.
    * @task   directory
    */
-  public static function walkToRoot($path) {
+  public static function walkToRoot($path, $root = '/') {
     $path = self::resolvePath($path);
+    $root = self::resolvePath($root);
 
     if (is_link($path)) {
       $path = realpath($path);
+    }
+    if (is_link($root)) {
+      $root = realpath($root);
     }
 
     $walk = array();
@@ -752,17 +757,25 @@ final class Filesystem {
         unset($parts[$k]);
       }
     }
-    do {
+
+    if (!self::isDescendant($path, $root)) {
+      return array();
+    }
+
+    while ($parts) {
       if (phutil_is_windows()) {
-        $walk[] = implode(DIRECTORY_SEPARATOR, $parts);
+        $next = implode(DIRECTORY_SEPARATOR, $parts);
       } else {
-        $walk[] = DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $parts);
+        $next = DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $parts);
       }
-      if (empty($parts)) {
+
+      $walk[] = $next;
+      if ($next == $root) {
         break;
       }
+
       array_pop($parts);
-    } while (true);
+    }
 
     return $walk;
   }
@@ -851,7 +864,6 @@ final class Filesystem {
    * @task   path
    */
   public static function isDescendant($path, $root) {
-
     try {
       self::assertExists($path);
       self::assertExists($root);

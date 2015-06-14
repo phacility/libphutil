@@ -73,4 +73,94 @@ final class FilesystemTestCase extends PhutilTestCase {
     $this->assertTrue($caught instanceof Exception);
   }
 
+  public function testWalkToRoot() {
+    $test_cases = array(
+      array(
+        dirname(__FILE__).'/data/include_dir.txt/subdir.txt/test',
+        dirname(__FILE__),
+        array(
+          dirname(__FILE__).'/data/include_dir.txt/subdir.txt/test',
+          dirname(__FILE__).'/data/include_dir.txt/subdir.txt',
+          dirname(__FILE__).'/data/include_dir.txt',
+          dirname(__FILE__).'/data',
+          dirname(__FILE__),
+        ),
+      ),
+      array(
+        dirname(__FILE__).'/data/include_dir.txt/subdir.txt',
+        dirname(__FILE__),
+        array(
+          dirname(__FILE__).'/data/include_dir.txt/subdir.txt',
+          dirname(__FILE__).'/data/include_dir.txt',
+          dirname(__FILE__).'/data',
+          dirname(__FILE__),
+        ),
+      ),
+
+      'root and path are identical' => array(
+        dirname(__FILE__),
+        dirname(__FILE__),
+        array(
+          dirname(__FILE__),
+        ),
+      ),
+
+      'root is not an ancestor of path' => array(
+        dirname(__FILE__),
+        dirname(__FILE__).'/data/include_dir.txt/subdir.txt',
+        array(),
+      ),
+    );
+
+    foreach ($test_cases as $test_case) {
+      list($path, $root, $expected) = $test_case;
+
+      $this->assertEqual(
+        $expected,
+        Filesystem::walkToRoot($path, $root));
+    }
+  }
+
+  public function testisDescendant() {
+    $test_cases = array(
+      array(
+        __FILE__,
+        dirname(__FILE__),
+        true,
+      ),
+      array(
+        dirname(__FILE__),
+        dirname(dirname(__FILE__)),
+        true,
+      ),
+      array(
+        dirname(__FILE__),
+        phutil_get_library_root_for_path(__FILE__),
+        true,
+      ),
+      array(
+        dirname(dirname(__FILE__)),
+        dirname(__FILE__),
+        false,
+      ),
+      array(
+        dirname(__FILE__).'/quack',
+        dirname(__FILE__),
+        false,
+      ),
+    );
+
+    foreach ($test_cases as $test_case) {
+      list($path, $root, $expected) = $test_case;
+
+      $this->assertEqual(
+        $expected,
+        Filesystem::isDescendant($path, $root),
+        sprintf(
+          'Filesystem::isDescendant(%s, %s)',
+          phutil_var_export($path),
+          phutil_var_export($root)));
+    }
+  }
+
 }
