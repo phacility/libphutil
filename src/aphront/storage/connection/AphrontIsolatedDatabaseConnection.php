@@ -9,6 +9,9 @@ final class AphrontIsolatedDatabaseConnection
 
   private $transcript = array();
 
+  private $allResults;
+  private $affectedRows;
+
   public function __construct(array $configuration) {
     $this->configuration = $configuration;
 
