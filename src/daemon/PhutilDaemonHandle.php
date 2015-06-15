@@ -11,6 +11,7 @@ final class PhutilDaemonHandle extends Phobject {
   private $overseer;
   private $daemonClass;
   private $argv;
+  private $config;
   private $pid;
   private $daemonID;
   private $deadline;
