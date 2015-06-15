@@ -1,6 +1,6 @@
 <?php
 
-abstract class PhutilSyntaxHighlighterEngine {
+abstract class PhutilSyntaxHighlighterEngine extends Phobject {
 
   abstract public function setConfig($key, $value);
   abstract public function getHighlightFuture($language, $source);

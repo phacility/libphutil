@@ -1,6 +1,6 @@
 <?php
 
-abstract class PhageAgentBootloader {
+abstract class PhageAgentBootloader extends Phobject {
 
   abstract public function getName();
   abstract public function getBootCommand();

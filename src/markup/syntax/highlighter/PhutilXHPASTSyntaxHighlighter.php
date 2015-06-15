@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilXHPASTSyntaxHighlighter {
+final class PhutilXHPASTSyntaxHighlighter extends Phobject {
 
   public function getHighlightFuture($source) {
     $scrub = false;

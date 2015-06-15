@@ -27,7 +27,7 @@
  * @task  update  Responding to Activity
  * @task  impl    Channel Implementation
  */
-abstract class PhutilChannel {
+abstract class PhutilChannel extends Phobject {
 
   private $ibuf = '';
   private $obuf;

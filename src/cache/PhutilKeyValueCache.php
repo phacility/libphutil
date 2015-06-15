@@ -7,7 +7,7 @@
  *
  * @task  kvimpl    Key-Value Cache Implementation
  */
-abstract class PhutilKeyValueCache {
+abstract class PhutilKeyValueCache extends Phobject {
 
 
 /* -(  Key-Value Cache Implementation  )------------------------------------- */

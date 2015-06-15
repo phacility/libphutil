@@ -14,7 +14,7 @@
  * path is interpreted as relative on the remote, rather than absolute (as with
  * normal URIs).
  */
-final class PhutilGitURI {
+final class PhutilGitURI extends Phobject {
 
   private $user;
   private $domain;

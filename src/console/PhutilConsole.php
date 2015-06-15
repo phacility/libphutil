@@ -11,7 +11,7 @@
  * @task  interface   Interfacing with the User
  * @task  internal    Internals
  */
-final class PhutilConsole {
+final class PhutilConsole extends Phobject {
 
   private static $console;
 

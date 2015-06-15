@@ -3,7 +3,7 @@
 /**
  * Represents current transaction state of a connection.
  */
-final class AphrontDatabaseTransactionState {
+final class AphrontDatabaseTransactionState extends Phobject {
 
   private $depth           = 0;
   private $readLockLevel   = 0;

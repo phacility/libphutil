@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilTranslator {
+final class PhutilTranslator extends Phobject {
 
   private static $instance;
 

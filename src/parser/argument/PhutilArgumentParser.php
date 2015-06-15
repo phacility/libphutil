@@ -66,7 +66,7 @@
  * @task help     Command Help
  * @task internal Internals
  */
-final class PhutilArgumentParser {
+final class PhutilArgumentParser extends Phobject {
 
   private $bin;
   private $argv;

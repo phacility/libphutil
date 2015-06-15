@@ -14,6 +14,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   private $metadata = array();
   private $states = array();
   private $postprocessRules = array();
+  private $storage;
 
   public function setConfig($key, $value) {
     $this->config[$key] = $value;
@@ -129,7 +130,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     $output = $this->flattenOutput($output);
 
     $map = $this->storage->getMap();
-    unset($this->storage);
+    $this->storage = null;
     $metadata = $this->metadata;
 
 

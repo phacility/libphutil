@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilDirectoryFixture {
+final class PhutilDirectoryFixture extends Phobject {
 
   protected $path;
 

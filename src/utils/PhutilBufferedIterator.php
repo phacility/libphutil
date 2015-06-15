@@ -12,7 +12,7 @@
  * @task config   Configuration
  * @task iterator Iterator Implementation
  */
-abstract class PhutilBufferedIterator implements Iterator {
+abstract class PhutilBufferedIterator extends Phobject implements Iterator {
 
   private $data;
   private $pageSize = 100;

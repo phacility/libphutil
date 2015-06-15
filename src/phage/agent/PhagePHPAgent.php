@@ -1,6 +1,6 @@
 <?php
 
-final class PhagePHPAgent {
+final class PhagePHPAgent extends Phobject {
 
   private $stdin;
   private $master;

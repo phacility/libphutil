@@ -5,7 +5,7 @@
  * pending computation. For a more complete overview of futures, see
  * @{article:Using Futures}.
  */
-abstract class Future {
+abstract class Future extends Phobject {
 
   protected static $handlerInstalled = null;
 

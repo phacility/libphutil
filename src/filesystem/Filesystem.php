@@ -15,7 +15,7 @@
  * @task exec        Executables
  * @task assert      Assertions
  */
-final class Filesystem {
+final class Filesystem extends Phobject {
 
 
 /* -(  Files  )-------------------------------------------------------------- */

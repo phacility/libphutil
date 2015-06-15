@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilPygmentsSyntaxHighlighter {
+final class PhutilPygmentsSyntaxHighlighter extends Phobject {
 
   private $config = array();
 

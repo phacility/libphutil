@@ -3,7 +3,7 @@
 /**
  * Get information about the current execution environment.
  */
-final class PhutilExecutionEnvironment {
+final class PhutilExecutionEnvironment extends Phobject {
 
   public static function getOSXVersion() {
     if (php_uname('s') != 'Darwin') {

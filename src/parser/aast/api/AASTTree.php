@@ -3,7 +3,7 @@
 /**
  * An abstract abstract syntax tree.
  */
-abstract class AASTTree {
+abstract class AASTTree extends Phobject {
 
   protected $tree = array();
   protected $stream = array();

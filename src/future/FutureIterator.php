@@ -28,7 +28,7 @@
  * @task  iterator  Iterator Interface
  * @task  internal  Internals
  */
-final class FutureIterator implements Iterator {
+final class FutureIterator extends Phobject implements Iterator {
 
   protected $wait     = array();
   protected $work     = array();

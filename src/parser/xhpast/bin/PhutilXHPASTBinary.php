@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilXHPASTBinary {
+final class PhutilXHPASTBinary extends Phobject {
 
   /**
    * The expected XHPAST version.

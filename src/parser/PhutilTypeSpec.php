@@ -39,7 +39,7 @@
  *    string (uppercase)
  *
  */
-final class PhutilTypeSpec {
+final class PhutilTypeSpec extends Phobject {
 
   private $type;
   private $subtypes = array();

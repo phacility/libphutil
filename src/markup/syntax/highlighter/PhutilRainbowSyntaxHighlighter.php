@@ -4,7 +4,7 @@
  * Highlights source code with a rainbow of colors, regardless of the language.
  * This highlighter is useless, absurd, and extremely slow.
  */
-final class PhutilRainbowSyntaxHighlighter {
+final class PhutilRainbowSyntaxHighlighter extends Phobject {
 
   private $config = array();
 

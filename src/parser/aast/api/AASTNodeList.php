@@ -1,6 +1,8 @@
 <?php
 
-final class AASTNodeList implements Countable, Iterator {
+final class AASTNodeList
+  extends Phobject
+  implements Countable, Iterator {
 
   protected $list;
   protected $tree;

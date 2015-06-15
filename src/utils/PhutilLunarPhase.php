@@ -6,7 +6,7 @@
  *   $moon = new PhutilLunarPhase(time());
  *   $moon->isFull();
  */
-final class PhutilLunarPhase {
+final class PhutilLunarPhase extends Phobject {
 
   private $epoch;
 

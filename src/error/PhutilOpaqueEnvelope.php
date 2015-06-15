@@ -20,7 +20,7 @@
  * @task envelope Using Opaque Envelopes
  * @task internal Internals
  */
-final class PhutilOpaqueEnvelope {
+final class PhutilOpaqueEnvelope extends Phobject {
 
   private $value;
 

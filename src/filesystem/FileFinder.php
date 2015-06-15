@@ -15,7 +15,7 @@
  * @task  exec      Executing the File Query
  * @task  internal  Internal
  */
-final class FileFinder {
+final class FileFinder extends Phobject {
 
   private $root;
   private $exclude = array();

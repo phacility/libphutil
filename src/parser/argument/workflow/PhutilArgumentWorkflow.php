@@ -73,7 +73,7 @@
  *
  * @concrete-extensible
  */
-class PhutilArgumentWorkflow {
+class PhutilArgumentWorkflow extends Phobject {
 
   private $name;
   private $synopsis;

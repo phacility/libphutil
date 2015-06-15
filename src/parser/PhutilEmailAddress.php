@@ -6,7 +6,7 @@
  * it should parse all reasonable addresses which are actually in use on the
  * internet today.
  */
-final class PhutilEmailAddress {
+final class PhutilEmailAddress extends Phobject {
 
   private $displayName;
   private $localPart;

@@ -29,7 +29,7 @@
  * @task trap     Error Traps
  * @task internal Internals
  */
-final class PhutilErrorHandler {
+final class PhutilErrorHandler extends Phobject {
 
   private static $errorListener = null;
   private static $initialized = false;

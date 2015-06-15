@@ -1,6 +1,6 @@
 <?php
 
-final class MFilterTestHelper {
+final class MFilterTestHelper extends Phobject {
 
   private $h;
   private $i;

@@ -4,7 +4,7 @@
  * Simple syntax highlighter for the ".diviner" format, which is just Remarkup
  * with a specific ruleset. This should also work alright for Remarkup.
  */
-final class PhutilDivinerSyntaxHighlighter {
+final class PhutilDivinerSyntaxHighlighter extends Phobject {
 
   private $config = array();
   private $replaceClass;

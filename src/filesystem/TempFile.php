@@ -14,7 +14,7 @@
  * @task  config    Configuration
  * @task  internal  Internals
  */
-final class TempFile {
+final class TempFile extends Phobject {
 
   private $dir;
   private $file;

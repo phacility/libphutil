@@ -4,7 +4,7 @@
  * Parse a docblock comment from source code into raw text documentation and
  * metadata (like "@author" and "@return").
  */
-final class PhutilDocblockParser {
+final class PhutilDocblockParser extends Phobject {
 
   public function extractDocblocks($text) {
     $blocks = array();

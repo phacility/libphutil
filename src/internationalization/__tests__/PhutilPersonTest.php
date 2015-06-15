@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilPersonTest implements PhutilPerson {
+final class PhutilPersonTest extends Phobject implements PhutilPerson {
 
   private $sex = PhutilPerson::SEX_UNKNOWN;
 

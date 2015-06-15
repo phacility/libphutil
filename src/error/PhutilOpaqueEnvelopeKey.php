@@ -8,7 +8,7 @@
  *
  * @task internal Internals
  */
-final class PhutilOpaqueEnvelopeKey {
+final class PhutilOpaqueEnvelopeKey extends Phobject {
 
   private static $key;
 

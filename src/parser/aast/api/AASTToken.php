@@ -1,6 +1,6 @@
 <?php
 
-abstract class AASTToken {
+abstract class AASTToken extends Phobject {
 
   protected $id;
   protected $typeID;

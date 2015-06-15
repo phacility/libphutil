@@ -3,7 +3,7 @@
 /**
  * Parser for [[http://editorconfig.org/ | EditorConfig]] files.
  */
-final class PhutilEditorConfig {
+final class PhutilEditorConfig extends Phobject {
 
   const CHARSET             = 'charset';
   const END_OF_LINE         = 'end_of_line';

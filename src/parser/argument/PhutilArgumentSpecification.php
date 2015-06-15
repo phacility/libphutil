@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilArgumentSpecification {
+final class PhutilArgumentSpecification extends Phobject {
 
   private $name;
   private $help;

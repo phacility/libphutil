@@ -1,17 +1,20 @@
 <?php
 
-abstract class AASTNode {
+abstract class AASTNode extends Phobject {
 
   protected $id;
   protected $l;
   protected $r;
   protected $typeID;
+  protected $typeName;
   protected $tree;
 
   // These are public only as a microoptimization to make tree construction
   // faster; do not access them directly.
   public $children = array();
   public $parentNode;
+
+  private $selectCache;
 
   abstract public function isStaticScalar();
   abstract public function getDocblockToken();

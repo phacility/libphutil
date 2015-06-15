@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilInvisibleSyntaxHighlighter {
+final class PhutilInvisibleSyntaxHighlighter extends Phobject {
 
   private $config = array();
 

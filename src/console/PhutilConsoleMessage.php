@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilConsoleMessage {
+final class PhutilConsoleMessage extends Phobject {
 
   const TYPE_CONFIRM    = 'phutil:confirm';
   const TYPE_PROMPT     = 'phutil:prompt';

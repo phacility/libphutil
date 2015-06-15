@@ -3,7 +3,7 @@
 /**
  * NOTE: This is very new and unstable.
  */
-final class PhutilSpriteSheet {
+final class PhutilSpriteSheet extends Phobject {
 
   const MANIFEST_VERSION = 1;
 

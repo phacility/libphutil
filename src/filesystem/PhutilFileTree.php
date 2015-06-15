@@ -3,7 +3,7 @@
 /**
  * Data structure for representing filesystem directory trees.
  */
-final class PhutilFileTree {
+final class PhutilFileTree extends Phobject {
 
   private $name;
   private $fullPath;

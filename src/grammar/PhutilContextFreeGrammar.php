@@ -3,7 +3,7 @@
 /**
  * Generate nonsense test data according to a context-free grammar definition.
  */
-abstract class PhutilContextFreeGrammar {
+abstract class PhutilContextFreeGrammar extends Phobject {
 
   private $limit = 65535;
 

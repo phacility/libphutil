@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilConsoleFormatter {
+final class PhutilConsoleFormatter extends Phobject {
 
   private static $colorCodes = array(
     'black'   => 0,

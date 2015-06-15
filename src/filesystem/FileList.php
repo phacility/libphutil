@@ -18,7 +18,7 @@
  * @task create Creating a File List
  * @task test   Testing File Lists
  */
-final class FileList {
+final class FileList extends Phobject {
 
   private $files = array();
   private $dirs  = array();

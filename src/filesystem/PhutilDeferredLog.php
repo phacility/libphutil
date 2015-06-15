@@ -36,7 +36,7 @@
  * @task write      Writing the Log
  * @task internal   Internals
  */
-final class PhutilDeferredLog {
+final class PhutilDeferredLog extends Phobject {
 
   private $file;
   private $format;

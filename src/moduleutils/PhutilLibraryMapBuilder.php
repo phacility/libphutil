@@ -9,7 +9,7 @@
  * @task symbol   Symbol Analysis and Caching
  * @task source   Source Management
  */
-final class PhutilLibraryMapBuilder {
+final class PhutilLibraryMapBuilder extends Phobject {
 
   private $root;
   private $quiet = true;

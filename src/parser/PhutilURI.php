@@ -3,7 +3,7 @@
 /**
  * Basic URI parser object.
  */
-final class PhutilURI {
+final class PhutilURI extends Phobject {
 
   private $protocol;
   private $user;

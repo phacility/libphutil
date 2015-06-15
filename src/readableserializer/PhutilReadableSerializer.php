@@ -7,7 +7,7 @@
  * @task print Printing PHP Values
  * @task internal Internals
  */
-final class PhutilReadableSerializer {
+final class PhutilReadableSerializer extends Phobject {
 
 
 /* -(  Printing PHP Values  )------------------------------------------------ */

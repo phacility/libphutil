@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilConsoleServer {
+final class PhutilConsoleServer extends Phobject {
 
   private $clients = array();
   private $handler;

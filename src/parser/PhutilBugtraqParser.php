@@ -23,7 +23,7 @@
  *   Issues: http://bugs.com/123, http://bugs.com/345
  *
  */
-final class PhutilBugtraqParser {
+final class PhutilBugtraqParser extends Phobject {
 
   private $bugtraqPattern;
   private $bugtraqCaptureExpression;

@@ -33,7 +33,7 @@
  * @task  internals Internals
  * @task  iterator  Iterator Interface
  */
-abstract class LinesOfALarge implements Iterator {
+abstract class LinesOfALarge extends Phobject implements Iterator {
 
   private $pos;
   private $buf;

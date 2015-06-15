@@ -4,7 +4,7 @@
  * Simple syntax highlighter for console output. We just try to highlight the
  * commands so it's easier to follow transcripts.
  */
-final class PhutilConsoleSyntaxHighlighter {
+final class PhutilConsoleSyntaxHighlighter extends Phobject {
 
   private $config = array();
   private $replaceClass;

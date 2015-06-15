@@ -6,7 +6,7 @@
  * @phutil-external-symbol class JsonLintJsonParser
  * @phutil-external-symbol class JsonLintParsingException
  */
-final class PhutilJSONParser {
+final class PhutilJSONParser extends Phobject {
 
   private $allowDuplicateKeys = false;
 

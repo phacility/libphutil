@@ -15,7 +15,7 @@
  * @task edit    Editing Interactively
  * @task config  Configuring Options
  */
-final class PhutilInteractiveEditor {
+final class PhutilInteractiveEditor extends Phobject {
 
   private $name     = '';
   private $content  = '';

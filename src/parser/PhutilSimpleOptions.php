@@ -11,7 +11,7 @@
  * @task config   Parser Configuration
  * @task internal Internals
  */
-final class PhutilSimpleOptions {
+final class PhutilSimpleOptions extends Phobject {
 
   private $caseSensitive;
 

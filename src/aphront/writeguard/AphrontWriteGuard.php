@@ -28,7 +28,7 @@
  * @task manage   Managing Write Guards
  * @task internal Internals
  */
-final class AphrontWriteGuard {
+final class AphrontWriteGuard extends Phobject {
 
   private static $instance;
   private static $allowUnguardedWrites = false;

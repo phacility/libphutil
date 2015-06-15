@@ -28,7 +28,7 @@
  * @task cycle Cycle Detection
  * @task explore Graph Exploration
  */
-abstract class AbstractDirectedGraph {
+abstract class AbstractDirectedGraph extends Phobject {
 
 
   private $knownNodes   = array();

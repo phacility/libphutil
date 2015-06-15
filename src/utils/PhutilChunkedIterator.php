@@ -1,9 +1,10 @@
 <?php
 
 /**
- * This is an iterator version of array_chunk().
+ * This is an iterator version of `array_chunk()`.
  */
-final class PhutilChunkedIterator implements Iterator {
+final class PhutilChunkedIterator extends Phobject implements Iterator {
+
   private $iterator;
   private $size;
 

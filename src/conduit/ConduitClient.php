@@ -1,6 +1,6 @@
 <?php
 
-final class ConduitClient {
+final class ConduitClient extends Phobject {
 
   private $uri;
   private $host;

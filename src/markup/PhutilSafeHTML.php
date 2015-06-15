@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilSafeHTML {
+final class PhutilSafeHTML extends Phobject {
 
   private $content;
 

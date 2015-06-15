@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilNumber {
+final class PhutilNumber extends Phobject {
 
   private $value;
   private $decimals = 0;

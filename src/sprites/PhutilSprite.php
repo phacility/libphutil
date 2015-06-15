@@ -3,7 +3,7 @@
 /**
  * NOTE: This is very new and unstable.
  */
-final class PhutilSprite {
+final class PhutilSprite extends Phobject {
 
   private $sourceFiles = array();
   private $sourceX;

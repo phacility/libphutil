@@ -4,7 +4,7 @@
  * Simple event store for service calls, so they can be printed to stdout or
  * displayed in a debug console.
  */
-final class PhutilServiceProfiler {
+final class PhutilServiceProfiler extends Phobject {
 
   private static $instance;
   private $listeners = array();

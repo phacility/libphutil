@@ -1,6 +1,6 @@
 <?php
 
-final class PhutilDefaultSyntaxHighlighter {
+final class PhutilDefaultSyntaxHighlighter extends Phobject {
 
   public function setConfig($key, $value) {
     return $this;

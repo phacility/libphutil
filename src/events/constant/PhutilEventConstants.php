@@ -1,3 +1,3 @@
 <?php
 
-abstract class PhutilEventConstants {}
+abstract class PhutilEventConstants extends Phobject {}

@@ -74,7 +74,7 @@
  * @task rule       Lexer Rules
  * @task tokens     Lexer Tokens
  */
-abstract class PhutilLexer {
+abstract class PhutilLexer extends Phobject {
 
   private $processedRules;
   private $lastState;

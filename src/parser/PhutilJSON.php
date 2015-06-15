@@ -6,7 +6,7 @@
  * @task pretty Formatting JSON Objects
  * @task internal Internals
  */
-final class PhutilJSON {
+final class PhutilJSON extends Phobject {
 
 
 /* -(  Formatting JSON Objects  )-------------------------------------------- */

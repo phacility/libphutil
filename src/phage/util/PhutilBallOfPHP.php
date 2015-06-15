@@ -4,7 +4,7 @@
  * Concatenates PHP files together into a single stream. Used by Phage to
  * transmit bootloading code.
  */
-final class PhutilBallOfPHP {
+final class PhutilBallOfPHP extends Phobject {
 
   private $parts = array();
 

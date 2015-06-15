@@ -25,7 +25,7 @@
  * @task  lock        Locking
  * @task  internal    Internals
  */
-abstract class PhutilLock {
+abstract class PhutilLock extends Phobject {
 
   private static $registeredShutdownFunction = false;
   private static $locks = array();

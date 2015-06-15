@@ -3,7 +3,7 @@
 /**
  * @concrete-extensible
  */
-class PhutilEvent {
+class PhutilEvent extends Phobject {
 
   private $type;
   private $data;

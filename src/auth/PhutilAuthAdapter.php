@@ -15,7 +15,7 @@
  * configured -- only what information it is expected to be able to provide once
  * properly configured.
  */
-abstract class PhutilAuthAdapter {
+abstract class PhutilAuthAdapter extends Phobject {
 
   /**
    * Get a unique identifier associated with the identity. For most providers,
