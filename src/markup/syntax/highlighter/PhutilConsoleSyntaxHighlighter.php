@@ -7,7 +7,6 @@
 final class PhutilConsoleSyntaxHighlighter extends Phobject {
 
   private $config = array();
-  private $replaceClass;
 
   public function setConfig($key, $value) {
     $this->config[$key] = $value;
