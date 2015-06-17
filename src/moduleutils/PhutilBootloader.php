@@ -12,6 +12,7 @@ final class PhutilBootloader {
   private $registeredLibraries  = array();
   private $libraryMaps          = array();
   private $extensionMaps        = array();
+  private $extendedMaps = array();
   private $currentLibrary       = null;
   private $classTree            = array();
   private $inMemoryMaps         = array();
@@ -114,6 +115,10 @@ final class PhutilBootloader {
   }
 
   public function getLibraryMap($name) {
+    if (isset($this->extendedMaps[$name])) {
+      return $this->extendedMaps[$name];
+    }
+
     if (empty($this->libraryMaps[$name])) {
       $root = $this->getLibraryRoot($name);
       $this->currentLibrary = $name;
@@ -166,6 +171,8 @@ final class PhutilBootloader {
         $map[$dict_key] += $emap[$dict_key];
       }
     }
+
+    $this->extendedMaps[$name] = $map;
 
     return $map;
   }
@@ -275,6 +282,10 @@ final class PhutilBootloader {
         $this->extensionMaps[$library]['xmap'][$class] = $xmap;
       }
     }
+
+    // Clear the extended library cache (should one exist) so we know that
+    // we need to rebuild it.
+    unset($this->extendedMaps[$library]);
   }
 
 }
