@@ -82,7 +82,7 @@ final class PhutilDefaultSyntaxHighlighterEngine
 
     if ($language == 'invisible') {
       return id(new PhutilInvisibleSyntaxHighlighter())
-             ->getHighlightFuture($source);
+        ->getHighlightFuture($source);
     }
 
     // Don't invoke Pygments for plain text, since it's expensive and has
