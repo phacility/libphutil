@@ -420,7 +420,9 @@ final class HTTPSFuture extends BaseHTTPFuture {
 
     // NOTE: We want to use keepalive if possible. Return the handle to a
     // pool for the domain; don't close it.
-    self::$pool[$domain][] = $curl;
+    if ($this->shouldReuseHandles()) {
+      self::$pool[$domain][] = $curl;
+    }
 
     $profiler = PhutilServiceProfiler::getInstance();
     $profiler->endServiceCall($this->profilerCallID, array());
@@ -664,6 +666,20 @@ final class HTTPSFuture extends BaseHTTPFuture {
     $bytes = substr($this->rawBody, $this->rawBodyPos, $len);
     $this->rawBodyPos += $len;
     return $bytes;
+  }
+
+  private function shouldReuseHandles() {
+    $curl_version = curl_version();
+    $version = idx($curl_version, 'version');
+
+    // NOTE: cURL 7.43.0 has a bug where the POST body length is not recomputed
+    // properly when a handle is reused. For this version of cURL, disable
+    // handle reuse and accept a small performance penalty. See T8654.
+    if ($version == '7.43.0') {
+      return false;
+    }
+
+    return true;
   }
 
 
