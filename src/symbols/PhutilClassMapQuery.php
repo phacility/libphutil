@@ -17,9 +17,9 @@
  *
  * This class provides support for these mechanisms.
  *
- * Using the unique key mechanism with @{method:setUniqueMethod} allows you
- * to use a more human-readable, storage-friendly key to identify objects,
- * allows classes to be freely renamed, and enables variant expansion.
+ * Using the unique key mechanism with @{method:setUniqueMethod} allows you to
+ * use a more human-readable, storage-friendly key to identify objects, allows
+ * classes to be freely renamed, and enables variant expansion.
  *
  * Using the expansion mechanism with @{method:setExpandMethod} allows you to
  * have multiple similar modular instances, or configuration-driven instances.
@@ -27,7 +27,7 @@
  * Even if they have no immediate need for either mechanism, class maps should
  * generally provide unique keys in their initial design so they are more
  * flexible later on. Adding unique keys later can require database migrations,
- * whle adding an expansion mechanim is trivial if a class map already has
+ * while adding an expansion mechanism is trivial if a class map already has
  * unique keys.
  *
  * This class automatically caches class maps and does not need to be wrapped
