@@ -1,9 +1,17 @@
 <?php
 
-final class PhutilPhobjectTestCase extends PhutilTestCase {
+final class PhobjectTestCase extends PhutilTestCase {
 
   public function testThrowOnUndeclaredProperty() {
     $object = new PhutilTestPhobject();
+
+    $caught = null;
+    try {
+      $object->duck;
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+    $this->assertTrue($caught instanceof DomainException);
 
     $caught = null;
     try {
@@ -11,7 +19,6 @@ final class PhutilPhobjectTestCase extends PhutilTestCase {
     } catch (Exception $ex) {
       $caught = $ex;
     }
-
     $this->assertTrue($caught instanceof DomainException);
   }
 

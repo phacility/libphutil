@@ -19,6 +19,13 @@
  */
 abstract class Phobject implements Iterator {
 
+  public function __get($name) {
+    throw new DomainException(
+      pht(
+        'Attempt to read from undeclared property %s.',
+        get_class($this).'::'.$name));
+    }
+
   public function __set($name, $value) {
     throw new DomainException(
       pht(
