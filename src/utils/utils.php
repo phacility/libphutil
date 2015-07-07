@@ -1052,6 +1052,119 @@ function phutil_json_decode($string) {
 
 
 /**
+ * Encode a value in JSON, raising an exception if it can not be encoded.
+ *
+ * @param wild A value to encode.
+ * @return string JSON representation of the value.
+ */
+function phutil_json_encode($value) {
+  $result = @json_encode($value);
+  if ($result === false) {
+    $reason = phutil_validate_json($value);
+    if (function_exists('json_last_error')) {
+      $err = json_last_error();
+      if (function_exists('json_last_error_msg')) {
+        $msg = json_last_error_msg();
+        $extra = pht('#%d: %s', $err, $msg);
+      } else {
+        $extra = pht('#%d', $err);
+      }
+    } else {
+      $extra = null;
+    }
+
+    if ($extra) {
+      $message = pht(
+        'Failed to JSON encode value (%s): %s.',
+        $extra,
+        $reason);
+    } else {
+      $message = pht(
+        'Failed to JSON encode value: %s.',
+        $reason);
+    }
+
+    throw new Exception($message);
+  }
+
+  return $result;
+}
+
+
+/**
+ * Produce a human-readable explanation why a value can not be JSON-encoded.
+ *
+ * @param wild Value to validate.
+ * @param string Path within the object to provide context.
+ * @return string|null Explanation of why it can't be encoded, or null.
+ */
+function phutil_validate_json($value, $path = '') {
+  if ($value === null) {
+    return;
+  }
+
+  if ($value === true) {
+    return;
+  }
+
+  if ($value === false) {
+    return;
+  }
+
+  if (is_int($value)) {
+    return;
+  }
+
+  if (is_float($value)) {
+    return;
+  }
+
+  if (is_array($value)) {
+    foreach ($value as $key => $subvalue) {
+      if (strlen($path)) {
+        $full_key = $path.' > ';
+      } else {
+        $full_key = '';
+      }
+
+      if (!phutil_is_utf8($key)) {
+        $full_key = $full_key.phutil_utf8ize($key);
+        return pht(
+          'Dictionary key "%s" is not valid UTF8, and can not be JSON encoded.',
+          $full_key);
+      }
+
+      $full_key .= $key;
+      $result = phutil_validate_json($subvalue, $full_key);
+      if ($result !== null) {
+        return $result;
+      }
+    }
+  }
+
+  if (is_string($value)) {
+    if (!phutil_is_utf8($value)) {
+      $display = substr($value, 0, 256);
+      $display = phutil_utf8ize($display);
+      if (!strlen($path)) {
+        return pht(
+          'String value is not valid UTF8, and can not be JSON encoded: %s',
+          $display);
+      } else {
+        return pht(
+          'Dictionary value at key "%s" is not valid UTF8, and can not be '.
+          'JSON encoded: %s',
+          $path,
+          $display);
+      }
+    }
+  }
+
+  return;
+}
+
+
+/**
  * Decode an INI string.
  *
  * @param  string

@@ -777,4 +777,19 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
   }
 
+  public function testJSONEncode() {
+    $in = array(
+      'example' => "Not Valid UTF8: \x80",
+    );
+
+    $caught = null;
+    try {
+      $value = phutil_json_encode($in);
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertTrue(($caught instanceof Exception));
+  }
+
 }
