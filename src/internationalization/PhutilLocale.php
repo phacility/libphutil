@@ -106,10 +106,11 @@ abstract class PhutilLocale extends Phobject {
    */
   public static function loadAllLocales() {
     static $locales;
+
     if ($locales === null) {
-      $objects = id(new PhutilSymbolLoader())
+      $objects = id(new PhutilClassMapQuery())
         ->setAncestorClass(__CLASS__)
-        ->loadObjects();
+        ->execute();
 
       $locale_map = array();
       foreach ($objects as $object) {

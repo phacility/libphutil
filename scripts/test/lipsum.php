@@ -25,10 +25,10 @@ if (count($class) !== 1) {
 }
 $class = reset($class);
 
-$symbols = id(new PhutilSymbolLoader())
+$symbols = id(new PhutilClassMapQuery())
   ->setAncestorClass('PhutilContextFreeGrammar')
-  ->setConcreteOnly(true)
-  ->selectAndLoadSymbols();
+  ->execute();
+
 $symbols = ipull($symbols, 'name', 'name');
 
 if (empty($symbols[$class])) {

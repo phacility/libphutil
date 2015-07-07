@@ -40,9 +40,9 @@ final class PhutilRemarkupInterpreterBlockRule extends PhutilRemarkupBlockRule {
       $argv = id(new PhutilSimpleOptions())->parse($matches[2]);
     }
 
-    $interpreters = id(new PhutilSymbolLoader())
+    $interpreters = id(new PhutilClassMapQuery())
       ->setAncestorClass('PhutilRemarkupBlockInterpreter')
-      ->loadObjects();
+      ->execute();
 
     foreach ($interpreters as $interpreter) {
       $interpreter->setEngine($this->getEngine());
