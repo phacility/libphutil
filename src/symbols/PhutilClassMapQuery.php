@@ -41,6 +41,7 @@ final class PhutilClassMapQuery extends Phobject {
 
   private $ancestorClass;
   private $expandMethod;
+  private $filterNull = false;
   private $uniqueMethod;
   private $sortMethod;
 
@@ -75,12 +76,15 @@ final class PhutilClassMapQuery extends Phobject {
    *
    * You must provide a method here to use @{method:setExpandMethod}.
    *
-   * @param string Name of the unique key method.
+   * @param string  Name of the unique key method.
+   * @param bool    If true, then classes which return `null` will be filtered
+   *                from the results.
    * @return this
    * @task config
    */
-  public function setUniqueMethod($unique_method) {
+  public function setUniqueMethod($unique_method, $filter_null = false) {
     $this->uniqueMethod = $unique_method;
+    $this->filterNull   = $filter_null;
     return $this;
   }
 
@@ -224,6 +228,11 @@ final class PhutilClassMapQuery extends Phobject {
       $map = array();
       foreach ($list as $object) {
         $key = call_user_func(array($object, $unique));
+
+        if ($key === null && $this->filterNull) {
+          continue;
+        }
+
         if (empty($map[$key])) {
           $map[$key] = $object;
           continue;
