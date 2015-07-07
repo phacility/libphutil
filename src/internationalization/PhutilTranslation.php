@@ -47,13 +47,9 @@ abstract class PhutilTranslation extends Phobject {
    * @return list<PhutilTranslation> List of available translation sources.
    */
   public static function loadAllTranslations() {
-    static $translations;
-    if ($translations === null) {
-      $translations = id(new PhutilSymbolLoader())
-        ->setAncestorClass(__CLASS__)
-        ->loadObjects();
-    }
-    return $translations;
+    return id(new PhutilClassMapQuery())
+      ->setAncestorClass(__CLASS__)
+      ->execute();
   }
 
 
