@@ -41,6 +41,7 @@ final class PhutilClassMapQuery extends Phobject {
 
   private $ancestorClass;
   private $expandMethod;
+  private $filterMethod;
   private $filterNull = false;
   private $uniqueMethod;
   private $sortMethod;
@@ -148,6 +149,19 @@ final class PhutilClassMapQuery extends Phobject {
   }
 
 
+  /**
+   * Provide a method to filter the map.
+   *
+   * @param string Name of the filtering method.
+   * @return this
+   * @task config
+   */
+  public function setFilterMethod($filter_method) {
+    $this->filterMethod = $filter_method;
+    return $this;
+  }
+
+
 /* -(  Executing the Query  )------------------------------------------------ */
 
 
@@ -191,6 +205,7 @@ final class PhutilClassMapQuery extends Phobject {
     }
 
     $expand = $this->expandMethod;
+    $filter = $this->filterMethod;
     $unique = $this->uniqueMethod;
     $sort = $this->sortMethod;
 
@@ -251,6 +266,11 @@ final class PhutilClassMapQuery extends Phobject {
       }
     } else {
       $map = $list;
+    }
+
+    // Apply the "filter" mechanism, if it is configured.
+    if (strlen($filter)) {
+      $map = mfilter($map, $filter);
     }
 
     // Apply the "sort" mechanism, if it is configured.
