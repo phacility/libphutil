@@ -295,7 +295,9 @@ final class PhutilClassMapQuery extends Phobject {
     $parts = array(
       $this->ancestorClass,
       $this->uniqueMethod,
+      $this->filterNull,
       $this->expandMethod,
+      $this->filterMethod,
       $this->sortMethod,
     );
     return implode(':', $parts);
