@@ -738,7 +738,7 @@ function phutil_utf8v_combined($string) {
       unset($components[$index]);
       $components = array_values($components);
 
-      $index --;
+      $index--;
       $array_length = count($components);
     }
   }

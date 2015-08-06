@@ -14,7 +14,7 @@ class L implements ExtInterface {}
 
 function f() {}
 
-(function () {
+(function() {
   // Anonymous function.
 });
 
@@ -44,13 +44,13 @@ strtoupper('');
 
 // Various magic things.
 
-die($x);
+exit($x);
 empty($x);
 isset($x);
-echo($x);
+echo $x;
 print($x);
 exit($x);
-include($x);
-include_once($x);
-require($x);
-require_once($x);
+include $x;
+include_once $x;
+require $x;
+require_once $x;

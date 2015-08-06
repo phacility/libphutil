@@ -231,7 +231,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       'InvalidArgumentException');
   }
 
-  public function testAssertStringLike () {
+  public function testAssertStringLike() {
     $this->assertEqual(
       null,
       assert_stringlike(null));
