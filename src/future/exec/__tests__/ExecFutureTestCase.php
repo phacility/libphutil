@@ -82,7 +82,7 @@ final class ExecFutureTestCase extends PhutilTestCase {
     }
 
     foreach (new FutureIterator($futures) as $future) {
-      list ($err) = $future->resolve();
+      list($err) = $future->resolve();
 
       $this->assertTrue($err > 0);
       $this->assertTrue($future->getWasKilledByTimeout());

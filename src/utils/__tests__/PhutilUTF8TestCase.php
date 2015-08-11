@@ -150,7 +150,9 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       // This behavior is maybe a little bad, but it seems mostly reasonable,
       // at least for latin languages.
       array(
-        'Derp, supercalafragalisticexpialadoshus', 30, '...',
+        'Derp, supercalafragalisticexpialadoshus',
+        30,
+        '...',
         'Derp...',
       ),
 
@@ -176,27 +178,39 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     $cases = array(
       array(
         "o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0",
-        6, "o\xCD\xA0!",
-        6, "o\xCD\xA0o\xCD\xA0!",
-        6, "o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0",
+        6,
+        "o\xCD\xA0!",
+        6,
+        "o\xCD\xA0o\xCD\xA0!",
+        6,
+        "o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0o\xCD\xA0",
       ),
       array(
         "X\xCD\xA0\xCD\xA0\xCD\xA0Y",
-        6, '!',
-        6, "X\xCD\xA0\xCD\xA0\xCD\xA0Y",
-        6, "X\xCD\xA0\xCD\xA0\xCD\xA0Y",
+        6,
+        '!',
+        6,
+        "X\xCD\xA0\xCD\xA0\xCD\xA0Y",
+        6,
+        "X\xCD\xA0\xCD\xA0\xCD\xA0Y",
       ),
       array(
         "X\xCD\xA0\xCD\xA0\xCD\xA0YZ",
-        6, '!',
-        5, "X\xCD\xA0\xCD\xA0\xCD\xA0!",
-        2, "X\xCD\xA0\xCD\xA0\xCD\xA0!",
+        6,
+        '!',
+        5,
+        "X\xCD\xA0\xCD\xA0\xCD\xA0!",
+        2,
+        "X\xCD\xA0\xCD\xA0\xCD\xA0!",
       ),
       array(
         "\xE2\x98\x83\xE2\x98\x83\xE2\x98\x83\xE2\x98\x83",
-        4, "\xE2\x98\x83!",
-        3, "\xE2\x98\x83\xE2\x98\x83!",
-        3, "\xE2\x98\x83\xE2\x98\x83!",
+        4,
+        "\xE2\x98\x83!",
+        3,
+        "\xE2\x98\x83\xE2\x98\x83!",
+        3,
+        "\xE2\x98\x83\xE2\x98\x83!",
       ),
     );
 
