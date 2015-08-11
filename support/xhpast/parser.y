@@ -2176,14 +2176,12 @@ static_scalar: /* compile-time evaluated scalars */
   }
 | T_ARRAY '(' static_array_pair_list ')' {
     NTYPE($1, n_ARRAY_LITERAL);
-    $1->appendChild($3);
-    NMORE($1, $4);
+    $1->appendChild(NEXPAND($2, $3, $4));
     $$ = $1;
   }
 | '[' static_array_pair_list ']' {
     NTYPE($1, n_ARRAY_LITERAL);
-    $1->appendChild($2);
-    NMORE($1, $3);
+    $1->appendChild(NEXPAND($1, $2, $3));
     $$ = $1;
   }
 | static_class_constant
@@ -2529,8 +2527,7 @@ assignment_list_element:
   variable
 | T_LIST '(' assignment_list ')' {
     $$ = NNEW(n_LIST);
-    $$->appendChild($3);
-    NMORE($$, $4);
+    $$->appendChild(NEXPAND($2, $3, $4));
   }
 | /* empty */ {
     $$ = NNEW(n_EMPTY);
@@ -2695,14 +2692,12 @@ combined_scalar_offset:
 combined_scalar:
   T_ARRAY '(' array_pair_list ')' {
     NTYPE($1, n_ARRAY_LITERAL);
-    $1->appendChild($3);
-    NMORE($1, $4);
+    $1->appendChild(NEXPAND($2, $3, $4));
     $$ = $1;
   }
 | '[' array_pair_list ']' {
     NTYPE($1, n_ARRAY_LITERAL);
-    $1->appendChild($2);
-    NMORE($1, $3);
+    $1->appendChild(NEXPAND($1, $2, $3));
     $$ = $1;
   }
 ;
