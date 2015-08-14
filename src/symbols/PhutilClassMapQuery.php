@@ -56,9 +56,10 @@ final class PhutilClassMapQuery extends Phobject {
 
 
   /**
-   * Set the ancestor class name to load the concrete descendants of.
+   * Set the ancestor class or interface name to load the concrete descendants
+   * of.
    *
-   * @param string Ancestor class name.
+   * @param string Ancestor class or interface name.
    * @return this
    * @task config
    */
@@ -196,11 +197,11 @@ final class PhutilClassMapQuery extends Phobject {
       throw new PhutilInvalidStateException('setAncestorClass');
     }
 
-    if (!class_exists($ancestor)) {
+    if (!class_exists($ancestor) && !interface_exists($ancestor)) {
       throw new Exception(
         pht(
           'Trying to execute a class map query for descendants of class '.
-          '"%s", but no such class exists.',
+          '"%s", but no such class or interface exists.',
           $ancestor));
     }
 
