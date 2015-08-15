@@ -180,6 +180,16 @@ abstract class AASTNode extends Phobject {
     return $tokens;
   }
 
+  final public function isDescendantOf(AASTNode $node) {
+    for ($it = $this; $it !== null; $it = $it->getParentNode()) {
+      if ($it === $node) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   public function selectDescendantsOfType($type_name) {
     return $this->selectDescendantsOfTypes(array($type_name));
   }

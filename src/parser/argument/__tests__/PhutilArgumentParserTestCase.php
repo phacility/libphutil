@@ -348,7 +348,13 @@ final class PhutilArgumentParserTestCase extends PhutilTestCase {
 
     $args = new PhutilArgumentParser(
       array(
-        'bin', '--a', 'a', '--b=b', '-c', 'c', '-d=d',
+        'bin',
+        '--a',
+        'a',
+        '--b=b',
+        '-c',
+        'c',
+        '-d=d',
       ));
     $args->parseFull($specs);
 
@@ -368,7 +374,10 @@ final class PhutilArgumentParserTestCase extends PhutilTestCase {
 
     $args = new PhutilArgumentParser(
       array(
-        'bin', '-', '--file', '-',
+        'bin',
+        '-',
+        '--file',
+        '-',
       ));
     $args->parsePartial($specs);
 
@@ -400,7 +409,12 @@ final class PhutilArgumentParserTestCase extends PhutilTestCase {
     );
 
     $args = new PhutilArgumentParser(array(
-      'bin', '--eat', 'apple', '--eat', 'pear', '--eat=orange',
+      'bin',
+      '--eat',
+      'apple',
+      '--eat',
+      'pear',
+      '--eat=orange',
     ));
     $args->parseFull($specs);
 

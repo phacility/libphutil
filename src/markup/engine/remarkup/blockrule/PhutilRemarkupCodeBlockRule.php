@@ -132,7 +132,7 @@ final class PhutilRemarkupCodeBlockRule extends PhutilRemarkupBlockRule {
 
     $name_header = null;
     if ($this->getEngine()->isHTMLMailMode()) {
-      $header_attributes = array (
+      $header_attributes = array(
         'style' => 'padding: 6px 8px;
           background: #fdf5d4;
           color: rgba(0,0,0,.75);

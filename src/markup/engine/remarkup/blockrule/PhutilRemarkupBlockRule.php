@@ -132,7 +132,7 @@ abstract class PhutilRemarkupBlockRule extends Phobject {
           background: #d3d3d3;
           margin: 12px 0;',
       );
-      $cell_attributes = array (
+      $cell_attributes = array(
         'style' => 'background: #ffffff;
           padding: 3px 6px;',
       );

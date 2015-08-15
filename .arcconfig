@@ -1,4 +1,3 @@
 {
-  "phabricator.uri": "https://secure.phabricator.com/",
-  "unit.engine": "PhutilUnitTestEngine"
+  "phabricator.uri": "https://secure.phabricator.com/"
 }

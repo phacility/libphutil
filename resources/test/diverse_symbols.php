@@ -14,7 +14,7 @@ class L implements ExtInterface {}
 
 function f() {}
 
-(function() {
+(function () {
   // Anonymous function.
 });
 
