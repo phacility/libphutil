@@ -14,7 +14,7 @@ void print_node(xhpast::Node *node);
 int main(int argc, char* argv[]) {
   if (argc != 1) {
     // Coupling: modify also src/parser/xhpast/bin/PhutilXHPASTBinary.php
-    cout << "5.5.8/1i\n";
+    cout << "5.5.9\n";
     return 0;
   }
 
