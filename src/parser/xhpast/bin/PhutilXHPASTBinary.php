@@ -8,7 +8,7 @@ final class PhutilXHPASTBinary extends Phobject {
    * This is the version that would be obtained with an up-to-date XHPAST
    * build. The //actual// XHPAST build version may vary.
    */
-  const EXPECTED_VERSION = '5.5.8/1i';
+  const EXPECTED_VERSION = '5.5.9';
 
   /**
    * The XHPAST build version.
