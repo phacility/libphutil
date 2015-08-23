@@ -69,7 +69,7 @@ static void replacestr(string &source, const string &find, const string &rep) {
 %expect 5
 // 2: PHP's if/else grammar
 // 7: expr '[' dim_offset ']' -- shift will default to first grammar
-%name-prefix = "xhpast"
+%name-prefix "xhpast"
 %pure-parser
 %parse-param { void* yyscanner }
 %parse-param { xhpast::Node** root }
