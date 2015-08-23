@@ -1,4 +1,4 @@
-BISONFLAGS = --verbose -d
+BISONFLAGS = --verbose -d -Wall
 CPPFLAGS   = -fPIC -Wall
 FLEXFLAGS  = -C
 
