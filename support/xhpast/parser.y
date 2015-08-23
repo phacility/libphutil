@@ -223,7 +223,7 @@ top_statement_list:
   top_statement_list top_statement {
     $$ = $1->appendChild($2);
   }
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_STATEMENT_LIST);
   }
 ;
@@ -337,7 +337,7 @@ inner_statement_list:
   inner_statement_list inner_statement {
     $$ = $1->appendChild($2);
   }
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_STATEMENT_LIST);
   }
 ;
@@ -625,13 +625,13 @@ unticked_statement:
 
 additional_catches:
   non_empty_additional_catches
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_EMPTY);
   }
 ;
 
 finally_statement:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | T_FINALLY '{' inner_statement_list '}' {
@@ -690,7 +690,7 @@ class_declaration_statement:
 ;
 
 is_reference:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | '&' {
@@ -766,7 +766,7 @@ class_entry_type:
 ;
 
 extends_from:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | T_EXTENDS fully_qualified_class_name {
@@ -779,7 +779,7 @@ interface_entry:
 ;
 
 interface_extends_list:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | T_EXTENDS interface_list {
@@ -790,7 +790,7 @@ interface_extends_list:
 ;
 
 implements_list:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | T_IMPLEMENTS interface_list {
@@ -810,7 +810,7 @@ interface_list:
 ;
 
 foreach_optional_arg:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | T_DOUBLE_ARROW foreach_variable {
@@ -902,7 +902,7 @@ switch_case_list:
 ;
 
 case_list:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_STATEMENT_LIST);
   }
 | case_list T_CASE expr case_separator inner_statement_list {
@@ -937,7 +937,7 @@ while_statement:
 ;
 
 elseif_list:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_CONDITION_LIST);
   }
 | elseif_list T_ELSEIF '(' expr ')' statement {
@@ -950,7 +950,7 @@ elseif_list:
 ;
 
 new_elseif_list:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_CONDITION_LIST);
   }
 | new_elseif_list T_ELSEIF '(' expr ')' ':' inner_statement_list {
@@ -963,7 +963,7 @@ new_elseif_list:
 ;
 
 else_single:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | T_ELSE statement {
@@ -974,7 +974,7 @@ else_single:
 ;
 
 new_else_single:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | T_ELSE ':' inner_statement_list {
@@ -986,7 +986,7 @@ new_else_single:
 
 parameter_list:
   non_empty_parameter_list
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_DECLARATION_PARAMETER_LIST);
   }
 ;
@@ -1065,7 +1065,7 @@ non_empty_parameter_list:
 ;
 
 optional_class_type:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | fully_qualified_class_name {
@@ -1081,7 +1081,7 @@ optional_class_type:
 
 function_call_parameter_list:
   non_empty_function_call_parameter_list
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_CALL_PARAMETER_LIST);
   }
 ;
@@ -1175,7 +1175,7 @@ class_statement_list:
   class_statement_list class_statement {
     $$ = $1->appendChild($2);
   }
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_STATEMENT_LIST);
   }
 ;
@@ -1244,7 +1244,7 @@ trait_adaptations:
 ;
 
 trait_adaptation_list:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_TRAIT_ADAPTATION_LIST);
   }
 | non_empty_trait_adaptation_list {
@@ -1325,7 +1325,7 @@ trait_alias:
 ;
 
 trait_modifiers:
-  /* empty */  {
+  %empty  {
     $$ = NNEW(n_EMPTY);
   }
 |  member_modifier  {
@@ -1353,7 +1353,7 @@ variable_modifiers:
 ;
 
 method_modifiers:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_METHOD_MODIFIER_LIST);
   }
 | non_empty_member_modifiers {
@@ -1444,7 +1444,7 @@ echo_expr_list:
 ;
 
 for_expr:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | non_empty_for_expr
@@ -1927,7 +1927,7 @@ function:
 ;
 
 lexical_vars:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | T_USE '(' lexical_var_list ')' {
@@ -2079,7 +2079,7 @@ dynamic_class_name_variable_properties:
   dynamic_class_name_variable_properties dynamic_class_name_variable_property {
     $$ = $1->appendChild($2);
   }
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_EMPTY);
   }
 ;
@@ -2091,7 +2091,7 @@ dynamic_class_name_variable_property:
 ;
 
 exit_expr:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | '(' ')' {
@@ -2106,7 +2106,7 @@ exit_expr:
 ;
 
 ctor_arguments:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | '(' function_call_parameter_list ')' {
@@ -2209,7 +2209,7 @@ scalar:
 ;
 
 static_array_pair_list:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_ARRAY_VALUE_LIST);
   }
 | non_empty_static_array_pair_list possible_comma {
@@ -2218,7 +2218,7 @@ static_array_pair_list:
 ;
 
 possible_comma:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | ','
@@ -2310,7 +2310,7 @@ variable_properties:
   variable_properties variable_property {
     $$ = $1->appendChildren($2);
   }
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_EMPTY);
   }
 ;
@@ -2349,7 +2349,7 @@ method:
 method_or_not:
   method
 | array_method_dereference
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_EMPTY);
   }
 ;
@@ -2456,7 +2456,7 @@ compound_variable:
 ;
 
 dim_offset:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_EMPTY);
   }
 | expr {
@@ -2529,13 +2529,13 @@ assignment_list_element:
     $$ = NNEW(n_LIST);
     $$->appendChild(NEXPAND($2, $3, $4));
   }
-| /* empty */ {
+| %empty {
     $$ = NNEW(n_EMPTY);
   }
 ;
 
 array_pair_list:
-  /* empty */ {
+  %empty {
     $$ = NNEW(n_ARRAY_VALUE_LIST);
   }
 | non_empty_array_pair_list possible_comma {
