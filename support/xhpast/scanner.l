@@ -470,11 +470,7 @@ static int yy_token(int tok, yyguts_t* yyg) {
       break;
 
     case T_PAAMAYIM_NEKUDOTAYIM:
-      if (yyextra->colon_hack) {
-        yyextra->colon_hack = false;
-      } else {
-        push_state(PHP_NO_RESERVED_WORDS);
-      }
+      push_state(PHP_NO_RESERVED_WORDS);
       break;
 
     case '{':

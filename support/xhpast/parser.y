@@ -1197,13 +1197,8 @@ class_statement:
     $$ = $1;
   }
 | method_modifiers function {
-    yyextra->old_expecting_xhp_class_statements =
-      yyextra->expecting_xhp_class_statements;
-    yyextra->expecting_xhp_class_statements = false;
+    /* empty */
   } is_reference T_STRING '(' parameter_list ')' method_body {
-    yyextra->expecting_xhp_class_statements =
-      yyextra->old_expecting_xhp_class_statements;
-
     $$ = NNEW(n_METHOD_DECLARATION);
     NMORE($$, $2);
     $$->appendChild($1);
