@@ -52,18 +52,6 @@ static void yyerror(void* yyscanner, void* _, const char* error) {
   yyextra->error = error;
 }
 
-/*
-
-TODO: Restore this.
-
-static void replacestr(string &source, const string &find, const string &rep) {
-  size_t j;
-  while ((j = source.find(find)) != std::string::npos) {
-    source.replace(j, find.length(), rep);
-  }
-}
-*/
-
 %}
 
 %expect 5
