@@ -1,19 +1,25 @@
+BISONFLAGS = --verbose -d
+CPPFLAGS   = -fPIC -Wall
+FLEXFLAGS  = -C
+
 ifdef DEBUG
-CPPFLAGS = -fPIC -ggdb -Wall -DDEBUG
+	BISONFLAGS += --debug
+	CPPFLAGS   += -ggdb -DDEBUG
+	FLEXFLAGS  += --debug
 else
-CPPFLAGS = -fPIC -Wall -O3 -minline-all-stringops
+	CPPFLAGS  += -O3 -minline-all-stringops
 endif
 
 ifdef PROFILE
-CPPFLAGS += -pg
+	CPPFLAGS += -pg
 endif
 
 ifdef STATIC
-CPPFLAGS += -static
+	CPPFLAGS += -static
 endif
 
 ifdef MSYSTEM
-CPPFLAGS += -static-libgcc -static-libstdc++
+	CPPFLAGS += -static-libgcc -static-libstdc++
 endif
 
 ROOT = ../../src/parser/xhpast
@@ -30,12 +36,12 @@ install: xhpast
 	cp xhpast $(ROOT)/bin/xhpast
 
 scanner: scanner.l
-	flex -C --header-file=scanner.lex.hpp -o scanner.lex.cpp -d $<
+	flex $(FLEXFLAGS) --header-file=scanner.lex.hpp --outfile=scanner.lex.cpp $<
 	echo '/* @gen''er''ated */' >> scanner.lex.cpp
 	echo '/* @gen''er''ated */' >> scanner.lex.hpp
 
 parser: parser.y
-	bison --debug --verbose -d -o parser.yacc.cpp $<
+	bison $(BISONFLAGS) --output=parser.yacc.cpp $<
 	echo '/* @gen''er''ated */' >> parser.yacc.cpp
 	echo '/* @gen''er''ated */' >> parser.yacc.hpp
 
