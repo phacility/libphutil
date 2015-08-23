@@ -19,7 +19,6 @@ class yy_extra_type {
       short_tags = true;
       asp_tags = false;
       idx_expr = false;
-      include_debug = false;
       list_size = 0;
       pushStack();
     }
@@ -37,9 +36,6 @@ class yy_extra_type {
     std::string heredoc_label; // heredoc sentinel label
     std::stack<int> curly_stack; // tokens appearing before a {
     unsigned int list_size;
-
-    // Include line numbers and file names in XHP object creation.
-    bool include_debug;
 
     xhpast::token_list_t token_list;
 
