@@ -38,11 +38,6 @@ static void yy_scan_newlines(const char* text, struct yyguts_t* yyg);
 %option bison-bridge
 %option 8bit
 
- /* I think an interactive scanner is required because of the bison state
-  * pushing we do. I'm putting an explicit interactive declaration here in case
-  * someone tries adding -CF or whatever to the make flags. */
-%option interactive
-
  /* The different lexing states. Note that the transitions are done either
   * in the lex actions, or in a generic manner in yy_token(). */
 %s PHP

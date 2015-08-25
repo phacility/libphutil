@@ -1,6 +1,6 @@
 BISONFLAGS = --verbose -d -Wall
 CPPFLAGS   = -fPIC -Wall
-FLEXFLAGS  = -C
+FLEXFLAGS  = -CFr
 
 ifdef DEBUG
 	BISONFLAGS += --debug
