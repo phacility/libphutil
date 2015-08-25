@@ -3,11 +3,7 @@
 #define push_state(s) xhp_new_push_state(s, yyg)
 #define pop_state() xhp_new_pop_state(yyg)
 #define set_state(s) xhp_set_state(s, yyg)
-#define last_token() yyextra->last_token
 
-#define YY_USER_ACTION \
-  if (!yyg->yy_more_len) \
-    yyextra->first_lineno = yyextra->lineno;
 #define pttok(t, txt) \
   yyextra->token_list.push_back( \
     new xhpast::Token(t, txt, yyextra->list_size++)); \
