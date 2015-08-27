@@ -1,7 +1,9 @@
 <?php
 
-/* @generated @undivinable */
-
+/**
+ * @generated
+ * @undivinable
+ */
 function xhp_parser_node_constants() {
   return array(
     9000 => 'n_PROGRAM',
