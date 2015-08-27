@@ -61,7 +61,7 @@ parser.yacc.o: needparserscanner scanner.lex.hpp
 
 scanner.lex.o: needparserscanner parser.yacc.hpp node_names.hpp scanner.lex.hpp
 
-libxhpast.a: astnode.o scanner.lex.o parser.yacc.o
+libxhpast.a: scanner.lex.o parser.yacc.o
 	$(AR) -crs $@ $^
 
 xhpast: xhpast.cpp libxhpast.a
