@@ -64,13 +64,15 @@ static void yyerror(void* yyscanner, void* _, const char* error) {
 %lex-param { void* yyscanner }
 %error-verbose
 
-%left T_INCLUDE T_INCLUDE_ONCE T_EVAL T_REQUIRE T_REQUIRE_ONCE
-%left ','
+%precedence T_INCLUDE T_INCLUDE_ONCE
+%token T_EVAL
+%precedence T_REQUIRE T_REQUIRE_ONCE
+%token ','
 %left T_LOGICAL_OR
 %left T_LOGICAL_XOR
 %left T_LOGICAL_AND
-%right T_PRINT
-%left '=' T_PLUS_EQUAL
+%precedence T_PRINT
+%precedence '=' T_PLUS_EQUAL
   T_MINUS_EQUAL
   T_MUL_EQUAL
   T_DIV_EQUAL
@@ -92,27 +94,22 @@ static void yyerror(void* yyscanner, void* _, const char* error) {
 %left T_SL T_SR
 %left '+' '-' '.'
 %left '*' '/' '%'
-%right '!'
-%nonassoc T_INSTANCEOF
-%right '~' T_INC
-  T_DEC
-  T_INT_CAST
-  T_DOUBLE_CAST
-  T_STRING_CAST
-  T_UNICODE_CAST
-  T_BINARY_CAST
-  T_ARRAY_CAST
-  T_OBJECT_CAST
-  T_BOOL_CAST
-  T_UNSET_CAST
-  '@'
-%right '['
-%nonassoc T_NEW T_CLONE
+%precedence '!'
+%precedence T_INSTANCEOF
+%precedence '~' T_INC
+%token T_DEC
+%precedence T_INT_CAST T_DOUBLE_CAST T_STRING_CAST
+%token T_UNICODE_CAST
+%token T_BINARY_CAST
+%precedence T_ARRAY_CAST T_OBJECT_CAST T_BOOL_CAST T_UNSET_CAST '@'
+%token '['
+%token T_NEW
+%precedence T_CLONE
 %token T_EXIT
 %token T_IF
-%left T_ELSEIF
-%left T_ELSE
-%left T_ENDIF
+%token T_ELSEIF
+%token T_ELSE
+%token T_ENDIF
 
 %token T_LNUMBER
 %token T_DNUMBER
@@ -153,7 +150,12 @@ static void yyerror(void* yyscanner, void* _, const char* error) {
 %token T_THROW
 %token T_USE
 %token T_GLOBAL
-%right T_STATIC T_ABSTRACT T_FINAL T_PRIVATE T_PROTECTED T_PUBLIC
+%token T_STATIC
+%token T_ABSTRACT
+%token T_FINAL
+%token T_PRIVATE
+%token T_PROTECTED
+%token T_PUBLIC
 %token T_VAR
 %token T_UNSET
 %token T_ISSET
