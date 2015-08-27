@@ -1769,13 +1769,17 @@ expr_without_variable:
 | expr '?' expr ':' expr {
     $$ = NNEW(n_TERNARY_EXPRESSION);
     $$->appendChild($1);
+    $$->appendChild(NTYPE($2, n_OPERATOR));
     $$->appendChild($3);
+    $$->appendChild(NTYPE($4, n_OPERATOR));
     $$->appendChild($5);
   }
 | expr '?' ':' expr {
     $$ = NNEW(n_TERNARY_EXPRESSION);
     $$->appendChild($1);
+    $$->appendChild(NTYPE($2, n_OPERATOR));
     $$->appendChild(NNEW(n_EMPTY));
+    $$->appendChild(NTYPE($3, n_OPERATOR));
     $$->appendChild($4);
   }
 | internal_functions_in_yacc
