@@ -1,6 +1,4 @@
 #include "ast.hpp"
-#include <vector>
-#include <string>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -14,7 +12,7 @@ void print_node(xhpast::Node *node);
 int main(int argc, char* argv[]) {
   if (argc != 1) {
     // Coupling: modify also src/parser/xhpast/bin/PhutilXHPASTBinary.php
-    cout << "5.5.9\n";
+    cout << "5.7.1\n";
     return 0;
   }
 
@@ -40,7 +38,6 @@ int xhpast_process(std::string &in) {
   void* scanner;
   yy_extra_type extra;
   extra.idx_expr = true;//flags.idx_expr;
-  extra.include_debug = true;//flags.include_debug;
   extra.insert_token = 0;//flags.eval ? T_OPEN_TAG_FAKE : 0;
   extra.short_tags = true;//flags.short_tags;
   extra.asp_tags = false;//flags.asp_tags;

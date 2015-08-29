@@ -3,11 +3,7 @@
 #define push_state(s) xhp_new_push_state(s, yyg)
 #define pop_state() xhp_new_pop_state(yyg)
 #define set_state(s) xhp_set_state(s, yyg)
-#define last_token() yyextra->last_token
 
-#define YY_USER_ACTION \
-  if (!yyg->yy_more_len) \
-    yyextra->first_lineno = yyextra->lineno;
 #define pttok(t, txt) \
   yyextra->token_list.push_back( \
     new xhpast::Token(t, txt, yyextra->list_size++)); \
@@ -41,11 +37,6 @@ static void yy_scan_newlines(const char* text, struct yyguts_t* yyg);
 %option stack
 %option bison-bridge
 %option 8bit
-
- /* I think an interactive scanner is required because of the bison state
-  * pushing we do. I'm putting an explicit interactive declaration here in case
-  * someone tries adding -CF or whatever to the make flags. */
-%option interactive
 
  /* The different lexing states. Note that the transitions are done either
   * in the lex actions, or in a generic manner in yy_token(). */
@@ -470,11 +461,7 @@ static int yy_token(int tok, yyguts_t* yyg) {
       break;
 
     case T_PAAMAYIM_NEKUDOTAYIM:
-      if (yyextra->colon_hack) {
-        yyextra->colon_hack = false;
-      } else {
-        push_state(PHP_NO_RESERVED_WORDS);
-      }
+      push_state(PHP_NO_RESERVED_WORDS);
       break;
 
     case '{':

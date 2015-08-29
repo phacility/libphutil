@@ -79,4 +79,8 @@ abstract class AASTToken extends Phobject {
     return $result;
   }
 
+  final public function getLineNumber() {
+    return idx($this->tree->getOffsetToLineNumberMap(), $this->getOffset());
+  }
+
 }
