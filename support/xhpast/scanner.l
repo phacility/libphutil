@@ -81,11 +81,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
     }
   }
   "<?=" {
-    if (yyextra->short_tags) {
-      tok(T_OPEN_TAG_WITH_ECHO);
-    } else {
-      tok(T_INLINE_HTML);
-    }
+    tok(T_OPEN_TAG_WITH_ECHO);
   }
   "<%" {
     if (yyextra->asp_tags) {
