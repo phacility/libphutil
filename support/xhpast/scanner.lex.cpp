@@ -24771,6 +24771,10 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 /* rule 1 can match eol */
+*yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
+YY_LINENO_REWIND_TO(yy_bp + 5);
+yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
+YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 71 "scanner.l"
 {
@@ -25570,7 +25574,6 @@ case 135:
 YY_RULE_SETUP
 #line 320 "scanner.l"
 {
-
   push_state(PHP_HEREDOC_START);
   yyextra->heredoc_yyleng = yyleng;
   yymore();
@@ -25579,7 +25582,7 @@ YY_RULE_SETUP
 
 case 136:
 YY_RULE_SETUP
-#line 327 "scanner.l"
+#line 326 "scanner.l"
 {
     // Create a new string for the heredoc label. Since we're using yymore above
     // yytext will actually start at the "<<<" and not the label. Use of
@@ -25595,7 +25598,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 339 "scanner.l"
+#line 338 "scanner.l"
 {
     yyextra->heredoc_label = string(yytext + yyextra->heredoc_yyleng);
     set_state(PHP_HEREDOC_NSTART);
@@ -25607,7 +25610,7 @@ YY_RULE_SETUP
 case 138:
 /* rule 138 can match eol */
 YY_RULE_SETUP
-#line 346 "scanner.l"
+#line 345 "scanner.l"
 {
   yyextra->heredoc_yyleng = yyleng;
   set_state(PHP_HEREDOC_NEWLINE);
@@ -25618,7 +25621,7 @@ YY_RULE_SETUP
 case 139:
 /* rule 139 can match eol */
 YY_RULE_SETUP
-#line 352 "scanner.l"
+#line 351 "scanner.l"
 {
     if (strncmp(
       yyextra->heredoc_label.c_str(),
@@ -25642,7 +25645,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 372 "scanner.l"
+#line 371 "scanner.l"
 {
     yyextra->heredoc_yyleng = yyleng;
     yymore();
@@ -25651,7 +25654,7 @@ YY_RULE_SETUP
 case 141:
 /* rule 141 can match eol */
 YY_RULE_SETUP
-#line 376 "scanner.l"
+#line 375 "scanner.l"
 {
     ++yyextra->lineno;
     yyextra->heredoc_yyleng = yyleng;
@@ -25663,7 +25666,7 @@ YY_RULE_SETUP
 case 142:
 /* rule 142 can match eol */
 YY_RULE_SETUP
-#line 384 "scanner.l"
+#line 383 "scanner.l"
 {
   tok(yytext[0]);
   // fix unused function warnings
@@ -25673,10 +25676,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 391 "scanner.l"
+#line 390 "scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 25680 "scanner.lex.cpp"
+#line 25683 "scanner.lex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(PHP):
 case YY_STATE_EOF(PHP_HEREDOC_START):
@@ -26882,7 +26885,7 @@ void xhpastfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 390 "scanner.l"
+#line 389 "scanner.l"
 
 
 
