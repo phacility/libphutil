@@ -28,11 +28,11 @@ ROOT = ../../src/parser/xhpast
 all: xhpast
 
 clean:
-	rm --force xhpast parser.yacc.output libxhpast.a *.o
+	rm -f xhpast parser.yacc.output libxhpast.a *.o
 
 cleanall: clean
-	rm --force scanner.lex.hpp scanner.lex.cpp parser.yacc.hpp parser.yacc.cpp
-	rm --force node_names.hpp parser_nodes.php
+	rm -f scanner.lex.hpp scanner.lex.cpp parser.yacc.hpp parser.yacc.cpp
+	rm -f node_names.hpp parser_nodes.php
 
 .PHONY: install
 install: xhpast
