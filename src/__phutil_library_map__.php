@@ -428,6 +428,7 @@ phutil_register_library_map(array(
     'phutil_get_library_root' => 'moduleutils/moduleutils.php',
     'phutil_get_library_root_for_path' => 'moduleutils/moduleutils.php',
     'phutil_get_signal_name' => 'future/exec/execx.php',
+    'phutil_hashes_are_identical' => 'utils/utils.php',
     'phutil_implode_html' => 'markup/render.php',
     'phutil_ini_decode' => 'utils/utils.php',
     'phutil_is_hiphop_runtime' => 'utils/utils.php',

@@ -1360,3 +1360,50 @@ function phutil_fnmatch($glob, $path) {
   $regex = '(\A'.$regex.'\z)';
   return (bool)preg_match($regex, $path);
 }
+
+
+/**
+ * Compare two hashes for equality.
+ *
+ * This function defuses two attacks: timing attacks and type juggling attacks.
+ *
+ * In a timing attack, the attacker observes that strings which match the
+ * secret take slightly longer to fail to match because more characters are
+ * compared. By testing a large number of strings, they can learn the secret
+ * character by character. This defuses timing attacks by always doing the
+ * same amount of work.
+ *
+ * In a type juggling attack, an attacker takes advantage of PHP's type rules
+ * where `"0" == "0e12345"` for any exponent. A portion of of hexadecimal
+ * hashes match this pattern and are vulnerable. This defuses this attack by
+ * performing bytewise character-by-character comparison.
+ *
+ * It is questionable how practical these attacks are, but they are possible
+ * in theory and defusing them is straightforward.
+ *
+ * @param string First hash.
+ * @param string Second hash.
+ * @return bool True if hashes are identical.
+ */
+function phutil_hashes_are_identical($u, $v) {
+  if (!is_string($u)) {
+    throw new Exception(pht('First hash argument must be a string.'));
+  }
+
+  if (!is_string($v)) {
+    throw new Exception(pht('Second hash argument must be a string.'));
+  }
+
+  if (strlen($u) !== strlen($v)) {
+    return false;
+  }
+
+  $len = strlen($v);
+
+  $bits = 0;
+  for ($ii = 0; $ii < $len; $ii++) {
+    $bits |= (ord($u[$ii]) ^ ord($v[$ii]));
+  }
+
+  return ($bits === 0);
+}
