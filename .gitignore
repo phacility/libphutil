@@ -11,6 +11,7 @@
 /support/xhpast/parser.yacc.output
 /support/xhpast/node_names.hpp
 /support/xhpast/xhpast
+/support/xhpast/xhpast.exe
 /src/parser/xhpast/bin/xhpast
 
 ## NOTE: Don't .gitignore these files! Even though they're build artifacts, we
@@ -22,9 +23,6 @@
 
 # This is an OS X build artifact.
 /support/xhpast/xhpast.dSYM
-
-# This is a Windows build artifact.
-/support/xhpast/xhpast.exe
 
 # libphutil
 /src/.phutil_module_cache

@@ -361,7 +361,7 @@ extern int xhpastlex \
 #undef YY_DECL
 #endif
 
-#line 394 "scanner.l"
+#line 389 "scanner.l"
 
 
 #line 368 "scanner.lex.hpp"

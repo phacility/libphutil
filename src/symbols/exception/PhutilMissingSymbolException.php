@@ -5,7 +5,7 @@ final class PhutilMissingSymbolException extends Exception {
   public function __construct($symbol, $type, $reason) {
     parent::__construct(
       pht(
-        "Failed to load %s '%s': %s.\n\n".
+        "Failed to load %s '%s': %s\n\n".
         "If you are not a developer, this almost always means that a library ".
         "is out of date. For example, you may have upgraded `phabricator` ".
         "without upgrading `libphutil`, or vice versa. It might also mean ".

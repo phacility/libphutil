@@ -68,7 +68,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
 
  /* Open / close PHP + inline HTML */
 <INITIAL>{
-  "<?php"([ \t]|{NEWLINE}) {
+  "<?php"/([ \t]|{NEWLINE}) {
     yy_scan_newlines(yytext + 5, yyg);
     // the state transition will be done in yy_token()
     tok(T_OPEN_TAG);
@@ -81,11 +81,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
     }
   }
   "<?=" {
-    if (yyextra->short_tags) {
-      tok(T_OPEN_TAG_WITH_ECHO);
-    } else {
-      tok(T_INLINE_HTML);
-    }
+    tok(T_OPEN_TAG_WITH_ECHO);
   }
   "<%" {
     if (yyextra->asp_tags) {
@@ -322,7 +318,6 @@ NEWLINE ("\r\n"|"\n"|"\r")
 
  /* (HERE|NOW)DOC's */
 <PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>b?"<<<"{TABS_AND_SPACES} {
-
   push_state(PHP_HEREDOC_START);
   yyextra->heredoc_yyleng = yyleng;
   yymore();
