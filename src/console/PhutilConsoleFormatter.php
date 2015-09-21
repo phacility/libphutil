@@ -42,6 +42,24 @@ final class PhutilConsoleFormatter extends Phobject {
   }
 
   public static function formatString($format /* ... */) {
+    $args = func_get_args();
+    $args[0] = self::interpretFormat($args[0]);
+    return call_user_func_array('sprintf', $args);
+  }
+
+  public static function replaceColorCode($matches) {
+    $codes = self::$colorCodes;
+    $offset = 30 + $codes[$matches[2]];
+    $default = 39;
+    if ($matches[1] == 'bg') {
+      $offset += 10;
+      $default += 10;
+    }
+
+    return chr(27).'['.$offset.'m'.$matches[3].chr(27).'['.$default.'m';
+  }
+
+  public static function interpretFormat($format) {
     $colors = implode('|', array_keys(self::$colorCodes));
 
     // Sequence should be preceded by start-of-string or non-backslash
@@ -74,24 +92,7 @@ final class PhutilConsoleFormatter extends Phobject {
     }
 
     // Remove backslash escaping
-    $format = preg_replace('/\\\\(\*\*.*\*\*|__.*__|##.*##)/sU', '\1', $format);
-
-    $args = func_get_args();
-    $args[0] = $format;
-
-    return call_user_func_array('sprintf', $args);
-  }
-
-  public static function replaceColorCode($matches) {
-    $codes = self::$colorCodes;
-    $offset = 30 + $codes[$matches[2]];
-    $default = 39;
-    if ($matches[1] == 'bg') {
-      $offset += 10;
-      $default += 10;
-    }
-
-    return chr(27).'['.$offset.'m'.$matches[3].chr(27).'['.$default.'m';
+    return preg_replace('/\\\\(\*\*.*\*\*|__.*__|##.*##)/sU', '\1', $format);
   }
 
 }
