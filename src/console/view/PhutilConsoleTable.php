@@ -109,18 +109,16 @@ final class PhutilConsoleTable extends PhutilConsoleView {
 
     $columns = array();
     foreach ($this->columns as $key => $column) {
-      if (!$this->shouldAddSpacing($key, $column)) {
-        $column_str = $column['title'];
-      } else {
-        $column_str = $this->alignString(
-          $column['title'],
+      $title = tsprintf('**%s**', $column['title']);
+
+      if ($this->shouldAddSpacing($key, $column)) {
+        $title = $this->alignString(
+          $title,
           $this->getWidth($key),
           idx($column, 'align', self::ALIGN_LEFT));
       }
 
-      $columns[] = tsprintf(
-        '**%s**',
-        $column_str);
+      $columns[] = $title;
     }
 
     $output[] = $this->formatRow($columns);
