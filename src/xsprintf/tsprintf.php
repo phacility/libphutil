@@ -15,6 +15,7 @@
  */
 function tsprintf($pattern /* , ... */) {
   $args = func_get_args();
+  $args[0] = PhutilConsoleFormatter::interpretFormat($args[0]);
   $string = xsprintf('xsprintf_terminal', null, $args);
   return new PhutilTerminalString($string);
 }

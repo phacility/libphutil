@@ -1,0 +1,17 @@
+# test case for original perl-script cowfile
+$the_cow =
+ $thoughts
+  $thoughts
+    /---\\__/---\\\\
+    | / .... \\ ||
+     \\ ..--.. //
+     |..($eyes). ||
+     / ..--.. \\\\
+    | \\ .... / ||
+    \\---/--\\---//
+~~~~~~~~~~
+{
+  "text": "I made a friend!",
+  "action": "think",
+  "eyes": "<3"
+}

@@ -22,7 +22,7 @@
  *     ->setBorders(true)
  *     ->draw();
  */
-final class PhutilConsoleTable extends Phobject {
+final class PhutilConsoleTable extends PhutilConsoleView {
 
   private $columns = array();
   private $data    = array();
@@ -30,29 +30,14 @@ final class PhutilConsoleTable extends Phobject {
   private $borders = false;
   private $padding = 1;
   private $showHeader = true;
-  private $console;
 
   const ALIGN_LEFT    = 'left';
   const ALIGN_CENTER  = 'center';
   const ALIGN_RIGHT   = 'right';
 
 
-/* -(  Console  )------------------------------------------------------------ */
-
-  protected function getConsole() {
-    if ($this->console) {
-      return $this->console;
-    }
-    return PhutilConsole::getConsole();
-  }
-
-  public function setConsole(PhutilConsole $console) {
-    $this->console = $console;
-    return $this;
-  }
-
-
 /* -(  Configuration  )------------------------------------------------------ */
+
 
   public function setBorders($borders) {
     $this->borders = $borders;
@@ -103,19 +88,19 @@ final class PhutilConsoleTable extends Phobject {
 
 /* -(  Drawing  )------------------------------------------------------------ */
 
-  public function draw() {
-    $console = $this->getConsole();
-
-    $console->writeOut('%s', $this->getHeader());
-    $console->writeOut('%s', $this->getBody());
-    $console->writeOut('%s', $this->getFooter());
+  protected function drawView() {
+    return $this->drawLines(
+      array_merge(
+        $this->getHeader(),
+        $this->getBody(),
+        $this->getFooter()));
   }
 
   private function getHeader() {
-    $output = '';
+    $output = array();
 
     if ($this->borders) {
-      $output .= $this->formatSeparator('=');
+      $output[] = $this->formatSeparator('=');
     }
 
     if (!$this->showHeader) {
@@ -124,54 +109,52 @@ final class PhutilConsoleTable extends Phobject {
 
     $columns = array();
     foreach ($this->columns as $key => $column) {
-      if (!$this->shouldAddSpacing($key, $column)) {
-        $column_str = $column['title'];
-      } else {
-        $column_str = $this->alignString(
-          $column['title'],
+      $title = tsprintf('**%s**', $column['title']);
+
+      if ($this->shouldAddSpacing($key, $column)) {
+        $title = $this->alignString(
+          $title,
           $this->getWidth($key),
           idx($column, 'align', self::ALIGN_LEFT));
       }
 
-      $columns[] = PhutilConsoleFormatter::formatString(
-        '**%s**',
-        $column_str);
+      $columns[] = $title;
     }
 
-    $output .= $this->formatRow($columns);
+    $output[] = $this->formatRow($columns);
 
     if ($this->borders) {
-      $output .= $this->formatSeparator('=');
+      $output[] = $this->formatSeparator('=');
     }
 
     return $output;
   }
 
   private function getBody() {
-    $output = '';
+    $output = array();
 
     foreach ($this->data as $data) {
       $columns = array();
 
       foreach ($this->columns as $key => $column) {
         if (!$this->shouldAddSpacing($key, $column)) {
-          $columns[] = (string)idx($data, $key, '');
+          $columns[] = idx($data, $key, '');
         } else {
           $columns[] = $this->alignString(
-            (string)idx($data, $key, ''),
+            idx($data, $key, ''),
             $this->getWidth($key),
             idx($column, 'align', self::ALIGN_LEFT));
         }
       }
 
-      $output .= $this->formatRow($columns);
+      $output[] = $this->formatRow($columns);
     }
 
     return $output;
   }
 
   private function getFooter() {
-    $output = '';
+    $output = array();
 
     if ($this->borders) {
       $columns = array();
@@ -180,7 +163,11 @@ final class PhutilConsoleTable extends Phobject {
         $columns[] = str_repeat('=', $this->getWidth($column));
       }
 
-      $output .= '+'.implode('+', $columns)."+\n";
+      $output[] = array(
+        '+',
+        $this->implode('+', $columns),
+        '+',
+      );
     }
 
     return $output;
@@ -258,7 +245,11 @@ final class PhutilConsoleTable extends Phobject {
     $left_padding  = str_repeat(' ', $num_left_padding);
     $right_padding = str_repeat(' ', $num_right_padding);
 
-    return $left_padding.$string.$right_padding;
+    return array(
+      $left_padding,
+      $string,
+      $right_padding,
+    );
   }
 
   /**
@@ -272,9 +263,13 @@ final class PhutilConsoleTable extends Phobject {
 
     if ($this->borders) {
       $separator = $padding.'|'.$padding;
-      return '|'.$padding.implode($separator, $columns).$padding."|\n";
+      return array(
+        '|'.$padding,
+        $this->implode($separator, $columns),
+        $padding.'|',
+      );
     } else {
-      return implode($padding, $columns)."\n";
+      return $this->implode($padding, $columns);
     }
   }
 
@@ -291,7 +286,11 @@ final class PhutilConsoleTable extends Phobject {
       $columns[] = str_repeat($string, $this->getWidth($column));
     }
 
-    return $separator.implode($separator, $columns).$separator."\n";
+    return array(
+      $separator,
+      $this->implode($separator, $columns),
+      $separator,
+    );
   }
 
 }

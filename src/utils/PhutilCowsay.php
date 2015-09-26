@@ -45,11 +45,13 @@ final class PhutilCowsay extends Phobject {
     // (and any comments in the file) away.
     $template = phutil_split_lines($template, true);
     $keep = array();
+    $is_perl_cowfile = false;
     foreach ($template as $key => $line) {
       if (preg_match('/^#/', $line)) {
         continue;
       }
       if (preg_match('/^\s*\\$the_cow/', $line)) {
+        $is_perl_cowfile = true;
         continue;
       }
       if (preg_match('/^\s*EOC\s*$/', $line)) {
@@ -58,6 +60,16 @@ final class PhutilCowsay extends Phobject {
       $keep[] = $line;
     }
     $template = implode('', $keep);
+
+    // Original .cow files are perl scripts which contain escaped sequences.
+    // We attempt to unescape here by replacing any character preceded by a
+    // backslash/escape with just that character.
+    if ($is_perl_cowfile) {
+      $template = preg_replace(
+        '/\\\\(.)/',
+        '$1',
+        $template);
+    }
 
     $template = preg_replace_callback(
       '/\\$([a-z]+)/',
