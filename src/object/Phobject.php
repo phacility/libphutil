@@ -60,4 +60,45 @@ abstract class Phobject implements Iterator {
         get_class($this)));
   }
 
+
+  /**
+   * Read the value of a class constant.
+   *
+   * This is the same as just typing `self::CONSTANTNAME`, but throws a more
+   * useful message if the constant is not defined and allows the constant to
+   * be limited to a maximum length.
+   *
+   * @param string Name of the constant.
+   * @param int|null Maximum number of bytes permitted in the value.
+   * @return string Value of the constant.
+   */
+  public function getPhobjectClassConstant($key, $byte_limit = null) {
+    $class = new ReflectionClass($this);
+
+    $const = $class->getConstant($key);
+    if ($const === false) {
+      throw new Exception(
+        pht(
+          '"%s" class "%s" must define a "%s" constant.',
+          __CLASS__,
+          get_class($this),
+          $key));
+    }
+
+    if ($byte_limit !== null) {
+      if (!is_string($const) || (strlen($const) > $byte_limit)) {
+        throw new Exception(
+          pht(
+            '"%s" class "%s" has an invalid "%s" property. Field constants '.
+            'must be strings and no more than %s bytes in length.',
+            __CLASS__,
+            get_class($this),
+            $key,
+            new PhutilNumber($byte_limit)));
+      }
+    }
+
+    return $const;
+  }
+
 }
