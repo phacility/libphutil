@@ -160,6 +160,13 @@ final class PhutilTranslator extends Phobject {
         }
         return $plural;
 
+      case 'ko_KR':
+        list($singular, $plural) = $translations;
+        if ($variant == 1) {
+          return $singular;
+        }
+        return $plural;
+
       default:
         throw new Exception(pht("Unknown language '%s'.", $this->language));
     }
