@@ -750,6 +750,13 @@ final class Filesystem extends Phobject {
       $root = realpath($root);
     }
 
+    // NOTE: We don't use `isDescendant()` here because we don't want to reject
+    // paths which don't exist on disk.
+    $root_list = new FileList(array($root));
+    if (!$root_list->contains($path)) {
+      return array();
+    }
+
     $walk = array();
     $parts = explode(DIRECTORY_SEPARATOR, $path);
     foreach ($parts as $k => $part) {
@@ -758,11 +765,7 @@ final class Filesystem extends Phobject {
       }
     }
 
-    if (!self::isDescendant($path, $root)) {
-      return array();
-    }
-
-    while ($parts) {
+    while (true) {
       if (phutil_is_windows()) {
         $next = implode(DIRECTORY_SEPARATOR, $parts);
       } else {
@@ -771,6 +774,10 @@ final class Filesystem extends Phobject {
 
       $walk[] = $next;
       if ($next == $root) {
+        break;
+      }
+
+      if (!$parts) {
         break;
       }
 
