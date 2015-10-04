@@ -19,7 +19,7 @@ final class PhutilXHPASTSyntaxHighlighterTestCase extends PhutilTestCase {
       (string)$this->highlight($this->read('builtin-classname.source')),
       pht('Builtin classnames should not be marked as linkable symbols.'));
     $this->assertEqual(
-      $this->read('trailing-comment.expect'),
+      rtrim($this->read('trailing-comment.expect')),
       (string)$this->highlight($this->read('trailing-comment.source')),
       pht('Trailing comments should not be dropped.'));
     $this->assertEqual(
