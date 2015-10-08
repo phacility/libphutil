@@ -29,8 +29,17 @@ final class PhutilRemarkupQuotesBlockRule extends PhutilRemarkupBlockRule {
 
   public function markupText($text, $children) {
     if ($this->getEngine()->isTextMode()) {
-      $lines = phutil_split_lines($children);
-      return '> '.implode("\n> ", $lines);
+      $lines = rtrim($children, "\n");
+      $lines = phutil_split_lines($lines);
+      foreach ($lines as $key => $line) {
+        if (isset($line[0]) && ($line[0] == '>')) {
+          $line = '>'.$line;
+        } else {
+          $line = '> '.$line;
+        }
+        $lines[$key] = $line;
+      }
+      return implode('', $lines);
     }
 
     return phutil_tag(
