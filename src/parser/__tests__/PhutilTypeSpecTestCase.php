@@ -170,7 +170,7 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
         $caught = $ex;
       }
 
-      $this->assertTrue($ex instanceof PhutilTypeCheckException);
+      $this->assertTrue($caught instanceof PhutilTypeCheckException);
     }
   }
 
@@ -208,7 +208,7 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertTrue($ex instanceof PhutilTypeMissingParametersException);
+    $this->assertTrue($caught instanceof PhutilTypeMissingParametersException);
 
     // Parameter "size" is specified but does not exist.
 
@@ -224,7 +224,7 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertTrue($ex instanceof PhutilTypeExtraParametersException);
+    $this->assertTrue($caught instanceof PhutilTypeExtraParametersException);
   }
 
   public function testRegexValidation() {
@@ -249,7 +249,7 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       $caught = $ex;
     }
 
-    $this->assertTrue($ex instanceof PhutilTypeCheckException);
+    $this->assertTrue($caught instanceof PhutilTypeCheckException);
   }
 
   public function testScalarOrListRegexp() {
@@ -286,6 +286,27 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       ));
 
     $this->assertTrue(true);
+  }
+
+  public function testMixedVector() {
+    // This is a test case for an issue where we would not infer the type
+    // of a vector containing a mixture of scalar and nonscalar elements
+    // correctly.
+
+    $caught = null;
+    try {
+      PhutilTypeSpec::checkMap(
+        array(
+          'key' => array('!', (object)array()),
+        ),
+        array(
+          'key' => 'list<X>',
+        ));
+    } catch (PhutilTypeCheckException $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertTrue($caught instanceof PhutilTypeCheckException);
   }
 
 }

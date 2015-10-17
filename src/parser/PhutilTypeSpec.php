@@ -172,6 +172,15 @@ final class PhutilTypeSpec extends Phobject {
   }
 
   public static function getCommonParentClass($class_a, $class_b) {
+    // Make sure both classes are really classes.
+    try {
+      if (!class_exists($class_a) || !class_exists($class_b)) {
+        return null;
+      }
+    } catch (PhutilMissingSymbolException $ex) {
+      return null;
+    }
+
     $ancestors_a = array();
     do {
       $ancestors_a[] = $class_a;
