@@ -1,6 +1,7 @@
 {
   "exclude": [
-    "(^externals/)"
+    "(^externals/)",
+    "(/__tests__/data/)"
   ],
   "linters": {
     "chmod": {
