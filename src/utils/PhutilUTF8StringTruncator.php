@@ -92,17 +92,41 @@ final class PhutilUTF8StringTruncator extends Phobject {
       return $string;
     }
 
-    // If we need the vector of codepoints, build it.
-    $string_pv = null;
-    if ($this->maximumCodepoints) {
-      $string_pv = phutil_utf8v($string);
-      $point_len = count($string_pv);
+    // We're going to vectorize the string so we can deal with it in terms
+    // of unicode characters. If the string is huge (like 10MB) and we are
+    // only extracting a tiny piece of it (like the first 1024 bytes), we
+    // want to avoid vectorizing the entire string in cases where there is
+    // no possibility that we'll need all of it. Try to compute a "hard limit":
+    // an upper bound on the number of bytes we can ever need to process.
+
+    $hard_limits = array();
+    if ($this->maximumBytes) {
+      $hard_limits[] = $this->maximumBytes;
     }
+
+    if ($this->maximumCodepoints) {
+      // No UTF8 character is longer than 6 bytes, so we can impose a ceiling
+      // if we have a codepoint limit.
+      $hard_limits[] = ($this->maximumCodepoints * 6);
+    }
+
+    if ($hard_limits) {
+      // Add a few more bytes onto the end so that we have a little more of
+      // the string than we actually need and can get the right terminator
+      // behavior.
+      $hard_limit = max($hard_limits) + 32;
+    } else {
+      $hard_limit = null;
+    }
+
+    // Build a vector of characters first.
+    $string_pv = phutil_utf8v($string, $hard_limit);
+    $point_len = count($string_pv);
 
     // We always need the combined vector, even if we're only doing byte or
     // codepoint truncation, because we don't want to truncate to half of a
     // combining character.
-    $string_gv = phutil_utf8v_combined($string);
+    $string_gv = phutil_utf8v_combine_characters($string_pv);
     $glyph_len = count($string_gv);
 
     // Now, check if we're still over the limits. For example, a string may

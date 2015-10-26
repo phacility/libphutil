@@ -306,17 +306,24 @@ function phutil_utf8_console_strlen($string) {
  * also split.
  *
  * @param string A valid utf-8 string.
+ * @param int|null Stop processing after examining this many bytes.
  * @return list  A list of characters in the string.
  */
-function phutil_utf8v($string) {
+function phutil_utf8v($string, $byte_limit = null) {
   $res = array();
   $len = strlen($string);
+
   $ii = 0;
   while ($ii < $len) {
     $byte = $string[$ii];
     if ($byte <= "\x7F") {
       $res[] = $byte;
       $ii += 1;
+
+      if ($byte_limit && ($ii >= $byte_limit)) {
+        break;
+      }
+
       continue;
     } else if ($byte < "\xC0") {
       throw new Exception(
@@ -348,7 +355,12 @@ function phutil_utf8v($string) {
     }
     $res[] = substr($string, $ii, $seq_len);
     $ii += $seq_len;
+
+    if ($byte_limit && ($ii >= $byte_limit)) {
+      break;
+    }
   }
+
   return $res;
 }
 
@@ -709,6 +721,7 @@ function phutil_utf8_is_combining_character($character) {
   return false;
 }
 
+
 /**
  * Split a UTF-8 string into an array of characters. Combining characters
  * are not split.
@@ -718,30 +731,53 @@ function phutil_utf8_is_combining_character($character) {
  */
 function phutil_utf8v_combined($string) {
   $components = phutil_utf8v($string);
-  $array_length = count($components);
+  return phutil_utf8v_combine_characters($components);
+}
 
-  // If the first character in the string is a combining character,
-  // prepend a space to the string.
-  if (
-    $array_length > 0 &&
-    phutil_utf8_is_combining_character($components[0])) {
-    $string = ' '.$string;
-    $components = phutil_utf8v($string);
-    $array_length++;
+
+/**
+ * Merge combining characters in a UTF-8 string.
+ *
+ * This is a low-level method which can allow other operations to do less work.
+ * If you have a string, call @{method:phutil_utf8v_combined} instead.
+ *
+ * @param list List of UTF-8 characters.
+ * @return list List of UTF-8 strings with combining characters merged.
+ */
+function phutil_utf8v_combine_characters(array $characters) {
+  if (!$characters) {
+    return array();
   }
 
-  for ($index = 1; $index < $array_length; $index++) {
-    if (phutil_utf8_is_combining_character($components[$index])) {
-      $components[$index - 1] =
-        $components[$index - 1].$components[$index];
+  // If the first character in the string is a combining character,
+  // start with a space.
+  if (phutil_utf8_is_combining_character($characters[0])) {
+    $buf = ' ';
+  } else {
+    $buf = null;
+  }
 
-      unset($components[$index]);
-      $components = array_values($components);
+  $parts = array();
+  foreach ($characters as $character) {
+    if (!isset($character[1])) {
+      // This an optimization: there are no one-byte combining characters,
+      // so we can just pass these through unmodified.
+      $is_combining = false;
+    } else {
+      $is_combining = phutil_utf8_is_combining_character($character);
+    }
 
-      $index--;
-      $array_length = count($components);
+    if ($is_combining) {
+      $buf .= $character;
+    } else {
+      if ($buf !== null) {
+        $parts[] = $buf;
+      }
+      $buf = $character;
     }
   }
 
-  return $components;
+  $parts[] = $buf;
+
+  return $parts;
 }
