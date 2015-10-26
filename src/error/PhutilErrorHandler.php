@@ -81,11 +81,11 @@ final class PhutilErrorHandler extends Phobject {
    * can use @{class:PhutilProxyException} to nest exceptions; after PHP 5.3
    * all exceptions are nestable.
    *
-   * @param   Exception       Exception to unnest.
-   * @return  Exception|null  Previous exception, if one exists.
+   * @param   Exception|Throwable       Exception to unnest.
+   * @return  Exception|Throwable|null  Previous exception, if one exists.
    * @task    exutil
    */
-  public static function getPreviousException(Exception $ex) {
+  public static function getPreviousException($ex) {
     if (method_exists($ex, 'getPrevious')) {
       return $ex->getPrevious();
     }
@@ -99,11 +99,11 @@ final class PhutilErrorHandler extends Phobject {
   /**
    * Find the most deeply nested exception from a possibly-nested exception.
    *
-   * @param   Exception     A possibly-nested exception.
-   * @return  Exception     Deepest exception in the nest.
+   * @param   Exception|Throwable     A possibly-nested exception.
+   * @return  Exception|Throwable     Deepest exception in the nest.
    * @task    exutil
    */
-  public static function getRootException(Exception $ex) {
+  public static function getRootException($ex) {
     $root = $ex;
     while (self::getPreviousException($root)) {
       $root = self::getPreviousException($root);
@@ -240,11 +240,11 @@ final class PhutilErrorHandler extends Phobject {
    * ##set_exception_handler()##. You should not call this function directly;
    * to print exceptions, pass the exception object to @{function:phlog}.
    *
-   * @param Exception Uncaught exception object.
+   * @param Exception|Throwable Uncaught exception object.
    * @return void
    * @task internal
    */
-  public static function handleException(Exception $ex) {
+  public static function handleException($ex) {
     self::dispatchErrorMessage(
       self::EXCEPTION,
       $ex,
@@ -529,10 +529,10 @@ final class PhutilErrorHandler extends Phobject {
    * all of the places an exception came from, even if it came from multiple
    * origins and has been aggregated or proxied.
    *
-   * @param Exception Exception to retrieve a trace for.
+   * @param Exception|Throwable Exception to retrieve a trace for.
    * @return list<wild> List of stack frames.
    */
-  public static function getExceptionTrace(Exception $ex) {
+  public static function getExceptionTrace($ex) {
     $id = 1;
 
     // Keep track of discovered exceptions which we need to build traces for.
