@@ -157,7 +157,8 @@ abstract class PhutilRemarkupBlockRule extends Phobject {
       $out[] = "\n";
     }
 
-    return phutil_tag('table', $table_attributes, $out);
+    $table = phutil_tag('table', $table_attributes, $out);
+    return phutil_tag_div('remarkup-table-wrap', $table);
   }
 
 }
