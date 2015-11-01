@@ -237,6 +237,25 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     }
   }
 
+  public function testUTF8LargeTruncation() {
+    // This is testing that our performance is reasonable when truncating a
+    // large input into a small output. Runtime should be on the order of the
+    // output size, not the input size.
+
+    $whale = "\xF0\x9F\x90\xB3";
+    $input = str_repeat($whale, 1024 * 1024);
+
+    $result = id(new PhutilUTF8StringTruncator())
+      ->setMaximumBytes(16)
+      ->setTerminator('!')
+      ->truncateString($input);
+
+    $this->assertEqual(
+      str_repeat($whale, 3).'!',
+      $result,
+      pht('Large truncation.'));
+  }
+
   public function testUTF8Wrap() {
     $inputs = array(
       array(

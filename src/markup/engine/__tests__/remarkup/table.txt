@@ -4,11 +4,11 @@
 <tr><td>`edge`</td><td>?</td></tr>
 </table>
 ~~~~~~~~~~
-<table class="remarkup-table">
+<div class="remarkup-table-wrap"><table class="remarkup-table">
 <tr><th>Table</th><th>Storage</th></tr>
 <tr><td><tt class="remarkup-monospaced">differential_diff</tt></td><td>InnoDB</td></tr>
 <tr><td><tt class="remarkup-monospaced">edge</tt></td><td>?</td></tr>
-</table>
+</table></div>
 ~~~~~~~~~~
 | Table               | Storage |
 | ------------------- | ------- |
