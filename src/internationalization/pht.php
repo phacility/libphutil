@@ -16,3 +16,18 @@ function pht($text, $variant = null /* , ... */) {
   $translator = PhutilTranslator::getInstance();
   return call_user_func_array(array($translator, 'translate'), $args);
 }
+
+/**
+ * Count all elements in an array, or something in an object.
+ *
+ * @param  array|Countable  A countable object.
+ * @return PhutilNumber     Returns the number of elements in the input
+ *                          parameter.
+ */
+function phutil_count($countable) {
+  if (!(is_array($countable) || $countable instanceof Countable)) {
+    throw new InvalidArgumentException(pht('Argument should be countable.'));
+  }
+
+  return new PhutilNumber(count($countable));
+}
