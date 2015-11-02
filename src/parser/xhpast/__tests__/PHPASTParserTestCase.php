@@ -33,9 +33,10 @@ final class PHPASTParserTestCase extends PhutilTestCase {
     if (!preg_match('/^#/', $head)) {
       throw new Exception(
         pht(
-          'Expected first line of parser test file "%s" to begin with "#" '.
+          'Expected first line of parser test file "%s" to begin with `%s` '.
           'and specify test options.',
-          $name));
+          $name,
+          '#'));
     }
 
     $head = preg_replace('/^#\s*/', '', $head);

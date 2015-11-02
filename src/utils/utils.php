@@ -742,7 +742,7 @@ function array_mergev(array $arrayv) {
     if (!is_array($item)) {
       throw new InvalidArgumentException(
         pht(
-          'Expected all items passed to %s to be arrays, but '.
+          'Expected all items passed to `%s` to be arrays, but '.
           'argument with key "%s" has type "%s".',
           __FUNCTION__.'()',
           $key,
@@ -1130,7 +1130,7 @@ function phutil_validate_json($value, $path = '') {
       if (!phutil_is_utf8($key)) {
         $full_key = $full_key.phutil_utf8ize($key);
         return pht(
-          'Dictionary key "%s" is not valid UTF8, and can not be JSON encoded.',
+          'Dictionary key "%s" is not valid UTF8, and cannot be JSON encoded.',
           $full_key);
       }
 
@@ -1152,7 +1152,7 @@ function phutil_validate_json($value, $path = '') {
           $display);
       } else {
         return pht(
-          'Dictionary value at key "%s" is not valid UTF8, and can not be '.
+          'Dictionary value at key "%s" is not valid UTF8, and cannot be '.
           'JSON encoded: %s',
           $path,
           $display);

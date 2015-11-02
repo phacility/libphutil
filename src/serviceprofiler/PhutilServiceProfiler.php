@@ -102,7 +102,8 @@ final class PhutilServiceProfiler extends Phobject {
           break;
         case 'conduit':
           if (isset($data['size'])) {
-            $desc = $data['method'].'() '.pht('<bytes = %d>', $data['size']);
+            $desc  = $data['method'].'() ';
+            $desc .= pht('<bytes = %s>', new PhutilNumber($data['size']));
           } else {
             $desc = $data['method'].'()';
           }
@@ -113,14 +114,15 @@ final class PhutilServiceProfiler extends Phobject {
         case 'lint':
           $desc = $data['linter'];
           if (isset($data['paths'])) {
-            $desc .= ' '.pht('<paths = %d>', count($data['paths']));
+            $desc .= ' '.pht('<paths = %s>', phutil_count($data['paths']));
           }
           break;
         case 'lock':
           $desc = $data['name'];
           break;
         case 'event':
-          $desc = $data['kind'].' '.pht('<listeners = %d>', $data['count']);
+          $desc  = $data['kind'].' ';
+          $desc .= pht('<listeners = %s>', new PhutilNumber($data['count']));
           break;
         case 'ldap':
           $call = idx($data, 'call', '?');

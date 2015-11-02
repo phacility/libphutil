@@ -239,7 +239,7 @@ final class PhutilOAuth1Future extends FutureProxy {
 
         $cert = @openssl_pkey_get_private($this->privateKey->openEnvelope());
         if (!$cert) {
-          throw new Exception(pht('%S failed!', 'openssl_pkey_get_private()'));
+          throw new Exception(pht('%s failed!', 'openssl_pkey_get_private()'));
         }
 
         $pkey = @openssl_get_privatekey($cert);
