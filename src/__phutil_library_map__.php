@@ -64,6 +64,7 @@ phutil_register_library_map(array(
     'HTTPFutureTransportResponseStatus' => 'future/http/status/HTTPFutureTransportResponseStatus.php',
     'HTTPSFuture' => 'future/http/HTTPSFuture.php',
     'ImmediateFuture' => 'future/ImmediateFuture.php',
+    'LibphutilUSEnglishTranslation' => 'internationalization/translation/LibphutilUSEnglishTranslation.php',
     'LinesOfALarge' => 'filesystem/linesofalarge/LinesOfALarge.php',
     'LinesOfALargeExecFuture' => 'filesystem/linesofalarge/LinesOfALargeExecFuture.php',
     'LinesOfALargeExecFutureTestCase' => 'filesystem/linesofalarge/__tests__/LinesOfALargeExecFutureTestCase.php',
@@ -570,6 +571,7 @@ phutil_register_library_map(array(
     'HTTPFutureTransportResponseStatus' => 'HTTPFutureResponseStatus',
     'HTTPSFuture' => 'BaseHTTPFuture',
     'ImmediateFuture' => 'Future',
+    'LibphutilUSEnglishTranslation' => 'PhutilTranslation',
     'LinesOfALarge' => array(
       'Phobject',
       'Iterator',
