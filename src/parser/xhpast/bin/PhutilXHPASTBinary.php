@@ -40,7 +40,7 @@ final class PhutilXHPASTBinary extends Phobject {
       '%s -C %s %Ls',
       $command,
       $path,
-      array('clean', 'all', 'install'));
+      array('SKIP_PARSER=1', 'SKIP_SCANNER=1', 'clean', 'all', 'install'));
 
     // Test the binary.
     if (!self::isAvailable()) {

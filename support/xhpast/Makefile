@@ -39,18 +39,27 @@ install: xhpast
 	cp xhpast $(ROOT)/bin/xhpast
 
 .PHONY: parser scanner
+
 parser: parser.yacc.hpp parser.yacc.cpp
 scanner: scanner.lex.hpp scanner.lex.cpp
 
 %.lex.hpp %.lex.cpp: %.l
+ifndef SKIP_SCANNER
 	flex $(FLEXFLAGS) --header-file=$*.lex.hpp --outfile=$*.lex.cpp $<
 	@echo '/* @gen''er''ated */' >> $*.lex.hpp
 	@echo '/* @gen''er''ated */' >> $*.lex.cpp
+else
+	touch $*.lex.hpp $*.lex.cpp
+endif
 
 %.yacc.hpp %.yacc.cpp: %.y
+ifndef SKIP_PARSER
 	bison $(BISONFLAGS) --defines=$*.yacc.hpp --output=$*.yacc.cpp $<
 	@echo '/* @gen''er''ated */' >> $*.yacc.hpp
 	@echo '/* @gen''er''ated */' >> $*.yacc.cpp
+else
+	touch $*.yacc.hpp $*.yacc.cpp
+endif
 
 %.o: %.cpp
 	$(CXX) -c $(CPPFLAGS) -o $@ $<

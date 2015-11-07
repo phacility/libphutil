@@ -737,7 +737,7 @@ final class ExecFuture extends Future {
       if (!is_resource($proc)) {
         throw new Exception(
           pht(
-            'Failed to %s: %s',
+            'Failed to `%s`: %s',
             'proc_open()',
             $err));
       }

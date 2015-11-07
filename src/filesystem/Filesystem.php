@@ -42,7 +42,7 @@ final class Filesystem extends Phobject {
     if ($data === false) {
       throw new FilesystemException(
         $path,
-        pht("Failed to read file `%s'.", $path));
+        pht("Failed to read file '%s'.", $path));
     }
 
     return $data;
@@ -91,7 +91,7 @@ final class Filesystem extends Phobject {
     if (@file_put_contents($path, $data) === false) {
       throw new FilesystemException(
         $path,
-        pht("Failed to write file `%s'.", $path));
+        pht("Failed to write file '%s'.", $path));
     }
   }
 
@@ -234,18 +234,18 @@ final class Filesystem extends Phobject {
     if (($fh = fopen($path, 'a')) === false) {
       throw new FilesystemException(
         $path,
-        pht("Failed to open file `%s'.", $path));
+        pht("Failed to open file '%s'.", $path));
     }
     $dlen = strlen($data);
     if (fwrite($fh, $data) !== $dlen) {
       throw new FilesystemException(
         $path,
-        pht("Failed to write %d bytes to `%s'.", $dlen, $path));
+        pht("Failed to write %d bytes to '%s'.", $dlen, $path));
     }
     if (!fflush($fh) || !fclose($fh)) {
       throw new FilesystemException(
         $path,
-        pht("Failed closing file `%s' after write.", $path));
+        pht("Failed closing file '%s' after write.", $path));
     }
   }
 
@@ -349,7 +349,7 @@ final class Filesystem extends Phobject {
       $readable_umask = sprintf('%04o', $umask);
       throw new FilesystemException(
         $path,
-        pht("Failed to chmod `%s' to `%s'.", $path, $readable_umask));
+        pht("Failed to chmod '%s' to '%s'.", $path, $readable_umask));
     }
   }
 
@@ -417,10 +417,10 @@ final class Filesystem extends Phobject {
       if (strlen($data) != $number_of_bytes) {
         throw new Exception(
           pht(
-            '%s returned an unexpected number of bytes (got %d, expected %d)!',
+            '%s returned an unexpected number of bytes (got %s, expected %s)!',
             'openssl_random_pseudo_bytes()',
-            strlen($data),
-            $number_of_bytes));
+            new PhutilNumber(strlen($data)),
+            new PhutilNumber($number_of_bytes)));
       }
 
       return $data;
@@ -627,7 +627,7 @@ final class Filesystem extends Phobject {
     if (!mkdir($path, $umask)) {
       throw new FilesystemException(
         $path,
-        pht("Failed to create directory `%s'.", $path));
+        pht("Failed to create directory '%s'.", $path));
     }
 
     // Need to change permissions explicitly because mkdir does something
@@ -717,7 +717,7 @@ final class Filesystem extends Phobject {
     if ($list === false) {
       throw new FilesystemException(
         $path,
-        pht("Unable to list contents of directory `%s'.", $path));
+        pht("Unable to list contents of directory '%s'.", $path));
     }
 
     foreach ($list as $k => $v) {
@@ -1012,7 +1012,7 @@ final class Filesystem extends Phobject {
     if (!self::pathExists($path)) {
       throw new FilesystemException(
         $path,
-        pht("File system entity `%s' does not exist.", $path));
+        pht("File system entity '%s' does not exist.", $path));
     }
   }
 
@@ -1029,7 +1029,7 @@ final class Filesystem extends Phobject {
     if (file_exists($path) || is_link($path)) {
       throw new FilesystemException(
         $path,
-        pht("Path `%s' already exists!", $path));
+        pht("Path '%s' already exists!", $path));
     }
   }
 
@@ -1046,7 +1046,7 @@ final class Filesystem extends Phobject {
     if (!is_file($path)) {
       throw new FilesystemException(
         $path,
-        pht("Requested path `%s' is not a file.", $path));
+        pht("Requested path '%s' is not a file.", $path));
     }
   }
 
@@ -1063,7 +1063,7 @@ final class Filesystem extends Phobject {
     if (!is_dir($path)) {
       throw new FilesystemException(
         $path,
-        pht("Requested path `%s' is not a directory.", $path));
+        pht("Requested path '%s' is not a directory.", $path));
     }
   }
 
@@ -1080,7 +1080,7 @@ final class Filesystem extends Phobject {
     if (!is_writable($path)) {
       throw new FilesystemException(
         $path,
-        pht("Requested path `%s' is not writable.", $path));
+        pht("Requested path '%s' is not writable.", $path));
     }
   }
 
@@ -1097,7 +1097,7 @@ final class Filesystem extends Phobject {
     if (!is_readable($path)) {
       throw new FilesystemException(
         $path,
-        pht("Path `%s' is not readable.", $path));
+        pht("Path '%s' is not readable.", $path));
     }
   }
 

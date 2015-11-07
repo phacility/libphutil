@@ -149,9 +149,9 @@ abstract class PhutilDaemon extends Phobject {
             $this->emitOverseerMessage(self::MESSAGETYPE_DOWN, null);
             $this->log(
               pht(
-                'Daemon was idle for more than %s seconds, scaling pool '.
-                'down.',
-                $scale_down));
+                'Daemon was idle for more than %s second(s), '.
+                'scaling pool down.',
+                new PhutilNumber($scale_down)));
             break;
           }
         }

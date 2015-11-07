@@ -464,10 +464,12 @@ EOPHP;
     // Run the analyzer on any files which need analysis.
     if ($futures) {
       $limit = $this->subprocessLimit;
-      $count = number_format(count($futures));
 
       $this->log(
-        pht('Analyzing %d files with %d subprocesses...', $count, $limit));
+        pht(
+          'Analyzing %s file(s) with %s subprocess(es)...',
+          phutil_count($futures),
+          new PhutilNumber($limit)));
 
       $progress = new PhutilConsoleProgressBar();
       if ($this->quiet) {

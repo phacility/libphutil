@@ -85,6 +85,7 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $rules[] = new PhutilRemarkupItalicRule();
     $rules[] = new PhutilRemarkupDelRule();
     $rules[] = new PhutilRemarkupUnderlineRule();
+    $rules[] = new PhutilRemarkupHighlightRule();
 
     $blocks = array();
     $blocks[] = new PhutilRemarkupQuotesBlockRule();
