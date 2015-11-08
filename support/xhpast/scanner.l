@@ -23,9 +23,9 @@
 
 using namespace std;
 
-const char* yytokname(int tok);
-static int yy_token(int tok, struct yyguts_t* yyg);
-static void yy_scan_newlines(const char* text, struct yyguts_t* yyg);
+const char * yytokname(int tok);
+static int yy_token(int tok, struct yyguts_t * yyg);
+static void yy_scan_newlines(const char * text, struct yyguts_t * yyg);
 
 %}
 
@@ -291,7 +291,8 @@ NEWLINE ("\r\n"|"\n"|"\r")
  /* Casts */
 <PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>{
   "("{TABS_AND_SPACES}(int|integer){TABS_AND_SPACES}")" tok(T_INT_CAST);
-  "("{TABS_AND_SPACES}(real|double|float){TABS_AND_SPACES}")" tok(T_DOUBLE_CAST);
+  "("{TABS_AND_SPACES}(real|double|float){TABS_AND_SPACES}")"
+    tok(T_DOUBLE_CAST);
   "("{TABS_AND_SPACES}(string|binary){TABS_AND_SPACES}")" tok(T_STRING_CAST);
   "("{TABS_AND_SPACES}array{TABS_AND_SPACES}")" tok(T_ARRAY_CAST);
   "("{TABS_AND_SPACES}object{TABS_AND_SPACES}")" tok(T_OBJECT_CAST);
@@ -317,7 +318,8 @@ NEWLINE ("\r\n"|"\n"|"\r")
 }
 
  /* (HERE|NOW)DOC's */
-<PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>b?"<<<"{TABS_AND_SPACES} {
+<PHP,PHP_NO_RESERVED_WORDS,PHP_NO_RESERVED_WORDS_PERSIST>b?"<<<"
+{TABS_AND_SPACES} {
   push_state(PHP_HEREDOC_START);
   yyextra->heredoc_yyleng = yyleng;
   yymore();
@@ -354,7 +356,9 @@ NEWLINE ("\r\n"|"\n"|"\r")
       yytext + yyextra->heredoc_yyleng, yyextra->heredoc_label.size()) == 0) {
 
       switch (yytext[yyextra->heredoc_yyleng + yyextra->heredoc_label.size()]) {
-        case ';': case '\n': case '\r':
+        case ';':
+        case '\n':
+        case '\r':
           yyless(
             yyleng - (
               yyleng -
@@ -390,7 +394,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
 %%
 
 #ifdef DEBUG
-static const char* yy_state_name(int state) {
+static const char * yy_state_name(int state) {
   switch (state) {
     case INITIAL:
       return "INITIAL";
@@ -418,7 +422,7 @@ static const char* yy_state_name(int state) {
 }
 
 static void yy_log_token(int tok) {
-  const char* tokname = yytokname(tok);
+  const char * tokname = yytokname(tok);
   if (tokname) {
     fprintf(stderr, "--> %s\n", tokname);
   } else {
@@ -470,7 +474,7 @@ static int yy_token(int tok, yyguts_t* yyg) {
   return yyextra->last_token = tok;
 }
 
-static inline void yy_scan_newlines(const char* text, struct yyguts_t* yyg) {
+static inline void yy_scan_newlines(const char * text, struct yyguts_t * yyg) {
   for (; *text; ++text) {
     if (*text == '\r') {
       if (text[1] == '\n') {
@@ -483,7 +487,7 @@ static inline void yy_scan_newlines(const char* text, struct yyguts_t* yyg) {
   }
 }
 
-void xhp_new_push_state(int s, struct yyguts_t* yyg) {
+void xhp_new_push_state(int s, struct yyguts_t * yyg) {
 #ifdef DEBUG
   fprintf(
     stderr,
@@ -494,7 +498,7 @@ void xhp_new_push_state(int s, struct yyguts_t* yyg) {
   yy_push_state(s, yyg);
 }
 
-void xhp_new_pop_state(struct yyguts_t* yyg) {
+void xhp_new_pop_state(struct yyguts_t * yyg) {
 #ifdef DEBUG
   int s = YY_START;
 #endif
@@ -508,7 +512,7 @@ void xhp_new_pop_state(struct yyguts_t* yyg) {
 #endif
 }
 
-void xhp_set_state(int s, struct yyguts_t* yyg) {
+void xhp_set_state(int s, struct yyguts_t * yyg) {
 #ifdef DEBUG
   fprintf(stderr, "--> SET(%s)\n", yy_state_name(s));
 #endif
