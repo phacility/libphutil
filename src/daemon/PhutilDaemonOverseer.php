@@ -19,6 +19,7 @@ final class PhutilDaemonOverseer extends Phobject {
   private $piddir;
   private $log;
   private $libraries = array();
+  private $modules = array();
   private $verbose;
   private $err = 0;
   private $lastPidfile;
@@ -145,6 +146,8 @@ EOHELP
       }
     }
 
+    $this->modules = PhutilDaemonOverseerModule::getAllModules();
+
     declare(ticks = 1);
     pcntl_signal(SIGUSR2, array($this, 'didReceiveNotifySignal'));
 
@@ -184,7 +187,23 @@ EOHELP
       $this->addDaemon($daemon, $config);
     }
 
+    $should_reload = false;
+
     while (true) {
+      foreach ($this->modules as $module) {
+        try {
+          if ($module->shouldReloadDaemons()) {
+            $should_reload = true;
+          }
+        } catch (Exception $ex) {
+          phlog($ex);
+        }
+      }
+      if ($should_reload) {
+        $this->didReceiveReloadSignal(SIGHUP);
+        $should_reload = false;
+      }
+
       $futures = array();
       foreach ($this->getDaemonHandles() as $daemon) {
         $daemon->update();

@@ -252,22 +252,9 @@ final class PhutilDaemonHandle extends Phobject {
     $pid = $this->pid;
     $pgid = posix_getpgid($pid);
     if ($pid && $pgid) {
-
-      // NOTE: On Ubuntu, 'kill' does not recognize the use of "--" to
-      // explicitly delineate PID/PGIDs from signals. We don't actually need it,
-      // so use the implicit "kill -TERM -pgid" form instead of the explicit
-      // "kill -TERM -- -pgid" form.
-      exec("kill -TERM -{$pgid}");
+      posix_kill(-$pgid, SIGTERM);
       sleep($this->getKillDelay());
-
-      // On OSX, we'll get a permission error on stderr if the SIGTERM was
-      // successful in ending the life of the process group, presumably because
-      // all that's left is the daemon itself as a zombie waiting for us to
-      // reap it. However, we still need to issue this command for process
-      // groups that resist SIGTERM. Rather than trying to figure out if the
-      // process group is still around or not, just SIGKILL unconditionally and
-      // ignore any error which may be raised.
-      exec("kill -KILL -{$pgid} 2>/dev/null");
+      posix_kill(-$pgid, SIGKILL);
       $this->pid = null;
     }
   }
@@ -370,8 +357,7 @@ final class PhutilDaemonHandle extends Phobject {
     // naturally be restarted after it exits, as though it had exited after an
     // unhandled exception.
 
-    $pid = $this->pid;
-    exec("kill -INT {$pid}");
+    posix_kill($this->pid, SIGINT);
   }
 
   public function didReceiveGracefulSignal($signo) {
@@ -396,8 +382,7 @@ final class PhutilDaemonHandle extends Phobject {
 
     $this->logMessage('DONE', $sigmsg, $signo);
 
-    $pid = $this->pid;
-    exec("kill -INT {$pid}");
+    posix_kill($this->pid, SIGINT);
   }
 
   public function didReceiveTerminalSignal($signo) {
