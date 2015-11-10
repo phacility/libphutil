@@ -4,12 +4,12 @@
 #include <fstream>
 using namespace std;
 
-int xhpastparse(void *, xhpast::Node **);
+int xhpastparse(void*, xhpast::Node **);
 
 int xhpast_process(std::string &in);
-void print_node(xhpast::Node * node);
+void print_node(xhpast::Node *node);
 
-int main(int argc, char * argv[]) {
+int main(int argc, char* argv[]) {
   if (argc != 1) {
     // Coupling: modify also src/parser/xhpast/bin/PhutilXHPASTBinary.php
     cout << "5.7.2\n";
@@ -17,7 +17,7 @@ int main(int argc, char * argv[]) {
   }
 
   ifstream inputFile;
-  istream * inputStream;
+  istream *inputStream;
   inputStream = &cin;
 
   std::stringbuf sb;
@@ -29,19 +29,20 @@ int main(int argc, char * argv[]) {
 }
 
 int xhpast_process(std::string &in) {
-  char * buffer;
+
+  char *buffer;
   in.reserve(in.size() + 1);
-  buffer = const_cast<char *>(in.c_str());
+  buffer = const_cast<char*>(in.c_str());
   buffer[in.size() + 1] = 0; // need double NULL for scan_buffer
 
-  void * scanner;
+  void* scanner;
   yy_extra_type extra;
   extra.idx_expr = true;//flags.idx_expr;
   extra.insert_token = 0;//flags.eval ? T_OPEN_TAG_FAKE : 0;
   extra.short_tags = true;//flags.short_tags;
   extra.asp_tags = false;//flags.asp_tags;
 
-  xhpast::Node * root = NULL;
+  xhpast::Node *root = NULL;
 
   xhpastlex_init(&scanner);
   xhpastset_extra(&extra, scanner);
@@ -90,7 +91,7 @@ int xhpast_process(std::string &in) {
   return 0;
 }
 
-void print_node(xhpast::Node * node) {
+void print_node(xhpast::Node *node) {
   int l = -1;
   if (node->l_tok != -1) {
     l = node->l_tok;

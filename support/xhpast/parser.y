@@ -1,12 +1,11 @@
 %{
-/**
+/*
  * If you modify this grammar, please update the version number in
- * `./xhpast.cpp` and `libphutil/src/parser/xhpast/bin/PhutilXHPASTBinary.php`.
+ * ./xhpast.cpp and libphutil/src/parser/xhpast/bin/xhpast_parse.php
  */
 
 #include "ast.hpp"
 #include "node_names.hpp"
-
 // PHP's if/else rules use right reduction rather than left reduction which
 // means while parsing nested if/else's the stack grows until it the last
 // statement is read. This is annoying, particularly because of a quirk in
@@ -21,22 +20,31 @@
 
 %{
 #undef yyextra
-#define yyextra static_cast<yy_extra_type *>(xhpastget_extra(yyscanner))
+#define yyextra static_cast<yy_extra_type*>(xhpastget_extra(yyscanner))
 #undef yylineno
 #define yylineno yyextra->first_lineno
-#define push_state(s) xhp_new_push_state(s, (struct yyguts_t *) yyscanner)
-#define pop_state() xhp_new_pop_state((struct yyguts_t *) yyscanner)
-#define set_state(s) xhp_set_state(s, (struct yyguts_t *) yyscanner)
+#define push_state(s) xhp_new_push_state(s, (struct yyguts_t*) yyscanner)
+#define pop_state() xhp_new_pop_state((struct yyguts_t*) yyscanner)
+#define set_state(s) xhp_set_state(s, (struct yyguts_t*) yyscanner)
 
-#define NNEW(t) (new xhpast::Node(t))
-#define NTYPE(n, type) ((n)->setType(type))
-#define NMORE(n, end) ((n)->expandRange(end))
-#define NSPAN(n, type, end) (NMORE(NTYPE((n), type), end))
-#define NEXPAND(l, n, r) ((n)->expandRange(l)->expandRange(r))
+#define NNEW(t) \
+  (new xhpast::Node(t))
+
+#define NTYPE(n, type) \
+  ((n)->setType(type))
+
+#define NMORE(n, end) \
+  ((n)->expandRange(end))
+
+#define NSPAN(n, type, end) \
+  (NMORE(NTYPE((n), type), end))
+
+#define NEXPAND(l, n, r) \
+  ((n)->expandRange(l)->expandRange(r))
 
 using namespace std;
 
-static void yyerror(void * yyscanner, void * _, const char * error) {
+static void yyerror(void* yyscanner, void* _, const char* error) {
   if (yyextra->terminated) {
     return;
   }
@@ -51,9 +59,9 @@ static void yyerror(void * yyscanner, void * _, const char * error) {
 // 7: expr '[' dim_offset ']' -- shift will default to first grammar
 %name-prefix "xhpast"
 %pure-parser
-%parse-param { void * yyscanner }
-%parse-param { xhpast::Node ** root }
-%lex-param { void * yyscanner }
+%parse-param { void* yyscanner }
+%parse-param { xhpast::Node** root }
+%lex-param { void* yyscanner }
 %error-verbose
 
 %precedence T_INCLUDE T_INCLUDE_ONCE
@@ -180,8 +188,8 @@ static void yyerror(void * yyscanner, void * _, const char * error) {
 %token T_DOLLAR_OPEN_CURLY_BRACES /* unused in XHP: `${` in `"${foo}"` */
 %token T_CURLY_OPEN /* unused in XHP: `{$` in `"{$foo}"` */
 %token T_PAAMAYIM_NEKUDOTAYIM
-%token T_BINARY_DOUBLE /* unused in XHP: `b"` in `b"foo"` */
-%token T_BINARY_HEREDOC /* unused in XHP: `b<<<` in `b<<<FOO` */
+%token T_BINARY_DOUBLE /* unsused in XHP: `b"` in `b"foo"` */
+%token T_BINARY_HEREDOC /* unsused in XHP: `b<<<` in `b<<<FOO` */
 %token T_NAMESPACE
 %token T_NS_C
 %token T_DIR
@@ -374,7 +382,7 @@ unticked_statement:
     if ($7->type == n_EMPTY) {
       // Ignore.
     } else if ($7->type == n_ELSE) {
-      xhpast::Node * stype = $7->firstChild()->firstChild();
+      xhpast::Node *stype = $7->firstChild()->firstChild();
       if (stype && stype->type == n_CONDITION_LIST) {
         NTYPE(stype->firstChild(), n_ELSEIF);
         stype->firstChild()->l_tok = $7->l_tok;
@@ -2338,7 +2346,7 @@ method_or_not:
 variable_without_objects:
   reference_variable
 | simple_indirect_reference reference_variable {
-    xhpast::Node * last = $1;
+    xhpast::Node *last = $1;
     NMORE($1, $2);
     while (last->firstChild() &&
            last->firstChild()->type == n_VARIABLE_VARIABLE) {
@@ -2395,7 +2403,7 @@ base_variable:
     $$ = NEXPAND($1, $2, $3);
   }
 | simple_indirect_reference reference_variable {
-    xhpast::Node * last = $1;
+    xhpast::Node *last = $1;
     NMORE($1, $2);
     while (last->firstChild() &&
            last->firstChild()->type == n_VARIABLE_VARIABLE) {
@@ -2483,7 +2491,7 @@ simple_indirect_reference:
 | simple_indirect_reference '$' {
     $2 = NTYPE($2, n_VARIABLE_VARIABLE);
 
-    xhpast::Node * last = $1;
+    xhpast::Node *last = $1;
     while (last->firstChild() &&
            last->firstChild()->type == n_VARIABLE_VARIABLE) {
       last = last->firstChild();
@@ -2707,7 +2715,7 @@ class_constant:
 
 %%
 
-const char * yytokname(int tok) {
+const char* yytokname(int tok) {
   if (tok < 255) {
     return NULL;
   }

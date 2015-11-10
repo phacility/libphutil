@@ -193,7 +193,7 @@ typedef int YYSTYPE;
 
 
 
-int xhpastparse (void * yyscanner, xhpast::Node ** root);
+int xhpastparse (void* yyscanner, xhpast::Node** root);
 
 #endif /* !YY_XHPAST_PARSER_YACC_HPP_INCLUDED  */
 /* @generated */

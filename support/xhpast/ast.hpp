@@ -63,14 +63,14 @@ class yy_extra_type {
 
 #define YYSTYPE xhpast::Node *
 #define YY_HEADER_EXPORT_START_CONDITIONS
-#define YY_EXTRA_TYPE yy_extra_type *
+#define YY_EXTRA_TYPE yy_extra_type*
 
 #include "parser.yacc.hpp"
 #ifndef FLEX_SCANNER
   #include "scanner.lex.hpp"
 #endif
 
-int xhpparse(void *, YYSTYPE *);
-void xhp_new_push_state(int s, struct yyguts_t * yyg);
-void xhp_new_pop_state(struct yyguts_t * yyg);
-void xhp_set_state(int s, struct yyguts_t * yyg);
+int xhpparse(void*, YYSTYPE *);
+void xhp_new_push_state(int s, struct yyguts_t* yyg);
+void xhp_new_pop_state(struct yyguts_t* yyg);
+void xhp_set_state(int s, struct yyguts_t* yyg);
