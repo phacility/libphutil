@@ -13,6 +13,8 @@ abstract class AASTNode extends Phobject {
   // faster; do not access them directly.
   public $children = array();
   public $parentNode;
+  public $previousSibling = null;
+  public $nextSibling = null;
 
   private $selectCache;
 
@@ -39,6 +41,14 @@ abstract class AASTNode extends Phobject {
 
   final public function getParentNode() {
     return $this->parentNode;
+  }
+
+  final public function getPreviousSibling() {
+    return $this->previousSibling;
+  }
+
+  final public function getNextSibling() {
+    return $this->nextSibling;
   }
 
   final public function getID() {
