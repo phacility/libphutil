@@ -236,10 +236,10 @@ top_statement:
     $$ = NNEW(n_STATEMENT)->appendChild($1);
     NMORE($$, $4);
   }
-| T_NAMESPACE namespace_name ';' {
+| T_NAMESPACE namespace_name ';' top_statement {
     NSPAN($1, n_NAMESPACE, $2);
     $1->appendChild($2);
-    $1->appendChild(NNEW(n_EMPTY));
+    $1->appendChild($4);
     $$ = NNEW(n_STATEMENT)->appendChild($1);
     NMORE($$, $3);
   }

@@ -1,0 +1,14 @@
+# pass
+<?php
+
+namespace A;
+
+class B {}
+
+namespace A\B\C {
+  class D {}
+}
+
+namespace {
+  class A {}
+}
