@@ -1,4 +1,5 @@
-# fail-syntax, comment="Wrong, should pass, see T1941."
 <?php
 
 "{$x[""]}";
+~~~~~~~~~~
+fail-syntax, comment="Wrong, should pass, see T1941."
