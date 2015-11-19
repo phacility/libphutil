@@ -258,7 +258,7 @@ top_statement:
   $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
 | T_USE use_declarations ';' {
-  NSPAN($1, n_USE, $2);
+  NSPAN($1, n_USE_LIST, $2);
   $1->appendChild($2);
   $$ = NNEW(n_STATEMENT)->appendChild($1);
   NMORE($$, $3);
@@ -274,8 +274,7 @@ use_declarations:
     $$ = $1->appendChild($3);
   }
 | use_declaration {
-    $$ = NNEW(n_USE_LIST);
-    $$->appendChild($1);
+    NMORE($$, $1);
   }
 ;
 
