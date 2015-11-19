@@ -1,0 +1,6 @@
+<?php
+class SomeClass {}
+~~~~~~~~~~
+{
+  "4": null
+}
