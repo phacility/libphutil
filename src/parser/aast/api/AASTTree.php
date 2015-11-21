@@ -141,10 +141,24 @@ abstract class AASTTree extends Phobject {
     foreach ($nodes as $node_id => $node) {
       if (isset($node[3])) {
         $children = $this->buildTree($node[3]);
-        foreach ($children as $child) {
-          $child->parentNode = $this->tree[$node_id];
+        $previous_child = null;
+
+        foreach ($children as $ii => $child) {
+          $child->setParentNode($this->tree[$node_id]);
+          $child->setPreviousSibling($previous_child);
+
+          if ($previous_child) {
+            $previous_child->setNextSibling($child);
+          }
+
+          $previous_child = $child;
         }
-        $this->tree[$node_id]->children = $children;
+
+        if ($previous_child) {
+          $previous_child->setNextSibling($child);
+        }
+
+        $this->tree[$node_id]->setChildren($children);
       }
     }
 

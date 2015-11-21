@@ -1,0 +1,18 @@
+<?php
+namespace SomeNamespace {
+  class SomeClass {}
+}
+
+namespace SomeNamespace\SubNamespace {
+  class SomeClass {}
+}
+
+namespace {
+  class SomeOtherClass {}
+}
+~~~~~~~~~~
+{
+  "10": "\\SomeNamespace",
+  "20": "\\SomeNamespace\\SubNamespace",
+  "30": null
+}

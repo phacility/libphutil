@@ -2,17 +2,17 @@
 
 abstract class AASTNode extends Phobject {
 
-  protected $id;
+  private $id;
   protected $l;
   protected $r;
-  protected $typeID;
-  protected $typeName;
+  private $typeID;
+  private $typeName;
   protected $tree;
 
-  // These are public only as a microoptimization to make tree construction
-  // faster; do not access them directly.
-  public $children = array();
-  public $parentNode;
+  private $children = array();
+  private $parentNode = null;
+  private $previousSibling = null;
+  private $nextSibling = null;
 
   private $selectCache;
 
@@ -41,6 +41,29 @@ abstract class AASTNode extends Phobject {
     return $this->parentNode;
   }
 
+  final public function setParentNode(AASTNode $node = null) {
+    $this->parentNode = $node;
+    return $this;
+  }
+
+  final public function getPreviousSibling() {
+    return $this->previousSibling;
+  }
+
+  final public function setPreviousSibling(AASTNode $node = null) {
+    $this->previousSibling = $node;
+    return $this;
+  }
+
+  final public function getNextSibling() {
+    return $this->nextSibling;
+  }
+
+  final public function setNextSibling(AASTNode $node = null) {
+    $this->nextSibling = $node;
+    return $this;
+  }
+
   final public function getID() {
     return $this->id;
   }
@@ -63,6 +86,13 @@ abstract class AASTNode extends Phobject {
 
   final public function getChildren() {
     return $this->children;
+  }
+
+  final public function setChildren(array $children) {
+    // We don't call `assert_instances_of($children, 'AASTNode')` because doing
+    // so would incur a significant performance penalty.
+    $this->children = $children;
+    return $this;
   }
 
   public function getChildrenOfType($type) {
@@ -326,6 +356,40 @@ abstract class AASTNode extends Phobject {
     return idx(
       $this->tree->getOffsetToLineNumberMap(),
       $this->getOffset() + $this->getLength());
+  }
+
+  /**
+   * Determines whether the current node appears //after// a specified node in
+   * the tree.
+   *
+   * @param  AASTNode
+   * @return bool
+   */
+  final public function isAfter(AASTNode $node) {
+    return head($this->getTokens())->getOffset() >
+           last($node->getTokens())->getOffset();
+  }
+
+  /**
+   * Determines whether the current node appears //before// a specified node in
+   * the tree.
+   *
+   * @param  AASTNode
+   * @return bool
+   */
+  final public function isBefore(AASTNode $node) {
+    return last($this->getTokens())->getOffset() <
+           head($node->getTokens())->getOffset();
+  }
+
+  /**
+   * Determines whether a specified node is a descendant of the current node.
+   *
+   * @param  AASTNode
+   * @return bool
+   */
+  final public function containsDescendant(AASTNode $node) {
+    return !$this->isAfter($node) && !$this->isBefore($node);
   }
 
   public function dispose() {

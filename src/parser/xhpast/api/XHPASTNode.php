@@ -242,4 +242,60 @@ final class XHPASTNode extends AASTNode {
     return stripcslashes($out);
   }
 
+  /**
+   * Determines the parent namespace for a node.
+   *
+   * Traverses the AST upwards from a given node in order to determine the
+   * namespace in which the node is declared.
+   *
+   * To prevent any possible ambiguity, the returned namespace will always be
+   * prefixed with the namespace separator.
+   *
+   * @param  XHPASTNode   The input node.
+   * @return string|null  The namespace which contains the input node, or
+   *                      `null` if no such node exists.
+   */
+  public function getNamespace() {
+    $namespaces = $this
+      ->getTree()
+      ->getRootNode()
+      ->selectDescendantsOfType('n_NAMESPACE')
+      ->getRawNodes();
+
+    foreach (array_reverse($namespaces) as $namespace) {
+      if ($namespace->isAfter($this)) {
+        continue;
+      }
+
+      $body = $namespace->getChildByIndex(1);
+      if ($body->getTypeName() != 'n_EMPTY') {
+        if ($body->containsDescendant($this)) {
+          return self::getNamespaceName($namespace);
+        }
+      }
+
+      return $namespace->getNamespaceName();
+    }
+
+    return null;
+  }
+
+  /**
+   * Returns the namespace name from a node of type `n_NAMESPACE`.
+   *
+   * @return string|null
+   */
+  private function getNamespaceName() {
+    if ($this->getTypeName() != 'n_NAMESPACE') {
+      return null;
+    }
+
+    $namespace_name = $this->getChildByIndex(0);
+    if ($namespace_name->getTypeName() == 'n_EMPTY') {
+      return null;
+    }
+
+    return '\\'.$namespace_name->getConcreteString();
+  }
+
 }

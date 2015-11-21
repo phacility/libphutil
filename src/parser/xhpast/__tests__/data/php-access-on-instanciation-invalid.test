@@ -1,4 +1,3 @@
-# fail-syntax
 <?php
 
 class a {
@@ -10,3 +9,5 @@ class a {
 new a->b;
 
 new a->c();
+~~~~~~~~~~
+fail-syntax
