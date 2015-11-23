@@ -289,8 +289,9 @@ abstract class AphrontBaseMySQLDatabaseConnection
           'max_allowed_packet');
         throw new AphrontConnectionLostQueryException("{$exmsg}\n\n{$more}");
       case 1213: // Deadlock
-      case 1205: // Lock wait timeout exceeded
         throw new AphrontDeadlockQueryException($exmsg);
+      case 1205: // Lock wait timeout exceeded
+        throw new AphrontLockTimeoutQueryException($exmsg);
       case 1062: // Duplicate Key
         // NOTE: In some versions of MySQL we get a key name back here, but
         // older versions just give us a key index ("key 2") so it's not
