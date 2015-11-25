@@ -624,7 +624,7 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,   207,   207,   213,   216,   222,   225,   231,   232,   233,
-     234,   239,   246,   252,   260,   266,   273,   276,   282,   287,
+     234,   239,   246,   252,   260,   265,   272,   275,   282,   287,
      293,   299,   309,   316,   326,   329,   335,   336,   337,   338,
      346,   347,   353,   356,   359,   365,   368,   398,   417,   424,
      432,   445,   452,   459,   466,   473,   480,   487,   494,   501,
@@ -3563,35 +3563,35 @@ yyreduce:
   case 14:
 #line 260 "parser.y" /* yacc.c:1646  */
     {
-  NSPAN((yyvsp[-2]), n_USE_LIST, (yyvsp[-1]));
-  (yyvsp[-2])->appendChild((yyvsp[-1]));
-  (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[-2]));
+  NMORE((yyvsp[-1]), (yyvsp[-2]));
+  (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[-1]));
   NMORE((yyval), (yyvsp[0]));
   }
-#line 3572 "parser.yacc.cpp" /* yacc.c:1646  */
+#line 3571 "parser.yacc.cpp" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 266 "parser.y" /* yacc.c:1646  */
+#line 265 "parser.y" /* yacc.c:1646  */
     {
   (yyval) = NNEW(n_STATEMENT)->appendChild((yyvsp[-1]));
   NMORE((yyval), (yyvsp[0]));
   }
-#line 3581 "parser.yacc.cpp" /* yacc.c:1646  */
+#line 3580 "parser.yacc.cpp" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 273 "parser.y" /* yacc.c:1646  */
+#line 272 "parser.y" /* yacc.c:1646  */
     {
     (yyval) = (yyvsp[-2])->appendChild((yyvsp[0]));
   }
-#line 3589 "parser.yacc.cpp" /* yacc.c:1646  */
+#line 3588 "parser.yacc.cpp" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 276 "parser.y" /* yacc.c:1646  */
+#line 275 "parser.y" /* yacc.c:1646  */
     {
-    NMORE((yyval), (yyvsp[0]));
+    (yyval) = NNEW(n_USE_LIST);
+    (yyval)->appendChild((yyvsp[0]));
   }
 #line 3597 "parser.yacc.cpp" /* yacc.c:1646  */
     break;
