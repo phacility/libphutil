@@ -32,6 +32,26 @@ function __phutil_autoload($class_name) {
           'phutil'));
     }
   } catch (PhutilMissingSymbolException $ex) {
+    $should_throw = true;
+
+    foreach (debug_backtrace() as $backtrace) {
+      if (empty($backtrace['function'])) {
+        continue;
+      }
+
+      switch ($backtrace['function']) {
+        case 'class_exists':
+        case 'interface_exists':
+        case 'trait_exists':
+          $should_throw = false;
+          break;
+      }
+    }
+
+    if (!$should_throw) {
+      return false;
+    }
+
     // If there are other SPL autoloaders installed, we need to give them a
     // chance to load the class. Throw the exception if we're the last
     // autoloader; if not, swallow it and let them take a shot.
