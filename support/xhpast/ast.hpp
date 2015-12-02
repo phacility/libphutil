@@ -14,13 +14,11 @@ class yy_extra_type {
       last_token = -1;
       insert_token = -1;
       heredoc_yyleng = -1;
-      short_tags = true;
       asp_tags = false;
       list_size = 0;
       pushStack();
     }
 
-    bool short_tags; // `short_open_tag` in php.ini
     bool asp_tags; // `asp_tags` in php.ini
     size_t first_lineno; // line number before scanning the current token
     size_t lineno; // current line number being scanned.
