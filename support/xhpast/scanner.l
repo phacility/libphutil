@@ -458,11 +458,6 @@ static int yy_token(int tok, yyguts_t* yyg) {
     case T_PAAMAYIM_NEKUDOTAYIM:
       push_state(PHP_NO_RESERVED_WORDS);
       break;
-
-    case '{':
-      // not used anymore
-      yyextra->curly_stack.push(tok);
-      break;
   }
 #ifdef DEBUG
   yy_log_token(tok);
