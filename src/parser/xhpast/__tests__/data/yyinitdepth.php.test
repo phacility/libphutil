@@ -1,0 +1,65 @@
+<?php
+
+if ($node instanceof Node\Expr\BinaryOp\BitwiseXor) {
+    return $left ^ $right;
+} else if ($node instanceof Node\Expr\BinaryOp\BitwiseAnd) {
+    return $left & $right;
+} else if ($node instanceof Node\Expr\BinaryOp\BitwiseOr) {
+    return $left | $right;
+} else if ($node instanceof Node\Expr\BinaryOp\BooleanAnd) {
+    return $left && $right;
+} else if ($node instanceof Node\Expr\BinaryOp\BooleanOr) {
+    return $left || $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Coalesce ) {
+    return $left ?: $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Concat) {
+    return $left.$right;
+} else if ($node instanceof Node\Expr\BinaryOp\Div) {
+    return $left / $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Equal) {
+    return $left == $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Greater) {
+    return $left > $right;
+} else if ($node instanceof Node\Expr\BinaryOp\GreaterOrEqual) {
+    return $left >= $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Identical) {
+    return $left === $right;
+} else if ($node instanceof Node\Expr\BinaryOp\LogicalAnd) {
+    return $left && $right;
+} else if ($node instanceof Node\Expr\BinaryOp\LogicalOr) {
+    return $left || $right;
+} else if ($node instanceof Node\Expr\BinaryOp\LogicalXor) {
+    return $left xor $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Minus) {
+    return $left - $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Mod) {
+    return $left % $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Mul) {
+    return $left * $right;
+} else if ($node instanceof Node\Expr\BinaryOp\NotEqual) {
+    return $left != $right;
+} else if ($node instanceof Node\Expr\BinaryOp\NotIdentical) {
+    return $left !== $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Plus) {
+    return $left + $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Pow) {
+    return pow($left, $right);
+} else if ($node instanceof Node\Expr\BinaryOp\ShiftLeft) {
+    return $left << $right;
+} else if ($node instanceof Node\Expr\BinaryOp\ShiftRight) {
+    return $left >> $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Smaller) {
+    return $left < $right;
+} else if ($node instanceof Node\Expr\BinaryOp\SmallerOrEqual) {
+    return $left <= $right;
+} else if ($node instanceof Node\Expr\BinaryOp\Spaceship) {
+    if ($left < $right) {
+        return -1;
+    } else if ($left == $right) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+~~~~~~~~~~
+pass
