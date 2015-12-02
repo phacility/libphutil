@@ -6,6 +6,16 @@
 
 #include "ast.hpp"
 #include "node_names.hpp"
+// PHP's if/else rules use right reduction rather than left reduction which
+// means while parsing nested if/else's the stack grows until it the last
+// statement is read. This is annoying, particularly because of a quirk in
+// bison.
+// http://www.gnu.org/software/bison/manual/html_node/Memory-Management.html
+// Apparently if you compile a bison parser with g++ it can no longer grow
+// the stack. The work around is to just make your initial stack ridiculously
+// large. Unfortunately that increases memory usage while parsing which is
+// dumb. Anyway, putting a TODO here to fix PHP's if/else grammar.
+#define YYINITDEPTH 500
 %}
 
 %{

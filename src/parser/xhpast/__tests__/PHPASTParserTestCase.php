@@ -39,7 +39,6 @@ final class PHPASTParserTestCase extends PhutilTestCase {
     foreach ($options as $key => $value) {
       switch ($key) {
         case 'pass':
-        case 'fail':
         case 'fail-syntax':
         case 'fail-parse':
           if ($type !== null) {
@@ -120,17 +119,12 @@ final class PHPASTParserTestCase extends PhutilTestCase {
             pht('Expected parser to parse "%s" incorrectly.', $name));
         }
         break;
-      case 'fail':
-        // A generic failure mode.
-        $this->assertEqual(1, $err, pht('Exit code for "%s".', $name));
-        break;
       case 'fail-syntax':
         $this->assertEqual(1, $err, pht('Exit code for "%s".', $name));
         $this->assertTrue(
           (bool)preg_match('/syntax error/', $stderr),
           pht('Expect "syntax error" in stderr or "%s".', $name));
         break;
-
     }
   }
 
