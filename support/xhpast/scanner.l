@@ -74,11 +74,7 @@ NEWLINE ("\r\n"|"\n"|"\r")
     tok(T_OPEN_TAG);
   }
   "<?" {
-    if (yyextra->short_tags) {
-      tok(T_OPEN_TAG);
-    } else {
-      tok(T_INLINE_HTML);
-    }
+    tok(T_OPEN_TAG);
   }
   "<?=" {
     tok(T_OPEN_TAG_WITH_ECHO);
@@ -457,11 +453,6 @@ static int yy_token(int tok, yyguts_t* yyg) {
 
     case T_PAAMAYIM_NEKUDOTAYIM:
       push_state(PHP_NO_RESERVED_WORDS);
-      break;
-
-    case '{':
-      // not used anymore
-      yyextra->curly_stack.push(tok);
       break;
   }
 #ifdef DEBUG
