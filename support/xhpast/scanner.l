@@ -79,20 +79,6 @@ NEWLINE ("\r\n"|"\n"|"\r")
   "<?=" {
     tok(T_OPEN_TAG_WITH_ECHO);
   }
-  "<%" {
-    if (yyextra->asp_tags) {
-      tok(T_OPEN_TAG);
-    } else {
-      tok(T_INLINE_HTML);
-    }
-  }
-  "<%=" {
-    if (yyextra->asp_tags) {
-      tok(T_OPEN_TAG_WITH_ECHO);
-    } else {
-      tok(T_INLINE_HTML);
-    }
-  }
   "<"|[^<]* {
     yy_scan_newlines(yytext, yyg);
     tok(T_INLINE_HTML);
@@ -102,14 +88,6 @@ NEWLINE ("\r\n"|"\n"|"\r")
   ("?>"|"</script"{WHITESPACE}*">"){NEWLINE}? {
     yy_scan_newlines(yytext + 2, yyg);
     tok(T_CLOSE_TAG);
-  }
-  "%>" {
-    if (yyextra->asp_tags) {
-      tok(T_CLOSE_TAG);
-    } else {
-      yyless(1);
-      tok(yytext[0]);
-    }
   }
 }
 
