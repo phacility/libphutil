@@ -6,7 +6,6 @@ abstract class PhutilKeyValueCacheProxy extends PhutilKeyValueCache {
 
   final public function __construct(PhutilKeyValueCache $proxy) {
     $this->proxy = $proxy;
-    return $this;
   }
 
   final protected function getProxy() {

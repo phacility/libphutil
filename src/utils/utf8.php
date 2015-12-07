@@ -280,18 +280,18 @@ function phutil_utf8_console_strlen($string) {
 
       $len += 1 +
         ($c >= 0x1100 &&
-          ($c <= 0x115f ||                    /* Hangul Jamo init. consonants */
-            $c == 0x2329 || $c == 0x232a ||
-            ($c >= 0x2e80 && $c <= 0xa4cf &&
-              $c != 0x303f) ||                  /* CJK ... Yi */
-            ($c >= 0xac00 && $c <= 0xd7a3) || /* Hangul Syllables */
-            ($c >= 0xf900 && $c <= 0xfaff) || /* CJK Compatibility Ideographs */
-            ($c >= 0xfe10 && $c <= 0xfe19) || /* Vertical forms */
-            ($c >= 0xfe30 && $c <= 0xfe6f) || /* CJK Compatibility Forms */
-            ($c >= 0xff00 && $c <= 0xff60) || /* Fullwidth Forms */
-            ($c >= 0xffe0 && $c <= 0xffe6) ||
-            ($c >= 0x20000 && $c <= 0x2fffd) ||
-            ($c >= 0x30000 && $c <= 0x3fffd)));
+          ($c <= 0x115F ||                    /* Hangul Jamo init. consonants */
+            $c == 0x2329 || $c == 0x232A ||
+            ($c >= 0x2E80 && $c <= 0xA4CF &&
+              $c != 0x303F) ||                  /* CJK ... Yi */
+            ($c >= 0xAC00 && $c <= 0xD7A3) || /* Hangul Syllables */
+            ($c >= 0xF900 && $c <= 0xFAFF) || /* CJK Compatibility Ideographs */
+            ($c >= 0xFE10 && $c <= 0xFE19) || /* Vertical forms */
+            ($c >= 0xFE30 && $c <= 0xFE6F) || /* CJK Compatibility Forms */
+            ($c >= 0xFF00 && $c <= 0xFF60) || /* Fullwidth Forms */
+            ($c >= 0xFFE0 && $c <= 0xFFE6) ||
+            ($c >= 0x20000 && $c <= 0x2FFFD) ||
+            ($c >= 0x30000 && $c <= 0x3FFFD)));
 
       break;
     }
@@ -385,26 +385,26 @@ function phutil_utf8v_codepoints($string) {
          + ((ord($char[1]) & 0x3F));
     } else if (($c & 0xF0) == 0xE0) {
       $v = (($c & 0x0F) << 12)
-         + ((ord($char[1]) & 0x3f) << 6)
-         + ((ord($char[2]) & 0x3f));
+         + ((ord($char[1]) & 0x3F) << 6)
+         + ((ord($char[2]) & 0x3F));
     } else if (($c & 0xF8) == 0xF0) {
       $v = (($c & 0x07) << 18)
          + ((ord($char[1]) & 0x3F) << 12)
          + ((ord($char[2]) & 0x3F) << 6)
-         + ((ord($char[3]) & 0x3f));
+         + ((ord($char[3]) & 0x3F));
     } else if (($c & 0xFC) == 0xF8) {
       $v = (($c & 0x03) << 24)
          + ((ord($char[1]) & 0x3F) << 18)
          + ((ord($char[2]) & 0x3F) << 12)
-         + ((ord($char[3]) & 0x3f) << 6)
-         + ((ord($char[4]) & 0x3f));
+         + ((ord($char[3]) & 0x3F) << 6)
+         + ((ord($char[4]) & 0x3F));
     } else if (($c & 0xFE) == 0xFC) {
       $v = (($c & 0x01) << 30)
          + ((ord($char[1]) & 0x3F) << 24)
          + ((ord($char[2]) & 0x3F) << 18)
-         + ((ord($char[3]) & 0x3f) << 12)
-         + ((ord($char[4]) & 0x3f) << 6)
-         + ((ord($char[5]) & 0x3f));
+         + ((ord($char[3]) & 0x3F) << 12)
+         + ((ord($char[4]) & 0x3F) << 6)
+         + ((ord($char[5]) & 0x3F));
     }
 
     $str_v[$key] = $v;
