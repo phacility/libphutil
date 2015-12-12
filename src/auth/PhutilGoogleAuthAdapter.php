@@ -40,11 +40,22 @@ final class PhutilGoogleAuthAdapter extends PhutilOAuthAuthAdapter {
   }
 
   public function getAccountImageURI() {
-    return $this->getOAuthAccountData('picture');
+    $image = $this->getOAuthAccountData('image', array());
+    $uri = idx($image, 'url');
+
+    // Change the "sz" parameter ("size") from the default to 100 to ask for
+    // a 100x100px image.
+    if ($uri !== null) {
+      $uri = new PhutilURI($uri);
+      $uri->setQueryParam('sz', 100);
+      $uri = (string)$uri;
+    }
+
+    return $uri;
   }
 
   public function getAccountURI() {
-    return 'https://plus.google.com/'.$this->getOAuthAccountData('id');
+    return $this->getOAuthAccountData('url');
   }
 
   public function getAccountRealName() {
