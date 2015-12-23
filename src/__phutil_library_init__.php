@@ -42,6 +42,8 @@ function __phutil_autoload($class_name) {
       switch ($backtrace['function']) {
         case 'class_exists':
         case 'interface_exists':
+        case 'method_exists':
+        case 'property_exists':
         case 'trait_exists':
           $should_throw = false;
           break;
