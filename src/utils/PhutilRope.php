@@ -83,29 +83,29 @@ final class PhutilRope extends Phobject {
    * @param int Bytes to remove.
    * @return this
    */
-  public function removeBytesFromHead($length) {
-    if ($length <= 0) {
+  public function removeBytesFromHead($remove) {
+    if ($remove <= 0) {
       throw new InvalidArgumentException(
         pht('Length must be larger than 0!'));
     }
 
-    $remaining_length = $length;
+    $remaining_bytes = $remove;
     foreach ($this->buffers as $key => $buf) {
       $len = strlen($buf);
-      if ($len <= $length) {
+      if ($len <= $remaining_bytes) {
         unset($this->buffers[$key]);
-        $remaining_length -= $len;
-        if (!$remaining_length) {
+        $remaining_bytes -= $len;
+        if (!$remaining_bytes) {
           break;
         }
       } else {
-        $this->buffers[$key] = substr($buf, $length);
+        $this->buffers[$key] = substr($buf, $remaining_bytes);
         break;
       }
     }
 
-    if ($length <= $this->length) {
-      $this->length -= $length;
+    if ($this->buffers) {
+      $this->length -= $remove;
     } else {
       $this->length = 0;
     }

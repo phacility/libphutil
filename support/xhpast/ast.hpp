@@ -14,12 +14,10 @@ class yy_extra_type {
       last_token = -1;
       insert_token = -1;
       heredoc_yyleng = -1;
-      asp_tags = false;
       list_size = 0;
       pushStack();
     }
 
-    bool asp_tags; // `asp_tags` in php.ini
     size_t first_lineno; // line number before scanning the current token
     size_t lineno; // current line number being scanned.
     std::string error; // description of error (if terminated true)
