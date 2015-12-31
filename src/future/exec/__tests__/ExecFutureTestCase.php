@@ -150,6 +150,9 @@ final class ExecFutureTestCase extends PhutilTestCase {
 
     // We expect to get the entire string back in the read.
     $this->assertEqual($str_len_4, $read);
+
+    // Remove the limit so we can resolve the future.
+    $future->setReadBufferSize(null);
     $future->resolve();
   }
 
