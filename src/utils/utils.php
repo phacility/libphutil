@@ -913,7 +913,7 @@ function phutil_loggable_string($string) {
  * @param resource  Socket or pipe stream.
  * @param string    Bytes to write.
  * @return bool|int Number of bytes written, or `false` on any error (including
- *                  errors which `fpipe()` can not detect, like a broken pipe).
+ *                  errors which `fwrite()` can not detect, like a broken pipe).
  */
 function phutil_fwrite_nonblocking_stream($stream, $bytes) {
   if (!strlen($bytes)) {
