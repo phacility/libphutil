@@ -26,6 +26,29 @@ final class PhutilAWSS3Future extends PhutilAWSFuture {
     return $this;
   }
 
+  public function setParametersForPutObject($key, $value) {
+    $bucket = $this->getBucket();
+
+    $this->setHTTPMethod('PUT');
+    $this->setPath($bucket.'/'.$key);
+
+    $this->addHeader('X-Amz-ACL', 'private');
+    $this->addHeader('Content-Type', 'application/octet-stream');
+
+    $this->setData($value);
+
+    return $this;
+  }
+
+  public function setParametersForDeleteObject($key) {
+    $bucket = $this->getBucket();
+
+    $this->setHTTPMethod('DELETE');
+    $this->setPath($bucket.'/'.$key);
+
+    return $this;
+  }
+
   protected function didReceiveResult($result) {
     list($status, $body, $headers) = $result;
 

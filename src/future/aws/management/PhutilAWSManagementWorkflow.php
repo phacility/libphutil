@@ -43,6 +43,15 @@ abstract class PhutilAWSManagementWorkflow
 
     $template->setRegion($region);
 
+    $endpoint = $argv->getArg('endpoint');
+    if (!strlen($endpoint)) {
+      throw new PhutilArgumentUsageException(
+        pht(
+          'You must specify an AWS endpoint with --endpoint.'));
+    }
+
+    $template->setEndpoint($endpoint);
+
     return $template;
   }
 
@@ -62,6 +71,11 @@ abstract class PhutilAWSManagementWorkflow
         'name' => 'region',
         'param' => 'region',
         'help' => pht('AWS region.'),
+      ),
+      array(
+        'name' => 'endpoint',
+        'param' => 'endpoint',
+        'help' => pht('Name of the AWS region to access.'),
       ),
     );
   }

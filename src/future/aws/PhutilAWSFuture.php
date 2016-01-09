@@ -10,6 +10,8 @@ abstract class PhutilAWSFuture extends FutureProxy {
   private $path = '/';
   private $params = array();
   private $endpoint;
+  private $data = '';
+  private $headers = array();
 
   abstract public function getServiceName();
 
@@ -71,9 +73,23 @@ abstract class PhutilAWSFuture extends FutureProxy {
     return $this->path;
   }
 
+  public function setData($data) {
+    $this->data = $data;
+    return $this;
+  }
+
+  public function getData() {
+    return $this->data;
+  }
+
   protected function getParameters() {
     $params = $this->params;
     return $params;
+  }
+
+  public function addHeader($key, $value) {
+    $this->headers[] = array($key, $value);
+    return $this;
   }
 
   protected function getProxiedFuture() {
@@ -82,13 +98,19 @@ abstract class PhutilAWSFuture extends FutureProxy {
       $method = $this->getHTTPMethod();
       $host = $this->getEndpoint();
       $path = $this->getPath();
+      $data = $this->getData();
 
       $uri = id(new PhutilURI("https://{$host}/"))
         ->setPath($path)
         ->setQueryParams($params);
 
-      $future = id(new HTTPSFuture($uri))
+      $future = id(new HTTPSFuture($uri, $data))
         ->setMethod($method);
+
+      foreach ($this->headers as $header) {
+        list($key, $value) = $header;
+        $future->addHeader($key, $value);
+      }
 
       $this->signRequest($future);
 
