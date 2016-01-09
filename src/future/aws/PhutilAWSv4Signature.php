@@ -28,7 +28,7 @@ final class PhutilAWSv4Signature extends Phobject {
 
   public function getDate() {
     if ($this->date === null) {
-      $this->date = date('c');
+      $this->date = gmdate('Ymd\THis\Z', time());
     }
     return $this->date;
   }
