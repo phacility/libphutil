@@ -80,6 +80,7 @@ class PhutilArgumentWorkflow extends Phobject {
   private $specs = array();
   private $examples;
   private $help;
+  private $argv;
 
   final public function __construct() {
     $this->didConstruct();
@@ -152,6 +153,15 @@ class PhutilArgumentWorkflow extends Phobject {
 
   final public function getArguments() {
     return $this->specs;
+  }
+
+  final public function setArgv(PhutilArgumentParser $argv) {
+    $this->argv = $argv;
+    return $this;
+  }
+
+  final public function getArgv() {
+    return $this->argv;
   }
 
   protected function didConstruct() {
