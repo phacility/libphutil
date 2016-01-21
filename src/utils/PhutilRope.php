@@ -68,6 +68,34 @@ final class PhutilRope extends Phobject {
 
 
   /**
+   * Get prefix bytes of the rope, up to some maximum size.
+   *
+   * @param int Maximum number of bytes to read.
+   * @return string Bytes.
+   */
+  public function getPrefixBytes($length) {
+    $result = array();
+
+    $remaining_bytes = $length;
+    foreach ($this->buffers as $buf) {
+      $length = strlen($buf);
+      if ($length <= $remaining_bytes) {
+        $result[] = $buf;
+        $remaining_bytes -= $length;
+      } else {
+        $result[] = substr($buf, 0, $remaining_bytes);
+        $remaining_bytes = 0;
+      }
+      if (!$remaining_bytes) {
+        break;
+      }
+    }
+
+    return implode('', $result);
+  }
+
+
+  /**
    * Return the entire rope as a normal string.
    *
    * @return string Normal string.
