@@ -275,42 +275,69 @@ abstract class AphrontBaseMySQLDatabaseConnection
     $this->throwQueryCodeException($errno, $error);
   }
 
-  protected function throwQueryCodeException($errno, $error) {
-    $exmsg = "#{$errno}: {$error}";
+  private function throwCommonException($errno, $error) {
+    $message = pht('#%d: %s', $errno, $error);
 
     switch ($errno) {
       case 2013: // Connection Dropped
-        throw new AphrontConnectionLostQueryException($exmsg);
+        throw new AphrontConnectionLostQueryException($message);
       case 2006: // Gone Away
         $more = pht(
           "This error may occur if your MySQL '%s' or '%s' ".
           "configuration values are set too low.",
           'wait_timeout',
           'max_allowed_packet');
-        throw new AphrontConnectionLostQueryException("{$exmsg}\n\n{$more}");
+        throw new AphrontConnectionLostQueryException("{$message}\n\n{$more}");
       case 1213: // Deadlock
-        throw new AphrontDeadlockQueryException($exmsg);
+        throw new AphrontDeadlockQueryException($message);
       case 1205: // Lock wait timeout exceeded
-        throw new AphrontLockTimeoutQueryException($exmsg);
+        throw new AphrontLockTimeoutQueryException($message);
       case 1062: // Duplicate Key
         // NOTE: In some versions of MySQL we get a key name back here, but
         // older versions just give us a key index ("key 2") so it's not
         // portable to parse the key out of the error and attach it to the
         // exception.
-        throw new AphrontDuplicateKeyQueryException($exmsg);
+        throw new AphrontDuplicateKeyQueryException($message);
       case 1044: // Access denied to database
-      case 1045: // Access denied (auth)
       case 1142: // Access denied to table
       case 1143: // Access denied to column
-        throw new AphrontAccessDeniedQueryException($exmsg);
+        throw new AphrontAccessDeniedQueryException($message);
+      case 1045: // Access denied (auth)
+        throw new AphrontInvalidCredentialsQueryException($message);
       case 1146: // No such table
       case 1049: // No such database
       case 1054: // Unknown column "..." in field list
-        throw new AphrontSchemaQueryException($exmsg);
-      default:
-        // TODO: 1064 is syntax error, and quite terrible in production.
-        throw new AphrontQueryException($exmsg);
+        throw new AphrontSchemaQueryException($message);
     }
+
+    // TODO: 1064 is syntax error, and quite terrible in production.
+
+    return null;
+  }
+
+  protected function throwConnectionException($errno, $error, $user, $host) {
+    $this->throwCommonException($errno, $error);
+
+    $message = pht(
+      'Attempt to connect to %s@%s failed with error #%d: %s.',
+      $user,
+      $host,
+      $errno,
+      $error);
+
+    throw new AphrontConnectionQueryException($message, $errno);
+  }
+
+
+  protected function throwQueryCodeException($errno, $error) {
+    $this->throwCommonException($errno, $error);
+
+    $message = pht(
+      '#%d: %s',
+      $errno,
+      $error);
+
+    throw new AphrontQueryException($message, $errno);
   }
 
   /**

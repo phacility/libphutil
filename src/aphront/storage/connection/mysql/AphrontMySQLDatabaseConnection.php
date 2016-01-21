@@ -61,14 +61,7 @@ final class AphrontMySQLDatabaseConnection
     if (!$conn) {
       $errno = mysql_errno();
       $error = mysql_error();
-      throw new AphrontConnectionQueryException(
-        pht(
-          'Attempt to connect to %s@%s failed with error #%d: %s.',
-          $user,
-          $host,
-          $errno,
-          $error),
-        $errno);
+      $this->throwConnectionException($errno, $error, $user, $host);
     }
 
     if ($database !== null) {

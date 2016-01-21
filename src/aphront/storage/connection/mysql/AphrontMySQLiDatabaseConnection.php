@@ -69,14 +69,7 @@ final class AphrontMySQLiDatabaseConnection
     $errno = $conn->connect_errno;
     if ($errno) {
       $error = $conn->connect_error;
-      throw new AphrontConnectionQueryException(
-        pht(
-          'Attempt to connect to %s@%s failed with error #%d: %s.',
-          $user,
-          $host,
-          $errno,
-          $error),
-        $errno);
+      $this->throwConnectionException($errno, $error, $user, $host);
     }
 
     $ok = @$conn->set_charset('utf8mb4');
