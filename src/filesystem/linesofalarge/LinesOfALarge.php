@@ -42,7 +42,7 @@ abstract class LinesOfALarge extends Phobject implements Iterator {
   private $valid;
   private $eof;
 
-  private $delimiter      = "\n";
+  private $delimiter = "\n";
 
 
 /* -(  Configuration  )------------------------------------------------------ */
@@ -52,14 +52,18 @@ abstract class LinesOfALarge extends Phobject implements Iterator {
    * Change the "line" delimiter character, which defaults to "\n". This is
    * used to determine where each line ends.
    *
-   * @param string A one-byte delimiter character.
+   * If you pass `null`, data will be read from source as it becomes available,
+   * without looking for delimiters. You can use this to stream a large file or
+   * the output of a command which returns a large amount of data.
+   *
+   * @param string|null A one-byte delimiter character.
    * @return this
    * @task config
    */
   final public function setDelimiter($character) {
-    if (strlen($character) !== 1) {
+    if (($character !== null) && (strlen($character) !== 1)) {
       throw new Exception(
-        pht('Delimiter character MUST be one byte in length.'));
+        pht('Delimiter character must be one byte in length or null.'));
     }
     $this->delimiter = $character;
     return $this;
@@ -147,6 +151,16 @@ abstract class LinesOfALarge extends Phobject implements Iterator {
     // read.
     while (true) {
       if (strlen($this->buf)) {
+
+        // If we don't have a delimiter, return the entire buffer.
+        if ($this->delimiter === null) {
+          $this->num++;
+          $this->line = substr($this->buf, $this->pos);
+          $this->buf = '';
+          $this->pos = 0;
+          return;
+        }
+
         // If we already have some data buffered, try to get the next line from
         // the buffer. Search through the buffer for a delimiter. This should be
         // the common case.
