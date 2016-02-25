@@ -49,6 +49,39 @@ function idx(array $array, $key, $default = null) {
 
 
 /**
+ * Access a sequence of array indexes, retrieving a deeply nested value if
+ * it exists or a default if it does not.
+ *
+ * For example, `idxv($dict, array('a', 'b', 'c'))` accesses the key at
+ * `$dict['a']['b']['c']`, if it exists. If it does not, or any intermediate
+ * value is not itself an array, it returns the defualt value.
+ *
+ * @param array Array to access.
+ * @param list<string> List of keys to access, in sequence.
+ * @param wild Default value to return.
+ * @return wild Accessed value, or default if the value is not accessible.
+ */
+function idxv(array $map, array $path, $default = null) {
+  if (!$path) {
+    return $default;
+  }
+
+  $last = last($path);
+  $path = array_slice($path, 0, -1);
+
+  $cursor = $map;
+  foreach ($path as $key) {
+    $cursor = idx($cursor, $key);
+    if (!is_array($cursor)) {
+      return $default;
+    }
+  }
+
+  return idx($cursor, $last, $default);
+}
+
+
+/**
  * Call a method on a list of objects. Short for "method pull", this function
  * works just like @{function:ipull}, except that it operates on a list of
  * objects instead of a list of arrays. This function simplifies a common type
