@@ -411,6 +411,7 @@ phutil_register_library_map(array(
     'hsprintf' => 'markup/render.php',
     'id' => 'utils/utils.php',
     'idx' => 'utils/utils.php',
+    'idxv' => 'utils/utils.php',
     'ifilter' => 'utils/utils.php',
     'igroup' => 'utils/utils.php',
     'ipull' => 'utils/utils.php',
