@@ -32,14 +32,59 @@ class PhutilLibraryTestCase extends PhutilTestCase {
     $old_library_map = $bootloader->getLibraryMapWithoutExtensions($library);
     unset($old_library_map[PhutilLibraryMapBuilder::LIBRARY_MAP_VERSION_KEY]);
 
-    $this->assertEqual(
-      $new_library_map,
-      $old_library_map,
+    $identical = ($new_library_map === $old_library_map);
+    if (!$identical) {
+      $differences = $this->getMapDifferences(
+        $old_library_map,
+        $new_library_map);
+      sort($differences);
+    } else {
+      $differences = array();
+    }
+
+    $this->assertTrue(
+      $identical,
       pht(
-        'The library map does not appear to be up-to-date. Try '.
-        'rebuilding the map with `%s`.',
-        'arc liberate'));
+        "The library map is out of date. Rebuild it with `%s`.\n".
+        "These entries differ: %s.",
+        'arc liberate',
+        implode(', ', $differences)));
   }
+
+
+  private function getMapDifferences($old, $new) {
+    $changed = array();
+
+    $all = $old + $new;
+    foreach ($all as $key => $value) {
+      $old_exists = array_key_exists($key, $old);
+      $new_exists = array_key_exists($key, $new);
+
+      // One map has it and the other does not, so mark it as changed.
+      if ($old_exists != $new_exists) {
+        $changed[] = $key;
+        continue;
+      }
+
+      $oldv = idx($old, $key);
+      $newv = idx($new, $key);
+      if ($oldv === $newv) {
+        continue;
+      }
+
+      if (is_array($oldv) && is_array($newv)) {
+        $child_changed = $this->getMapDifferences($oldv, $newv);
+        foreach ($child_changed as $child) {
+          $changed[] = $key.'.'.$child;
+        }
+      } else {
+        $changed[] = $key;
+      }
+    }
+
+    return $changed;
+  }
+
 
   /**
    * This is more of an acceptance test case instead of a unit test. It verifies
