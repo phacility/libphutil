@@ -15,6 +15,7 @@ abstract class AASTNode extends Phobject {
   private $nextSibling = null;
 
   private $selectCache;
+  private $tokenCache;
 
   abstract public function isStaticScalar();
   abstract public function getDocblockToken();
