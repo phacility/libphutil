@@ -817,5 +817,64 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
   }
 
+  public function testVectorSortInt() {
+    $original = array(
+      ~PHP_INT_MAX,
+      -2147483648,
+      -5,
+      -3,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      100,
+      PHP_INT_MAX,
+    );
+
+    $items = $this->shuffleMap($original);
+
+    foreach ($items as $key => $value) {
+      $items[$key] = (string)id(new PhutilSortVector())
+        ->addInt($value);
+    }
+
+    asort($items, SORT_STRING);
+
+    $this->assertEqual(
+      array_keys($original),
+      array_keys($items));
+  }
+
+  public function testVectorSortString() {
+    $original = array(
+      '',
+      "\1",
+      'A',
+      'AB',
+      'Z',
+      "Z\1",
+      'ZZZ',
+    );
+
+    $items = $this->shuffleMap($original);
+
+    foreach ($items as $key => $value) {
+      $items[$key] = (string)id(new PhutilSortVector())
+        ->addString($value);
+    }
+
+    asort($items, SORT_STRING);
+
+    $this->assertEqual(
+      array_keys($original),
+      array_keys($items));
+  }
+
+  private function shuffleMap(array $map) {
+    $keys = array_keys($map);
+    shuffle($keys);
+    return array_select_keys($map, $keys);
+  }
 
 }

@@ -406,6 +406,50 @@ function msort(array $list, $method) {
 
 
 /**
+ * Sort a list of objects by a sort vector.
+ *
+ * This sort is stable, well-behaved, and more efficient than `usort()`.
+ *
+ * @param list List of objects to sort.
+ * @param string Name of a method to call on each object. The method must
+ *   return a @{class:PhutilSortVector}.
+ * @return list Objects ordered by the vectors.
+ */
+function msortv(array $list, $method) {
+  $surrogate = mpull($list, $method);
+
+  $index = 0;
+  foreach ($surrogate as $key => $value) {
+    if (!($value instanceof PhutilSortVector)) {
+      throw new Exception(
+        pht(
+          'Objects passed to "%s" must return sort vectors (objects of '.
+          'class "%s") from the specified method ("%s"). One object (with '.
+          'key "%s") did not.',
+          'msortv()',
+          'PhutilSortVector',
+          $method,
+          $key));
+    }
+
+    // Add the original index to keep the sort stable.
+    $value->addInt($index++);
+
+    $surrogate[$key] = (string)$value;
+  }
+
+  asort($surrogate, SORT_STRING);
+
+  $result = array();
+  foreach ($surrogate as $key => $value) {
+    $result[$key] = $list[$key];
+  }
+
+  return $result;
+}
+
+
+/**
  * Sort a list of arrays by the value of some index. This method is identical to
  * @{function:msort}, but operates on a list of arrays instead of a list of
  * objects.
