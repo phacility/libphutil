@@ -5,7 +5,7 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
 
-    if (preg_match('/^<table>/i', $lines[$cursor])) {
+    if (preg_match('/^\s*<table>/i', $lines[$cursor])) {
       $num_lines++;
       $cursor++;
 
@@ -24,7 +24,7 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
   public function markupText($text, $children) {
     $matches = array();
 
-    if (!preg_match('@^<table>(.*)</table>$@si', $text, $matches)) {
+    if (!preg_match('@^\s*<table>(.*)</table>$@si', $text, $matches)) {
       return $this->fail(
         $text,
         pht('Bad table (expected %s)', '<table>...</table>'));
