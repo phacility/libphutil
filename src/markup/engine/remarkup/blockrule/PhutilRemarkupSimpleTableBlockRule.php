@@ -5,7 +5,7 @@ final class PhutilRemarkupSimpleTableBlockRule extends PhutilRemarkupBlockRule {
   public function getMatchingLineCount(array $lines, $cursor) {
     $num_lines = 0;
     while (isset($lines[$cursor])) {
-      if (preg_match('/^(\|.*+\n?)+$/', $lines[$cursor])) {
+      if (preg_match('/^(\s*\|.*+\n?)+$/', $lines[$cursor])) {
         $num_lines++;
         $cursor++;
       } else {
