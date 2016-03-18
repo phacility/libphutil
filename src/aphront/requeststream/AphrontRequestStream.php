@@ -5,6 +5,7 @@ final class AphrontRequestStream extends Phobject {
   private $encoding;
   private $stream;
   private $closed;
+  private $iterator;
 
   public function setEncoding($encoding) {
     $this->encoding = $encoding;
@@ -15,24 +16,29 @@ final class AphrontRequestStream extends Phobject {
     return $this->encoding;
   }
 
+  public function getIterator() {
+    if (!$this->iterator) {
+      $this->iterator = new PhutilStreamIterator($this->getStream());
+    }
+    return $this->iterator;
+  }
+
   public function readData() {
-    if ($this->closed) {
+    if (!$this->iterator) {
+      $iterator = $this->getIterator();
+      $iterator->rewind();
+    } else {
+      $iterator = $this->getIterator();
+    }
+
+    if (!$iterator->valid()) {
       return null;
     }
 
-    $stream = $this->getStream();
-    if (feof($stream)) {
-      $this->closeStream();
-      return null;
-    }
+    $data = $iterator->current();
+    $iterator->next();
 
-    $bytes = fread($stream, 64 * 1024);
-    if ($bytes === false) {
-      throw new Exception(
-        pht('Failed to fread() from request input stream.'));
-    }
-
-    return $bytes;
+    return $data;
   }
 
   private function getStream() {
@@ -41,12 +47,6 @@ final class AphrontRequestStream extends Phobject {
     }
 
     return $this->stream;
-  }
-
-  private function closeStream() {
-    $stream = $this->getStream();
-    fclose($stream);
-    $this->closed = true;
   }
 
   private function newStream() {
