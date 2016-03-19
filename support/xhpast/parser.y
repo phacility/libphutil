@@ -576,21 +576,21 @@ unticked_statement:
     $$ = NNEW(n_STATEMENT)->appendChild(NNEW(n_EMPTY));
     NMORE($$, $1);
   }
-| T_TRY '{' inner_statement_list '}'
-  T_CATCH '(' fully_qualified_class_name T_VARIABLE ')'
-  '{' inner_statement_list '}'
-  additional_catches
-  finally_statement {
+| T_TRY '{' inner_statement_list '}' catch_list finally_statement {
     NTYPE($1, n_TRY);
     $1->appendChild(NEXPAND($2, $3, $4));
 
-    NTYPE($5, n_CATCH);
-    $5->appendChild($7);
-    $5->appendChild(NTYPE($8, n_VARIABLE));
-    $5->appendChild(NEXPAND($10, $11, $12));
+    $1->appendChild($5);
+    $1->appendChild($6);
 
-    $1->appendChild(NNEW(n_CATCH_LIST)->appendChild($5)->appendChildren($13));
-    $1->appendChild($14);
+    $$ = NNEW(n_STATEMENT)->appendChild($1);
+  }
+| T_TRY '{' inner_statement_list '}' non_empty_finally_statement {
+    NTYPE($1, n_TRY);
+    $1->appendChild(NEXPAND($2, $3, $4));
+
+    $1->appendChild(NNEW(n_CATCH_LIST));
+    $1->appendChild($5);
 
     $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
@@ -612,38 +612,17 @@ unticked_statement:
   }
 ;
 
-additional_catches:
-  non_empty_additional_catches
-| %empty {
-    $$ = NNEW(n_EMPTY);
-  }
-;
-
-finally_statement:
-  %empty {
-    $$ = NNEW(n_EMPTY);
-  }
-| T_FINALLY '{' inner_statement_list '}' {
-    NTYPE($1, n_FINALLY);
-    $1->appendChild($3);
-    NMORE($1, $4);
-    $$ = $1;
-  }
-;
-
-
-non_empty_additional_catches:
-  additional_catch {
-    $$ = NNEW(n_CATCH_LIST);
-    $$->appendChild($1);
-  }
-| non_empty_additional_catches additional_catch {
+catch_list:
+  catch_list catch {
     $1->appendChild($2);
     $$ = $1;
   }
-;
+| catch {
+  $$ = NNEW(n_CATCH_LIST);
+  $$->appendChild($1);
+}
 
-additional_catch:
+catch:
   T_CATCH '(' fully_qualified_class_name T_VARIABLE ')'
   '{' inner_statement_list '}' {
     NTYPE($1, n_CATCH);
@@ -651,6 +630,22 @@ additional_catch:
     $1->appendChild(NTYPE($4, n_VARIABLE));
     $1->appendChild(NEXPAND($6, $7, $8));
     NMORE($1, $8);
+    $$ = $1;
+  }
+;
+
+finally_statement:
+  %empty {
+    $$ = NNEW(n_EMPTY);
+  }
+| non_empty_finally_statement
+;
+
+non_empty_finally_statement:
+  T_FINALLY '{' inner_statement_list '}' {
+    NTYPE($1, n_FINALLY);
+    $1->appendChild($3);
+    NMORE($1, $4);
     $$ = $1;
   }
 ;

@@ -26,6 +26,14 @@ final class PhutilXHPASTSyntaxHighlighterTestCase extends PhutilTestCase {
       $this->read('multiline-token.expect'),
       (string)$this->highlight($this->read('multiline-token.source')),
       pht('Multi-line tokens should be split across lines.'));
+    $this->assertEqual(
+      $this->read('leading-whitespace.expect'),
+      (string)$this->highlight($this->read('leading-whitespace.source')),
+      pht('Snippets with leading whitespace should be preserved.'));
+    $this->assertEqual(
+      $this->read('no-leading-whitespace.expect'),
+      (string)$this->highlight($this->read('no-leading-whitespace.source')),
+      pht('Snippets with no leading whitespace should be preserved.'));
   }
 
 }

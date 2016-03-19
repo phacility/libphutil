@@ -45,6 +45,42 @@ final class PhutilXHPASTSyntaxHighlighterFuture extends FutureProxy {
     $tokens = $root->getTokens();
     $interesting_symbols = $this->findInterestingSymbols($root);
 
+
+    if ($this->scrub) {
+      // If we're scrubbing, we prepended "<?php\n" to the text to force the
+      // highlighter to treat it as PHP source. Now, we need to remove that.
+
+      $ok = false;
+      if (count($tokens) >= 2) {
+        if ($tokens[0]->getTypeName() === 'T_OPEN_TAG') {
+          if ($tokens[1]->getTypeName() === 'T_WHITESPACE') {
+            $ok = true;
+          }
+        }
+      }
+
+      if (!$ok) {
+        throw new Exception(
+          pht(
+            'Expected T_OPEN_TAG, T_WHITESPACE tokens at head of results '.
+            'for highlighting parse of PHP snippet.'));
+      }
+
+      // Remove the "<?php".
+      unset($tokens[0]);
+
+      $value = $tokens[1]->getValue();
+      if ((strlen($value) < 1) || ($value[0] != "\n")) {
+        throw new Exception(
+          pht(
+            'Expected "\\n" at beginning of T_WHITESPACE token at head of '.
+            'tokens for highlighting parse of PHP snippet.'));
+      }
+
+      $value = substr($value, 1);
+      $tokens[1]->overwriteValue($value);
+    }
+
     $out = array();
     foreach ($tokens as $key => $token) {
       $value = $token->getValue();
@@ -120,10 +156,6 @@ final class PhutilXHPASTSyntaxHighlighterFuture extends FutureProxy {
       } else {
         $out[] = $value;
       }
-    }
-
-    if ($this->scrub) {
-      array_shift($out);
     }
 
     return phutil_implode_html('', $out);

@@ -36,6 +36,11 @@ abstract class AASTToken extends Phobject {
     return $this->value;
   }
 
+  final public function overwriteValue($value) {
+    $this->value = $value;
+    return $this;
+  }
+
   final public function getOffset() {
     return $this->offset;
   }
