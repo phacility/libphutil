@@ -66,7 +66,27 @@ final class PhutilTranslator extends Phobject {
     $translation = idx($this->translations, $text, $text);
     $args = func_get_args();
     while (is_array($translation)) {
-      $translation = $this->chooseVariant($translation, next($args));
+      $arg = next($args);
+      $translation = $this->chooseVariant($translation, $arg);
+      if ($translation === null) {
+        $pos = key($args);
+
+        if (is_object($arg)) {
+          $kind = get_class($arg);
+        } else {
+          $kind = gettype($arg);
+        }
+
+        return sprintf(
+          '[Invalid Translation!] The "%s" language data offers variant '.
+          'translations for the plurality or gender of argument %s, but '.
+          'the value for that argument is not an integer, PhutilNumber, or '.
+          'PhutilPerson (it is a value of type "%s"). Raw input: <%s>.',
+          $this->localeCode,
+          $pos,
+          $kind,
+          $text);
+      }
     }
     array_shift($args);
 
@@ -123,14 +143,21 @@ final class PhutilTranslator extends Phobject {
     }
 
     if ($variant instanceof PhutilNumber) {
+      $is_sex = false;
       $variant = $variant->getNumber();
+    } else if ($variant instanceof PhutilPerson) {
+      $is_sex = true;
+      $variant = $variant->getSex();
+    } else if (is_int($variant)) {
+      $is_sex = false;
+    } else {
+      return null;
     }
 
     // TODO: Move these into PhutilLocale if benchmarks show we aren't
     // eating too much of a performance cost.
 
     switch ($this->localeCode) {
-
       case 'en_US':
       case 'en_GB':
       case 'en_W*':
@@ -144,9 +171,9 @@ final class PhutilTranslator extends Phobject {
         return $plural;
 
       case 'cs_CZ':
-        if ($variant instanceof PhutilPerson) {
+        if ($is_sex) {
           list($male, $female) = $translations;
-          if ($variant->getSex() == PhutilPerson::SEX_FEMALE) {
+          if ($variant == PhutilPerson::SEX_FEMALE) {
             return $female;
           }
           return $male;
