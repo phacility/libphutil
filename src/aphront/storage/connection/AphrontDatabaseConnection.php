@@ -8,6 +8,7 @@ abstract class AphrontDatabaseConnection
   implements PhutilQsprintfInterface {
 
   private $transactionState;
+  private $readOnly;
 
   abstract public function getInsertID();
   abstract public function getAffectedRows();
@@ -35,6 +36,15 @@ abstract class AphrontDatabaseConnection
 
   public function supportsParallelQueries() {
     return false;
+  }
+
+  public function setReadOnly($read_only) {
+    $this->readOnly = $read_only;
+    return $this;
+  }
+
+  public function getReadOnly() {
+    return $this->readOnly;
   }
 
   public function asyncQuery($raw_query) {
