@@ -12,6 +12,7 @@ final class ConduitClient extends Phobject {
   private $publicKey;
   private $privateKey;
   private $conduitToken;
+  private $oauthToken;
 
   const AUTH_ASYMMETRIC = 'asymmetric';
 
@@ -52,6 +53,11 @@ final class ConduitClient extends Phobject {
 
   public function getConduitToken() {
     return $this->conduitToken;
+  }
+
+  public function setOAuthToken($oauth_token) {
+    $this->oauthToken = $oauth_token;
+    return $this;
   }
 
   public function callMethodSynchronous($method, array $params) {
@@ -113,6 +119,10 @@ final class ConduitClient extends Phobject {
 
     if ($this->conduitToken) {
       $meta['token'] = $this->conduitToken;
+    }
+
+    if ($this->oauthToken) {
+      $meta['access_token'] = $this->oauthToken;
     }
 
     if ($meta) {

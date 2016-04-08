@@ -63,7 +63,7 @@ final class PhutilPhabricatorAuthAdapter extends PhutilOAuthAuthAdapter {
   }
 
   public function getScope() {
-    return 'whoami';
+    return '';
   }
 
   public function getExtraAuthenticateParameters() {
