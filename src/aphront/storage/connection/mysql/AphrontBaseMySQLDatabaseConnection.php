@@ -27,6 +27,10 @@ abstract class AphrontBaseMySQLDatabaseConnection
     $this->establishConnection();
   }
 
+  public function openConnection() {
+    $this->requireConnection();
+  }
+
   public function close() {
     if ($this->lastResult) {
       $this->lastResult = null;
