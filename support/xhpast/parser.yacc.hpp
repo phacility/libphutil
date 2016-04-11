@@ -180,7 +180,8 @@ extern int xhpastdebug;
     T_TRAIT = 390,
     T_TRAIT_C = 391,
     T_YIELD = 392,
-    T_FINALLY = 393
+    T_FINALLY = 393,
+    T_ELLIPSIS = 394
   };
 #endif
 

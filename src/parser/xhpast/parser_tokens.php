@@ -140,5 +140,6 @@ function xhpast_parser_token_constants() {
     391 => 'T_TRAIT_C',
     392 => 'T_YIELD',
     393 => 'T_FINALLY',
+    394 => 'T_ELLIPSIS',
   );
 }
