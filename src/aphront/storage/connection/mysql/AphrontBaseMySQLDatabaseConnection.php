@@ -27,6 +27,10 @@ abstract class AphrontBaseMySQLDatabaseConnection
     $this->establishConnection();
   }
 
+  public function openConnection() {
+    $this->requireConnection();
+  }
+
   public function close() {
     if ($this->lastResult) {
       $this->lastResult = null;
@@ -257,9 +261,17 @@ abstract class AphrontBaseMySQLDatabaseConnection
     //   (SELECT ...) UNION (SELECT ...)
     $is_write = !preg_match('/^[(]*(SELECT|SHOW|EXPLAIN)\s/', $raw_query);
     if ($is_write) {
+      if ($this->getReadOnly()) {
+        throw new Exception(
+          pht(
+            'Attempting to issue a write query on a read-only '.
+            'connection (to database "%s")!',
+            $this->getConfiguration('database')));
+      }
       AphrontWriteGuard::willWrite();
       return true;
     }
+
     return false;
   }
 
@@ -301,6 +313,7 @@ abstract class AphrontBaseMySQLDatabaseConnection
       case 1044: // Access denied to database
       case 1142: // Access denied to table
       case 1143: // Access denied to column
+      case 1227: // Access denied (e.g., no SUPER for SHOW SLAVE STATUS).
         throw new AphrontAccessDeniedQueryException($message);
       case 1045: // Access denied (auth)
         throw new AphrontInvalidCredentialsQueryException($message);

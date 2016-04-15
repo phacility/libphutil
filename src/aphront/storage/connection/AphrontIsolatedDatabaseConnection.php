@@ -22,6 +22,10 @@ final class AphrontIsolatedDatabaseConnection
     }
   }
 
+  public function openConnection() {
+    return;
+  }
+
   public function close() {
     return;
   }

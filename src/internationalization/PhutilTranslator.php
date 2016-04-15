@@ -160,6 +160,7 @@ final class PhutilTranslator extends Phobject {
     switch ($this->localeCode) {
       case 'en_US':
       case 'en_GB':
+      case 'es_ES':
       case 'en_W*':
       case 'en_P*':
       case 'en_R*':
@@ -196,7 +197,7 @@ final class PhutilTranslator extends Phobject {
         return $plural;
 
       default:
-        throw new Exception(pht("Unknown language '%s'.", $this->language));
+        throw new Exception(pht("Unknown locale '%s'.", $this->localeCode));
     }
   }
 

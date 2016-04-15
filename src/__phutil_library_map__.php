@@ -348,6 +348,7 @@ phutil_register_library_map(array(
     'PhutilSimpleOptionsTestCase' => 'parser/__tests__/PhutilSimpleOptionsTestCase.php',
     'PhutilSocketChannel' => 'channel/PhutilSocketChannel.php',
     'PhutilSortVector' => 'utils/PhutilSortVector.php',
+    'PhutilSpanishSpainLocale' => 'internationalization/locales/PhutilSpanishSpainLocale.php',
     'PhutilSprite' => 'sprites/PhutilSprite.php',
     'PhutilSpriteSheet' => 'sprites/PhutilSpriteSheet.php',
     'PhutilStreamIterator' => 'utils/PhutilStreamIterator.php',
@@ -898,6 +899,7 @@ phutil_register_library_map(array(
     'PhutilSimpleOptionsTestCase' => 'PhutilTestCase',
     'PhutilSocketChannel' => 'PhutilChannel',
     'PhutilSortVector' => 'Phobject',
+    'PhutilSpanishSpainLocale' => 'PhutilLocale',
     'PhutilSprite' => 'Phobject',
     'PhutilSpriteSheet' => 'Phobject',
     'PhutilStreamIterator' => array(

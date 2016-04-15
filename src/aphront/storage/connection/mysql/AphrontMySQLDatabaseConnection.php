@@ -51,12 +51,30 @@ final class AphrontMySQLDatabaseConnection
       $pass = $pass->openEnvelope();
     }
 
-    $conn = @mysql_connect(
-      $host,
-      $user,
-      $pass,
-      $new_link = true,
-      $flags = 0);
+    $timeout = $this->getConfiguration('timeout');
+    $timeout_ini = 'mysql.connect_timeout';
+    if ($timeout) {
+      $old_timeout = ini_get($timeout_ini);
+      ini_set($timeout_ini, $timeout);
+    }
+
+    try {
+      $conn = @mysql_connect(
+        $host,
+        $user,
+        $pass,
+        $new_link = true,
+        $flags = 0);
+    } catch (Exception $ex) {
+      if ($timeout) {
+        ini_set($timeout_ini, $old_timeout);
+      }
+      throw $ex;
+    }
+
+    if ($timeout) {
+      ini_set($timeout_ini, $old_timeout);
+    }
 
     if (!$conn) {
       $errno = mysql_errno();
