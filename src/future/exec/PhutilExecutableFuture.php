@@ -104,7 +104,18 @@ abstract class PhutilExecutableFuture extends Future {
    * @task config
    */
   final public function setCWD($cwd) {
-    $this->cwd = (string)$cwd;
+    $cwd = (string)$cwd;
+
+    if (!is_dir($cwd)) {
+      throw new Exception(
+        pht(
+          'Preparing to run a command in directory "%s", but that '.
+          'directory does not exist.',
+          $cwd));
+    }
+
+    $this->cwd = $cwd;
+
     return $this;
   }
 
