@@ -81,7 +81,37 @@ final class AphrontMySQLiDatabaseConnection
   }
 
   protected function rawQuery($raw_query) {
-    return @$this->requireConnection()->query($raw_query);
+    $conn = $this->requireConnection();
+    $time_limit = $this->getQueryTimeout();
+
+    // If we have a query time limit, run this query synchronously but use
+    // the async API. This allows us to kill queries which take too long
+    // without requiring any configuration on the server side.
+    if ($time_limit && $this->supportsAsyncQueries()) {
+      $conn->query($raw_query, MYSQLI_ASYNC);
+
+      $read = array($conn);
+      $error = array($conn);
+      $reject = array($conn);
+
+      $result = mysqli::poll($read, $error, $reject, $time_limit);
+
+      if ($result === false) {
+        $this->closeConnection();
+        throw new Exception(
+          pht('Failed to poll mysqli connection!'));
+      } else if ($result === 0) {
+        $this->closeConnection();
+        throw new AphrontQueryTimeoutQueryException(
+          pht(
+            'Query timed out after %s second(s)!',
+            new PhutilNumber($time_limit)));
+      }
+
+      return @$conn->reap_async_query();
+    }
+
+    return @$conn->query($raw_query);
   }
 
   protected function rawQueries(array $raw_queries) {

@@ -9,6 +9,7 @@ abstract class AphrontDatabaseConnection
 
   private $transactionState;
   private $readOnly;
+  private $queryTimeout;
 
   abstract public function getInsertID();
   abstract public function getAffectedRows();
@@ -46,6 +47,15 @@ abstract class AphrontDatabaseConnection
 
   public function getReadOnly() {
     return $this->readOnly;
+  }
+
+  public function setQueryTimeout($query_timeout) {
+    $this->queryTimeout = $query_timeout;
+    return $this;
+  }
+
+  public function getQueryTimeout() {
+    return $this->queryTimeout;
   }
 
   public function asyncQuery($raw_query) {
