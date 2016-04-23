@@ -17,13 +17,12 @@
  * @{method:setCWD}, and set the environment with @{method:setEnv}.
  *
  * @task command  Executing Passthru Commands
- * @task config   Configuring Passthru Commands
  */
-final class PhutilExecPassthru extends Phobject {
+final class PhutilExecPassthru extends PhutilExecutableFuture {
+
 
   private $command;
-  private $env;
-  private $cwd;
+  private $passthruResult;
 
 
 /* -(  Executing Passthru Commands  )---------------------------------------- */
@@ -72,8 +71,13 @@ final class PhutilExecPassthru extends Phobject {
       $unmasked_command = $command;
     }
 
-    $env = $this->env;
-    $cwd = $this->cwd;
+    if ($this->hasEnv()) {
+      $env = $this->getEnv();
+    } else {
+      $env = null;
+    }
+
+    $cwd = $this->getCWD();
 
     $options = array();
     if (phutil_is_windows()) {
@@ -115,50 +119,23 @@ final class PhutilExecPassthru extends Phobject {
   }
 
 
-/* -(  Configuring Passthru Commands  )-------------------------------------- */
+/* -(  Future  )------------------------------------------------------------- */
 
 
-  /**
-   * Set environmental variables for the subprocess.
-   *
-   * By default, variables are added to the environment of this process. You
-   * can optionally wipe the environment and pass only the specified values.
-   *
-   *   // Env will have "X" and current env ("PATH", etc.)
-   *   $exec->setEnv(array('X' => 'y'));
-   *
-   *   // Env will have ONLY "X".
-   *   $exec->setEnv(array('X' => 'y'), $wipe_process_env = true);
-   *
-   * @param dict  Dictionary of environmental variables.
-   * @param bool  Optionally, pass true to wipe the existing environment clean.
-   * @return this
-   *
-   * @task config
-   */
-  public function setEnv(array $env, $wipe_process_env = false) {
-    if ($wipe_process_env) {
-      $this->env = $env;
-    } else {
-      $this->env = $env + $_ENV;
+  public function isReady() {
+    // This isn't really a future because it executes synchronously and has
+    // full control of the console. We're just implementing the interfaces to
+    // make it easier to share code with ExecFuture.
+
+    if ($this->passthruResult === null) {
+      $this->passthruResult = $this->execute();
     }
-    return $this->env;
+
+    return true;
   }
 
-
-  /**
-   * Set the current working directory for the subprocess (that is, set where
-   * the subprocess will execute). If not set, the default value is the parent's
-   * current working directory.
-   *
-   * @param string  Directory to execute the subprocess in.
-   * @return this
-   *
-   * @task config
-   */
-  public function setCWD($cwd) {
-    $this->cwd = $cwd;
-    return $this;
+  protected function getResult() {
+    return $this->passthruResult;
   }
 
 }

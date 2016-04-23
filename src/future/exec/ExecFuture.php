@@ -19,7 +19,7 @@
  * @task interact Interacting With Commands
  * @task internal Internals
  */
-final class ExecFuture extends Future {
+final class ExecFuture extends PhutilExecutableFuture {
 
   private $pipes        = array();
   private $proc         = null;
@@ -35,8 +35,6 @@ final class ExecFuture extends Future {
   private $stdoutPos    = 0;
   private $stderrPos    = 0;
   private $command      = null;
-  private $env          = null;
-  private $cwd;
 
   private $readBufferSize;
   private $stdoutSizeLimit = PHP_INT_MAX;
@@ -176,59 +174,6 @@ final class ExecFuture extends Future {
    */
   public function setReadBufferSize($read_buffer_size) {
     $this->readBufferSize = $read_buffer_size;
-    return $this;
-  }
-
-
-  /**
-   * Set the current working directory to use when executing the command.
-   *
-   * @param string Directory to set as CWD before executing the command.
-   * @return this
-   * @task config
-   */
-  public function setCWD($cwd) {
-    $this->cwd = $cwd;
-    return $this;
-  }
-
-
-  /**
-   * Set the environment variables to use when executing the command.
-   *
-   * @param array Environment variables to use when executing the command.
-   * @return this
-   * @task config
-   */
-  public function setEnv($env, $wipe_process_env = false) {
-    if ($wipe_process_env) {
-      $this->env = $env;
-    } else {
-      $this->env = $env + $_ENV;
-    }
-    return $this;
-  }
-
-
-  /**
-   * Set the value of a specific environmental variable for this command.
-   *
-   * @param string Environmental variable name.
-   * @param string|null New value, or null to remove this variable.
-   * @return this
-   * @task config
-   */
-  public function updateEnv($key, $value) {
-    if (!is_array($this->env)) {
-      $this->env = $_ENV;
-    }
-
-    if ($value === null) {
-      unset($this->env[$key]);
-    } else {
-      $this->env[$key] = $value;
-    }
-
     return $this;
   }
 
@@ -659,25 +604,13 @@ final class ExecFuture extends Future {
         }
       }
 
-
-      // NOTE: Convert all the environmental variables we're going to pass
-      // into strings before we install PhutilErrorTrap. If something in here
-      // is really an object which is going to throw when we try to turn it
-      // into a string, we want the exception to escape here -- not after we
-      // start trapping errors.
-      $env = $this->env;
-      if ($env !== null) {
-        foreach ($env as $key => $value) {
-          $env[$key] = (string)$value;
-        }
-      }
-
-      // Same for the working directory.
-      if ($this->cwd === null) {
-        $cwd = null;
+      if ($this->hasEnv()) {
+        $env = $this->getEnv();
       } else {
-        $cwd = (string)$this->cwd;
+        $env = null;
       }
+
+      $cwd = $this->getCWD();
 
       // NOTE: See note above about Phage.
       if (class_exists('PhutilErrorTrap')) {
