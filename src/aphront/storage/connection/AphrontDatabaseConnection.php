@@ -10,6 +10,7 @@ abstract class AphrontDatabaseConnection
   private $transactionState;
   private $readOnly;
   private $queryTimeout;
+  private $locks = array();
 
   abstract public function getInsertID();
   abstract public function getAffectedRows();
@@ -64,6 +65,48 @@ abstract class AphrontDatabaseConnection
 
   public static function resolveAsyncQueries(array $conns, array $asyncs) {
     throw new Exception(pht('Async queries are not supported.'));
+  }
+
+
+/* -(  Global Locks  )------------------------------------------------------- */
+
+
+  public function rememberLock($lock) {
+    if (isset($this->locks[$lock])) {
+      throw new Exception(
+        pht(
+          'Trying to remember lock "%s", but this lock has already been '.
+          'remembered.',
+          $lock));
+    }
+
+    $this->locks[$lock] = true;
+    return $this;
+  }
+
+
+  public function forgetLock($lock) {
+    if (empty($this->locks[$lock])) {
+      throw new Exception(
+        pht(
+          'Trying to forget lock "%s", but this connection does not remember '.
+          'that lock.',
+          $lock));
+    }
+
+    unset($this->locks[$lock]);
+    return $this;
+  }
+
+
+  public function forgetAllLocks() {
+    $this->locks = array();
+    return $this;
+  }
+
+
+  public function isHoldingAnyLock() {
+    return (bool)$this->locks;
   }
 
 

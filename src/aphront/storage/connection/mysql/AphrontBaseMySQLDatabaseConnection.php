@@ -184,6 +184,8 @@ abstract class AphrontBaseMySQLDatabaseConnection
 
         $this->throwQueryException($this->connection);
       } catch (AphrontConnectionLostQueryException $ex) {
+        $can_retry = ($retries > 0);
+
         if ($this->isInsideTransaction()) {
           // Zero out the transaction state to prevent a second exception
           // ("program exited with open transaction") from being thrown, since
@@ -193,17 +195,17 @@ abstract class AphrontBaseMySQLDatabaseConnection
             $state->decreaseDepth();
           }
 
-          // We can't close the connection before this because
-          // isInsideTransaction() and getTransactionState() depend on the
-          // connection.
-          $this->close();
+          $can_retry = false;
+        }
 
-          throw $ex;
+        if ($this->isHoldingAnyLock()) {
+          $this->forgetAllLocks();
+          $can_retry = false;
         }
 
         $this->close();
 
-        if (!$retries) {
+        if (!$can_retry) {
           throw $ex;
         }
       }
