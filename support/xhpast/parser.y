@@ -200,6 +200,7 @@ static void yyerror(void* yyscanner, void* _, const char* error) {
 %token T_TRAIT_C
 %token T_YIELD
 %token T_FINALLY
+%token T_ELLIPSIS
 
 %%
 
@@ -684,14 +685,15 @@ is_reference:
 
 unticked_function_declaration_statement:
   function is_reference T_STRING
-  '(' parameter_list ')' '{' inner_statement_list '}' {
+  '(' parameter_list ')' return_type '{' inner_statement_list '}' {
     NSPAN($1, n_FUNCTION_DECLARATION, $9);
     $1->appendChild(NNEW(n_EMPTY));
     $1->appendChild($2);
     $1->appendChild(NTYPE($3, n_STRING));
     $1->appendChild(NEXPAND($4, $5, $6));
-    $$->appendChild(NNEW(n_EMPTY));
-    $1->appendChild(NEXPAND($7, $8, $9));
+    $1->appendChild(NNEW(n_EMPTY));
+    $1->appendChild($7);
+    $1->appendChild(NEXPAND($8, $9, $10));
 
     $$ = NNEW(n_STATEMENT)->appendChild($1);
   }
@@ -976,83 +978,97 @@ parameter_list:
 ;
 
 non_empty_parameter_list:
-  optional_class_type T_VARIABLE {
+  optional_type parameter {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($1);
-    $$->appendChild(NTYPE($2, n_VARIABLE));
+    $$->appendChild($2);
     $$->appendChild(NNEW(n_EMPTY));
 
     $$ = NNEW(n_DECLARATION_PARAMETER_LIST)->appendChild($$);
   }
-| optional_class_type '&' T_VARIABLE {
+| optional_type '&' parameter {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($1);
     $$->appendChild(NTYPE($2, n_VARIABLE_REFERENCE));
-      $2->appendChild(NTYPE($3, n_VARIABLE));
+      $2->appendChild($3);
     $$->appendChild(NNEW(n_EMPTY));
 
     $$ = NNEW(n_DECLARATION_PARAMETER_LIST)->appendChild($$);
   }
-| optional_class_type '&' T_VARIABLE '=' static_scalar {
+| optional_type '&' parameter '=' static_scalar {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($1);
     $$->appendChild(NTYPE($2, n_VARIABLE_REFERENCE));
-      $2->appendChild(NTYPE($3, n_VARIABLE));
+      $2->appendChild($3);
     $$->appendChild($5);
 
     $$ = NNEW(n_DECLARATION_PARAMETER_LIST)->appendChild($$);
   }
-| optional_class_type T_VARIABLE '=' static_scalar {
+| optional_type parameter '=' static_scalar {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($1);
-    $$->appendChild(NTYPE($2, n_VARIABLE));
+    $$->appendChild($2);
     $$->appendChild($4);
 
     $$ = NNEW(n_DECLARATION_PARAMETER_LIST)->appendChild($$);
   }
-| non_empty_parameter_list ',' optional_class_type T_VARIABLE {
+| non_empty_parameter_list ',' optional_type parameter {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($3);
-    $$->appendChild(NTYPE($4, n_VARIABLE));
+    $$->appendChild($4);
     $$->appendChild(NNEW(n_EMPTY));
 
     $$ = $1->appendChild($$);
   }
-| non_empty_parameter_list ',' optional_class_type '&' T_VARIABLE {
+| non_empty_parameter_list ',' optional_type '&' parameter {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($3);
     $$->appendChild(NTYPE($4, n_VARIABLE_REFERENCE));
-      $4->appendChild(NTYPE($5, n_VARIABLE));
+      $4->appendChild($5);
     $$->appendChild(NNEW(n_EMPTY));
 
     $$ = $1->appendChild($$);
   }
-| non_empty_parameter_list ',' optional_class_type '&'
-  T_VARIABLE '=' static_scalar {
+| non_empty_parameter_list ',' optional_type '&'
+  parameter '=' static_scalar {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($3);
     $$->appendChild(NTYPE($4, n_VARIABLE_REFERENCE));
-      $4->appendChild(NTYPE($5, n_VARIABLE));
+      $4->appendChild($5);
     $$->appendChild($7);
 
     $$ = $1->appendChild($$);
   }
-| non_empty_parameter_list ',' optional_class_type
-  T_VARIABLE '=' static_scalar {
+| non_empty_parameter_list ',' optional_type
+  parameter '=' static_scalar {
     $$ = NNEW(n_DECLARATION_PARAMETER);
     $$->appendChild($3);
-    $$->appendChild(NTYPE($4, n_VARIABLE));
+    $$->appendChild($4);
     $$->appendChild($6);
 
     $$ = $1->appendChild($$);
   }
 ;
 
-optional_class_type:
+parameter:
+  T_ELLIPSIS T_VARIABLE {
+    $$ = NTYPE($1, n_UNPACK);
+    $$->appendChild(NTYPE($2, n_VARIABLE));
+  }
+| T_VARIABLE {
+    $$ = NTYPE($1, n_VARIABLE);
+  }
+;
+
+optional_type:
   %empty {
     $$ = NNEW(n_EMPTY);
   }
-| fully_qualified_class_name {
+| type
+;
+
+type:
+  fully_qualified_class_name {
     $$ = $1;
   }
 | T_ARRAY {
@@ -1060,6 +1076,15 @@ optional_class_type:
   }
 | T_CALLABLE {
     $$ = NTYPE($1, n_TYPE_NAME);
+  }
+;
+
+return_type:
+  %empty {
+    $$ = NNEW(n_EMPTY);
+  }
+| ':' type {
+    $$ = $2;
   }
 ;
 
@@ -1182,7 +1207,7 @@ class_statement:
   }
 | method_modifiers function {
     /* empty */
-  } is_reference T_STRING '(' parameter_list ')' method_body {
+  } is_reference T_STRING '(' parameter_list ')' return_type method_body {
     $$ = NNEW(n_METHOD_DECLARATION);
     NMORE($$, $2);
     $$->appendChild($1);
@@ -1191,6 +1216,7 @@ class_statement:
     $$->appendChild(NEXPAND($6, $7, $8));
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild($9);
+    $$->appendChild($10);
 
     $$ = NNEW(n_STATEMENT)->appendChild($$);
   }
@@ -1844,21 +1870,22 @@ expr_without_variable:
   }
 | function is_reference
   '(' parameter_list ')'
-  lexical_vars
+  lexical_vars return_type
   '{' inner_statement_list '}' {
     NSPAN($1, n_FUNCTION_DECLARATION, $9);
     $1->appendChild(NNEW(n_EMPTY));
     $1->appendChild($2);
     $1->appendChild(NNEW(n_EMPTY));
     $1->appendChild(NEXPAND($3, $4, $5));
-    $$->appendChild($6);
-    $1->appendChild(NEXPAND($7, $8, $9));
+    $1->appendChild($6);
+    $1->appendChild($7);
+    $1->appendChild(NEXPAND($8, $9, $10));
 
     $$ = $1;
   }
 | T_STATIC function is_reference
   '(' parameter_list ')'
-  lexical_vars
+  lexical_vars return_type
   '{' inner_statement_list '}' {
     NSPAN($2, n_FUNCTION_DECLARATION, $10);
     NMORE($2, $1);
@@ -1872,7 +1899,8 @@ expr_without_variable:
     $2->appendChild(NNEW(n_EMPTY));
     $2->appendChild(NEXPAND($4, $5, $6));
     $2->appendChild($7);
-    $2->appendChild(NEXPAND($8, $9, $10));
+    $2->appendChild($8);
+    $2->appendChild(NEXPAND($9, $10, $11));
 
     $$ = $2;
   }

@@ -1,7 +1,9 @@
 <?php
 
-/* @generated @undivinable */
-
+/**
+ * @generated
+ * @undivinable
+ */
 function xhp_parser_node_constants() {
   return array(
     9000 => 'n_PROGRAM',
@@ -118,5 +120,6 @@ function xhp_parser_node_constants() {
     9111 => 'n_TRAIT_AS',
     9112 => 'n_YIELD',
     9113 => 'n_FINALLY',
+    9114 => 'n_UNPACK',
   );
 }

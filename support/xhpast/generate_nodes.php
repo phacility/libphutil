@@ -119,6 +119,7 @@ $nodes = array(
   'n_TRAIT_AS',
   'n_YIELD',
   'n_FINALLY',
+  'n_UNPACK',
 );
 
 $nodes = array_combine(
