@@ -11,17 +11,19 @@ final class PhutilRemarkupDefaultBlockRule extends PhutilRemarkupBlockRule {
   }
 
   public function markupText($text, $children) {
+    $engine = $this->getEngine();
+
     $text = trim($text);
     $text = $this->applyRules($text);
 
-    if ($this->getEngine()->isTextMode()) {
+    if ($engine->isTextMode()) {
       if (!$this->getEngine()->getConfig('preserve-linebreaks')) {
         $text = preg_replace('/ *\n */', ' ', $text);
       }
       return $text;
     }
 
-    if ($this->getEngine()->getConfig('preserve-linebreaks')) {
+    if ($engine->getConfig('preserve-linebreaks')) {
       $text = phutil_escape_html_newlines($text);
     }
 
@@ -29,7 +31,14 @@ final class PhutilRemarkupDefaultBlockRule extends PhutilRemarkupBlockRule {
       return null;
     }
 
-    return phutil_tag('p', array(), $text);
+    $default_attributes = $engine->getConfig('default.p.attributes');
+    if ($default_attributes) {
+      $attributes = $default_attributes;
+    } else {
+      $attributes = array();
+    }
+
+    return phutil_tag('p', $attributes, $text);
   }
 
 }
