@@ -89,7 +89,7 @@ abstract class PhutilBufferedIterator extends Phobject implements Iterator {
    * @task iterator
    */
   final public function valid() {
-    return (bool)$this->data;
+    return (bool)count($this->data);
   }
 
 
