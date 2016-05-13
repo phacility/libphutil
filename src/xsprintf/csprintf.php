@@ -107,7 +107,7 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
       break;
 
     case 'R':
-      if (!preg_match('(^[a-zA-Z0-9:/@._-]+$)', $value)) {
+      if (!preg_match('(^[a-zA-Z0-9:/@._+-]+$)', $value)) {
         $value = PhutilCommandString::escapeArgument($value, $mode);
       }
       $type = 's';

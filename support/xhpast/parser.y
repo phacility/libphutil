@@ -1096,27 +1096,22 @@ function_call_parameter_list:
 ;
 
 non_empty_function_call_parameter_list:
-  expr_without_variable {
+  argument {
     $$ = NNEW(n_CALL_PARAMETER_LIST)->appendChild($1);
   }
-| variable {
-    $$ = NNEW(n_CALL_PARAMETER_LIST)->appendChild($1);
+| non_empty_function_call_parameter_list ',' argument {
+    $$ = $1->appendChild($3);
+  }
+;
+
+argument:
+  expr
+| T_ELLIPSIS expr {
+    $$ = NNEW(n_UNPACK)->appendChild($1);
   }
 | '&' w_variable {
     NTYPE($1, n_VARIABLE_REFERENCE);
-    $1->appendChild($2);
-    $$ = NNEW(n_CALL_PARAMETER_LIST)->appendChild($1);
-  }
-| non_empty_function_call_parameter_list ',' expr_without_variable {
-    $$ = $1->appendChild($3);
-  }
-| non_empty_function_call_parameter_list ',' variable {
-    $$ = $1->appendChild($3);
-  }
-| non_empty_function_call_parameter_list ',' '&' w_variable {
-    NTYPE($3, n_VARIABLE_REFERENCE);
-    $3->appendChild($4);
-    $$ = $1->appendChild($3);
+    $$ = $1->appendChild($2);
   }
 ;
 

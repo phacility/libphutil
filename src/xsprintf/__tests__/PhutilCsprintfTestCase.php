@@ -3,13 +3,30 @@
 final class PhutilCsprintfTestCase extends PhutilTestCase {
 
   public function testCommandReadableEscapes() {
-    // For arguments comprised of only characters which are safe in any context,
-    // %R this should avoid adding quotes.
-    $this->assertEqual('ab', (string)csprintf('%R', 'ab'));
+    $inputs = array(
+      // For arguments comprised of only characters which are safe in any
+      // context, %R this should avoid adding quotes.
+      'ab' => true,
 
-    // For arguments which have any characters which are not safe in some
-    // context, %R should apply standard escaping.
-    $this->assertFalse('a b' === (string)csprintf('%R', 'a b'));
+      // For arguments which have any characters which are not safe in some
+      // context, %R should apply standard escaping.
+      'a b' => false,
+
+
+      'http://domain.com/path/' => true,
+      'svn+ssh://domain.com/path/' => true,
+      '`rm -rf`' => false,
+      '$VALUE' => false,
+    );
+
+    foreach ($inputs as $input => $expect_same) {
+      $actual = (string)csprintf('%R', $input);
+      if ($expect_same) {
+        $this->assertEqual($input, $actual);
+      } else {
+        $this->assertFalse($input === $actual);
+      }
+    }
   }
 
   public function testPowershell() {

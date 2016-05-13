@@ -42,9 +42,23 @@ final class PhutilRemarkupQuotesBlockRule extends PhutilRemarkupBlockRule {
       return implode('', $lines);
     }
 
+    $attributes = array();
+    if ($this->getEngine()->isHTMLMailMode()) {
+      $style = array(
+        'border-left: 3px solid #a7b5bf;',
+        'color: #464c5c;',
+        'font-style: italic;',
+        'margin: 4px 0 12px 0;',
+        'padding: 4px 12px;',
+        'background-color: #f8f9fc;',
+      );
+
+      $attributes['style'] = implode(' ', $style);
+    }
+
     return phutil_tag(
       'blockquote',
-      array(),
+      $attributes,
       $children);
   }
 

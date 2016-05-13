@@ -131,23 +131,44 @@ final class PhutilRemarkupCodeBlockRule extends PhutilRemarkupBlockRule {
     $code_body = $this->highlightSource($text, $options);
 
     $name_header = null;
+    $block_style = null;
     if ($this->getEngine()->isHTMLMailMode()) {
-      $header_attributes = array(
-        'style' => 'padding: 6px 8px;
-          background: #fdf5d4;
-          color: rgba(0,0,0,.75);
-          font-weight: bold;
-          display: inline-block;
-          border-top: 1px solid #f1c40f;
-          border-left: 1px solid #f1c40f;
-          border-right: 1px solid #f1c40f;
-          margin-bottom: -1px;',
+      $map = $this->getEngine()->getConfig('phutil.codeblock.style-map');
+
+      if ($map) {
+        $raw_body = id(new PhutilPygmentizeParser())
+          ->setMap($map)
+          ->parse((string)$code_body);
+        $code_body = phutil_safe_html($raw_body);
+      }
+
+      $style_rules = array(
+        'padding: 6px 12px;',
+        'font-size: 13px;',
+        'font-weight: bold;',
+        'display: inline-block;',
+        'border-top-left-radius: 3px;',
+        'border-top-right-radius: 3px;',
+        'color: rgba(0,0,0,.75);',
       );
+
+      if ($options['counterexample']) {
+        $style_rules[] = 'background: #f7e6e6';
+      } else {
+        $style_rules[] = 'background: rgba(71, 87, 120, 0.08);';
+      }
+
+      $header_attributes = array(
+        'style' => implode(' ', $style_rules),
+      );
+
+      $block_style = 'margin: 12px 0;';
     } else {
       $header_attributes = array(
         'class' => 'remarkup-code-header',
       );
     }
+
     if ($options['name']) {
       $name_header = phutil_tag(
         'div',
@@ -161,9 +182,10 @@ final class PhutilRemarkupCodeBlockRule extends PhutilRemarkupBlockRule {
     }
 
     $attributes = array(
-        'class' => $class,
-        'data-code-lang' => $options['lang'],
-        'data-sigil' => 'remarkup-code-block',
+      'class' => $class,
+      'style' => $block_style,
+      'data-code-lang' => $options['lang'],
+      'data-sigil' => 'remarkup-code-block',
     );
 
     return phutil_tag(
@@ -182,17 +204,19 @@ final class PhutilRemarkupCodeBlockRule extends PhutilRemarkupBlockRule {
     $aux_style = null;
 
     if ($this->getEngine()->isHTMLMailMode()) {
+      $aux_style = array(
+        'font: 11px/15px "Menlo", "Consolas", "Monaco", monospace;',
+        'padding: 12px;',
+        'margin: 0;',
+      );
+
       if ($options['counterexample']) {
-        $aux_style = 'border: 1px solid #c0392b;
-          background: #f4dddb;
-          font-size: 10x;
-          padding: 8px;';
+        $aux_style[] = 'background: #f7e6e6;';
       } else {
-        $aux_style = 'border: 1px solid #f1c40f;
-          background: #fdf5d4;
-          font-size: 10x;
-          padding: 8px;';
+        $aux_style[] = 'background: rgba(71, 87, 120, 0.08);';
       }
+
+      $aux_style = implode(' ', $aux_style);
     }
 
     if ($options['lines']) {
