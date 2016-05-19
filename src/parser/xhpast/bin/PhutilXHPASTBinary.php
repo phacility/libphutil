@@ -42,12 +42,12 @@ final class PhutilXHPASTBinary extends Phobject {
       $path,
       array('SKIP_PARSER=1', 'SKIP_SCANNER=1', 'clean', 'all', 'install'));
 
+    self::$version = null;
+
     // Test the binary.
     if (!self::isAvailable()) {
       throw new Exception(pht('%s is broken.', 'xhpast'));
     }
-
-    self::$version = null;
   }
 
   /**
