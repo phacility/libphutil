@@ -1,0 +1,4 @@
+<?php
+1 <=> 2 <=> 3;
+~~~~~~~~~~
+fail-syntax, comment=Spaceship operator is non-associative

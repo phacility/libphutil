@@ -84,12 +84,14 @@ static void yyerror(void* yyscanner, void* _, const char* error) {
   T_SL_EQUAL
   T_SR_EQUAL
 %left '?' ':'
+%right T_COALESCE
 %left T_BOOLEAN_OR
 %left T_BOOLEAN_AND
 %left '|'
 %left '^'
 %left '&'
 %nonassoc T_IS_EQUAL T_IS_NOT_EQUAL T_IS_IDENTICAL T_IS_NOT_IDENTICAL
+  T_SPACESHIP
 %nonassoc '<' T_IS_SMALLER_OR_EQUAL '>' T_IS_GREATER_OR_EQUAL
 %left T_SL T_SR
 %left '+' '-' '.'
@@ -1775,6 +1777,12 @@ expr_without_variable:
     $$->appendChild(NTYPE($2, n_OPERATOR));
     $$->appendChild($3);
   }
+| expr T_SPACESHIP expr {
+    $$ = NNEW(n_BINARY_EXPRESSION);
+    $$->appendChild($1);
+    $$->appendChild(NTYPE($2, n_OPERATOR));
+    $$->appendChild($3);
+  }
 | expr T_INSTANCEOF class_name_reference {
     $$ = NNEW(n_BINARY_EXPRESSION);
     $$->appendChild($1);
@@ -1798,6 +1806,12 @@ expr_without_variable:
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild(NTYPE($3, n_OPERATOR));
     $$->appendChild($4);
+  }
+| expr T_COALESCE expr {
+    $$ = NNEW(n_BINARY_EXPRESSION);
+    $$->appendChild($1);
+    $$->appendChild(NTYPE($2, n_OPERATOR));
+    $$->appendChild($3);
   }
 | internal_functions_in_yacc
 | T_INT_CAST expr {
