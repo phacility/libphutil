@@ -12,11 +12,11 @@
 
 <p><a href="http://www.example.com/" class="remarkup-link" target="_blank" rel="noreferrer">example.com</a></p>
 
-<p><a href="/" class="remarkup-link" target="_blank">/</a></p>
+<p><a href="http://www.example.com/" class="remarkup-link" target="_blank" rel="noreferrer">http://www.example.com/</a></p>
 
-<p><a href="#anchor" class="remarkup-link">#anchor</a></p>
+<p><a href="http://www.example.com/page/#anchor" class="remarkup-link" rel="noreferrer">http://www.example.com/page/#anchor</a></p>
 
-<p><a href="#anchor" class="remarkup-link">Anchors</a></p>
+<p><a href="http://www.example.com/page/#anchor" class="remarkup-link" rel="noreferrer">Anchors</a></p>
 ~~~~~~~~~~
 http://www.example.com/
 
@@ -24,6 +24,6 @@ example.com <http://www.example.com/>
 
 http://www.example.com/
 
-http://www.example.com/#anchor
+http://www.example.com/page/#anchor
 
-Anchors <http://www.example.com/#anchor>
+Anchors <http://www.example.com/page/#anchor>

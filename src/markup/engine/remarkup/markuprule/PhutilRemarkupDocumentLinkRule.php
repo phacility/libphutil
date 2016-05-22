@@ -23,55 +23,60 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
   }
 
   protected function renderHyperlink($link, $name) {
-    if ($this->getEngine()->isTextMode()) {
-      $text = $link;
-      if (strncmp($link, '/', 1) == 0 || strncmp($link, '#', 1) == 0) {
-        $base = $this->getEngine()->getConfig('uri.prefix');
-        if (strncmp($link, '/', 1) == 0) {
-          $base = rtrim($base, '/');
-        }
-        $text = $base.$text;
-      }
+    $engine = $this->getEngine();
 
-      // If present, strip off "mailto:" or "tel:".
-      $text = preg_replace('/^(?:mailto|tel):/', '', $text);
+    $is_anchor = false;
+    if (strncmp($link, '/', 1) == 0) {
+      $base = $engine->getConfig('uri.base');
+      $base = rtrim($base, '/');
+      $link = $base.$link;
+    } else if (strncmp($link, '#', 1) == 0) {
+      $here = $engine->getConfig('uri.here');
+      $link = $here.$link;
 
-      if ($link == $name) {
-        return $text;
-      }
-      return $name.' <'.$text.'>';
-    } else if ($this->getEngine()->isHTMLMailMode()) {
-      if (strncmp($link, '/', 1) == 0 || strncmp($link, '#', 1) == 0) {
-        $base =  $this->getEngine()->getConfig('uri.base');
-        $text = $link;
-        if (strncmp($link, '/', 1) == 0) {
-          $base = rtrim($base, '/');
-        }
-        $link = $base.$text;
-      }
+      $is_anchor = true;
     }
 
-    // By default, we open links in a new window or tab. For anchors on the same
-    // page, just jump normally.
-    $target = '_blank';
-    if (strncmp($link, '#', 1) == 0) {
+    if ($engine->isTextMode()) {
+      // If present, strip off "mailto:" or "tel:".
+      $link = preg_replace('/^(?:mailto|tel):/', '', $link);
+
+      if (!strlen($name)) {
+        return $link;
+      }
+
+      return $name.' <'.$link.'>';
+    }
+
+    if (!strlen($name)) {
+      $name = $link;
+      $name = preg_replace('/^(?:mailto|tel):/', '', $name);
+    }
+
+    if ($engine->getState('toc')) {
+      return $name;
+    }
+
+    $same_window = $engine->getConfig('uri.same-window', false);
+    if ($same_window) {
+      $target = null;
+    } else {
+      $target = '_blank';
+    }
+
+    // For anchors on the same page, always stay here.
+    if ($is_anchor) {
       $target = null;
     }
 
-    $name = preg_replace('/^(?:mailto|tel):/', '', $name);
-
-    if ($this->getEngine()->getState('toc')) {
-      return $name;
-    } else {
-      return phutil_tag(
-        'a',
-        array(
-          'href'    => $link,
-          'class'   => 'remarkup-link',
-          'target'  => $target,
-        ),
-        $name);
-    }
+    return phutil_tag(
+      'a',
+      array(
+        'href'    => $link,
+        'class'   => 'remarkup-link',
+        'target'  => $target,
+      ),
+      $name);
   }
 
   public function markupAlternateLink(array $matches) {
@@ -105,7 +110,7 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
 
   public function markupDocumentLink(array $matches) {
     $uri = trim($matches[1]);
-    $name = trim(idx($matches, 2, $uri));
+    $name = trim(idx($matches, 2));
 
     // If whatever is being linked to begins with "/" or "#", or has "://",
     // or is "mailto:" or "tel:", treat it as a URI instead of a wiki page.

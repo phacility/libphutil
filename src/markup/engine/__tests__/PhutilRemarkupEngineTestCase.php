@@ -38,6 +38,13 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
       case 'toc.txt':
         $engine->setConfig('header.generate-toc', true);
         break;
+      case 'link-same-window.txt':
+        $engine->setConfig('uri.same-window', true);
+        break;
+      case 'link-square.txt':
+        $engine->setConfig('uri.base', 'http://www.example.com/');
+        $engine->setConfig('uri.here', 'http://www.example.com/page/');
+        break;
     }
 
     $actual_output = (string)$engine->markupText($input_remarkup);
@@ -66,7 +73,6 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
 
   private function buildNewTestEngine() {
     $engine = new PhutilRemarkupEngine();
-    $engine->setConfig('uri.prefix', 'http://www.example.com/');
 
     $engine->setConfig(
       'uri.allowed-protocols',
