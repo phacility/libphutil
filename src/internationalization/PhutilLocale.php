@@ -39,6 +39,40 @@ abstract class PhutilLocale extends Phobject {
 
 
   /**
+   * Select a gender variant for this locale. By default, locales use a simple
+   * rule with two gender variants, listed in "<male, female>" order.
+   *
+   * @param const `PhutilPerson` gender constant.
+   * @param list<wild> List of variants.
+   * @return string Variant for use.
+   */
+  public function selectGenderVariant($variant, array $translations) {
+    if ($variant == PhutilPerson::SEX_FEMALE) {
+      return end($translations);
+    } else {
+      return reset($translations);
+    }
+  }
+
+
+  /**
+   * Select a plural variant for this locale. By default, locales use a simple
+   * rule with two plural variants, listed in "<singular, plural>" order.
+   *
+   * @param int Plurality of the value.
+   * @param list<wild> List of variants.
+   * @return string Variant for use.
+   */
+  public function selectPluralVariant($variant, array $translations) {
+    if ($variant == 1) {
+      return reset($translations);
+    } else {
+      return end($translations);
+    }
+  }
+
+
+  /**
    * Flags a locale as silly, like "English (Pirate)".
    *
    * These locales are fun but disastrously inappropriate for serious

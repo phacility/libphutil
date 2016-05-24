@@ -19,4 +19,18 @@ final class PhutilCzechLocale extends PhutilLocale {
     return true;
   }
 
+  public function selectPluralVariant($variant, array $translations) {
+    list($singular, $paucal, $plural) = $translations;
+
+    if ($variant == 1) {
+      return $singular;
+    }
+
+    if ($variant >= 2 && $variant <= 4) {
+      return $paucal;
+    }
+
+    return $plural;
+  }
+
 }
