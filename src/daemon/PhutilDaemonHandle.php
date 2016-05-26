@@ -107,13 +107,16 @@ final class PhutilDaemonHandle extends Phobject {
 
     $stderr = trim($stderr);
     if (strlen($stderr)) {
-      $this->logMessage('STDE', $stderr);
+      foreach (phutil_split_lines($stderr, false) as $line) {
+        $this->logMessage('STDE', $line);
+      }
     }
 
     if ($result !== null) {
       list($err) = $result;
+
       if ($err) {
-        $this->logMessage('FAIL', pht('Process exited with error %s', $err));
+        $this->logMessage('FAIL', pht('Process exited with error %s.', $err));
       } else {
         $this->logMessage('DONE', pht('Process exited normally.'));
       }

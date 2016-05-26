@@ -73,7 +73,6 @@ abstract class PhutilDaemon extends Phobject {
   private static $sighandlerInstalled;
 
   final public function __construct(array $argv) {
-    declare(ticks = 1);
     $this->argv = $argv;
 
     if (!self::$sighandlerInstalled) {
@@ -81,7 +80,7 @@ abstract class PhutilDaemon extends Phobject {
       pcntl_signal(SIGTERM, __CLASS__.'::exitOnSignal');
     }
 
-    pcntl_signal(SIGINT,  array($this, 'onGracefulSignal'));
+    pcntl_signal(SIGINT, array($this, 'onGracefulSignal'));
     pcntl_signal(SIGUSR2, array($this, 'onNotifySignal'));
 
     // Without discard mode, this consumes unbounded amounts of memory. Keep
@@ -102,7 +101,7 @@ abstract class PhutilDaemon extends Phobject {
       $daemon = get_class($this);
       fprintf(
         STDERR,
-        "<%s> %s %s\n",
+        "%s %s %s\n",
         '<RAMS>',
         $daemon,
         pht(
@@ -168,7 +167,9 @@ abstract class PhutilDaemon extends Phobject {
   }
 
   public static function exitOnSignal($signo) {
-    // Normally, PHP doesn't invoke destructors when existing in response to
+    self::didCatchSignal($signo);
+
+    // Normally, PHP doesn't invoke destructors when exiting in response to
     // a signal. This forces it to do so, so we have a fighting chance of
     // releasing any locks, leases or resources on our way out.
     exit(128 + $signo);
@@ -207,10 +208,12 @@ abstract class PhutilDaemon extends Phobject {
   }
 
   final public function onGracefulSignal($signo) {
+    self::didCatchSignal($signo);
     $this->inGracefulShutdown = true;
   }
 
   final public function onNotifySignal($signo) {
+    self::didCatchSignal($signo);
     $this->notifyReceived = true;
     $this->onNotify($signo);
   }
@@ -230,8 +233,18 @@ abstract class PhutilDaemon extends Phobject {
   final protected function log($message) {
     if ($this->verbose) {
       $daemon = get_class($this);
-      fprintf(STDERR, "<%s> %s %s\n", '<VERB>', $daemon, $message);
+      fprintf(STDERR, "%s %s %s\n", '<VERB>', $daemon, $message);
     }
+  }
+
+  private static function didCatchSignal($signo) {
+    $signame = phutil_get_signal_name($signo);
+    fprintf(
+      STDERR,
+      "%s Caught signal %s (%s).\n",
+      '<SGNL>',
+      $signo,
+      $signame);
   }
 
 
@@ -250,6 +263,7 @@ abstract class PhutilDaemon extends Phobject {
     if (!strlen($data)) {
       return '';
     }
+
     return $this->encodeOverseerMessage(self::MESSAGETYPE_STDOUT, $data);
   }
 
