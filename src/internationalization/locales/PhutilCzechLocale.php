@@ -13,12 +13,6 @@ final class PhutilCzechLocale extends PhutilLocale {
     return pht('Czech (Czech Republic)');
   }
 
-  public function isTestLocale() {
-    // This doesn't have any translations yet so mark it as a test locale
-    // for now.
-    return true;
-  }
-
   public function selectPluralVariant($variant, array $translations) {
     list($singular, $paucal, $plural) = $translations;
 
