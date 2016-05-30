@@ -261,6 +261,8 @@ EOHELP
 
     unset($this->daemons[$id]);
 
+    $daemon->didRemoveDaemon();
+
     return $this;
   }
 

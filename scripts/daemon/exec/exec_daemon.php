@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(ticks = 1);
+
 require_once dirname(__FILE__).'/../../__init_script__.php';
 
 if (!posix_isatty(STDOUT)) {

@@ -767,8 +767,18 @@ final class ExecFuture extends PhutilExecutableFuture {
         fclose($stderr);
       }
 
+      // If the subprocess got nuked with `kill -9`, we get a -1 exitcode.
+      // Upgrade this to a slightly more informative value by examining the
+      // terminating signal code.
+      $err = $status['exitcode'];
+      if ($err == -1) {
+        if ($status['signaled']) {
+          $err = 128 + $status['termsig'];
+        }
+      }
+
       $this->result = array(
-        $status['exitcode'],
+        $err,
         $this->stdout,
         $this->stderr,
       );
@@ -854,6 +864,7 @@ final class ExecFuture extends PhutilExecutableFuture {
       }
     }
     $this->procStatus = proc_get_status($this->proc);
+
     return $this->procStatus;
   }
 

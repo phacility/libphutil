@@ -107,13 +107,16 @@ final class PhutilDaemonHandle extends Phobject {
 
     $stderr = trim($stderr);
     if (strlen($stderr)) {
-      $this->logMessage('STDE', $stderr);
+      foreach (phutil_split_lines($stderr, false) as $line) {
+        $this->logMessage('STDE', $line);
+      }
     }
 
     if ($result !== null) {
       list($err) = $result;
+
       if ($err) {
-        $this->logMessage('FAIL', pht('Process exited with error %s', $err));
+        $this->logMessage('FAIL', pht('Process exited with error %s.', $err));
       } else {
         $this->logMessage('DONE', pht('Process exited normally.'));
       }
@@ -122,7 +125,6 @@ final class PhutilDaemonHandle extends Phobject {
 
       if ($this->shouldShutdown) {
         $this->restartAt = null;
-        $this->dispatchEvent(self::EVENT_WILL_EXIT);
       } else {
         $this->scheduleRestart();
       }
@@ -362,11 +364,7 @@ final class PhutilDaemonHandle extends Phobject {
 
   public function didReceiveGracefulSignal($signo) {
     $this->shouldShutdown = true;
-    if (!$this->isRunning()) {
-      // If we aren't running a daemon, emit this event now. Otherwise, we'll
-      // emit it when the daemon exits.
-      $this->dispatchEvent(self::EVENT_WILL_EXIT);
-    }
+    $this->shouldRestart = false;
 
     $signame = phutil_get_signal_name($signo);
     if ($signame) {
@@ -386,6 +384,9 @@ final class PhutilDaemonHandle extends Phobject {
   }
 
   public function didReceiveTerminalSignal($signo) {
+    $this->shouldShutdown = true;
+    $this->shouldRestart = false;
+
     $signame = phutil_get_signal_name($signo);
     if ($signame) {
       $sigmsg = pht(
@@ -398,7 +399,6 @@ final class PhutilDaemonHandle extends Phobject {
 
     $this->logMessage('EXIT', $sigmsg, $signo);
     $this->annihilateProcessGroup();
-    $this->dispatchEvent(self::EVENT_WILL_EXIT);
   }
 
   private function logMessage($type, $message, $context = null) {
@@ -413,6 +413,10 @@ final class PhutilDaemonHandle extends Phobject {
         'message' => $message,
         'context' => $context,
       ));
+  }
+
+  public function didRemoveDaemon() {
+    $this->dispatchEvent(self::EVENT_WILL_EXIT);
   }
 
 }

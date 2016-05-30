@@ -63,8 +63,14 @@ final class PhutilTranslator extends Phobject {
   }
 
   public function translate($text /* , ... */) {
-    $translation = idx($this->translations, $text, $text);
+    if (isset($this->translations[$text])) {
+      $translation = $this->translations[$text];
+    } else {
+      $translation = $text;
+    }
+
     $args = func_get_args();
+
     while (is_array($translation)) {
       $arg = next($args);
       $translation = $this->chooseVariant($translation, $arg);
@@ -154,51 +160,32 @@ final class PhutilTranslator extends Phobject {
       return null;
     }
 
-    // TODO: Move these into PhutilLocale if benchmarks show we aren't
-    // eating too much of a performance cost.
+    if ($is_sex) {
+      return $this->locale->selectGenderVariant($variant, $translations);
+    } else {
 
-    switch ($this->localeCode) {
-      case 'en_US':
-      case 'en_GB':
-      case 'es_ES':
-      case 'en_W*':
-      case 'en_P*':
-      case 'en_R*':
-      case 'en_A*':
-        list($singular, $plural) = $translations;
+      // NOTE: This is a microoptimization which slightly improves performance
+      // for common languages with simple plural rules. Languages do not need
+      // to be added here even if they use the simple rules. The benefit of
+      // inclusion here is small, on the order of 5%.
+      static $simple_plural = array(
+        'en_US' => true,
+        'en_GB' => true,
+        'en_ES' => true,
+        'ko_KR' => true,
+      );
+
+      if (isset($simple_plural[$this->localeCode])) {
         if ($variant == 1) {
-          return $singular;
+          return reset($translations);
+        } else {
+          return end($translations);
         }
-        return $plural;
-
-      case 'cs_CZ':
-        if ($is_sex) {
-          list($male, $female) = $translations;
-          if ($variant == PhutilPerson::SEX_FEMALE) {
-            return $female;
-          }
-          return $male;
-        }
-
-        list($singular, $paucal, $plural) = $translations;
-        if ($variant == 1) {
-          return $singular;
-        }
-        if ($variant >= 2 && $variant <= 4) {
-          return $paucal;
-        }
-        return $plural;
-
-      case 'ko_KR':
-        list($singular, $plural) = $translations;
-        if ($variant == 1) {
-          return $singular;
-        }
-        return $plural;
-
-      default:
-        throw new Exception(pht("Unknown locale '%s'.", $this->localeCode));
+      } else {
+        return $this->locale->selectPluralVariant($variant, $translations);
+      }
     }
+
   }
 
   /**
