@@ -65,6 +65,11 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('@', $uri->getPass());
     $this->assertEqual('http://%40:%40@domain.com/', (string)$uri);
 
+    $uri = new PhutilURI('http://%2F:%2F@domain.com/');
+    $this->assertEqual('/', $uri->getUser());
+    $this->assertEqual('/', $uri->getPass());
+    $this->assertEqual('http://%2F:%2F@domain.com/', (string)$uri);
+
     // These tests are covering cases where cURL and parse_url() behavior
     // may differ in potentially dangerous ways. See T6755 for discussion.
 
