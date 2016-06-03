@@ -51,22 +51,31 @@ final class PhutilRemarkupHyperlinkRule extends PhutilRemarkupRule {
   }
 
   protected function renderHyperlink($link) {
-    if ($this->getEngine()->isTextMode()) {
+    $engine = $this->getEngine();
+
+    if ($engine->isTextMode()) {
       return $link;
     }
 
-    if ($this->getEngine()->getState('toc')) {
+    if ($engine->getState('toc')) {
       return $link;
-    } else {
-      return phutil_tag(
-        'a',
-        array(
-          'href'    => $link,
-          'class'   => 'remarkup-link',
-          'target'  => '_blank',
-        ),
-        $link);
     }
+
+    $same_window = $engine->getConfig('uri.same-window', false);
+    if ($same_window) {
+      $target = null;
+    } else {
+      $target = '_blank';
+    }
+
+    return phutil_tag(
+      'a',
+      array(
+        'href'    => $link,
+        'class'   => 'remarkup-link',
+        'target'  => $target,
+      ),
+      $link);
   }
 
   protected function markupHyperlinkUngreedy($matches) {

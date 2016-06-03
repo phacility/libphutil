@@ -76,10 +76,10 @@ final class PhutilURI extends Phobject {
 
       $auth = '';
       if (strlen($this->user) && strlen($this->pass)) {
-        $auth = phutil_escape_uri($this->user).':'.
-                phutil_escape_uri($this->pass).'@';
+        $auth = rawurlencode($this->user).':'.
+                rawurlencode($this->pass).'@';
       } else if (strlen($this->user)) {
-        $auth = phutil_escape_uri($this->user).'@';
+        $auth = rawurlencode($this->user).'@';
       }
 
       $prefix = $protocol.'://'.$auth.$this->domain;
