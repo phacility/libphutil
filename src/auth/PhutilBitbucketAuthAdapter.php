@@ -13,7 +13,7 @@ final class PhutilBitbucketAuthAdapter extends PhutilOAuth1AuthAdapter {
   }
 
   public function getAccountURI() {
-    $name = $this->getAccountName();
+    $name = $this->getAccountID();
     if (strlen($name)) {
       return 'https://bitbucket.org/'.$name;
     }
