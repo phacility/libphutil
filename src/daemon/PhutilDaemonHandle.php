@@ -18,7 +18,6 @@ final class PhutilDaemonHandle extends Phobject {
   private $heartbeat;
   private $stdoutBuffer;
   private $restartAt;
-  private $silent;
   private $shouldRestart = true;
   private $shouldShutdown;
   private $future;
@@ -55,15 +54,6 @@ final class PhutilDaemonHandle extends Phobject {
 
   public function getFuture() {
     return $this->future;
-  }
-
-  public function setSilent($silent) {
-    $this->silent = $silent;
-    return $this;
-  }
-
-  public function getSilent() {
-    return $this->silent;
   }
 
   public function setTraceMemory($trace_memory) {
@@ -402,10 +392,7 @@ final class PhutilDaemonHandle extends Phobject {
   }
 
   private function logMessage($type, $message, $context = null) {
-    if (!$this->getSilent()) {
-      echo date('Y-m-d g:i:s A').' ['.$type.'] '.$message."\n";
-    }
-
+    $this->overseer->logMessage($type, $message, $context);
     $this->dispatchEvent(
       self::EVENT_DID_LOG,
       array(

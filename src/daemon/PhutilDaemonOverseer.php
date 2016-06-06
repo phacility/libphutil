@@ -148,7 +148,6 @@ EOHELP
 
     $this->modules = PhutilDaemonOverseerModule::getAllModules();
 
-    declare(ticks = 1);
     pcntl_signal(SIGUSR2, array($this, 'didReceiveNotifySignal'));
 
     pcntl_signal(SIGHUP,  array($this, 'didReceiveReloadSignal'));
@@ -181,7 +180,6 @@ EOHELP
           'autoscale' => $config['autoscale'],
         ));
 
-      $daemon->setSilent((!$this->traceMode && !$this->verbose));
       $daemon->setTraceMemory($this->traceMemory);
 
       $this->addDaemon($daemon, $config);
@@ -193,12 +191,18 @@ EOHELP
       foreach ($this->modules as $module) {
         try {
           if ($module->shouldReloadDaemons()) {
+            $this->logMessage(
+              'RELO',
+              pht(
+                'Reloading daemons (triggered by overseer module "%s").',
+                get_class($module)));
             $should_reload = true;
           }
         } catch (Exception $ex) {
           phlog($ex);
         }
       }
+
       if ($should_reload) {
         $this->didReceiveReloadSignal(SIGHUP);
         $should_reload = false;
@@ -500,6 +504,12 @@ EOHELP
       $this->lastPidfile = $pidfile;
       $pidfile_path = $this->piddir.'/daemon.'.getmypid();
       Filesystem::writeFile($pidfile_path, json_encode($pidfile));
+    }
+  }
+
+  public function logMessage($type, $message, $context = null) {
+    if ($this->traceMode || $this->verbose) {
+      error_log(date('Y-m-d g:i:s A').' ['.$type.'] '.$message);
     }
   }
 
