@@ -298,6 +298,8 @@ phutil_register_library_map(array(
     'PhutilPortuguesePortugalLocale' => 'internationalization/locales/PhutilPortuguesePortugalLocale.php',
     'PhutilPregsprintfTestCase' => 'xsprintf/__tests__/PhutilPregsprintfTestCase.php',
     'PhutilProcessGroupDaemon' => 'daemon/torture/PhutilProcessGroupDaemon.php',
+    'PhutilProseDiff' => 'utils/PhutilProseDiff.php',
+    'PhutilProseDifferenceEngine' => 'utils/PhutilProseDifferenceEngine.php',
     'PhutilProtocolChannel' => 'channel/PhutilProtocolChannel.php',
     'PhutilProxyException' => 'error/PhutilProxyException.php',
     'PhutilProxyIterator' => 'utils/PhutilProxyIterator.php',
@@ -859,6 +861,8 @@ phutil_register_library_map(array(
     'PhutilPortuguesePortugalLocale' => 'PhutilLocale',
     'PhutilPregsprintfTestCase' => 'PhutilTestCase',
     'PhutilProcessGroupDaemon' => 'PhutilTortureTestDaemon',
+    'PhutilProseDiff' => 'Phobject',
+    'PhutilProseDifferenceEngine' => 'Phobject',
     'PhutilProtocolChannel' => 'PhutilChannelChannel',
     'PhutilProxyException' => 'Exception',
     'PhutilProxyIterator' => array(
