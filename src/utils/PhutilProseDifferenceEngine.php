@@ -86,6 +86,12 @@ final class PhutilProseDifferenceEngine extends Phobject {
       $results[] = $result;
     }
 
+    // If the input ended with a delimiter, we can get an empty final piece.
+    // Just discard it.
+    if (last($results) == '') {
+      array_pop($results);
+    }
+
     return $results;
   }
 
