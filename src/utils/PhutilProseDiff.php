@@ -63,10 +63,12 @@ final class PhutilProseDiff extends Phobject {
       $type = $part['type'];
 
       if ($last !== $type) {
-        $combined[] = array(
-          'type' => $last,
-          'text' => $last_text,
-        );
+        if ($last !== null) {
+          $combined[] = array(
+            'type' => $last,
+            'text' => $last_text,
+          );
+        }
         $last_text = null;
         $last = $type;
       }
