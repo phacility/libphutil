@@ -20,6 +20,7 @@ final class PhutilProseDiff extends Phobject {
     // Reorder sequences of removed and added sections to put all the "-"
     // parts together first, then all the "+" parts together. This produces
     // a more human-readable result than intermingling them.
+
     $o_run = array();
     $n_run = array();
     $result = array();
@@ -33,24 +34,22 @@ final class PhutilProseDiff extends Phobject {
           $n_run[] = $part;
           break;
         default:
-          foreach ($o_run as $o) {
-            $result[] = $o;
-          }
-          foreach ($n_run as $n) {
-            $result[] = $n;
+          if ($o_run || $n_run) {
+            foreach ($this->combineRuns($o_run, $n_run) as $merged_part) {
+              $result[] = $merged_part;
+            }
+            $o_run = array();
+            $n_run = array();
           }
           $result[] = $part;
-          $o_run = array();
-          $n_run = array();
           break;
       }
     }
 
-    foreach ($o_run as $o) {
-      $result[] = $o;
-    }
-    foreach ($n_run as $n) {
-      $result[] = $n;
+    if ($o_run || $n_run) {
+      foreach ($this->combineRuns($o_run, $n_run) as $part) {
+        $result[] = $part;
+      }
     }
 
     // Now, combine consecuitive runs of the same type of change (like a
@@ -87,5 +86,110 @@ final class PhutilProseDiff extends Phobject {
 
     return $this;
   }
+
+  private function combineRuns($o_run, $n_run) {
+    $o_merge = $this->mergeParts($o_run);
+    $n_merge = $this->mergeParts($n_run);
+
+    // When removed and added blocks share a prefix or suffix, we sometimes
+    // want to count it as unchanged (for example, if it is whitespace) but
+    // sometimes want to count it as changed (for example, if it is a word
+    // suffix like "ing"). Find common prefixes and suffixes of these layout
+    // characters and emit them as "=" (unchanged) blocks.
+
+    $layout_characters = array(
+      ' ' => true,
+      "\n" => true,
+      '.' => true,
+      '!' => true,
+      ',' => true,
+      '?' => true,
+    );
+
+    $o_text = $o_merge['text'];
+    $n_text = $n_merge['text'];
+    $o_len = strlen($o_text);
+    $n_len = strlen($n_text);
+    $min_len = min($o_len, $n_len);
+
+    $prefix_len = 0;
+    for ($pos = 0; $pos < $min_len; $pos++) {
+      $o = $o_text[$pos];
+      $n = $n_text[$pos];
+      if ($o !== $n) {
+        break;
+      }
+      if (empty($layout_characters[$o])) {
+        break;
+      }
+      $prefix_len++;
+    }
+
+    $suffix_len = 0;
+    for ($pos = 1; $pos <= $min_len; $pos++) {
+      $o = $o_text[$o_len - $pos];
+      $n = $n_text[$n_len - $pos];
+      if ($o !== $n) {
+        break;
+      }
+      if (empty($layout_characters[$o])) {
+        break;
+      }
+      $suffix_len++;
+    }
+
+    $results = array();
+
+    if ($prefix_len) {
+      $results[] = array(
+        'type' => '=',
+        'text' => substr($o_text, 0, $prefix_len),
+      );
+    }
+
+    if ($prefix_len < $o_len) {
+      $results[] = array(
+        'type' => '-',
+        'text' => substr($o_text, $prefix_len, $o_len - $suffix_len),
+      );
+    }
+
+    if ($prefix_len < $n_len) {
+      $results[] = array(
+        'type' => '+',
+        'text' => substr($n_text, $prefix_len, $n_len - $suffix_len),
+      );
+    }
+
+    if ($suffix_len) {
+      $results[] = array(
+        'type' => '=',
+        'text' => substr($o_text, -$suffix_len),
+      );
+    }
+
+    return $results;
+  }
+
+  private function mergeParts(array $parts) {
+    $text = '';
+    $type = null;
+    foreach ($parts as $part) {
+      $part_type = $part['type'];
+      if ($type === null) {
+        $type = $part_type;
+      }
+      if ($type !== $part_type) {
+        throw new Exception(pht('Can not merge parts of dissimilar types!'));
+      }
+      $text .= $part['text'];
+    }
+
+    return array(
+      'type' => $type,
+      'text' => $text,
+    );
+  }
+
 
 }

@@ -57,6 +57,35 @@ final class PhutilProseDiffTestCase extends PhutilTestCase {
       ),
       pht('"Says/remarks" word edit smoothenss.'));
 
+    $this->assertProseParts(
+      'See screenshots',
+      'Viewed video files',
+      array(
+        '- See screenshots',
+        '+ Viewed video files',
+      ),
+      pht('Complete paragraph rewrite.'));
+
+    $this->assertProseParts(
+      'xaaax',
+      'xbbbx',
+      array(
+        '- xaaax',
+        '+ xbbbx',
+      ),
+      pht('Whole word rewrite with common prefix and suffix.'));
+
+    $this->assertProseParts(
+      ' aaa ',
+      ' bbb ',
+      array(
+        '=  ',
+        '- aaa',
+        '+ bbb',
+        '=  ',
+      ),
+      pht('Whole word rewrite with whitespace prefix and suffix.'));
+
   }
 
   private function assertProseParts($old, $new, array $expect_parts, $label) {

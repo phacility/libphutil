@@ -288,11 +288,15 @@ final class PhutilEditDistanceMatrix extends Phobject {
 
     $str = strrev($str);
 
+    // We pad the edit string before smoothing it, so ranges of similar
+    // characters at the beginning or end of the string can also be smoothed.
+    $str = $this->padEditString($str);
+
     if ($this->getApplySmoothing()) {
       $str = $this->applySmoothing($str);
     }
 
-    return $this->padEditString($str);
+    return $str;
   }
 
   private function padEditString($str) {
@@ -512,9 +516,9 @@ final class PhutilEditDistanceMatrix extends Phobject {
     // since there are fewer choppy runs of short added and removed substrings.
     do {
       $original = $result;
-      $result = preg_replace('/([xdi])(s{3})([xdi])/', '$1xxx$3', $result);
-      $result = preg_replace('/([xdi])(s{2})([xdi])/', '$1xx$3', $result);
-      $result = preg_replace('/([xdi])(s{1})([xdi])/', '$1x$3', $result);
+      $result = preg_replace('/(^|[xdi])(s{3})([xdi]|\z)/', '$1xxx$3', $result);
+      $result = preg_replace('/(^|[xdi])(s{2})([xdi]|\z)/', '$1xx$3', $result);
+      $result = preg_replace('/(^|[xdi])(s{1})([xdi]|\z)/', '$1x$3', $result);
     } while ($result != $original);
 
     return $result;
