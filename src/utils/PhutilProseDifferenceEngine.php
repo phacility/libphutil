@@ -28,7 +28,7 @@ final class PhutilProseDifferenceEngine extends Phobject {
     // For word-level and character-level changes, smooth the output string
     // to reduce the choppiness of the diff.
     if ($level > 1) {
-      $matrix->setApplySmoothing(true);
+      $matrix->setApplySmoothing(PhutilEditDistanceMatrix::SMOOTHING_FULL);
     }
 
     $u_pos = 0;

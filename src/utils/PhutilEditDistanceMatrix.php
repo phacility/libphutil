@@ -54,7 +54,7 @@ final class PhutilEditDistanceMatrix extends Phobject {
   private $alterCost     = 0;
   private $maximumLength;
   private $computeString;
-  private $applySmoothing;
+  private $applySmoothing = self::SMOOTHING_NONE;
 
   private $x;
   private $y;
@@ -63,6 +63,10 @@ final class PhutilEditDistanceMatrix extends Phobject {
 
   private $distanceMatrix = null;
   private $typeMatrix = null;
+
+  const SMOOTHING_NONE = 'none';
+  const SMOOTHING_INTERNAL = 'internal';
+  const SMOOTHING_FULL = 'full';
 
   public function setMaximumLength($maximum_length) {
     $this->maximumLength = $maximum_length;
@@ -288,12 +292,30 @@ final class PhutilEditDistanceMatrix extends Phobject {
 
     $str = strrev($str);
 
-    // We pad the edit string before smoothing it, so ranges of similar
-    // characters at the beginning or end of the string can also be smoothed.
-    $str = $this->padEditString($str);
+    // For full smoothing, we pad the edit string before smoothing it, so
+    // ranges of similar characters at the beginning or end of the string can
+    // also be smoothed.
 
-    if ($this->getApplySmoothing()) {
-      $str = $this->applySmoothing($str);
+    // For internal smoothing, we only smooth ranges within the change itself.
+
+    $smoothing = $this->getApplySmoothing();
+    switch ($smoothing) {
+      case self::SMOOTHING_FULL:
+        $str = $this->padEditString($str);
+        $str = $this->applySmoothing($str, true);
+        break;
+      case self::SMOOTHING_INTERNAL:
+        $str = $this->applySmoothing($str, false);
+        $str = $this->padEditString($str);
+        break;
+      case self::SMOOTHING_NONE:
+        $str = $this->padEditString($str);
+        break;
+      default:
+        throw new Exception(
+          pht(
+            'Unknown smoothing type "%s".',
+            $smoothing));
     }
 
     return $str;
@@ -508,20 +530,26 @@ final class PhutilEditDistanceMatrix extends Phobject {
     }
   }
 
-  private function applySmoothing($str) {
-    $result = $str;
+  private function applySmoothing($str, $full) {
+    if ($full) {
+      $prefix = '(^|[xdi])';
+      $suffix = '([xdi]|\z)';
+    } else {
+      $prefix = '([xdi])';
+      $suffix = '([xdi])';
+    }
 
     // Smooth the string out, by replacing short runs of similar characters
     // with 'x' operations. This makes the result more readable to humans,
     // since there are fewer choppy runs of short added and removed substrings.
     do {
-      $original = $result;
-      $result = preg_replace('/(^|[xdi])(s{3})([xdi]|\z)/', '$1xxx$3', $result);
-      $result = preg_replace('/(^|[xdi])(s{2})([xdi]|\z)/', '$1xx$3', $result);
-      $result = preg_replace('/(^|[xdi])(s{1})([xdi]|\z)/', '$1x$3', $result);
-    } while ($result != $original);
+      $original = $str;
+      $str = preg_replace('/'.$prefix.'(s{3})'.$suffix.'/', '$1xxx$3', $str);
+      $str = preg_replace('/'.$prefix.'(s{2})'.$suffix.'/', '$1xx$3', $str);
+      $str = preg_replace('/'.$prefix.'(s{1})'.$suffix.'/', '$1x$3', $str);
+    } while ($str != $original);
 
-    return $result;
+    return $str;
   }
 
 }
