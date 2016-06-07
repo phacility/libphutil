@@ -25,6 +25,12 @@ final class PhutilProseDifferenceEngine extends Phobject {
       ->setSequences($u_parts, $v_parts)
       ->setComputeString(true);
 
+    // For word-level and character-level changes, smooth the output string
+    // to reduce the choppiness of the diff.
+    if ($level > 1) {
+      $matrix->setApplySmoothing(true);
+    }
+
     $u_pos = 0;
     $v_pos = 0;
 

@@ -54,6 +54,7 @@ final class PhutilEditDistanceMatrix extends Phobject {
   private $alterCost     = 0;
   private $maximumLength;
   private $computeString;
+  private $applySmoothing;
 
   private $x;
   private $y;
@@ -124,6 +125,15 @@ final class PhutilEditDistanceMatrix extends Phobject {
 
   public function getAlterCost() {
     return $this->alterCost;
+  }
+
+  public function setApplySmoothing($apply_smoothing) {
+    $this->applySmoothing = $apply_smoothing;
+    return $this;
+  }
+
+  public function getApplySmoothing() {
+    return $this->applySmoothing;
   }
 
   public function setSequences(array $x, array $y) {
@@ -276,7 +286,13 @@ final class PhutilEditDistanceMatrix extends Phobject {
       }
     }
 
-    return $this->padEditString(strrev($str));
+    $str = strrev($str);
+
+    if ($this->getApplySmoothing()) {
+      $str = $this->applySmoothing($str);
+    }
+
+    return $this->padEditString($str);
   }
 
   private function padEditString($str) {
@@ -486,6 +502,22 @@ final class PhutilEditDistanceMatrix extends Phobject {
       }
       echo "\n";
     }
+  }
+
+  private function applySmoothing($str) {
+    $result = $str;
+
+    // Smooth the string out, by replacing short runs of similar characters
+    // with 'x' operations. This makes the result more readable to humans,
+    // since there are fewer choppy runs of short added and removed substrings.
+    do {
+      $original = $result;
+      $result = preg_replace('/([xdi])(s{3})([xdi])/', '$1xxx$3', $result);
+      $result = preg_replace('/([xdi])(s{2})([xdi])/', '$1xx$3', $result);
+      $result = preg_replace('/([xdi])(s{1})([xdi])/', '$1x$3', $result);
+    } while ($result != $original);
+
+    return $result;
   }
 
 }
