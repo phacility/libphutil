@@ -109,7 +109,20 @@ final class PhutilServiceProfiler extends Phobject {
           }
           break;
         case 'http':
-          $desc = phutil_censor_credentials($data['uri']);
+          if (isset($data['proxy'])) {
+            $proxy = phutil_censor_credentials($data['proxy']);
+          } else {
+            $proxy = null;
+          }
+
+          $uri = phutil_censor_credentials($data['uri']);
+
+          if (strlen($proxy)) {
+            $desc = "{$proxy} >> {$uri}";
+          } else {
+            $desc = $uri;
+          }
+
           break;
         case 'lint':
           $desc = $data['linter'];

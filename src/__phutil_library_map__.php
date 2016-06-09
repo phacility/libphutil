@@ -211,6 +211,7 @@ phutil_register_library_map(array(
     'PhutilGitURI' => 'parser/PhutilGitURI.php',
     'PhutilGitURITestCase' => 'parser/__tests__/PhutilGitURITestCase.php',
     'PhutilGoogleAuthAdapter' => 'auth/PhutilGoogleAuthAdapter.php',
+    'PhutilHTTPEngineExtension' => 'future/http/PhutilHTTPEngineExtension.php',
     'PhutilHangForeverDaemon' => 'daemon/torture/PhutilHangForeverDaemon.php',
     'PhutilHashingIterator' => 'utils/PhutilHashingIterator.php',
     'PhutilHashingIteratorTestCase' => 'utils/__tests__/PhutilHashingIteratorTestCase.php',
@@ -770,6 +771,7 @@ phutil_register_library_map(array(
     'PhutilGitURI' => 'Phobject',
     'PhutilGitURITestCase' => 'PhutilTestCase',
     'PhutilGoogleAuthAdapter' => 'PhutilOAuthAuthAdapter',
+    'PhutilHTTPEngineExtension' => 'Phobject',
     'PhutilHangForeverDaemon' => 'PhutilTortureTestDaemon',
     'PhutilHashingIterator' => array(
       'PhutilProxyIterator',
