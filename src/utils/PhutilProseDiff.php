@@ -16,6 +16,66 @@ final class PhutilProseDiff extends Phobject {
     return $this->parts;
   }
 
+  /**
+   * Get diff parts, but replace large blocks of unchanged text with "."
+   * parts representing missing context.
+   */
+  public function getSummaryParts() {
+    $parts = $this->getParts();
+
+    $head_key = head_key($parts);
+    $last_key = last_key($parts);
+
+    $results = array();
+    foreach ($parts as $key => $part) {
+      $is_head = ($key == $head_key);
+      $is_last = ($key == $last_key);
+
+      switch ($part['type']) {
+        case '=':
+          $pieces = $this->splitTextForSummary($part['text']);
+
+          if ($is_head || $is_last) {
+            $need = 2;
+          } else {
+            $need = 3;
+          }
+
+          // We don't have enough pieces to omit anything, so just continue.
+          if (count($pieces) < $need) {
+            $results[] = $part;
+            break;
+          }
+
+          if (!$is_head) {
+            $results[] = array(
+              'type' => '=',
+              'text' => head($pieces),
+            );
+          }
+
+          $results[] = array(
+            'type' => '.',
+            'text' => null,
+          );
+
+          if (!$is_last) {
+            $results[] = array(
+              'type' => '=',
+              'text' => last($pieces),
+            );
+          }
+          break;
+        default:
+          $results[] = $part;
+          break;
+      }
+    }
+
+    return $results;
+  }
+
+
   public function reorderParts() {
     // Reorder sequences of removed and added sections to put all the "-"
     // parts together first, then all the "+" parts together. This produces
@@ -191,5 +251,30 @@ final class PhutilProseDiff extends Phobject {
     );
   }
 
+  private function splitTextForSummary($text) {
+    $matches = null;
+
+    $ok = preg_match('/^(\n*[^\n]+)\n/', $text, $matches);
+    if (!$ok) {
+      return array($text);
+    }
+
+    $head = $matches[1];
+    $text = substr($text, strlen($head));
+
+    $ok = preg_match('/\n([^\n]+\n*)\z/', $text, $matches);
+    if (!$ok) {
+      return array($text);
+    }
+
+    $last = $matches[1];
+    $text = substr($text, 0, -strlen($last));
+
+    if (!strlen(trim($text))) {
+      return array($head, $last);
+    } else {
+      return array($head, $text, $last);
+    }
+  }
 
 }
