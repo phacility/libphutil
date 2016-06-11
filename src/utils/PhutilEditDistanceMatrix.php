@@ -54,6 +54,7 @@ final class PhutilEditDistanceMatrix extends Phobject {
   private $alterCost     = 0;
   private $maximumLength;
   private $computeString;
+  private $applySmoothing = self::SMOOTHING_NONE;
 
   private $x;
   private $y;
@@ -62,6 +63,10 @@ final class PhutilEditDistanceMatrix extends Phobject {
 
   private $distanceMatrix = null;
   private $typeMatrix = null;
+
+  const SMOOTHING_NONE = 'none';
+  const SMOOTHING_INTERNAL = 'internal';
+  const SMOOTHING_FULL = 'full';
 
   public function setMaximumLength($maximum_length) {
     $this->maximumLength = $maximum_length;
@@ -124,6 +129,15 @@ final class PhutilEditDistanceMatrix extends Phobject {
 
   public function getAlterCost() {
     return $this->alterCost;
+  }
+
+  public function setApplySmoothing($apply_smoothing) {
+    $this->applySmoothing = $apply_smoothing;
+    return $this;
+  }
+
+  public function getApplySmoothing() {
+    return $this->applySmoothing;
   }
 
   public function setSequences(array $x, array $y) {
@@ -276,7 +290,35 @@ final class PhutilEditDistanceMatrix extends Phobject {
       }
     }
 
-    return $this->padEditString(strrev($str));
+    $str = strrev($str);
+
+    // For full smoothing, we pad the edit string before smoothing it, so
+    // ranges of similar characters at the beginning or end of the string can
+    // also be smoothed.
+
+    // For internal smoothing, we only smooth ranges within the change itself.
+
+    $smoothing = $this->getApplySmoothing();
+    switch ($smoothing) {
+      case self::SMOOTHING_FULL:
+        $str = $this->padEditString($str);
+        $str = $this->applySmoothing($str, true);
+        break;
+      case self::SMOOTHING_INTERNAL:
+        $str = $this->applySmoothing($str, false);
+        $str = $this->padEditString($str);
+        break;
+      case self::SMOOTHING_NONE:
+        $str = $this->padEditString($str);
+        break;
+      default:
+        throw new Exception(
+          pht(
+            'Unknown smoothing type "%s".',
+            $smoothing));
+    }
+
+    return $str;
   }
 
   private function padEditString($str) {
@@ -486,6 +528,28 @@ final class PhutilEditDistanceMatrix extends Phobject {
       }
       echo "\n";
     }
+  }
+
+  private function applySmoothing($str, $full) {
+    if ($full) {
+      $prefix = '(^|[xdi])';
+      $suffix = '([xdi]|\z)';
+    } else {
+      $prefix = '([xdi])';
+      $suffix = '([xdi])';
+    }
+
+    // Smooth the string out, by replacing short runs of similar characters
+    // with 'x' operations. This makes the result more readable to humans,
+    // since there are fewer choppy runs of short added and removed substrings.
+    do {
+      $original = $str;
+      $str = preg_replace('/'.$prefix.'(s{3})'.$suffix.'/', '$1xxx$3', $str);
+      $str = preg_replace('/'.$prefix.'(s{2})'.$suffix.'/', '$1xx$3', $str);
+      $str = preg_replace('/'.$prefix.'(s{1})'.$suffix.'/', '$1x$3', $str);
+    } while ($str != $original);
+
+    return $str;
   }
 
 }

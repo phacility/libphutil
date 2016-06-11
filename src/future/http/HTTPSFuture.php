@@ -9,7 +9,6 @@ final class HTTPSFuture extends BaseHTTPFuture {
   private static $results = array();
   private static $pool = array();
   private static $globalCABundle;
-  private static $blindTrustDomains = array();
 
   private $handle;
   private $profilerCallID;
@@ -118,17 +117,6 @@ final class HTTPSFuture extends BaseHTTPFuture {
   }
 
   /**
-   * Set a list of domains to blindly trust. Certificates for these domains
-   * will not be validated.
-   *
-   * @param list<string> List of domain names to trust blindly.
-   * @return void
-   */
-  public static function setBlindlyTrustDomains(array $domains) {
-    self::$blindTrustDomains = array_fuse($domains);
-  }
-
-  /**
    * Load contents of remote URI. Behaves pretty much like
    * `@file_get_contents($uri)` but doesn't require `allow_url_fopen`.
    *
@@ -187,11 +175,15 @@ final class HTTPSFuture extends BaseHTTPFuture {
     $domain = id(new PhutilURI($uri))->getDomain();
 
     if (!$this->handle) {
+      $uri_object = new PhutilURI($uri);
+      $proxy = PhutilHTTPEngineExtension::buildHTTPProxyURI($uri_object);
+
       $profiler = PhutilServiceProfiler::getInstance();
       $this->profilerCallID = $profiler->beginServiceCall(
         array(
           'type' => 'http',
           'uri' => $uri,
+          'proxy' => (string)$proxy,
         ));
 
       if (!self::$multi) {
@@ -347,15 +339,26 @@ final class HTTPSFuture extends BaseHTTPFuture {
         curl_setopt($curl, CURLOPT_CAINFO, $this->getCABundle());
       }
 
-      $domain = id(new PhutilURI($uri))->getDomain();
-      if (!empty(self::$blindTrustDomains[$domain])) {
-        // Disable peer verification for domains that we blindly trust.
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-      } else {
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+      $verify_peer = 1;
+      $verify_host = 2;
+
+      $extensions = PhutilHTTPEngineExtension::getAllExtensions();
+      foreach ($extensions as $extension) {
+        if ($extension->shouldTrustAnySSLAuthorityForURI($uri_object)) {
+          $verify_peer = 0;
+        }
+        if ($extension->shouldTrustAnySSLHostnameForURI($uri_object)) {
+          $verify_host = 0;
+        }
       }
 
+      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $verify_peer);
+      curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $verify_host);
       curl_setopt($curl, CURLOPT_SSLVERSION, 0);
+
+      if ($proxy) {
+        curl_setopt($curl, CURLOPT_PROXY, (string)$proxy);
+      }
     } else {
       $curl = $this->handle;
 
