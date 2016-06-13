@@ -95,6 +95,9 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('good.com', $uri->getDomain());
     $this->assertEqual('http://good.com?u%3Ap%40evil.com%2F=', (string)$uri);
 
+    $uri = new PhutilURI('www.example.com');
+    $this->assertEqual('', $uri->getProtocol());
+    $this->assertEqual('www.example.com', (string)$uri);
   }
 
   public function testURIGeneration() {
@@ -150,6 +153,28 @@ final class PhutilURITestCase extends PhutilTestCase {
       $uri->getQueryParams());
   }
 
+  public function testAmbiguousURIs() {
+    // It's important that this be detected as a Javascript URI, because that
+    // is how browsers will treat it.
+    $uri = new PhutilURI('javascript:evil');
+    $this->assertEqual('javascript', $uri->getProtocol());
+
+
+    // This is "wrong", in that the user probably intends for this to be a
+    // Git-style URI, but we can not easily parse it as one without making the
+    // "javascript" case above unsafe.
+    $uri = new PhutilURI('localhost:todo.txt');
+    $this->assertEqual('localhost', $uri->getProtocol());
+
+
+    // These variants are unambiguous and safe.
+    $uri = new PhutilURI('localhost.com:todo.txt');
+    $this->assertEqual('localhost.com', $uri->getDomain());
+
+    $uri = new PhutilURI('user@localhost:todo.txt');
+    $this->assertEqual('localhost', $uri->getDomain());
+  }
+
   public function testDefaultPorts() {
     $uri = new PhutilURI('http://www.example.com');
     $this->assertEqual('80', $uri->getPortWithProtocolDefault());
@@ -162,6 +187,45 @@ final class PhutilURITestCase extends PhutilTestCase {
 
     $uri = new PhutilURI('unknown://www.example.com');
     $this->assertEqual('', $uri->getPortWithProtocolDefault());
+  }
+
+  public function testGitURIParsing() {
+    $uri = new PhutilURI('git@host.com:path/to/something');
+    $this->assertEqual('ssh', $uri->getProtocol());
+    $this->assertEqual('git', $uri->getUser());
+    $this->assertEqual('host.com', $uri->getDomain());
+    $this->assertEqual('path/to/something', $uri->getPath());
+    $this->assertEqual('git@host.com:path/to/something', (string)$uri);
+
+    $uri = new PhutilURI('host.com:path/to/something');
+    $this->assertEqual('ssh', $uri->getProtocol());
+    $this->assertEqual('', $uri->getUser());
+    $this->assertEqual('host.com', $uri->getDomain());
+    $this->assertEqual('path/to/something', $uri->getPath());
+    $this->assertEqual('host.com:path/to/something', (string)$uri);
+
+    $uri_1 = new PhutilURI('host.com:path/to/something');
+    $uri_2 = new PhutilURI($uri_1);
+
+    $this->assertEqual((string)$uri_1, (string)$uri_2);
+  }
+
+  public function testStrictGitURIParsingOfLeadingWhitespace() {
+    $uri = new PhutilURI(' user@example.com:path');
+    $this->assertEqual('', $uri->getDomain());
+  }
+
+  public function testNoRelativeURIPaths() {
+    $uri = new PhutilURI('user@example.com:relative_path');
+
+    $caught = null;
+    try {
+      $uri->setType(PhutilURI::TYPE_URI);
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertTrue($caught instanceof Exception);
   }
 
 }
