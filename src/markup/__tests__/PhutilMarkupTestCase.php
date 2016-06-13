@@ -164,19 +164,28 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
         }
 
         if ($use_uri) {
-          $href = new PhutilURI($href);
+          $href_value = new PhutilURI($href);
+        } else {
+          $href_value = $href;
         }
 
         $caught = null;
         try {
-          phutil_tag('a', array('href' => $href), 'click for candy');
+          phutil_tag('a', array('href' => $href_value), 'click for candy');
         } catch (Exception $ex) {
           $caught = $ex;
         }
+
+        $desc = pht(
+          'Unexpected result for "%s". <uri = %s, expect exception = %s>',
+          $href,
+          $use_uri ? pht('Yes') : pht('No'),
+          $expect ? pht('Yes') : pht('No'));
+
         $this->assertEqual(
           $expect,
           $caught instanceof Exception,
-          pht('Rejected href: %s', $href));
+          $desc);
       }
     }
   }
