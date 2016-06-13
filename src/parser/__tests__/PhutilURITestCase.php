@@ -151,6 +151,10 @@ final class PhutilURITestCase extends PhutilTestCase {
         'x' => '/',
       ),
       $uri->getQueryParams());
+
+    // This is not a legitimate URI and should not parse as one.
+    $uri = new PhutilURI('fruit.list: apple banana cherry');
+    $this->assertEqual('', $uri->getDomain());
   }
 
   public function testAmbiguousURIs() {

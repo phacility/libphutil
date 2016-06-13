@@ -61,7 +61,7 @@ final class PhutilURI extends Phobject {
       $host = '(?P<host>[^/:]+)';
       $path = ':(?P<path>.*)';
 
-      $ok = preg_match('(^\s*'.$user.$host.$path.'\z)', $uri, $matches);
+      $ok = preg_match('(^'.$user.$host.$path.'\z)', $uri, $matches);
       if (!$ok) {
         throw new Exception(
           pht(
@@ -343,6 +343,12 @@ final class PhutilURI extends Phobject {
 
     $head = $matches['head'];
     $last = $matches['last'];
+
+    // If any part of this has spaces in it, it's not a Git URI. We fail here
+    // so we fall back and don't fail more abruptly later.
+    if (preg_match('(\s)', $head.$last)) {
+      return false;
+    }
 
     // If the first part has a "." or an "@" in it, interpret it as a domain
     // or a "user@host" string.
