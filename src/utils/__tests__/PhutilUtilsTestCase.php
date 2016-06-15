@@ -471,6 +471,9 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       '1 hour in seconds' => 3600,
       '1 day in seconds' => 86400,
       '3 days in seconds' => 259200,
+      '128 bits in bytes' => 16,
+      '1 byte in bytes' => 1,
+      '8 bits in bytes' => 1,
     );
 
     foreach ($cases as $input => $expect) {
@@ -487,6 +490,10 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       '1 day in days',
       '-1 minutes in seconds',
       '1.5 minutes in seconds',
+      '7 bits in bytes',
+      '2 hours in bytes',
+      '1 dram in bytes',
+      '24 bits in seconds',
     );
 
     foreach ($bad_cases as $input) {
