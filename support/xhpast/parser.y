@@ -2707,6 +2707,18 @@ combined_scalar_offset:
     $$->appendChild($3);
     NMORE($$, $4);
   }
+| class_constant '[' dim_offset ']' {
+    $$ = NNEW(n_INDEX_ACCESS);
+    $$->appendChild($1);
+    $$->appendChild($3);
+    NMORE($$, $4);
+  }
+| T_STRING '[' dim_offset ']' {
+    $$ = NNEW(n_INDEX_ACCESS);
+    $$->appendChild(NTYPE($1, n_STRING));
+    $$->appendChild($3);
+    NMORE($$, $4);
+  }
 ;
 
 combined_scalar:
