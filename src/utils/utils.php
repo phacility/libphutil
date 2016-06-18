@@ -1070,6 +1070,8 @@ function phutil_units($description) {
   $src_unit = $matches[2];
   $dst_unit = $matches[3];
 
+  $is_divisor = false;
+
   switch ($dst_unit) {
     case 'seconds':
       switch ($src_unit) {
@@ -1096,6 +1098,24 @@ function phutil_units($description) {
               $src_unit));
       }
       break;
+    case 'bytes':
+      switch ($src_unit) {
+        case 'byte':
+        case 'bytes':
+          $factor = 1;
+          break;
+        case 'bit':
+        case 'bits':
+          $factor = 8;
+          $is_divisor = true;
+          break;
+        default:
+          throw new InvalidArgumentException(
+            pht(
+              'This function can not convert from the unit "%s".',
+              $src_unit));
+      }
+      break;
     default:
       throw new InvalidArgumentException(
         pht(
@@ -1103,7 +1123,17 @@ function phutil_units($description) {
           $dst_unit));
   }
 
-  return $quantity * $factor;
+  if ($is_divisor) {
+    if ($quantity % $factor) {
+      throw new InvalidArgumentException(
+        pht(
+          '"%s" is not an exact quantity.',
+          $description));
+    }
+    return (int)($quantity / $factor);
+  } else {
+    return $quantity * $factor;
+  }
 }
 
 
