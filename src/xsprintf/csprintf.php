@@ -124,7 +124,7 @@ function xsprintf_command($userdata, &$pattern, &$pos, &$value, &$length) {
       if ($is_unmasked) {
         $value = $value->openEnvelope();
       } else {
-        $value = 'xxxxx';
+        $value = '********';
       }
       $value = PhutilCommandString::escapeArgument($value, $mode);
       $type = 's';

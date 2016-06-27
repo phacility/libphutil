@@ -1346,7 +1346,7 @@ function phutil_ini_decode($string) {
  *                  be identified censored.
  */
 function phutil_censor_credentials($string) {
-  return preg_replace(',(?<=://)([^/@\s]+)(?=@|$),', 'xxxxx', $string);
+  return preg_replace(',(?<=://)([^/@\s]+)(?=@|$),', '********', $string);
 }
 
 
