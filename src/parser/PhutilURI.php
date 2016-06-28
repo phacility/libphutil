@@ -350,6 +350,13 @@ final class PhutilURI extends Phobject {
       return false;
     }
 
+    // If the second part only contains digits, assume we're looking at
+    // casually specified "domain.com:123" URI, not a Git URI pointed at an
+    // entirely numeric relative path.
+    if (preg_match('(^\d+\z)', $last)) {
+      return false;
+    }
+
     // If the first part has a "." or an "@" in it, interpret it as a domain
     // or a "user@host" string.
     if (preg_match('([.@])', $head)) {
