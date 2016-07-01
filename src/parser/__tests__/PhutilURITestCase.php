@@ -177,6 +177,14 @@ final class PhutilURITestCase extends PhutilTestCase {
 
     $uri = new PhutilURI('user@localhost:todo.txt');
     $this->assertEqual('localhost', $uri->getDomain());
+
+    // This could either be a Git URI with relative path "22", or a normal URI
+    // with port "22". We should assume it is a port number because this is
+    // relatively common, while relative Git URIs pointing at numeric filenames
+    // are bizarre.
+    $uri = new PhutilURI('domain.com:22');
+    $this->assertEqual('domain.com', $uri->getDomain());
+    $this->assertEqual('22', $uri->getPort());
   }
 
   public function testDefaultPorts() {

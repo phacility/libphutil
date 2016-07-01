@@ -608,18 +608,18 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       // NOTE: We're liberal about censoring here, since we can't tell
       // if this is a truncated password at the end of an input string
       // or a domain name. The version with a "/" isn't censored.
-      'http://example.com' => 'http://xxxxx',
+      'http://example.com' => 'http://********',
       'http://example.com/' => 'http://example.com/',
 
-      'http://username@example.com' => 'http://xxxxx@example.com',
-      'http://user:pass@example.com' => 'http://xxxxx@example.com',
+      'http://username@example.com' => 'http://********@example.com',
+      'http://user:pass@example.com' => 'http://********@example.com',
 
       // We censor these because they might be truncated credentials at the end
       // of the string.
-      'http://user' => 'http://xxxxx',
-      "http://user\n" => "http://xxxxx\n",
+      'http://user' => 'http://********',
+      "http://user\n" => "http://********\n",
 
-      'svn+ssh://user:pass@example.com' => 'svn+ssh://xxxxx@example.com',
+      'svn+ssh://user:pass@example.com' => 'svn+ssh://********@example.com',
     );
 
     foreach ($cases as $input => $expect) {
