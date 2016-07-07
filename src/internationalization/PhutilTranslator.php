@@ -106,7 +106,8 @@ final class PhutilTranslator extends Phobject {
     // any escaping necessary and output HTML.
     $is_html = false;
     foreach ($args as $arg) {
-      if ($arg instanceof PhutilSafeHTML) {
+      if ($arg instanceof PhutilSafeHTML ||
+          $arg instanceof PhutilSafeHTMLProducerInterface) {
         $is_html = true;
         break;
       }
