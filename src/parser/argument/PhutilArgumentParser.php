@@ -114,6 +114,10 @@ final class PhutilArgumentParser extends Phobject {
    * @task parse
    */
   public function parsePartial(array $specs) {
+    return $this->parseInternal($specs, false);
+  }
+
+  private function parseInternal(array $specs, $correct_spelling) {
     $specs = PhutilArgumentSpecification::newSpecsFromList($specs);
     $this->mergeSpecs($specs);
 
@@ -126,6 +130,7 @@ final class PhutilArgumentParser extends Phobject {
     for ($ii = 0; $ii < $len; $ii++) {
       $arg = $argv[$ii];
       $map = null;
+      $options = null;
       if (!is_string($arg)) {
         // Non-string argument; pass it through as-is.
       } else if ($arg == '--') {
@@ -138,6 +143,7 @@ final class PhutilArgumentParser extends Phobject {
         $pre = '--';
         $arg = substr($arg, 2);
         $map = $specs_by_name;
+        $options = array_keys($specs_by_name);
       } else if (!strncmp('-', $arg, 1) && strlen($arg) > 1) {
         $pre = '-';
         $arg = substr($arg, 1);
@@ -149,6 +155,27 @@ final class PhutilArgumentParser extends Phobject {
         $parts = explode('=', $arg, 2);
         if (count($parts) == 2) {
           list($arg, $val) = $parts;
+        }
+
+        // Try to correct flag spelling for full flags, to allow users to make
+        // minor mistakes.
+        if ($correct_spelling && $options && !isset($map[$arg])) {
+          $corrections = PhutilArgumentSpellingCorrector::newFlagCorrector()
+            ->correctSpelling($arg, $options);
+
+          if (count($corrections) == 1) {
+            $corrected = head($corrections);
+
+            $this->logMessage(
+              tsprintf(
+                "%s\n",
+                pht(
+                  '(Assuming "%s" is the British spelling of "%s".)',
+                  $pre.$arg,
+                  $pre.$corrected)));
+
+            $arg = $corrected;
+          }
         }
 
         if (isset($map[$arg])) {
@@ -252,7 +279,7 @@ final class PhutilArgumentParser extends Phobject {
    * @task parse
    */
   public function parseFull(array $specs) {
-    $this->parsePartial($specs);
+    $this->parseInternal($specs, true);
 
     if (count($this->argv)) {
       $arg = head($this->argv);
@@ -357,25 +384,26 @@ final class PhutilArgumentParser extends Phobject {
     }
 
     $flow = array_shift($argv);
-    $flow = strtolower($flow);
 
     if (empty($this->workflows[$flow])) {
-      $workflow_names = array();
-      foreach ($this->workflows as $wf) {
-        $workflow_names[] = $wf->getName();
+      $corrected = PhutilArgumentSpellingCorrector::newCommandCorrector()
+        ->correctSpelling($flow, array_keys($this->workflows));
+
+      if (count($corrected) == 1) {
+        $corrected = head($corrected);
+
+        $this->logMessage(
+          tsprintf(
+            "%s\n",
+            pht(
+              '(Assuming "%s" is the British spelling of "%s".)',
+              $flow,
+              $corrected)));
+
+        $flow = $corrected;
+      } else {
+        $this->raiseUnknownWorkflow($flow, $corrected);
       }
-      sort($workflow_names);
-      $command_list = implode(', ', $workflow_names);
-      $ex_msg = pht(
-        "Invalid command '%s'. Valid commands are: %s.",
-        $flow,
-        $command_list);
-      if (in_array('help', $workflow_names)) {
-        $bin = basename($this->bin);
-        $ex_msg .= "\n".pht(
-          'For more details on available commands, run `%s`.', "{$bin} help");
-      }
-      throw new PhutilArgumentUsageException($ex_msg);
     }
 
     $workflow = $this->workflows[$flow];
@@ -669,9 +697,17 @@ final class PhutilArgumentParser extends Phobject {
   }
 
   public function printUsageException(PhutilArgumentUsageException $ex) {
-    fwrite(
-      STDERR,
-      $this->format("**%s** %s\n", pht('Usage Exception:'), $ex->getMessage()));
+    $message = tsprintf(
+      "**%s** %B\n",
+      pht('Usage Exception:'),
+      $ex->getMessage());
+
+    $this->logMessage($message);
+  }
+
+
+  private function logMessage($message) {
+    fwrite(STDERR, $message);
   }
 
 
@@ -829,6 +865,47 @@ final class PhutilArgumentParser extends Phobject {
 
   public static function isTraceModeEnabled() {
     return self::$traceModeEnabled;
+  }
+
+  private function raiseUnknownWorkflow($flow, array $maybe) {
+    if ($maybe) {
+      sort($maybe);
+
+      $maybe_list = id(new PhutilConsoleList())
+        ->setWrap(false)
+        ->setBullet(null)
+        ->addItems($maybe)
+        ->drawConsoleString();
+
+      $message = tsprintf(
+        "%B\n%B",
+        pht(
+          'Invalid command "%s". Did you mean:',
+          $flow),
+        $maybe_list);
+    } else {
+      $names = mpull($this->workflows, 'getName');
+      sort($names);
+
+      $message = tsprintf(
+        '%B',
+        pht(
+          'Invalid command "%s". Valid commands are: %s.',
+          $flow,
+          implode(', ', $names)));
+    }
+
+    if (isset($this->workflows['help'])) {
+      $binary = basename($this->bin);
+      $message = tsprintf(
+        "%B\n%s",
+        $message,
+        pht(
+          'For details on available commands, run `%s`.',
+          "{$binary} help"));
+    }
+
+    throw new PhutilArgumentUsageException($message);
   }
 
 }
