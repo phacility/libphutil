@@ -74,7 +74,7 @@ final class AphrontMySQLiDatabaseConnection
 
     $ok = @$conn->set_charset('utf8mb4');
     if (!$ok) {
-      $ok = $conn->set_charset('utf8');
+      $ok = $conn->set_charset('binary');
     }
 
     return $conn;

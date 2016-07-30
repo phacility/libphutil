@@ -251,6 +251,32 @@ final class Filesystem extends Phobject {
 
 
   /**
+   * Copy a file, preserving file attributes (if relevant for the OS).
+   *
+   * @param string  File path to copy from.  This file must exist and be
+   *                readable, or an exception will be thrown.
+   * @param string  File path to copy to.  If a file exists at this path
+   *                already, it wll be overwritten.
+   *
+   * @task  file
+   */
+  public static function copyFile($from, $to) {
+    $from = self::resolvePath($from);
+    $to   = self::resolvePath($to);
+
+    self::assertExists($from);
+    self::assertIsFile($from);
+    self::assertReadable($from);
+
+    if (phutil_is_windows()) {
+      execx('copy /Y %s %s', $from, $to);
+    } else {
+      execx('cp -p %s %s', $from, $to);
+    }
+  }
+
+
+  /**
    * Remove a file or directory.
    *
    * @param  string    File to a path or directory to remove.

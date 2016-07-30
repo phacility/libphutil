@@ -105,6 +105,8 @@ phutil_register_library_map(array(
     'PhutilArgumentSpecification' => 'parser/argument/PhutilArgumentSpecification.php',
     'PhutilArgumentSpecificationException' => 'parser/argument/exception/PhutilArgumentSpecificationException.php',
     'PhutilArgumentSpecificationTestCase' => 'parser/argument/__tests__/PhutilArgumentSpecificationTestCase.php',
+    'PhutilArgumentSpellingCorrector' => 'parser/argument/PhutilArgumentSpellingCorrector.php',
+    'PhutilArgumentSpellingCorrectorTestCase' => 'parser/argument/__tests__/PhutilArgumentSpellingCorrectorTestCase.php',
     'PhutilArgumentUsageException' => 'parser/argument/exception/PhutilArgumentUsageException.php',
     'PhutilArgumentWorkflow' => 'parser/argument/workflow/PhutilArgumentWorkflow.php',
     'PhutilArray' => 'utils/PhutilArray.php',
@@ -656,6 +658,8 @@ phutil_register_library_map(array(
     'PhutilArgumentSpecification' => 'Phobject',
     'PhutilArgumentSpecificationException' => 'PhutilArgumentParserException',
     'PhutilArgumentSpecificationTestCase' => 'PhutilTestCase',
+    'PhutilArgumentSpellingCorrector' => 'Phobject',
+    'PhutilArgumentSpellingCorrectorTestCase' => 'PhutilTestCase',
     'PhutilArgumentUsageException' => 'PhutilArgumentParserException',
     'PhutilArgumentWorkflow' => 'Phobject',
     'PhutilArray' => array(
