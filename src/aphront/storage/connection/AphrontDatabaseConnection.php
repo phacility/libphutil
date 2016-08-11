@@ -11,6 +11,7 @@ abstract class AphrontDatabaseConnection
   private $readOnly;
   private $queryTimeout;
   private $locks = array();
+  private $lastActiveEpoch;
 
   abstract public function getInsertID();
   abstract public function getAffectedRows();
@@ -19,6 +20,15 @@ abstract class AphrontDatabaseConnection
   abstract public function executeRawQueries(array $raw_queries);
   abstract public function close();
   abstract public function openConnection();
+
+  final public function setLastActiveEpoch($epoch) {
+    $this->lastActiveEpoch = $epoch;
+    return $this;
+  }
+
+  final public function getLastActiveEpoch() {
+    return $this->lastActiveEpoch;
+  }
 
   public function queryData($pattern/* , $arg, $arg, ... */) {
     $args = func_get_args();
