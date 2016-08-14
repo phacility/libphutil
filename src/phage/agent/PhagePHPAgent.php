@@ -87,6 +87,7 @@ final class PhagePHPAgent extends Phobject {
         'stdout'  => $result[1],
         'stderr'  => $result[2],
       ));
+    unset($this->exec[$key]);
   }
 
   public function __destruct() {
