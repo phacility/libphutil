@@ -1,4 +1,8 @@
 /**
  * @special north
  * @special south
+ *
+ * @stable
+ * @stable
+ * @stable
  */

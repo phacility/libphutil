@@ -1,4 +1,8 @@
 /**
  * @type type
  * @task task
+ *
+ * @special dot
+ * @special dot
+ * @special dash
  */
