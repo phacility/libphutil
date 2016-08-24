@@ -6,6 +6,8 @@
  * When invalid byte subsequences are encountered, they will be replaced with
  * U+FFFD, the Unicode replacement character.
  *
+ * This function treats overlong encodings as invalid.
+ *
  * @param   string  String to convert to valid UTF-8.
  * @return  string  String with invalid UTF-8 byte subsequences replaced with
  *                  U+FFFD.
@@ -21,27 +23,48 @@ function phutil_utf8ize($string) {
   // TODO: Provide an optional fast C implementation ala fb_utf8ize() if this
   // ever shows up in profiles?
 
-  // NOTE: Overlong 3-byte and 4-byte representations incorrectly survive
-  // this function.
-
   $result = array();
 
   $regex =
     "/([\x01-\x7F]".
-    "|[\xC2-\xDF][\x80-\xBF]".
-    "|[\xE0-\xEF][\x80-\xBF][\x80-\xBF]".
-    "|[\xF0-\xF4][\x80-\xBF][\x80-\xBF][\x80-\xBF])".
+      "|[\xC2-\xDF][\x80-\xBF]".
+      "|[\xE0][\xA0-\xBF][\x80-\xBF]".
+      "|[\xE1-\xEF][\x80-\xBF][\x80-\xBF]".
+      "|[\xF0][\x90-\xBF][\x80-\xBF][\x80-\xBF]".
+      "|[\xF1-\xF3][\x80-\xBF][\x80-\xBF][\x80-\xBF]".
+      "|[\xF4][\x80-\x8F][\x80-\xBF][\x80-\xBF])".
     "|(.)/";
+
+  $replacement = "\xEF\xBF\xBD";
 
   $offset = 0;
   $matches = null;
   while (preg_match($regex, $string, $matches, 0, $offset)) {
     if (!isset($matches[2])) {
-      $result[] = $matches[1];
+      $match = $matches[1];
+
+      if ($match[0] == "\xED") {
+        // If this is a 3-byte character that may be part of one of the
+        // surrogate ranges, check if it's actually in those ranges. Reject
+        // it as invalid if it is. These sequences are used in UTF16 and
+        // functions like json_encode() refuse to encode them.
+
+        $codepoint = ((ord($match[0]) & 0x0F) << 12)
+                   + ((ord($match[1]) & 0x3F) << 6)
+                   + ((ord($match[2]) & 0x3F));
+        if ($codepoint >= 0xD800 && $codepoint <= 0xDFFF) {
+          $result[] = str_repeat($replacement, strlen($match));
+          $offset += strlen($matches[0]);
+          continue;
+        }
+      }
+
+      $result[] = $match;
     } else {
       // Unicode replacement character, U+FFFD.
-      $result[] = "\xEF\xBF\xBD";
+      $result[] = $replacement;
     }
+
     $offset += strlen($matches[0]);
   }
 
@@ -411,6 +434,38 @@ function phutil_utf8v_codepoints($string) {
   }
 
   return $str_v;
+}
+
+
+/**
+ * Convert a Unicode codepoint into a UTF8-encoded string.
+ *
+ * @param int Unicode codepoint.
+ * @return string UTF8 encoding.
+ */
+function phutil_utf8_encode_codepoint($codepoint) {
+  if ($codepoint < 0x80) {
+    $r = chr($codepoint);
+  } else if ($codepoint < 0x800) {
+    $r = chr(0xC0 | (($codepoint >> 6)  & 0x1F)).
+         chr(0x80 | (($codepoint)       & 0x3F));
+  } else if ($codepoint < 0x10000) {
+    $r = chr(0xE0 | (($codepoint >> 12) & 0x0F)).
+         chr(0x80 | (($codepoint >> 6)  & 0x3F)).
+         chr(0x80 | (($codepoint)       & 0x3F));
+  } else if ($codepoint < 0x110000) {
+    $r = chr(0xF0 | (($codepoint >> 18) & 0x07)).
+         chr(0x80 | (($codepoint >> 12) & 0x3F)).
+         chr(0x80 | (($codepoint >> 6)  & 0x3F)).
+         chr(0x80 | (($codepoint)       & 0x3F));
+  } else {
+    throw new Exception(
+      pht(
+        'Encoding UTF8 codepoint "%s" is not supported.',
+        $codepoint));
+  }
+
+  return $r;
 }
 
 
