@@ -506,6 +506,7 @@ phutil_register_library_map(array(
     'phutil_units' => 'utils/utils.php',
     'phutil_utf8_console_strlen' => 'utils/utf8.php',
     'phutil_utf8_convert' => 'utils/utf8.php',
+    'phutil_utf8_encode_codepoint' => 'utils/utf8.php',
     'phutil_utf8_hard_wrap' => 'utils/utf8.php',
     'phutil_utf8_hard_wrap_html' => 'utils/utf8.php',
     'phutil_utf8_is_combining_character' => 'utils/utf8.php',

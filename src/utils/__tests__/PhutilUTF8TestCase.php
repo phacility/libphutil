@@ -42,6 +42,68 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     $this->assertEqual($expect, $result);
   }
 
+  public function testOverlongFormFiltering() {
+    $bad = "\xEF\xBF\xBD";
+
+    $map = array(
+      'quack' => 'quack',
+
+      // This is U+1000, a valid character.
+      "\xE1\x80\x80" => "\xE1\x80\x80",
+
+      // This is a 2-byte encoding of U+0000.
+      "\xC0\x80" => "{$bad}{$bad}",
+
+      // This is a 3-byte encoding of U+0020.
+      "\xE0\x80\xA0" => "{$bad}{$bad}{$bad}",
+
+      "A \xE0\x83\x83" => "A {$bad}{$bad}{$bad}",
+    );
+
+    foreach ($map as $input => $expect) {
+      $actual = phutil_utf8ize($input);
+      $this->assertEqual(
+        $expect,
+        $actual,
+        pht('Overlong form canonicalization of: %s', $input));
+    }
+  }
+
+  public function testSurrogateFiltering() {
+    $bad = "\xEF\xBF\xBD";
+
+    $map = array(
+      "A \xED\xA9\x98" => "A {$bad}{$bad}{$bad}",
+    );
+
+    foreach ($map as $input => $expect) {
+      $actual = phutil_utf8ize($input);
+      $this->assertEqual(
+        $expect,
+        $actual,
+        pht('Surrogate filtering: %s', $input));
+    }
+  }
+
+
+  public function testUTF8CodepointEncoding() {
+    $map = array(
+      0x20 => ' ',
+      0x7E => '~',
+      0xE9 => "\xC3\xA9",
+      0x2603 => "\xE2\x98\x83",
+      0x1F417 => "\xF0\x9F\x90\x97",
+    );
+
+    foreach ($map as $input => $expect) {
+      $actual = phutil_utf8_encode_codepoint($input);
+      $this->assertEqual(
+        $expect,
+        $actual,
+        pht('UTF8 codepoint encoding of "%s".', $input));
+    }
+  }
+
   public function testUTF8len() {
     $strings = array(
       ''                => 0,

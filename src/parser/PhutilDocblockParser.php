@@ -97,19 +97,39 @@ final class PhutilDocblockParser extends Phobject {
       foreach ($matches as $match) {
         list($_, $type, $data) = $match;
         $data = trim($data);
-        if (isset($special[$type])) {
-          $special[$type] = $special[$type]."\n".$data;
-        } else {
+
+        // For flags like "@stable" which don't have any string data, set the
+        // value to true.
+        if (!strlen($data)) {
+          $data = true;
+        }
+
+        if (!isset($special[$type])) {
           $special[$type] = $data;
+        } else {
+          if (!is_array($special[$type])) {
+            $special[$type] = (array)$special[$type];
+          }
+          $special[$type][] = $data;
         }
       }
     }
 
-    // For flags like "@stable" which don't have any string data, set the value
-    // to true.
+    // Convert `array(true, true, true)` to `true`.
     foreach ($special as $type => $data) {
-      if (!strlen(trim($data))) {
-        $special[$type] = true;
+      if (is_array($data)) {
+        $all_trues = true;
+
+        foreach ($data as $value) {
+          if ($value !== true) {
+            $all_trues = false;
+            break;
+          }
+        }
+
+        if ($all_trues) {
+          $special[$type] = true;
+        }
       }
     }
 
