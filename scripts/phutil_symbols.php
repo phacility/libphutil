@@ -114,7 +114,7 @@ foreach ($root->getTokens() as $token) {
     list($block, $special) = $doc_parser->parse($token->getValue());
 
     $ext_list = idx($special, 'phutil-external-symbol');
-    $ext_list = explode("\n", $ext_list);
+    $ext_list = (array)$ext_list;
     $ext_list = array_filter($ext_list);
 
     foreach ($ext_list as $ext_ref) {

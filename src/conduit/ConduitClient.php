@@ -144,7 +144,7 @@ final class ConduitClient extends Phobject {
     // Always use the cURL-based HTTPSFuture, for proxy support and other
     // protocol edge cases that HTTPFuture does not support.
     $core_future = new HTTPSFuture($uri, $data);
-    $core_future->addHeader('Host', $this->getHost());
+    $core_future->addHeader('Host', $this->getHostString());
 
     $core_future->setMethod('POST');
     $core_future->setTimeout($this->timeout);
