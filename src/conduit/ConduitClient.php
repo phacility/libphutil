@@ -111,7 +111,7 @@ final class ConduitClient extends Phobject {
     if ($this->privateKey && $this->publicKey) {
       $meta['auth.type'] = self::AUTH_ASYMMETRIC;
       $meta['auth.key'] = $this->publicKey;
-      $meta['auth.host'] = $this->getHostString();
+      $meta['auth.host'] = $this->getHostStringForSignature();
 
       $signature = $this->signRequest($method, $params, $meta);
       $meta['auth.signature'] = $signature;
@@ -144,7 +144,7 @@ final class ConduitClient extends Phobject {
     // Always use the cURL-based HTTPSFuture, for proxy support and other
     // protocol edge cases that HTTPFuture does not support.
     $core_future = new HTTPSFuture($uri, $data);
-    $core_future->addHeader('Host', $this->getHostString());
+    $core_future->addHeader('Host', $this->getHostStringForHeader());
 
     $core_future->setMethod('POST');
     $core_future->setTimeout($this->timeout);
@@ -169,23 +169,59 @@ final class ConduitClient extends Phobject {
     return $this;
   }
 
-  private function getHostString() {
+  private function getHostStringForHeader() {
+    return $this->newHostString(false);
+  }
+
+  private function getHostStringForSignature() {
+    return $this->newHostString(true);
+  }
+
+  /**
+   * Build a string describing the host for this request.
+   *
+   * This method builds strings in two modes: with explicit ports for request
+   * signing (which always include the port number) and with implicit ports
+   * for use in the "Host:" header of requests (which omit the port number if
+   * the port is the same as the default port for the protocol).
+   *
+   * This implicit port behavior is similar to what browsers do, so it is less
+   * likely to get us into trouble with webserver configurations.
+   *
+   * @param bool True to include the port explicitly.
+   * @return string String describing the host for the request.
+   */
+  private function newHostString($with_explicit_port) {
     $host = $this->getHost();
 
     $uri = new PhutilURI($this->uri);
+    $protocol = $uri->getProtocol();
     $port = $uri->getPort();
-    if (!$port) {
-      switch ($uri->getProtocol()) {
-        case 'https':
-          $port = 443;
-          break;
-        default:
-          $port = 80;
-          break;
+
+    $implicit_ports = array(
+      'https' => 443,
+    );
+    $default_port = 80;
+
+    $implicit_port = idx($implicit_ports, $protocol, $default_port);
+
+    if ($with_explicit_port) {
+      if (!$port) {
+        $port = $implicit_port;
+      }
+    } else {
+      if ($port == $implicit_port) {
+        $port = null;
       }
     }
 
-    return $host.':'.$port;
+    if (!$port) {
+      $result = $host;
+    } else {
+      $result = $host.':'.$port;
+    }
+
+    return $result;
   }
 
   private function signRequest(
