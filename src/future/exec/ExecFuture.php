@@ -24,7 +24,6 @@ final class ExecFuture extends PhutilExecutableFuture {
   private $pipes        = array();
   private $proc         = null;
   private $start        = null;
-  private $timeout      = null;
   private $procStatus   = null;
 
   private $stdout       = null;
@@ -46,6 +45,10 @@ final class ExecFuture extends PhutilExecutableFuture {
   private $useWindowsFileStreams = false;
   private $windowsStdoutTempFile = null;
   private $windowsStderrTempFile = null;
+
+  private $terminateTimeout;
+  private $didTerminate;
+  private $killTimeout;
 
   private static $descriptorSpec = array(
     0 => array('pipe', 'r'),  // stdin
@@ -326,15 +329,20 @@ final class ExecFuture extends PhutilExecutableFuture {
 
   /**
    * Set a hard limit on execution time. If the command runs longer, it will
-   * be killed and the future will resolve with an error code. You can test
+   * be terminated and the future will resolve with an error code. You can test
    * if a future was killed by a timeout with @{method:getWasKilledByTimeout}.
    *
-   * @param int Maximum number of seconds this command may execute for.
+   * The subprocess will be sent a `TERM` signal, and then a `KILL` signal a
+   * short while later if it fails to exit.
+   *
+   * @param int Maximum number of seconds this command may execute for before
+   *  it is signaled.
    * @return this
    * @task config
    */
   public function setTimeout($seconds) {
-    $this->timeout = $seconds;
+    $this->terminateTimeout = $seconds;
+    $this->killTimeout = $seconds + min($seconds, 60);
     return $this;
   }
 
@@ -417,13 +425,9 @@ final class ExecFuture extends PhutilExecutableFuture {
    */
   public function resolveKill() {
     if (!$this->result) {
-      if (defined('SIGKILL')) {
-        $signal = SIGKILL;
-      } else {
-        $signal = 9;
-      }
-
+      $signal = 9;
       proc_terminate($this->proc, $signal);
+
       $this->result = array(
         128 + $signal,
         $this->stdout,
@@ -787,7 +791,16 @@ final class ExecFuture extends PhutilExecutableFuture {
     }
 
     $elapsed = (microtime(true) - $this->start);
-    if ($this->timeout && ($elapsed >= $this->timeout)) {
+
+    if ($this->terminateTimeout && ($elapsed >= $this->terminateTimeout)) {
+      if (!$this->didTerminate) {
+        $this->killedByTimeout = true;
+        $this->sendTerminateSignal();
+        return false;
+      }
+    }
+
+    if ($this->killTimeout && ($elapsed >= $this->killTimeout)) {
       $this->killedByTimeout = true;
       $this->resolveKill();
       return true;
@@ -810,7 +823,10 @@ final class ExecFuture extends PhutilExecutableFuture {
 
     $status = $this->procGetStatus();
     if ($status['running']) {
-      $this->resolveKill();
+      $this->sendTerminateSignal();
+      if (!$this->waitForExit(5)) {
+        $this->resolveKill();
+      }
     } else {
       $this->closeProcess();
     }
@@ -901,15 +917,46 @@ final class ExecFuture extends PhutilExecutableFuture {
   public function getDefaultWait() {
     $wait = parent::getDefaultWait();
 
-    if ($this->timeout) {
+    $next_timeout = $this->getNextTimeout();
+    if ($next_timeout) {
       if (!$this->start) {
         $this->start = microtime(true);
       }
       $elapsed = (microtime(true) - $this->start);
-      $wait = max(0, min($this->timeout - $elapsed, $wait));
+      $wait = max(0, min($next_timeout - $elapsed, $wait));
     }
 
     return $wait;
+  }
+
+  private function getNextTimeout() {
+    if ($this->didTerminate) {
+      return $this->killTimeout;
+    } else {
+      return $this->terminateTimeout;
+    }
+  }
+
+  private function sendTerminateSignal() {
+    $this->didTerminate = true;
+    proc_terminate($this->proc);
+    return $this;
+  }
+
+  private function waitForExit($duration) {
+    $start = microtime(true);
+
+    while (true) {
+      $status = $this->procGetStatus();
+      if (!$status['running']) {
+        return true;
+      }
+
+      $waited = (microtime(true) - $start);
+      if ($waited > $duration) {
+        return false;
+      }
+    }
   }
 
 }
