@@ -1,7 +1,7 @@
 <?php
 
 final class PhutilCalendarRawNode
-  extends PhutilCalendarNode {
+  extends PhutilCalendarContainerNode {
 
   const NODETYPE = 'raw';
 

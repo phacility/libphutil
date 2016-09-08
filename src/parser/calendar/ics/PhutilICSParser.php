@@ -5,42 +5,67 @@ final class PhutilICSParser extends Phobject {
   private $stack;
   private $node;
   private $document;
+  private $lines;
+  private $cursor;
+
+  const PARSE_MISSING_END = 'missing-end';
+  const PARSE_INITIAL_UNFOLD = 'initial-unfold';
+  const PARSE_UNEXPECTED_CHILD = 'unexpected-child';
+  const PARSE_EXTRA_END = 'extra-end';
+  const PARSE_MISMATCHED_SECTIONS = 'mismatched-sections';
+  const PARSE_ROOT_PROPERTY = 'root-property';
+  const PARSE_BAD_BASE64 = 'bad-base64';
+  const PARSE_BAD_BOOLEAN = 'bad-boolean';
+  const PARSE_UNEXPECTED_TEXT = 'unexpected-text';
+  const PARSE_MALFORMED_DOUBLE_QUOTE = 'malformed-double-quote';
+  const PARSE_MALFORMED_PARAMETER_NAME = 'malformed-parameter';
+  const PARSE_MALFORMED_PROPERTY = 'malformed-property';
+  const PARSE_MISSING_VALUE = 'missing-value';
+  const PARSE_UNESCAPED_BACKSLASH = 'unescaped-backslash';
 
   public function parseICSData($data) {
     $this->stack = array();
     $this->node = null;
-    $this->document = null;
+    $this->cursor = null;
 
     $lines = $this->unfoldICSLines($data);
+    $this->lines = $lines;
 
-    foreach ($lines as $line) {
+    $root = $this->newICSNode('<ROOT>');
+    $this->stack[] = $root;
+    $this->node = $root;
+
+    foreach ($lines as $key => $line) {
+      $this->cursor = $key;
       $matches = null;
       if (preg_match('(^BEGIN:(.*)\z)', $line, $matches)) {
         $this->beginParsingNode($matches[1]);
       } else if (preg_match('(^END:(.*)\z)', $line, $matches)) {
         $this->endParsingNode($matches[1]);
       } else {
+        if (count($this->stack) < 2) {
+          $this->raiseParseFailure(
+            self::PARSE_ROOT_PROPERTY,
+            pht(
+              'Found unexpected property at ICS document root.'));
+        }
         $this->parseICSProperty($line);
       }
     }
 
-    if (!$this->document) {
+    if (count($this->stack) > 1) {
       $this->raiseParseFailure(
-        pht(
-          'Expected ICS document to define a "VCALENDAR" section.'));
-    }
-
-    if ($this->stack) {
-      $this->raiseParseFailure(
+        self::PARSE_MISSING_END,
         pht(
           'Expected all "BEGIN:" sections in ICS document to have '.
           'corresponding "END:" sections.'));
     }
 
-    $document = $this->document;
-    $this->document = null;
+    $this->node = null;
+    $this->lines = null;
+    $this->cursor = null;
 
-    return $document;
+    return $root;
   }
 
   private function getNode() {
@@ -49,22 +74,25 @@ final class PhutilICSParser extends Phobject {
 
   private function unfoldICSLines($data) {
     $lines = phutil_split_lines($data, $retain_endings = false);
+    $this->lines = $lines;
 
     // ICS files are wrapped at 75 characters, with overlong lines continued
     // on the following line with an initial space or tab. Unwrap all of the
     // lines in the file.
     $last = null;
     foreach ($lines as $idx => $line) {
+      $this->cursor = $idx;
       if (!preg_match('/^[ \t]/', $line)) {
         $last = $idx;
         continue;
       }
 
       if ($last === null) {
-        throw new Exception(
+        $this->raiseParseFailure(
+          self::PARSE_INITIAL_UNFOLD,
           pht(
             'First line of ICS file begins with a space or tab, but this '.
-            'marks a continuation line.'));
+            'marks a line which should be unfolded.'));
       }
 
       $lines[$last] = $lines[$last].substr($line, 1);
@@ -78,31 +106,15 @@ final class PhutilICSParser extends Phobject {
     $node = $this->getNode();
     $new_node = $this->newICSNode($type);
 
-    if ($node) {
-      if ($node instanceof PhutilCalendarContainerNode) {
-        $node->appendChild($new_node);
-      } else {
-        $this->raiseParseFailure(
-          pht(
-            'Found unexpected node "%s" inside node "%s".',
-            $new_node->getAttribute('ics.type'),
-            $node->getAttribute('ics.type')));
-      }
+    if ($node instanceof PhutilCalendarContainerNode) {
+      $node->appendChild($new_node);
     } else {
-      if ($new_node instanceof PhutilCalendarDocumentNode) {
-        if ($this->document) {
-          $this->raiseParseFailure(
-            pht(
-              'Found multiple "VCALENDAR" nodes in ICS document, '.
-              'expected only one.'));
-        } else {
-          $this->document = $new_node;
-        }
-      } else {
-        $this->raiseParseFailure(
-          pht(
-            'Expected ICS document to begin "BEGIN:VCALENDAR".'));
-      }
+      $this->raiseParseFailure(
+        self::PARSE_UNEXPECTED_CHILD,
+        pht(
+          'Found unexpected node "%s" inside node "%s".',
+          $new_node->getAttribute('ics.type'),
+          $node->getAttribute('ics.type')));
     }
 
     $this->stack[] = $new_node;
@@ -113,6 +125,9 @@ final class PhutilICSParser extends Phobject {
 
   private function newICSNode($type) {
     switch ($type) {
+      case '<ROOT>':
+        $node = new PhutilCalendarRootNode();
+        break;
       case 'VCALENDAR':
         $node = new PhutilCalendarDocumentNode();
         break;
@@ -131,8 +146,9 @@ final class PhutilICSParser extends Phobject {
 
   private function endParsingNode($type) {
     $node = $this->getNode();
-    if (!$node) {
+    if ($node instanceof PhutilCalendarRootNode) {
       $this->raiseParseFailure(
+        self::PARSE_EXTRA_END,
         pht(
           'Found unexpected "END" without a "BEGIN".'));
     }
@@ -140,6 +156,7 @@ final class PhutilICSParser extends Phobject {
     $old_type = $node->getAttribute('ics.type');
     if ($old_type != $type) {
       $this->raiseParseFailure(
+        self::PARSE_MISMATCHED_SECTIONS,
         pht(
           'Found mismatched "BEGIN" ("%s") and "END" ("%s") sections.',
           $old_type,
@@ -147,11 +164,7 @@ final class PhutilICSParser extends Phobject {
     }
 
     array_pop($this->stack);
-    if ($this->stack) {
-      $this->node = last($this->stack);
-    } else {
-      $this->node = null;
-    }
+    $this->node = last($this->stack);
 
     return $this;
   }
@@ -163,12 +176,12 @@ final class PhutilICSParser extends Phobject {
     // by either a ";" (to begin a list of parameters) or a ":" (to begin
     // the actual field body).
 
-    $ok = preg_match('(^([^;:]+)([;:])(.*)\z)', $line, $matches);
+    $ok = preg_match('(^([A-Za-z0-9-]+)([;:])(.*)\z)', $line, $matches);
     if (!$ok) {
       $this->raiseParseFailure(
+        self::PARSE_MALFORMED_PROPERTY,
         pht(
-          'Found malformed line in ICS document: %s',
-          $line));
+          'Found malformed property in ICS document.'));
     }
 
     $name = $matches[1];
@@ -185,6 +198,7 @@ final class PhutilICSParser extends Phobject {
         $ok = preg_match('(^([^=]+)=)', $body, $matches);
         if (!$ok) {
           $this->raiseParseFailure(
+            self::PARSE_MALFORMED_PARAMETER_NAME,
             pht(
               'Found malformed property in ICS document: %s',
               $body));
@@ -206,24 +220,17 @@ final class PhutilICSParser extends Phobject {
               $matches);
             if (!$ok) {
               $this->raiseParseFailure(
+                self::PARSE_MALFORMED_DOUBLE_QUOTE,
                 pht(
                   'Found malformed double-quoted string in ICS document '.
-                  'parameter value: %s',
-                  $body));
+                  'parameter value.'));
             }
           } else {
             $is_quoted = false;
-            $ok = preg_match(
-              '(^([^\x00-\x08\x10-\x19";:,]*))',
-              $body,
-              $matches);
-            if (!$ok) {
-              $this->raiseParseFailure(
-                pht(
-                  'Found malformed unquoted string in ICS document '.
-                  'parameter value: %s',
-                  $body));
-            }
+
+            // It's impossible for this not to match since it can match
+            // nothing, and it's valid for it to match nothing.
+            preg_match('(^([^\x00-\x08\x10-\x19";:,]*))', $body, $matches);
           }
 
           // NOTE: RFC5545 says "Property parameter values that are not in
@@ -239,6 +246,7 @@ final class PhutilICSParser extends Phobject {
           $body = substr($body, strlen($matches[0]));
           if (!strlen($body)) {
             $this->raiseParseFailure(
+              self::PARSE_MISSING_VALUE,
               pht(
                 'Expected ":" after parameters in ICS document property.'));
           }
@@ -250,23 +258,38 @@ final class PhutilICSParser extends Phobject {
             continue;
           }
 
+          // If we have a semicolon, we're going to read another parameter.
+          if ($body[0] == ';') {
+            break;
+          }
+
           // If we have a colon, this is the last value and also the last
           // property. Break, then handle the colon below.
           if ($body[0] == ':') {
             break;
           }
 
+          $short_body = id(new PhutilUTF8StringTruncator())
+            ->setMaximumGlyphs(32)
+            ->truncateString($body);
+
           // We aren't expecting anything else.
           $this->raiseParseFailure(
+            self::PARSE_UNEXPECTED_TEXT,
             pht(
-              'Found unexpected text after reading parameter value: %s',
-              $body));
+              'Found unexpected text ("%s") after reading parameter value.',
+              $short_body));
         }
 
         $parameters[] = array(
           'name' => $param_name,
           'values' => $param_values,
         );
+
+        if ($body[0] == ';') {
+          $body = substr($body, 1);
+          continue;
+        }
 
         if ($body[0] == ':') {
           $body = substr($body, 1);
@@ -278,6 +301,7 @@ final class PhutilICSParser extends Phobject {
     $value = $this->unescapeFieldValue($name, $parameters, $body);
 
     $node = $this->getNode();
+
     $raw = $node->getAttribute('ics.properties', array());
     $raw[] = array(
       'name' => $name,
@@ -409,9 +433,10 @@ final class PhutilICSParser extends Phobject {
 
     switch ($value_type) {
       case 'BINARY':
-        $result = base64_decode($data);
+        $result = base64_decode($data, true);
         if ($result === false) {
           $this->raiseParseFailure(
+            self::PARSE_BAD_BASE64,
             pht(
               'Unable to decode base64 data: %s',
               $data));
@@ -425,6 +450,7 @@ final class PhutilICSParser extends Phobject {
         $result = phutil_utf8_strtolower($data);
         if (!isset($map[$result])) {
           $this->raiseParseFailure(
+            self::PARSE_BAD_BOOLEAN,
             pht(
               'Unexpected BOOLEAN value "%s".',
               $data));
@@ -517,7 +543,8 @@ final class PhutilICSParser extends Phobject {
     }
 
     if ($esc) {
-      $this->raiseParsFailure(
+      $this->raiseParseFailure(
+        self::PARSE_UNESCAPED_BACKSLASH,
         pht(
           'ICS document contains TEXT value ending with unescaped '.
           'backslash.'));
@@ -528,8 +555,21 @@ final class PhutilICSParser extends Phobject {
     return $result;
   }
 
-  private function raiseParseFailure($message) {
-    throw new Exception($message);
+  private function raiseParseFailure($code, $message) {
+    if ($this->lines && isset($this->lines[$this->cursor])) {
+      $message = pht(
+        "ICS Parse Error near line %s:\n\n>>> %s\n\n%s",
+        $this->cursor + 1,
+        $this->lines[$this->cursor],
+        $message);
+    } else {
+      $message = pht(
+        'ICS Parse Error: %s',
+        $message);
+    }
+
+    throw id(new PhutilICSParserException($message))
+      ->setParserFailureCode($code);
   }
 
 }
