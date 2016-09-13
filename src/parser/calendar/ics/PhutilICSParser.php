@@ -8,6 +8,8 @@ final class PhutilICSParser extends Phobject {
   private $lines;
   private $cursor;
 
+  private $warnings;
+
   const PARSE_MISSING_END = 'missing-end';
   const PARSE_INITIAL_UNFOLD = 'initial-unfold';
   const PARSE_UNEXPECTED_CHILD = 'unexpected-child';
@@ -22,11 +24,22 @@ final class PhutilICSParser extends Phobject {
   const PARSE_MALFORMED_PROPERTY = 'malformed-property';
   const PARSE_MISSING_VALUE = 'missing-value';
   const PARSE_UNESCAPED_BACKSLASH = 'unescaped-backslash';
+  const PARSE_MULTIPLE_PARAMETERS = 'multiple-parameters';
+  const PARSE_EMPTY_DATETIME = 'empty-datetime';
+  const PARSE_MANY_DATETIME = 'many-datetime';
+  const PARSE_BAD_DATETIME = 'bad-datetime';
+  const PARSE_BAD_TZID = 'bad-tzid';
+  const PARSE_EMPTY_DURATION = 'empty-duration';
+  const PARSE_MANY_DURATION = 'many-duration';
+  const PARSE_BAD_DURATION = 'bad-duration';
+
+  const WARN_TZID_UTC = 'warn-tzid-utc';
 
   public function parseICSData($data) {
     $this->stack = array();
     $this->node = null;
     $this->cursor = null;
+    $this->warnings = array();
 
     $lines = $this->unfoldICSLines($data);
     $this->lines = $lines;
@@ -302,6 +315,7 @@ final class PhutilICSParser extends Phobject {
 
     $node = $this->getNode();
 
+
     $raw = $node->getAttribute('ics.properties', array());
     $raw[] = array(
       'name' => $name,
@@ -309,6 +323,12 @@ final class PhutilICSParser extends Phobject {
       'value' => $value,
     );
     $node->setAttribute('ics.properties', $raw);
+
+    switch ($node->getAttribute('ics.type')) {
+      case 'VEVENT':
+        $this->didParseEventProperty($node, $name, $parameters, $value);
+        break;
+    }
   }
 
   private function unescapeParameterValue($data) {
@@ -465,10 +485,18 @@ final class PhutilICSParser extends Phobject {
         $result = explode(',', $data);
         break;
       case 'DATE-TIME':
-        $result = explode(',', $data);
+        if (!strlen($data)) {
+          $result = array();
+        } else {
+          $result = explode(',', $data);
+        }
         break;
       case 'DURATION':
-        $result = explode(',', $data);
+        if (!strlen($data)) {
+          $result = array();
+        } else {
+          $result = explode(',', $data);
+        }
         break;
       case 'FLOAT':
         $result = explode(',', $data);
@@ -571,5 +599,228 @@ final class PhutilICSParser extends Phobject {
     throw id(new PhutilICSParserException($message))
       ->setParserFailureCode($code);
   }
+
+  private function raiseWarning($code, $message) {
+    $this->warnings[] = array(
+      'code' => $code,
+      'line' => $this->cursor,
+      'text' => $this->lines[$this->cursor],
+      'message' => $message,
+    );
+
+    return $this;
+  }
+
+  private function didParseEventProperty(
+    PhutilCalendarEventNode $node,
+    $name,
+    array $parameters,
+    array $value) {
+
+    switch ($name) {
+      case 'SUMMARY':
+        $text = $this->newTextFromProperty($parameters, $value);
+        $node->setName($text);
+        break;
+      case 'DESCRIPTION':
+        $text = $this->newTextFromProperty($parameters, $value);
+        $node->setDescription($text);
+        break;
+      case 'DTSTART':
+        $datetime = $this->newDateTimeFromProperty($parameters, $value);
+        $node->setStartDateTime($datetime);
+        break;
+      case 'DTEND':
+        $datetime = $this->newDateTimeFromProperty($parameters, $value);
+        $node->setEndDateTime($datetime);
+        break;
+      case 'DURATION':
+        $duration = $this->newDurationFromProperty($parameters, $value);
+        $node->setDuration($duration);
+        break;
+    }
+
+  }
+
+  private function newTextFromProperty(array $parameters, array $value) {
+    $value = $value['value'];
+    return implode("\n\n", $value);
+  }
+
+  private function newDateTimeFromProperty(array $parameters, array $value) {
+    $value = $value['value'];
+
+    if (!$value) {
+      $this->raiseParseFailure(
+        self::PARSE_EMPTY_DATETIME,
+        pht(
+          'Expected DATE-TIME to have exactly one value, found none.'));
+
+    }
+
+    if (count($value) > 1) {
+      $this->raiseParseFailure(
+        self::PARSE_MANY_DATETIME,
+        pht(
+          'Expected DATE-TIME to have exactly one value, found more than '.
+          'one.'));
+    }
+
+    $value = head($value);
+
+    $pattern =
+      '/^'.
+      '(?P<y>\d{4})(?P<m>\d{2})(?P<d>\d{2})'.
+      '(?:'.
+        'T(?P<h>\d{2})(?P<i>\d{2})(?P<s>\d{2})(?<z>Z)?'.
+      ')?'.
+      '\z/';
+
+    $matches = null;
+    $ok = preg_match($pattern, $value, $matches);
+    if (!$ok) {
+      $this->raiseParseFailure(
+        self::PARSE_BAD_DATETIME,
+        pht(
+          'Expected DATE-TIME in the format "19990105T112233Z", found '.
+          '"%s".',
+          $value));
+    }
+
+    $tzid = $this->getScalarParameterValue($parameters, 'TZID');
+
+    if (isset($matches['z'])) {
+      if ($tzid) {
+        $this->raiseWarning(
+          self::WARN_TZID_UTC,
+          pht(
+            'DATE-TIME "%s" uses "Z" to specify UTC, but also has a TZID '.
+            'parameter with value "%s". This violates RFC5545. The TZID '.
+            'will be ignored, and the value will be interpreted as UTC.',
+            $value,
+            $tzid));
+      }
+      $tzid = 'UTC';
+    } else if ($tzid !== null) {
+      $map = DateTimeZone::listIdentifiers();
+      $map = array_fuse($map);
+      if (empty($map[$tzid])) {
+        $this->raiseParseFailure(
+          self::PARSE_BAD_TZID,
+          pht(
+            'Timezone "%s" is not a recognized timezone.',
+            $tzid));
+      }
+    }
+
+    $datetime = id(new PhutilCalendarAbsoluteDateTime())
+      ->setYear((int)$matches['y'])
+      ->setMonth((int)$matches['m'])
+      ->setDay((int)$matches['d'])
+      ->setTimezone($tzid);
+
+    if (isset($matches['h'])) {
+      $datetime
+        ->setHour((int)$matches['h'])
+        ->setMinute((int)$matches['i'])
+        ->setSecond((int)$matches['s']);
+    }
+
+    return $datetime;
+  }
+
+  private function newDurationFromProperty(array $parameters, array $value) {
+    $value = $value['value'];
+
+    if (!$value) {
+      $this->raiseParseFailure(
+        self::PARSE_EMPTY_DURATION,
+        pht(
+          'Expected DURATION to have exactly one value, found none.'));
+
+    }
+
+    if (count($value) > 1) {
+      $this->raiseParseFailure(
+        self::PARSE_MANY_DURATION,
+        pht(
+          'Expected DURATION to have exactly one value, found more than '.
+          'one.'));
+    }
+
+    $value = head($value);
+
+    $pattern =
+      '/^'.
+      '(?P<sign>[+-])?'.
+      'P'.
+      '(?:'.
+        '(?P<W>\d+)W'.
+        '|'.
+        '(?:(?:(?P<D>\d+)D)?'.
+          '(?:T(?:(?P<H>\d+)H)?(?:(?P<M>\d+)M)?(?:(?P<S>\d+)S)?)?'.
+        ')'.
+      ')'.
+      '\z/';
+
+    $matches = null;
+    $ok = preg_match($pattern, $value, $matches);
+    if (!$ok) {
+      $this->raiseParseFailure(
+        self::PARSE_BAD_DURATION,
+        pht(
+          'Expected DURATION in the format "P12DT3H4M5S", found '.
+          '"%s".',
+          $value));
+    }
+
+    $is_negative = (idx($matches, 'sign') == '-');
+
+    $duration = id(new PhutilCalendarDuration())
+      ->setIsNegative($is_negative)
+      ->setWeeks((int)idx($matches, 'W', 0))
+      ->setDays((int)idx($matches, 'D', 0))
+      ->setHours((int)idx($matches, 'H', 0))
+      ->setMinutes((int)idx($matches, 'M', 0))
+      ->setSeconds((int)idx($matches, 'S', 0));
+
+    return $duration;
+  }
+
+  private function getScalarParameterValue(
+    array $parameters,
+    $name,
+    $default = null) {
+
+    $match = null;
+    foreach ($parameters as $parameter) {
+      if ($parameter['name'] == $name) {
+        $match = $parameter;
+      }
+    }
+
+    if ($match === null) {
+      return $default;
+    }
+
+    $value = $match['values'];
+    if (!$value) {
+      // Parameter is specified, but with no value, like "KEY=". Just return
+      // the default, as though the parameter was not specified.
+      return $default;
+    }
+
+    if (count($value) > 1) {
+      $this->raiseParseFailure(
+        self::PARSE_MULTIPLE_PARAMETERS,
+        pht(
+          'Expected parameter "%s" to have at most one value, but found '.
+          'more than one.',
+          $name));
+    }
+
+    return idx(head($value), 'value');
+  }
+
 
 }

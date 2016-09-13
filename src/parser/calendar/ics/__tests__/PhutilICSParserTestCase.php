@@ -3,16 +3,8 @@
 final class PhutilICSParserTestCase extends PhutilTestCase {
 
   public function testICSParser() {
-    $root = $this->parseICSDocument('simple.ics');
+    $event = $this->parseICSSingleEvent('simple.ics');
 
-    $documents = $root->getDocuments();
-    $this->assertEqual(1, count($documents));
-    $document = head($documents);
-
-    $events = $document->getEvents();
-    $this->assertEqual(1, count($events));
-
-    $event = head($events);
     $this->assertEqual(
       array(
         array(
@@ -35,6 +27,27 @@ final class PhutilICSParserTestCase extends PhutilTestCase {
               '1CEB57AF-0C9C-402D-B3BD-D75BD4843F68',
             ),
             'raw' => '1CEB57AF-0C9C-402D-B3BD-D75BD4843F68',
+          ),
+        ),
+        array(
+          'name' => 'DTSTART',
+          'parameters' => array(
+            array(
+              'name' => 'TZID',
+              'values' => array(
+                array(
+                  'value' => 'America/Los_Angeles',
+                  'quoted' => false,
+                ),
+              ),
+            ),
+          ),
+          'value' => array(
+            'type' => 'DATE-TIME',
+            'value' => array(
+              '20160915T090000',
+            ),
+            'raw' => '20160915T090000',
           ),
         ),
         array(
@@ -64,13 +77,119 @@ final class PhutilICSParserTestCase extends PhutilTestCase {
           'value' => array(
             'type' => 'TEXT',
             'value' => array(
-              'Example Event',
+              'Simple Event',
             ),
-            'raw' => 'Example Event',
+            'raw' => 'Simple Event',
+          ),
+        ),
+        array(
+          'name' => 'DESCRIPTION',
+          'parameters' => array(),
+          'value' => array(
+            'type' => 'TEXT',
+            'value' => array(
+              'This is a simple event.',
+            ),
+            'raw' => 'This is a simple event.',
           ),
         ),
       ),
       $event->getAttribute('ics.properties'));
+
+    $this->assertEqual(
+      'Simple Event',
+      $event->getName());
+
+    $this->assertEqual(
+      'This is a simple event.',
+      $event->getDescription());
+
+    $this->assertEqual(
+      1473955200,
+      $event->getStartDateTime()->getEpoch());
+
+    $this->assertEqual(
+      1473955200 + phutil_units('1 hour in seconds'),
+      $event->getEndDateTime()->getEpoch());
+  }
+
+  public function testICSFloatingTime() {
+    // This tests "floating" event times, which have no absolute time and are
+    // supposed to be interpreted using the viewer's timezone. It also uses
+    // a duration, and the duration needs to float along with the viewer
+    // timezone.
+
+    $event = $this->parseICSSingleEvent('floating.ics');
+
+    $start = $event->getStartDateTime();
+
+    $caught = null;
+    try {
+      $start->getEpoch();
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertTrue(
+      ($caught instanceof Exception),
+      pht('Expected exception for floating time with no viewer timezone.'));
+
+    $newyears_utc = strtotime('2015-01-01 00:00:00 UTC');
+    $this->assertEqual(1420070400, $newyears_utc);
+
+    $start->setViewerTimezone('UTC');
+    $this->assertEqual(
+      $newyears_utc,
+      $start->getEpoch());
+
+    $start->setViewerTimezone('America/Los_Angeles');
+    $this->assertEqual(
+      $newyears_utc + phutil_units('8 hours in seconds'),
+      $start->getEpoch());
+
+    $start->setViewerTimezone('America/New_York');
+    $this->assertEqual(
+      $newyears_utc + phutil_units('5 hours in seconds'),
+      $start->getEpoch());
+
+    $end = $event->getEndDateTime();
+    $end->setViewerTimezone('UTC');
+    $this->assertEqual(
+      $newyears_utc + phutil_units('24 hours in seconds'),
+      $end->getEpoch());
+
+    $end->setViewerTimezone('America/Los_Angeles');
+    $this->assertEqual(
+      $newyears_utc + phutil_units('32 hours in seconds'),
+      $end->getEpoch());
+
+    $end->setViewerTimezone('America/New_York');
+    $this->assertEqual(
+      $newyears_utc + phutil_units('29 hours in seconds'),
+      $end->getEpoch());
+  }
+
+  public function testICSDuration() {
+    $event = $this->parseICSSingleEvent('duration.ics');
+
+    // Raw value is "20160719T095722Z".
+    $start_epoch = strtotime('2016-07-19 09:57:22 UTC');
+    $this->assertEqual(1468922242, $start_epoch);
+
+    // Raw value is "P1DT17H4M23S".
+    $duration =
+      phutil_units('1 day in seconds') +
+      phutil_units('17 hours in seconds') +
+      phutil_units('4 minutes in seconds') +
+      phutil_units('23 seconds in seconds');
+
+    $this->assertEqual(
+      $start_epoch,
+      $event->getStartDateTime()->getEpoch());
+
+    $this->assertEqual(
+      $start_epoch + $duration,
+      $event->getEndDateTime()->getEpoch());
   }
 
   public function testICSParserErrors() {
@@ -94,6 +213,22 @@ final class PhutilICSParserTestCase extends PhutilTestCase {
         PhutilICSParser::PARSE_UNESCAPED_BACKSLASH,
       'err-unexpected-child.ics' => PhutilICSParser::PARSE_UNEXPECTED_CHILD,
       'err-unexpected-text.ics' => PhutilICSParser::PARSE_UNEXPECTED_TEXT,
+      'err-multiple-parameters.ics' =>
+        PhutilICSParser::PARSE_MULTIPLE_PARAMETERS,
+      'err-empty-datetime.ics' =>
+        PhutilICSParser::PARSE_EMPTY_DATETIME,
+      'err-many-datetime.ics' =>
+        PhutilICSParser::PARSE_MANY_DATETIME,
+      'err-bad-datetime.ics' =>
+        PhutilICSParser::PARSE_BAD_DATETIME,
+      'err-bad-tzid.ics' =>
+        PhutilICSParser::PARSE_BAD_TZID,
+      'err-empty-duration.ics' =>
+        PhutilICSParser::PARSE_EMPTY_DURATION,
+      'err-many-duration.ics' =>
+        PhutilICSParser::PARSE_MANY_DURATION,
+      'err-bad-duration.ics' =>
+        PhutilICSParser::PARSE_BAD_DURATION,
 
       'simple.ics' => null,
       'good-boolean.ics' => null,
@@ -133,6 +268,19 @@ final class PhutilICSParserTestCase extends PhutilTestCase {
         $this->assertEqual($expect, $code, $explain);
       }
     }
+  }
+
+  private function parseICSSingleEvent($name) {
+    $root = $this->parseICSDocument($name);
+
+    $documents = $root->getDocuments();
+    $this->assertEqual(1, count($documents));
+    $document = head($documents);
+
+    $events = $document->getEvents();
+    $this->assertEqual(1, count($events));
+
+    return head($events);
   }
 
   private function parseICSDocument($name) {
