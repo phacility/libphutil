@@ -10,7 +10,51 @@ final class PhutilCalendarAbsoluteDateTime
   private $minute = 0;
   private $second = 0;
   private $timezone;
-  private $viewerTimezone;
+
+  public static function newFromISO8601($value, $timezone = 'UTC') {
+    $pattern =
+      '/^'.
+      '(?P<y>\d{4})(?P<m>\d{2})(?P<d>\d{2})'.
+      '(?:'.
+        'T(?P<h>\d{2})(?P<i>\d{2})(?P<s>\d{2})(?<z>Z)?'.
+      ')?'.
+      '\z/';
+
+    $matches = null;
+    $ok = preg_match($pattern, $value, $matches);
+    if (!$ok) {
+      throw new Exception(
+        pht(
+          'Expected ISO8601 datetime in the format "19990105T112233Z", '.
+          'found "%s".',
+          $value));
+    }
+
+    if (isset($matches['z'])) {
+      if ($timezone != 'UTC') {
+        throw new Exception(
+          pht(
+            'ISO8601 date ends in "Z" indicating UTC, but a timezone other '.
+            'than UTC ("%s") was specified.',
+            $timezone));
+      }
+    }
+
+    $datetime = id(new self())
+      ->setYear((int)$matches['y'])
+      ->setMonth((int)$matches['m'])
+      ->setDay((int)$matches['d'])
+      ->setTimezone($timezone);
+
+    if (isset($matches['h'])) {
+      $datetime
+        ->setHour((int)$matches['h'])
+        ->setMinute((int)$matches['i'])
+        ->setSecond((int)$matches['s']);
+    }
+
+    return $datetime;
+  }
 
   public function setYear($year) {
     $this->year = $year;

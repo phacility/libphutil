@@ -19,6 +19,12 @@ abstract class PhutilCalendarDateTime
     return (int)$datetime->format('U');
   }
 
+  public function getISO8601() {
+    $datetime = $this->newPHPDateTime();
+    $datetime->setTimezone(new DateTimeZone('UTC'));
+    return $datetime->format('Ymd\\THis\\Z');
+  }
+
   abstract protected function newPHPDateTimeZone();
   abstract protected function newPHPDateTime();
 

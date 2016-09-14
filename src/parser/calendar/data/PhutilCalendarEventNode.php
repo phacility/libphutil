@@ -5,11 +5,23 @@ final class PhutilCalendarEventNode
 
   const NODETYPE = 'event';
 
+  private $uid;
   private $name;
   private $description;
   private $startDateTime;
   private $endDateTime;
   private $duration;
+  private $createdDateTime;
+  private $modifiedDateTime;
+
+  public function setUID($uid) {
+    $this->uid = $uid;
+    return $this;
+  }
+
+  public function getUID() {
+    return $this->uid;
+  }
 
   public function setName($name) {
     $this->name = $name;
@@ -29,8 +41,8 @@ final class PhutilCalendarEventNode
     return $this->description;
   }
 
-  public function setStartDateTime(PhutilCalendarDateTime $start_date_time) {
-    $this->startDateTime = $start_date_time;
+  public function setStartDateTime(PhutilCalendarDateTime $start) {
+    $this->startDateTime = $start;
     return $this;
   }
 
@@ -38,8 +50,8 @@ final class PhutilCalendarEventNode
     return $this->startDateTime;
   }
 
-  public function setEndDateTime(PhutilCalendarDateTime $end_date_time) {
-    $this->endDateTime = $end_date_time;
+  public function setEndDateTime(PhutilCalendarDateTime $end) {
+    $this->endDateTime = $end;
     return $this;
   }
 
@@ -69,5 +81,22 @@ final class PhutilCalendarEventNode
     return $this->duration;
   }
 
+  public function setCreatedDateTime(PhutilCalendarDateTime $created) {
+    $this->createdDateTime = $created;
+    return $this;
+  }
+
+  public function getCreatedDateTime() {
+    return $this->createdDateTime;
+  }
+
+  public function setModifiedDateTime(PhutilCalendarDateTime $modified) {
+    $this->modifiedDateTime = $modified;
+    return $this;
+  }
+
+  public function getModifiedDateTime() {
+    return $this->modifiedDateTime;
+  }
 
 }

@@ -92,6 +92,11 @@ final class PhutilICSParser extends Phobject {
     // ICS files are wrapped at 75 characters, with overlong lines continued
     // on the following line with an initial space or tab. Unwrap all of the
     // lines in the file.
+
+    // This unwrapping is specifically byte-oriented, not character oriented,
+    // and RFC5545 anticipates that simple implementations may even split UTF8
+    // characters in the middle.
+
     $last = null;
     foreach ($lines as $idx => $line) {
       $this->cursor = $idx;
@@ -618,6 +623,18 @@ final class PhutilICSParser extends Phobject {
     array $value) {
 
     switch ($name) {
+      case 'UID':
+        $text = $this->newTextFromProperty($parameters, $value);
+        $node->setUID($text);
+        break;
+      case 'CREATED':
+        $datetime = $this->newDateTimeFromProperty($parameters, $value);
+        $node->setCreatedDateTime($datetime);
+        break;
+      case 'DTSTAMP':
+        $datetime = $this->newDateTimeFromProperty($parameters, $value);
+        $node->setModifiedDateTime($datetime);
+        break;
       case 'SUMMARY':
         $text = $this->newTextFromProperty($parameters, $value);
         $node->setName($text);
@@ -667,29 +684,9 @@ final class PhutilICSParser extends Phobject {
     }
 
     $value = head($value);
-
-    $pattern =
-      '/^'.
-      '(?P<y>\d{4})(?P<m>\d{2})(?P<d>\d{2})'.
-      '(?:'.
-        'T(?P<h>\d{2})(?P<i>\d{2})(?P<s>\d{2})(?<z>Z)?'.
-      ')?'.
-      '\z/';
-
-    $matches = null;
-    $ok = preg_match($pattern, $value, $matches);
-    if (!$ok) {
-      $this->raiseParseFailure(
-        self::PARSE_BAD_DATETIME,
-        pht(
-          'Expected DATE-TIME in the format "19990105T112233Z", found '.
-          '"%s".',
-          $value));
-    }
-
     $tzid = $this->getScalarParameterValue($parameters, 'TZID');
 
-    if (isset($matches['z'])) {
+    if (preg_match('/Z\z/', $value)) {
       if ($tzid) {
         $this->raiseWarning(
           self::WARN_TZID_UTC,
@@ -713,17 +710,16 @@ final class PhutilICSParser extends Phobject {
       }
     }
 
-    $datetime = id(new PhutilCalendarAbsoluteDateTime())
-      ->setYear((int)$matches['y'])
-      ->setMonth((int)$matches['m'])
-      ->setDay((int)$matches['d'])
-      ->setTimezone($tzid);
-
-    if (isset($matches['h'])) {
-      $datetime
-        ->setHour((int)$matches['h'])
-        ->setMinute((int)$matches['i'])
-        ->setSecond((int)$matches['s']);
+    try {
+      $datetime = PhutilCalendarAbsoluteDateTime::newFromISO8601(
+        $value,
+        $tzid);
+    } catch (Exception $ex) {
+      $this->raiseParseFailure(
+        self::PARSE_BAD_DATETIME,
+        pht(
+          'Error parsing DATE-TIME: %s',
+          $ex->getMessage()));
     }
 
     return $datetime;
