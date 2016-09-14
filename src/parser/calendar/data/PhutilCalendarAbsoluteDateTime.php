@@ -51,9 +51,28 @@ final class PhutilCalendarAbsoluteDateTime
         ->setHour((int)$matches['h'])
         ->setMinute((int)$matches['i'])
         ->setSecond((int)$matches['s']);
+    } else {
+      $datetime
+        ->setIsAllDay(true);
     }
 
     return $datetime;
+  }
+
+  public static function newFromEpoch($epoch, $timezone = 'UTC') {
+    $date = new DateTime('@'.$epoch);
+
+    $zone = new DateTimeZone($timezone);
+    $date->setTimezone($zone);
+
+    return id(new self())
+      ->setYear((int)$date->format('Y'))
+      ->setMonth((int)$date->format('m'))
+      ->setDay((int)$date->format('d'))
+      ->setHour((int)$date->format('H'))
+      ->setMinute((int)$date->format('i'))
+      ->setSecond((int)$date->format('s'))
+      ->setTimezone($timezone);
   }
 
   public function setYear($year) {

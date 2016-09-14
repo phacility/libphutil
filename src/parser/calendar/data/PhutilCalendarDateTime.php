@@ -4,6 +4,7 @@ abstract class PhutilCalendarDateTime
   extends Phobject {
 
   private $viewerTimezone;
+  private $isAllDay = false;
 
   public function setViewerTimezone($viewer_timezone) {
     $this->viewerTimezone = $viewer_timezone;
@@ -14,6 +15,15 @@ abstract class PhutilCalendarDateTime
     return $this->viewerTimezone;
   }
 
+  public function setIsAllDay($is_all_day) {
+    $this->isAllDay = $is_all_day;
+    return $this;
+  }
+
+  public function getIsAllDay() {
+    return $this->isAllDay;
+  }
+
   public function getEpoch() {
     $datetime = $this->newPHPDateTime();
     return (int)$datetime->format('U');
@@ -22,7 +32,12 @@ abstract class PhutilCalendarDateTime
   public function getISO8601() {
     $datetime = $this->newPHPDateTime();
     $datetime->setTimezone(new DateTimeZone('UTC'));
-    return $datetime->format('Ymd\\THis\\Z');
+
+    if ($this->getIsAllDay()) {
+      return $datetime->format('Ymd');
+    } else {
+      return $datetime->format('Ymd\\THis\\Z');
+    }
   }
 
   abstract protected function newPHPDateTimeZone();

@@ -2,7 +2,7 @@
 
 final class PhutilICSWriterTestCase extends PhutilTestCase {
 
-  public function testICSWriter() {
+  public function testICSWriterTeaTime() {
     $teas = array(
       'earl grey tea',
       'English breakfast tea',
@@ -35,6 +35,25 @@ final class PhutilICSWriterTestCase extends PhutilTestCase {
     $ics_data = $this->writeICSSingleEvent($event);
 
     $this->assertICS('writer-tea-time.ics', $ics_data);
+  }
+
+  public function testICSWriterAllDay() {
+    $event = id(new PhutilCalendarEventNode())
+      ->setUID('christmas-day')
+      ->setName('Christmas 2016')
+      ->setDescription('A minor religious holiday.')
+      ->setCreatedDateTime(
+        PhutilCalendarAbsoluteDateTime::newFromISO8601('20160901T232425Z'))
+      ->setModifiedDateTime(
+        PhutilCalendarAbsoluteDateTime::newFromISO8601('20160901T232425Z'))
+      ->setStartDateTime(
+        PhutilCalendarAbsoluteDateTime::newFromISO8601('20161225'))
+      ->setEndDateTime(
+        PhutilCalendarAbsoluteDateTime::newFromISO8601('20161226'));
+
+    $ics_data = $this->writeICSSingleEvent($event);
+
+    $this->assertICS('writer-christmas.ics', $ics_data);
   }
 
   private function writeICSSingleEvent(PhutilCalendarEventNode $event) {

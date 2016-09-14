@@ -23,6 +23,15 @@ abstract class PhutilCalendarProxyDateTime
     return $this->getProxy()->getViewerTimezone();
   }
 
+  public function setIsAllDay($is_all_day) {
+    $this->getProxy()->setIsAllDay($is_all_day);
+    return $this;
+  }
+
+  public function getIsAllDay() {
+    return $this->getProxy()->getIsAllDay();
+  }
+
   protected function newPHPDateTimezone() {
     return $this->getProxy()->newPHPDateTimezone();
   }

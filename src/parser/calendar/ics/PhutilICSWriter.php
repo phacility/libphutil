@@ -56,7 +56,7 @@ final class PhutilICSWriter extends Phobject {
 
       foreach ($property['parameters'] as $parameter) {
         $paramname = $parameter['name'];
-        $paramvalue = 'TODO';
+        $paramvalue = $parameter['value'];
         $propline[] = ";{$paramname}={$paramvalue}";
       }
 
@@ -95,14 +95,14 @@ final class PhutilICSWriter extends Phobject {
       // If adding this character would bring the line over 75 bytes, start
       // a new line.
       if (strlen($buf) + strlen($character) > 75) {
-        $out[] = $buf."\n";
+        $out[] = $buf."\r\n";
         $buf = ' ';
       }
 
       $buf .= $character;
     }
 
-    $out[] = $buf."\n";
+    $out[] = $buf."\r\n";
 
     return implode('', $out);
   }
@@ -110,12 +110,27 @@ final class PhutilICSWriter extends Phobject {
   private function getNodeProperties(PhutilCalendarNode $node) {
     switch ($node->getNodeType()) {
       case PhutilCalendarDocumentNode::NODETYPE:
-        return array();
+        return $this->getDocumentNodeProperties($node);
       case PhutilCalendarEventNode::NODETYPE:
         return $this->getEventNodeProperties($node);
       default:
         return array();
     }
+  }
+
+  private function getDocumentNodeProperties(
+    PhutilCalendarDocumentNode $event) {
+    $properties = array();
+
+    $properties[] = $this->newTextProperty(
+      'VERSION',
+      '2.0');
+
+    $properties[] = $this->newTextProperty(
+      'PRODID',
+      '-//Phacility//Phabricator//EN');
+
+    return $properties;
   }
 
   private function getEventNodeProperties(PhutilCalendarEventNode $event) {
@@ -208,6 +223,16 @@ final class PhutilICSWriter extends Phobject {
     PhutilCalendarDateTime $value,
     array $parameters = array()) {
     $datetime = $value->getISO8601();
+
+    if ($value->getIsAllDay()) {
+      $parameters[] = array(
+        'name' => 'VALUE',
+        'values' => array(
+          'DATE',
+        ),
+      );
+    }
+
     return $this->newProperty($name, $datetime, $parameters);
   }
 
@@ -216,12 +241,39 @@ final class PhutilICSWriter extends Phobject {
     $value,
     array $parameters = array()) {
 
-    // TODO: Actually handle parameters.
+    $map = array(
+      '^' => '^^',
+      "\n" => '^n',
+      '"' => "^'",
+    );
+
+    $writable_params = array();
+    foreach ($parameters as $k => $parameter) {
+      $value_list = array();
+      foreach ($parameter['values'] as $v) {
+        $v = str_replace(array_keys($map), array_values($map), $v);
+
+        // If the parameter value isn't a very simple one, quote it.
+
+        // RFC5545 says that we MUST quote it if it has a colon, a semicolon,
+        // or a comma, and that we MUST quote it if it's a URI.
+        if (!preg_match('/^[A-Za-z0-9]*\z/', $v)) {
+          $v = '"'.$v.'"';
+        }
+
+        $value_list[] = $v;
+      }
+
+      $writable_params[] = array(
+        'name' => $parameter['name'],
+        'value' => implode(',', $value_list),
+      );
+    }
 
     return array(
       'name' => $name,
       'value' => $value,
-      'parameters' => array(),
+      'parameters' => $writable_params,
     );
   }
 
