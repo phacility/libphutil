@@ -193,6 +193,22 @@ final class PhutilICSWriter extends Phobject {
         $description);
     }
 
+    $organizer = $event->getOrganizer();
+    if ($organizer) {
+      $properties[] = $this->newUserProperty(
+        'ORGANIZER',
+        $organizer);
+    }
+
+    $attendees = $event->getAttendees();
+    if ($attendees) {
+      foreach ($attendees as $attendee) {
+        $properties[] = $this->newUserProperty(
+          'ATTENDEE',
+          $attendee);
+      }
+    }
+
     return $properties;
   }
 
@@ -236,6 +252,46 @@ final class PhutilICSWriter extends Phobject {
     return $this->newProperty($name, $datetime, $parameters);
   }
 
+  private function newUserProperty(
+    $name,
+    PhutilCalendarUserNode $value,
+    array $parameters = array()) {
+
+    $parameters[] = array(
+      'name' => 'CN',
+      'values' => array(
+        $value->getName(),
+      ),
+    );
+
+    $partstat = null;
+    switch ($value->getStatus()) {
+      case PhutilCalendarUserNode::STATUS_INVITED:
+        $partstat = 'NEEDS-ACTION';
+        break;
+      case PhutilCalendarUserNode::STATUS_ACCEPTED:
+        $partstat = 'ACCEPTED';
+        break;
+      case PhutilCalendarUserNode::STATUS_DECLINED:
+        $partstat = 'DECLINED';
+        break;
+    }
+
+    if ($partstat !== null) {
+      $parameters[] = array(
+        'name' => 'PARTSTAT',
+        'values' => array(
+          $partstat,
+        ),
+      );
+    }
+
+    // TODO: We could reasonably fill in "ROLE" and "RSVP" here too, but it
+    // isn't clear if these are important to external programs or not.
+
+    return $this->newProperty($name, $value->getURI(), $parameters);
+  }
+
   private function newProperty(
     $name,
     $value,
@@ -257,7 +313,7 @@ final class PhutilICSWriter extends Phobject {
 
         // RFC5545 says that we MUST quote it if it has a colon, a semicolon,
         // or a comma, and that we MUST quote it if it's a URI.
-        if (!preg_match('/^[A-Za-z0-9]*\z/', $v)) {
+        if (!preg_match('/^[A-Za-z0-9-]*\z/', $v)) {
           $v = '"'.$v.'"';
         }
 

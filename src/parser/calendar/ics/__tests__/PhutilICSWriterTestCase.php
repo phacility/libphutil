@@ -56,6 +56,37 @@ final class PhutilICSWriterTestCase extends PhutilTestCase {
     $this->assertICS('writer-christmas.ics', $ics_data);
   }
 
+  public function testICSWriterUsers() {
+    $event = id(new PhutilCalendarEventNode())
+      ->setUID('office-party')
+      ->setName('Office Party')
+      ->setCreatedDateTime(
+        PhutilCalendarAbsoluteDateTime::newFromISO8601('20161001T120000Z'))
+      ->setModifiedDateTime(
+        PhutilCalendarAbsoluteDateTime::newFromISO8601('20161001T120000Z'))
+      ->setStartDateTime(
+        PhutilCalendarAbsoluteDateTime::newFromISO8601('20161215T200000Z'))
+      ->setEndDateTime(
+        PhutilCalendarAbsoluteDateTime::newFromISO8601('20161215T230000Z'))
+      ->setOrganizer(
+        id(new PhutilCalendarUserNode())
+          ->setName('Big Boss')
+          ->setURI('mailto:big.boss@example.com'))
+      ->addAttendee(
+        id(new PhutilCalendarUserNode())
+          ->setName('Milton')
+          ->setStatus(PhutilCalendarUserNode::STATUS_INVITED)
+          ->setURI('mailto:milton@example.com'))
+      ->addAttendee(
+        id(new PhutilCalendarUserNode())
+          ->setName('Nancy')
+          ->setStatus(PhutilCalendarUserNode::STATUS_ACCEPTED)
+          ->setURI('mailto:nancy@example.com'));
+
+    $ics_data = $this->writeICSSingleEvent($event);
+    $this->assertICS('writer-office-party.ics', $ics_data);
+  }
+
   private function writeICSSingleEvent(PhutilCalendarEventNode $event) {
     $calendar = id(new PhutilCalendarDocumentNode())
       ->appendChild($event);

@@ -13,6 +13,8 @@ final class PhutilCalendarEventNode
   private $duration;
   private $createdDateTime;
   private $modifiedDateTime;
+  private $organizer;
+  private $attendees = array();
 
   public function setUID($uid) {
     $this->uid = $uid;
@@ -97,6 +99,30 @@ final class PhutilCalendarEventNode
 
   public function getModifiedDateTime() {
     return $this->modifiedDateTime;
+  }
+
+  public function setOrganizer(PhutilCalendarUserNode $organizer) {
+    $this->organizer = $organizer;
+    return $this;
+  }
+
+  public function getOrganizer() {
+    return $this->organizer;
+  }
+
+  public function setAttendees(array $attendees) {
+    assert_instances_of($attendees, 'PhutilCalendarUserNode');
+    $this->attendees = $attendees;
+    return $this;
+  }
+
+  public function getAttendees() {
+    return $this->attendees;
+  }
+
+  public function addAttendee(PhutilCalendarUserNode $attendee) {
+    $this->attendees[] = $attendee;
+    return $this;
   }
 
 }
