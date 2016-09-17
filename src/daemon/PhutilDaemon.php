@@ -70,14 +70,16 @@ abstract class PhutilDaemon extends Phobject {
     return $this->verbose;
   }
 
-  private static $sighandlerInstalled;
-
   final public function __construct(array $argv) {
     $this->argv = $argv;
 
-    if (!self::$sighandlerInstalled) {
-      self::$sighandlerInstalled = true;
-      pcntl_signal(SIGTERM, __CLASS__.'::exitOnSignal');
+    $router = PhutilSignalRouter::getRouter();
+    $handler_key = 'daemon.term';
+    if (!$router->getHandler($handler_key)) {
+      $handler = new PhutilCallbackSignalHandler(
+        SIGTERM,
+        __CLASS__.'::onTermSignal');
+      $router->installHandler($handler_key, $handler);
     }
 
     pcntl_signal(SIGINT, array($this, 'onGracefulSignal'));
@@ -166,13 +168,8 @@ abstract class PhutilDaemon extends Phobject {
     return;
   }
 
-  public static function exitOnSignal($signo) {
+  public static function onTermSignal($signo) {
     self::didCatchSignal($signo);
-
-    // Normally, PHP doesn't invoke destructors when exiting in response to
-    // a signal. This forces it to do so, so we have a fighting chance of
-    // releasing any locks, leases or resources on our way out.
-    exit(128 + $signo);
   }
 
   final protected function getArgv() {

@@ -1,5 +1,7 @@
 <?php
 
+declare(ticks = 1);
+
 function __phutil_init_script__() {
   // Adjust the runtime language configuration to be reasonable and inline with
   // expectations. We do this first, then load libraries.
@@ -80,22 +82,10 @@ function __phutil_init_script__() {
   require_once $root.'/src/__phutil_library_init__.php';
 
   PhutilErrorHandler::initialize();
+  $router = PhutilSignalRouter::initialize();
 
-  // If possible, install a signal handler for SIGHUP which prints the current
-  // backtrace out to a named file. This is particularly helpful in debugging
-  // hung/spinning processes.
-  if (function_exists('pcntl_signal')) {
-    pcntl_signal(SIGHUP, '__phutil_signal_handler__');
-  }
-}
-
-function __phutil_signal_handler__($signal_number) {
-  $e = new Exception();
-  $pid = getmypid();
-  // Some Phabricator daemons may not be attached to a terminal.
-  Filesystem::writeFile(
-    sys_get_temp_dir().'/phabricator_backtrace_'.$pid,
-    $e->getTraceAsString());
+  $handler = new PhutilBacktraceSignalHandler();
+  $router->installHandler('phutil.backtrace', $handler);
 }
 
 __phutil_init_script__();
