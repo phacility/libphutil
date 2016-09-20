@@ -59,6 +59,10 @@ final class AphrontMySQLiDatabaseConnection
       $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeout);
     }
 
+    if ($this->getPersistent()) {
+      $host = 'p:'.$host;
+    }
+
     @$conn->real_connect(
       $host,
       $user,
