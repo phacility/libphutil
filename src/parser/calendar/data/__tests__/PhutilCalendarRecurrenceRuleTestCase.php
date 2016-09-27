@@ -102,4 +102,71 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       pht('Secondly event with many constraints.'));
   }
 
+  public function testYearlyRecurrenceRules() {
+    $tests = array();
+    $expect = array();
+
+    $tests[] = array();
+    $expect[] = array(
+      '19970902',
+      '19980902',
+      '19990902',
+    );
+
+    $tests[] = array(
+      'INTERVAL' => 2,
+    );
+    $expect[] = array(
+      '19970902',
+      '19990902',
+      '20010902',
+    );
+
+    $tests[] = array(
+      'DTSTART' => '20000229',
+    );
+    $expect[] = array(
+      '20000229',
+      '20040229',
+      '20080229',
+    );
+
+    $this->assertRules(
+      array(
+        'FREQ' => 'YEARLY',
+        'COUNT' => 3,
+        'DTSTART' => '19970902',
+      ),
+      $tests,
+      $expect);
+  }
+
+  private function assertRules(array $defaults, array $tests, array $expect) {
+    foreach ($tests as $key => $test) {
+      $options = $test + $defaults;
+
+      $start = PhutilCalendarAbsoluteDateTime::newFromISO8601(
+        $options['DTSTART']);
+
+      $rrule = id(new PhutilCalendarRecurrenceRule())
+        ->setStartDateTime($start)
+        ->setFrequency($options['FREQ']);
+
+      $interval = idx($options, 'INTERVAL');
+      if ($interval) {
+        $rrule->setInterval($interval);
+      }
+
+      $set = id(new PhutilCalendarRecurrenceSet())
+        ->addSource($rrule);
+
+      $result = $set->getEventsBetween(null, null, $options['COUNT']);
+
+      $this->assertEqual(
+        $expect[$key],
+        mpull($result, 'getISO8601'));
+    }
+  }
+
+
 }

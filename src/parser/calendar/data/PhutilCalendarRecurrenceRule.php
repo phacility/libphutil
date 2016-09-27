@@ -127,7 +127,7 @@ final class PhutilCalendarRecurrenceRule
     if (empty($map[$frequency])) {
       throw new Exception(
         pht(
-          'RRULE FREQUENCY "%s" is invalid. Valid frequencies are: %s.',
+          'RRULE FREQ "%s" is invalid. Valid frequencies are: %s.',
           $frequency,
           implode(', ', array_keys($map))));
     }
@@ -489,6 +489,7 @@ final class PhutilCalendarRecurrenceRule
     $by_yearday = $this->getByYearDay();
     $by_weekno = $this->getByWeekNumber();
     $by_setpos = $this->getBySetPosition();
+    $week_start = $this->getWeekStart();
 
     while (!$this->setDays) {
       $this->nextMonth();
@@ -501,7 +502,7 @@ final class PhutilCalendarRecurrenceRule
           $by_monthday,
           $by_yearday,
           $by_weekno,
-          $this->getWeekStart());
+          $week_start);
       } else if ($scale < self::SCALE_DAILY) {
         $weeks = $this->newDaysSet(
           1,
@@ -510,11 +511,21 @@ final class PhutilCalendarRecurrenceRule
           array(),
           array(),
           array(),
-          $this->getWeekStart());
+          $week_start);
       } else {
-        $weeks = array(
-          array($this->cursorDay),
-        );
+        // The cursor day may not actually exist in the current month, so
+        // make sure the day is valid before we generate a set which contains
+        // it.
+        $year_map = $this->getYearMap($this->stateYear, $week_start);
+        if ($this->cursorDay > $year_map['monthDays'][$this->stateMonth]) {
+          $weeks = array(
+            array(),
+          );
+        } else {
+          $weeks = array(
+            array($this->cursorDay),
+          );
+        }
       }
 
       // Apply weekly BYSETPOS, if one exists.
@@ -578,6 +589,7 @@ final class PhutilCalendarRecurrenceRule
   }
 
   protected function nextYear() {
+
     $this->stateYear = $this->cursorYear;
 
     $frequency = $this->getFrequency();
@@ -680,7 +692,7 @@ final class PhutilCalendarRecurrenceRule
         }
 
         $last = last($selection);
-        if ($last['month'] > $this->cursorMonth) {
+        if ($last['month'] > $this->stateMonth) {
           break;
         }
 
@@ -688,7 +700,7 @@ final class PhutilCalendarRecurrenceRule
       }
     } else {
       $calendar = $year_map['calendar'];
-      $month_idx = $this->cursorMonth;
+      $month_idx = $this->stateMonth;
 
       if (!$interval_day) {
         $interval_day = 1;
@@ -712,7 +724,7 @@ final class PhutilCalendarRecurrenceRule
 
     $weeks = array();
     foreach ($selection as $key => $info) {
-      if ($info['month'] != $this->cursorMonth) {
+      if ($info['month'] != $this->stateMonth) {
         continue;
       }
 
