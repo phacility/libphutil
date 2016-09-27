@@ -681,7 +681,7 @@ final class PhutilCalendarRecurrenceRule
     $by_weekno,
     $week_start) {
 
-    $year_map = $this->getYearMap($this->cursorYear, $week_start);
+    $year_map = $this->getYearMap($this->stateYear, $week_start);
 
     $selection = array();
     if ($interval_week) {
@@ -813,7 +813,7 @@ final class PhutilCalendarRecurrenceRule
     // year starts on and avoid the cost of a DateTime construction, but I
     // wasn't able to turn it up and we only need to do this once per year.
     $datetime = new DateTime("{$year}-01-01", new DateTimeZone('UTC'));
-    $weekday = $datetime->format('w');
+    $weekday = (int)$datetime->format('w');
 
     if ($is_leap) {
       $max_day = 366;
@@ -870,6 +870,7 @@ final class PhutilCalendarRecurrenceRule
       $key = "{$month_number}M{$month_day}D";
 
       $info = array(
+        'year' => $year,
         'key' => $key,
         'month' => $month_number,
         'monthday' => $month_day,

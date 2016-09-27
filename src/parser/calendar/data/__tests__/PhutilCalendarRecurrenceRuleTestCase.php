@@ -149,6 +149,25 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19971003',
     );
 
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+      'BYMONTHDAY' => array(5, 7),
+    );
+    $expect[] = array(
+      '19980105',
+      '19980107',
+      '19980305',
+    );
+
+    $tests[] = array(
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19970902',
+      '19970904',
+      '19970909',
+    );
+
     $this->assertRules(
       array(
         'FREQ' => 'YEARLY',
@@ -173,6 +192,11 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       $interval = idx($options, 'INTERVAL');
       if ($interval) {
         $rrule->setInterval($interval);
+      }
+
+      $by_day = idx($options, 'BYDAY');
+      if ($by_day) {
+        $rrule->setByDay($by_day);
       }
 
       $by_month = idx($options, 'BYMONTH');
