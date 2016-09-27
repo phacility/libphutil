@@ -561,10 +561,15 @@ final class PhutilCalendarRecurrenceRule
     $by_month = $this->getByMonth();
     $by_setpos = $this->getBySetPosition();
 
+    // If we have a BYMONTHDAY, we consider that set of days in every month.
+    // For example, "FREQ=YEARLY;BYMONTHDAY=3" means "the third day of every
+    // month", so we need to expand the month set if the constraint is present.
+    $by_monthday = $this->getByMonthDay();
+
     while (!$this->setMonths) {
       $this->nextYear();
 
-      if ($is_monthly || $by_month) {
+      if ($is_monthly || $by_month || $by_monthday) {
         $months = $this->newMonthsSet(
           ($is_monthly ? $interval : 1),
           $by_month);
