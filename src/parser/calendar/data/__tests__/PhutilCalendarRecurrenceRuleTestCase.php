@@ -7,7 +7,7 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
 
     $rrule = id(new PhutilCalendarRecurrenceRule())
       ->setStartDateTime($start)
-      ->setFrequency('DAILY');
+      ->setFrequency(PhutilCalendarRecurrenceRule::FREQUENCY_DAILY);
 
     $set = id(new PhutilCalendarRecurrenceSet())
       ->addSource($rrule);
@@ -29,7 +29,7 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
 
     $rrule = id(new PhutilCalendarRecurrenceRule())
       ->setStartDateTime($start)
-      ->setFrequency('HOURLY')
+      ->setFrequency(PhutilCalendarRecurrenceRule::FREQUENCY_HOURLY)
       ->setByHour(array(12, 13));
 
     $set = id(new PhutilCalendarRecurrenceSet())
@@ -53,7 +53,7 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
 
     $rrule = id(new PhutilCalendarRecurrenceRule())
       ->setStartDateTime($start)
-      ->setFrequency('YEARLY');
+      ->setFrequency(PhutilCalendarRecurrenceRule::FREQUENCY_YEARLY);
 
     $set = id(new PhutilCalendarRecurrenceSet())
       ->addSource($rrule);
@@ -78,7 +78,7 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
 
     $rrule = id(new PhutilCalendarRecurrenceRule())
       ->setStartDateTime($start)
-      ->setFrequency('SECONDLY')
+      ->setFrequency(PhutilCalendarRecurrenceRule::FREQUENCY_SECONDLY)
       ->setByMonth(array(1))
       ->setByMonthDay(array(1))
       ->setByHour(array(12))
