@@ -572,17 +572,22 @@ final class PhutilCalendarRecurrenceRule
     // month", so we need to expand the month set if the constraint is present.
     $by_monthday = $this->getByMonthDay();
 
+    // Likewise, we need to generate all months if we have BYYEARDAY.
+    $by_yearday = $this->getByYearDay();
+
     while (!$this->setMonths) {
       $this->nextYear();
 
-      if ($is_monthly || $by_month || $by_monthday) {
+      $is_dynamic = $is_monthly
+        || $by_month
+        || $by_monthday
+        || $by_yearday
+        || ($scale < self::SCALE_MONTHLY);
+
+      if ($is_dynamic) {
         $months = $this->newMonthsSet(
           ($is_monthly ? $interval : 1),
           $by_month);
-      } else if ($scale < self::SCALE_MONTHLY) {
-        $months = $this->newMonthsSet(
-          1,
-          array());
       } else {
         $months = array(
           $this->cursorMonth,
@@ -768,8 +773,8 @@ final class PhutilCalendarRecurrenceRule
       }
 
       if ($by_yearday) {
-        if (empty($by_monthday[$info['yearday']]) &&
-            empty($by_monthday[$info['-yearday']])) {
+        if (empty($by_yearday[$info['yearday']]) &&
+            empty($by_yearday[$info['-yearday']])) {
           continue;
         }
       }
