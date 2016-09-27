@@ -40,6 +40,9 @@ final class PhutilCalendarRecurrenceRule
   private $stateMonth;
   private $stateYear;
 
+  private $initialMonth;
+  private $initialYear;
+
   const FREQUENCY_SECONDLY = 'SECONDLY';
   const FREQUENCY_MINUTELY = 'MINUTELY';
   const FREQUENCY_HOURLY = 'HOURLY';
@@ -326,6 +329,9 @@ final class PhutilCalendarRecurrenceRule
     $this->stateDay = null;
     $this->stateMonth = null;
     $this->stateYear = null;
+
+    $this->initialMonth = $this->cursorMonth;
+    $this->initialYear = $this->cursorYear;
   }
 
   public function getNextEvent($cursor) {
@@ -704,11 +710,23 @@ final class PhutilCalendarRecurrenceRule
         $this->cursorWeek += $interval_week;
       }
     } else {
-      $calendar = $year_map['calendar'];
       $month_idx = $this->stateMonth;
 
       if (!$interval_day) {
         $interval_day = 1;
+      }
+
+      // If we have a BYDAY, BYMONTHDAY, BYYEARDAY or BYWEEKNO selector and
+      // this isn't the initial month, reset the day cursor to the first of the
+      // month to make sure we examine the entire month. If we don't do this,
+      // we can have a situation where an event occurs "every Monday in
+      // October", but has a start date on the 19th of August, and misses
+      // Mondays in October prior to the 19th.
+      if ($by_day || $by_monthday || $by_yearday || $by_weekno) {
+        if ($this->stateYear !== $this->initialYear ||
+            $this->stateMonth !== $this->initialMonth) {
+          $this->cursorDay = 1;
+        }
       }
 
       while (true) {
@@ -720,7 +738,7 @@ final class PhutilCalendarRecurrenceRule
 
         $day_idx = $this->cursorDay;
 
-        $key = $calendar[$month_idx][$day_idx]['key'];
+        $key = "{$month_idx}M{$day_idx}D";
         $selection[] = $year_map['info'][$key];
 
         $this->cursorDay += $interval_day;
@@ -857,9 +875,6 @@ final class PhutilCalendarRecurrenceRule
     }
 
     $info_map = array();
-    $calendar_map = array();
-    $week_map = array();
-    $yearday_map = array();
 
     $weekday_map = self::getWeekdayIndexMap();
     $weekday_map = array_flip($weekday_map);
@@ -882,9 +897,6 @@ final class PhutilCalendarRecurrenceRule
       );
 
       $info_map[$key] = $info;
-      $calendar_map[$month_number][$month_day] = $info;
-      $week_map[$week_number][] = $info;
-      $yearday_map[$year_day] = $info;
 
       $weekday = ($weekday + 1) % 7;
       if ($weekday === $weekday_index) {
@@ -917,9 +929,6 @@ final class PhutilCalendarRecurrenceRule
 
     return array(
       'info' => $info_map,
-      'calendar' => $calendar_map,
-      'weeks' => $week_map,
-      'yeardays' => $yearday_map,
       'weekCount' => $week_number,
       'dayCount' => $max_day,
       'monthDays' => $month_days,
