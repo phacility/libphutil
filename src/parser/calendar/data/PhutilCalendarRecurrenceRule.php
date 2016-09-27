@@ -273,7 +273,7 @@ final class PhutilCalendarRecurrenceRule
 
   public function setByWeekNumber(array $by_week_number) {
     $this->assertByRange('BYWEEKNO', $by_week_number, -53, 53, false);
-    $this->byWeekNumber = $by_week_number;
+    $this->byWeekNumber = array_fuse($by_week_number);
     return $this;
   }
 
@@ -572,8 +572,10 @@ final class PhutilCalendarRecurrenceRule
     // month", so we need to expand the month set if the constraint is present.
     $by_monthday = $this->getByMonthDay();
 
-    // Likewise, we need to generate all months if we have BYYEARDAY.
+    // Likewise, we need to generate all months if we have BYYEARDAY or
+    // BYWEEKNO.
     $by_yearday = $this->getByYearDay();
+    $by_weekno = $this->getByWeekNumber();
 
     while (!$this->setMonths) {
       $this->nextYear();
@@ -582,6 +584,7 @@ final class PhutilCalendarRecurrenceRule
         || $by_month
         || $by_monthday
         || $by_yearday
+        || $by_weekno
         || ($scale < self::SCALE_MONTHLY);
 
       if ($is_dynamic) {
@@ -867,10 +870,10 @@ final class PhutilCalendarRecurrenceRule
     $first_weekday = $weekday;
     for ($year_day = 1; $year_day <= $max_day; $year_day++) {
       $first_weekday = ($first_weekday + 1) % 7;
+      $first_week_size++;
       if ($first_weekday === $weekday_index) {
         break;
       }
-      $first_week_size++;
     }
 
     if ($first_week_size >= 4) {
@@ -929,7 +932,7 @@ final class PhutilCalendarRecurrenceRule
         $week_value = -$week_number + $week - 1;
       }
 
-      $info['-week'] = $week_value;
+      $info_map[$key]['-week'] = $week_value;
     }
 
     return array(

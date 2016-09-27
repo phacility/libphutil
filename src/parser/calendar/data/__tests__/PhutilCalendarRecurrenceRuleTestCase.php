@@ -219,6 +219,51 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19980719',
     );
 
+    $tests[] = array(
+      'BYYEARDAY' => array(-365, -266, -166, -1),
+      'COUNT' => 4,
+    );
+    $expect[] = array(
+      '19971231',
+      '19980101',
+      '19980410',
+      '19980719',
+    );
+
+    $tests[] = array(
+      'BYYEARDAY' => array(1, 100, 200, 365),
+      'BYMONTH' => array(4, 7),
+      'COUNT' => 4,
+    );
+    $expect[] = array(
+      '19980410',
+      '19980719',
+      '19990410',
+      '19990719',
+    );
+
+    $tests[] = array(
+      'BYYEARDAY' => array(-365, -266, -166, -1),
+      'BYMONTH' => array(4, 7),
+      'COUNT' => 4,
+    );
+    $expect[] = array(
+      '19980410',
+      '19980719',
+      '19990410',
+      '19990719',
+    );
+
+    $tests[] = array(
+      'BYWEEKNO' => array(20),
+    );
+    $expect[] = array(
+      '19980511',
+      '19980512',
+      '19980513',
+    );
+
+
     $this->assertRules(
       array(
         'FREQ' => 'YEARLY',
@@ -263,6 +308,11 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       $by_yearday = idx($options, 'BYYEARDAY');
       if ($by_yearday) {
         $rrule->setByYearDay($by_yearday);
+      }
+
+      $by_weekno = idx($options, 'BYWEEKNO');
+      if ($by_weekno) {
+        $rrule->setByWeekNumber($by_weekno);
       }
 
       $set = id(new PhutilCalendarRecurrenceSet())
