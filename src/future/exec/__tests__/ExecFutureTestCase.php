@@ -89,18 +89,6 @@ final class ExecFutureTestCase extends PhutilTestCase {
     }
   }
 
-  public function testNoHangOnExecFutureDestructionWithRunningChild() {
-    $start = microtime(true);
-      $future = new ExecFuture('sleep 30');
-      $future->start();
-      unset($future);
-    $end = microtime(true);
-
-    // If ExecFuture::__destruct() hangs until the child closes, we won't make
-    // it here in time.
-    $this->assertTrue(($end - $start) < 5);
-  }
-
   public function testMultipleResolves() {
     // It should be safe to call resolve(), resolvex(), resolveKill(), etc.,
     // as many times as you want on the same process.
