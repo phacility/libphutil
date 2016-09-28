@@ -419,9 +419,62 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19970902T063010Z',
     );
 
+    // TODO: This does not pass yet because BYSETPOS is not implemented
+    // properly for YEARLY rules.
+
+    // $tests[] = array(
+    //   'BYMONTHDAY' => array(15),
+    //   'BYHOUR' => array(6, 18),
+    //   'BYSETPOS' => array(3, -3),
+    // );
+    // $expect[] = array(
+    //   '19971115T180000Z',
+    //   '19980215T060000Z',
+    //   '19981115T180000Z',
+    // );
+
     $this->assertRules(
       array(
         'FREQ' => 'YEARLY',
+        'COUNT' => 3,
+        'DTSTART' => '19970902',
+      ),
+      $tests,
+      $expect);
+  }
+
+  public function testMonthlyRecurrenceRules() {
+    $tests = array();
+    $expect = array();
+
+    $tests[] = array();
+    $expect[] = array(
+      '19970902',
+      '19971002',
+      '19971102',
+    );
+
+    $tests[] = array(
+      'INTERVAL' => 2,
+    );
+    $expect[] = array(
+      '19970902',
+      '19971102',
+      '19980102',
+    );
+
+    $tests[] = array(
+      'INTERVAL' => 18,
+    );
+    $expect[] = array(
+      '19970902',
+      '19990302',
+      '20000902',
+    );
+
+    $this->assertRules(
+      array(
+        'FREQ' => 'MONTHLY',
         'COUNT' => 3,
         'DTSTART' => '19970902',
       ),

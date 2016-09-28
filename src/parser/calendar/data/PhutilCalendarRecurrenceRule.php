@@ -850,7 +850,7 @@ final class PhutilCalendarRecurrenceRule
     $months_in_year = 12;
 
     if ($this->cursorMonth > $months_in_year) {
-      $this->cursorMonth - $months_in_year;
+      $this->cursorMonth -= $months_in_year;
       return array();
     }
 
