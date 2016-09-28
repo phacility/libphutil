@@ -23,6 +23,8 @@ final class PhutilCalendarRecurrenceRule
   private $cursorHour;
   private $cursorWeek;
   private $cursorDay;
+  private $cursorDayMonth;
+  private $cursorDayYear;
   private $cursorMonth;
   private $cursorYear;
 
@@ -322,6 +324,8 @@ final class PhutilCalendarRecurrenceRule
     // TODO: Figure this out.
     $this->cursorWeek = null;
     $this->cursorDay = $date->getDay();
+    $this->cursorDayMonth = $date->getMonth();
+    $this->cursorDayYear = $date->getYear();
     $this->cursorMonth = $date->getMonth();
     $this->cursorYear = $date->getYear();
 
@@ -594,28 +598,27 @@ final class PhutilCalendarRecurrenceRule
     $by_monthday = $this->getByMonthDay();
     $by_yearday = $this->getByYearDay();
     $by_weekno = $this->getByWeekNumber();
+    $by_month = $this->getByMonth();
     $week_start = $this->getWeekStart();
 
     while (!$this->setDays) {
       $this->nextMonth();
 
-      if ($is_daily || $by_day || $by_monthday || $by_yearday || $by_weekno) {
+      $is_dyanmic = $is_daily
+        || $by_day
+        || $by_monthday
+        || $by_yearday
+        || $by_weekno
+        || ($scale < self::SCALE_DAILY);
+
+      if ($is_dyanmic) {
         $weeks = $this->newDaysSet(
-          ($is_daily ? $interval : null),
+          ($is_daily ? $interval : 1),
           ($is_weekly ? $interval : null),
           $by_day,
           $by_monthday,
           $by_yearday,
           $by_weekno,
-          $week_start);
-      } else if ($scale < self::SCALE_DAILY) {
-        $weeks = $this->newDaysSet(
-          1,
-          null,
-          array(),
-          array(),
-          array(),
-          array(),
           $week_start);
       } else {
         // The cursor day may not actually exist in the current month, so
@@ -788,10 +791,11 @@ final class PhutilCalendarRecurrenceRule
     $by_weekno,
     $week_start) {
 
-    $year_map = $this->getYearMap($this->stateYear, $week_start);
 
     $selection = array();
     if ($interval_week) {
+      $year_map = $this->getYearMap($this->stateYear, $week_start);
+
       while (true) {
         // TODO: This is all garbage?
         if ($this->cursorWeek > $year_map['weekCount']) {
@@ -811,29 +815,41 @@ final class PhutilCalendarRecurrenceRule
         $this->cursorWeek += $interval_week;
       }
     } else {
-      $month_idx = $this->stateMonth;
-
       if (!$interval_day) {
         $interval_day = 1;
       }
 
-      // If we have a BYDAY, BYMONTHDAY, BYYEARDAY or BYWEEKNO selector and
-      // this isn't the initial month, reset the day cursor to the first of the
-      // month to make sure we examine the entire month. If we don't do this,
-      // we can have a situation where an event occurs "every Monday in
-      // October", but has a start date on the 19th of August, and misses
-      // Mondays in October prior to the 19th.
-      if ($by_day || $by_monthday || $by_yearday || $by_weekno) {
-        if ($this->stateYear !== $this->initialYear ||
-            $this->stateMonth !== $this->initialMonth) {
-          $this->cursorDay = 1;
+      // If the day cursor is behind the current year and month, we need to
+      // forward it in INTERVAL increments so we end up with the right offset
+      // in the current month.
+      $year_map = $this->getYearMap($this->cursorDayYear, $week_start);
+      while (($this->cursorDayYear < $this->stateYear) ||
+             ($this->cursorDayYear == $this->stateYear &&
+               $this->cursorDayMonth < $this->stateMonth)) {
+        $this->cursorDay += $interval_day;
+        if ($this->cursorDay > $year_map['monthDays'][$this->cursorDayMonth]) {
+          $this->cursorDay -= $year_map['monthDays'][$this->cursorDayMonth];
+          $this->cursorDayMonth++;
+          if ($this->cursorDayMonth > 12) {
+            $this->cursorDayMonth = 1;
+            $this->cursorDayYear++;
+            $year_map = $this->getYearMap($this->cursorDayYear, $week_start);
+          }
         }
       }
 
       while (true) {
+        $month_idx = $this->stateMonth;
         $month_days = $year_map['monthDays'][$month_idx];
         if ($this->cursorDay > $month_days) {
           $this->cursorDay -= $month_days;
+          $this->cursorDayMonth++;
+          if ($this->cursorDayMonth > 12) {
+            $this->cursorDayMonth = 1;
+            $this->cursorDayYear++;
+            // NOTE: The year map is now out of date, but we're about to break
+            // out of the loop anyway so it doesn't matter.
+          }
           break;
         }
 

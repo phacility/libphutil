@@ -684,6 +684,69 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       $expect);
   }
 
+  public function testDailyRecurrenceRules() {
+    $tests = array();
+    $expect = array();
+
+    $tests[] = array();
+    $expect[] = array(
+      '19970902',
+      '19970903',
+      '19970904',
+    );
+
+    $tests[] = array(
+      'INTERVAL' => 2,
+    );
+    $expect[] = array(
+      '19970902',
+      '19970904',
+      '19970906',
+    );
+
+    $tests[] = array(
+      'INTERVAL' => 92,
+    );
+    $expect[] = array(
+      '19970902',
+      '19971203',
+      '19980305',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+    );
+    $expect[] = array(
+      '19980101',
+      '19980102',
+      '19980103',
+    );
+
+    // This is testing that INTERVAL is respected in the presence of a BYMONTH
+    // filter which skips some months
+    $tests[] = array(
+      'BYMONTH' => array(12),
+      'INTERVAL' => 17,
+    );
+    $expect[] = array(
+      '19971213',
+      '19971230',
+      '19981205',
+    );
+
+
+
+    $this->assertRules(
+      array(
+        'FREQ' => 'DAILY',
+        'COUNT' => 3,
+        'DTSTART' => '19970902',
+      ),
+      $tests,
+      $expect);
+  }
+
+
   private function assertRules(array $defaults, array $tests, array $expect) {
     foreach ($tests as $key => $test) {
       $options = $test + $defaults;
