@@ -312,6 +312,65 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19980902T060000Z',
     );
 
+    $tests[] = array(
+      'BYMINUTE' => array(15, 30),
+    );
+    $expect[] = array(
+      '19970902T001500Z',
+      '19970902T003000Z',
+      '19980902T001500Z',
+    );
+
+    $tests[] = array(
+      'BYSECOND' => array(10, 20),
+    );
+    $expect[] = array(
+      '19970902T000010Z',
+      '19970902T000020Z',
+      '19980902T000010Z',
+    );
+
+    $tests[] = array(
+      'BYHOUR' => array(6, 18),
+      'BYMINUTE' => array(15, 30),
+    );
+    $expect[] = array(
+      '19970902T061500Z',
+      '19970902T063000Z',
+      '19970902T181500Z',
+    );
+
+    $tests[] = array(
+      'BYHOUR' => array(6, 18),
+      'BYSECOND' => array(10, 20),
+    );
+    $expect[] = array(
+      '19970902T060010Z',
+      '19970902T060020Z',
+      '19970902T180010Z',
+    );
+
+    $tests[] = array(
+      'BYMINUTE' => array(15, 30),
+      'BYSECOND' => array(10, 20),
+    );
+    $expect[] = array(
+      '19970902T001510Z',
+      '19970902T001520Z',
+      '19970902T003010Z',
+    );
+
+    $tests[] = array(
+      'BYHOUR' => array(6, 18),
+      'BYMINUTE' => array(15, 30),
+      'BYSECOND' => array(10, 20),
+    );
+    $expect[] = array(
+      '19970902T061510Z',
+      '19970902T061520Z',
+      '19970902T063010Z',
+    );
+
     $this->assertRules(
       array(
         'FREQ' => 'YEARLY',
@@ -366,6 +425,16 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       $by_hour = idx($options, 'BYHOUR');
       if ($by_hour) {
         $rrule->setByHour($by_hour);
+      }
+
+      $by_minute = idx($options, 'BYMINUTE');
+      if ($by_minute) {
+        $rrule->setByMinute($by_minute);
+      }
+
+      $by_second = idx($options, 'BYSECOND');
+      if ($by_second) {
+        $rrule->setBySecond($by_second);
       }
 
       $set = id(new PhutilCalendarRecurrenceSet())
