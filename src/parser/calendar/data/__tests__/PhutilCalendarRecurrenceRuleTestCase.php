@@ -263,6 +263,45 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19980513',
     );
 
+    $tests[] = array(
+      'BYWEEKNO' => array(1),
+      'BYDAY' => array('MO'),
+    );
+    $expect[] = array(
+      '19971229',
+      '19990104',
+      '20000103',
+    );
+
+    $tests[] = array(
+      'BYWEEKNO' => array(52),
+      'BYDAY' => array('SU'),
+    );
+    $expect[] = array(
+      '19971228',
+      '19981227',
+      '20000102',
+    );
+
+    $tests[] = array(
+      'BYWEEKNO' => array(-1),
+      'BYDAY' => array('SU'),
+    );
+    $expect[] = array(
+      '19971228',
+      '19990103',
+      '20000102',
+    );
+
+    $tests[] = array(
+      'BYWEEKNO' => array(53),
+      'BYDAY' => array('MO'),
+    );
+    $expect[] = array(
+      '19981228',
+      '20041227',
+      '20091228',
+    );
 
     $this->assertRules(
       array(

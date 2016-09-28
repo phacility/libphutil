@@ -42,6 +42,7 @@ final class PhutilCalendarRecurrenceRule
 
   private $initialMonth;
   private $initialYear;
+  private $baseYear;
 
   const FREQUENCY_SECONDLY = 'SECONDLY';
   const FREQUENCY_MINUTELY = 'MINUTELY';
@@ -101,6 +102,7 @@ final class PhutilCalendarRecurrenceRule
         pht(
           'Weekday "%s" is not a valid weekday constant. Valid constants '.
           'are: %s.',
+          $weekday,
           implode(', ', $constants)));
     }
 
@@ -336,6 +338,8 @@ final class PhutilCalendarRecurrenceRule
 
   public function getNextEvent($cursor) {
     $date = $this->getStartDateTime();
+
+    $this->baseYear = $this->cursorYear;
 
     $all_day = $date->getIsAllDay();
     if ($all_day) {
@@ -608,7 +612,6 @@ final class PhutilCalendarRecurrenceRule
   }
 
   protected function nextYear() {
-
     $this->stateYear = $this->cursorYear;
 
     $frequency = $this->getFrequency();
@@ -621,6 +624,14 @@ final class PhutilCalendarRecurrenceRule
     }
 
     $this->cursorYear = $this->cursorYear + $interval;
+
+    if ($this->cursorYear > ($this->baseYear + 100)) {
+      throw new Exception(
+        pht(
+          'RRULE evaluation failed to generate more events in the next 100 '.
+          'years. This RRULE is likely invalid or degenerate.'));
+    }
+
   }
 
   private function newSecondsSet($interval, $set) {
@@ -818,20 +829,20 @@ final class PhutilCalendarRecurrenceRule
   public static function getYearMap($year, $week_start) {
     static $maps = array();
 
-    $weekday_index = self::getWeekdayIndex($week_start);
-
     $key = "{$year}/{$week_start}";
     if (isset($maps[$key])) {
       return $maps[$key];
     }
 
-    $map = self::newYearMap($year, $weekday_index);
+    $map = self::newYearMap($year, $week_start);
     $maps[$key] = $map;
 
     return $maps[$key];
   }
 
-  private static function newYearMap($year, $weekday_index) {
+  private static function newYearMap($year, $weekday_start) {
+    $weekday_index = self::getWeekdayIndex($weekday_start);
+
     $is_leap = (($year % 4 === 0) && ($year % 100 !== 0)) ||
                ($year % 400 === 0);
 
@@ -918,21 +929,50 @@ final class PhutilCalendarRecurrenceRule
       }
     }
 
+    // Check how long the final week is. If it doesn't have four days, this
+    // is really the first week of the next year.
+    $final_week = array();
+    foreach ($info_map as $key => $info) {
+      if ($info['week'] == $week_number) {
+        $final_week[] = $key;
+      }
+    }
+
+    if (count($final_week) < 4) {
+      $week_number = $week_number - 1;
+      $next_year = self::getYearMap($year + 1, $weekday_start);
+      $next_year_weeks = $next_year['weekCount'];
+    } else {
+      $next_year_weeks = null;
+    }
+
+    if ($first_week_size < 4) {
+      $last_year = self::getYearMap($year - 1, $weekday_start);
+      $last_year_weeks = $last_year['weekCount'];
+    } else {
+      $last_year_weeks = null;
+    }
+
     // Now that we know how many weeks the year has, we can compute the
     // negative offsets.
     foreach ($info_map as $key => $info) {
       $week = $info['week'];
 
-      if (!$week) {
-        // If this day is part of the "zeroth" week of the year, it does not
-        // get a reverse index. In particular, it is not week "-53" (ethe
-        // 53rd week from the end of the year) in a 52-week year.
-        $week_value = 0;
+      if ($week === 0) {
+        // If this day is part of the first partial week of the year, give
+        // it the week number of the last week of the prior year instead.
+        $info['week'] = $last_year_weeks;
+        $info['-week'] = -1;
+      } else if ($week > $week_number) {
+        // If this day is part of the last partial week of the year, give
+        // it week numbers from the next year.
+        $info['week'] = 1;
+        $info['-week'] = -$next_year_weeks;
       } else {
-        $week_value = -$week_number + $week - 1;
+        $info['-week'] = -$week_number + $week - 1;
       }
 
-      $info_map[$key]['-week'] = $week_value;
+      $info_map[$key] = $info;
     }
 
     return array(
