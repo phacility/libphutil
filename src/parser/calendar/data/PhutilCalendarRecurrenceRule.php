@@ -21,10 +21,10 @@ final class PhutilCalendarRecurrenceRule
   private $cursorSecond;
   private $cursorMinute;
   private $cursorHour;
+  private $cursorHourState;
   private $cursorWeek;
   private $cursorDay;
-  private $cursorDayMonth;
-  private $cursorDayYear;
+  private $cursorDayState;
   private $cursorMonth;
   private $cursorYear;
 
@@ -379,8 +379,15 @@ final class PhutilCalendarRecurrenceRule
       $this->minimumEpoch = null;
     }
 
-    $this->cursorDayMonth = $this->cursorMonth;
-    $this->cursorDayYear = $this->cursorYear;
+    $cursor_state = array(
+      'year' => $this->cursorYear,
+      'month' => $this->cursorMonth,
+      'day' => $this->cursorDay,
+      'hour' => $this->cursorHour,
+    );
+
+    $this->cursorDayState = $cursor_state;
+    $this->cursorHourState = $cursor_state;
 
     $by_hour = $this->getByHour();
     $by_minute = $this->getByMinute();
@@ -567,14 +574,14 @@ final class PhutilCalendarRecurrenceRule
     while (!$this->setHours) {
       $this->nextDay();
 
-      if ($is_hourly || $by_hour) {
+      $is_dynamic = $is_hourly
+        || $by_hour
+        || ($scale < self::SCALE_HOURLY);
+
+      if ($is_dynamic) {
         $hours = $this->newHoursSet(
           ($is_hourly ? $interval : 1),
           $by_hour);
-      } else if ($scale < self::SCALE_HOURLY) {
-        $hours = $this->newHoursSet(
-          1,
-          array());
       } else {
         $hours = array(
           $this->cursorHour,
@@ -609,14 +616,14 @@ final class PhutilCalendarRecurrenceRule
     while (!$this->setDays) {
       $this->nextMonth();
 
-      $is_dyanmic = $is_daily
+      $is_dynamic = $is_daily
         || $by_day
         || $by_monthday
         || $by_yearday
         || $by_weekno
         || ($scale < self::SCALE_DAILY);
 
-      if ($is_dyanmic) {
+      if ($is_dynamic) {
         $weeks = $this->newDaysSet(
           ($is_daily ? $interval : 1),
           ($is_weekly ? $interval : null),
@@ -771,8 +778,15 @@ final class PhutilCalendarRecurrenceRule
     // events.
     $hours_in_day = 24;
 
-    if ($this->cursorHour >= $hours_in_day) {
-      $this->cursorHour -= $hours_in_day;
+    // If the hour cursor is behind the current time, we need to forward it in
+    // INTERVAL increments so we end up with the right offset.
+    list($skip, $this->cursorHourState) = $this->advanceCursorState(
+      $this->cursorHourState,
+      self::SCALE_HOURLY,
+      $interval,
+      $this->getWeekStart());
+
+    if ($skip) {
       return array();
     }
 
@@ -795,7 +809,6 @@ final class PhutilCalendarRecurrenceRule
     $by_yearday,
     $by_weekno,
     $week_start) {
-
 
     $selection = array();
     if ($interval_week) {
@@ -827,43 +840,30 @@ final class PhutilCalendarRecurrenceRule
       // If the day cursor is behind the current year and month, we need to
       // forward it in INTERVAL increments so we end up with the right offset
       // in the current month.
-      $year_map = $this->getYearMap($this->cursorDayYear, $week_start);
-      while (($this->cursorDayYear < $this->stateYear) ||
-             ($this->cursorDayYear == $this->stateYear &&
-               $this->cursorDayMonth < $this->stateMonth)) {
-        $this->cursorDay += $interval_day;
-        if ($this->cursorDay > $year_map['monthDays'][$this->cursorDayMonth]) {
-          $this->cursorDay -= $year_map['monthDays'][$this->cursorDayMonth];
-          $this->cursorDayMonth++;
-          if ($this->cursorDayMonth > 12) {
-            $this->cursorDayMonth = 1;
-            $this->cursorDayYear++;
-            $year_map = $this->getYearMap($this->cursorDayYear, $week_start);
-          }
-        }
-      }
+      list($skip, $this->cursorDayState) = $this->advanceCursorState(
+        $this->cursorDayState,
+        self::SCALE_DAILY,
+        $interval_day,
+        $week_start);
 
-      while (true) {
-        $month_idx = $this->stateMonth;
-        $month_days = $year_map['monthDays'][$month_idx];
-        if ($this->cursorDay > $month_days) {
-          $this->cursorDay -= $month_days;
-          $this->cursorDayMonth++;
-          if ($this->cursorDayMonth > 12) {
-            $this->cursorDayMonth = 1;
-            $this->cursorDayYear++;
+      if (!$skip) {
+        $year_map = $this->getYearMap($this->stateYear, $week_start);
+        while (true) {
+          $month_idx = $this->stateMonth;
+          $month_days = $year_map['monthDays'][$month_idx];
+          if ($this->cursorDay > $month_days) {
             // NOTE: The year map is now out of date, but we're about to break
             // out of the loop anyway so it doesn't matter.
+            break;
           }
-          break;
+
+          $day_idx = $this->cursorDay;
+
+          $key = "{$month_idx}M{$day_idx}D";
+          $selection[] = $year_map['info'][$key];
+
+          $this->cursorDay += $interval_day;
         }
-
-        $day_idx = $this->cursorDay;
-
-        $key = "{$month_idx}M{$day_idx}D";
-        $selection[] = $year_map['info'][$key];
-
-        $this->cursorDay += $interval_day;
       }
     }
 
@@ -1246,5 +1246,118 @@ final class PhutilCalendarRecurrenceRule
     $this->cursorYear--;
     $this->cursorMonth += 12;
   }
+
+  private function advanceCursorState(
+    array $cursor,
+    $scale,
+    $interval,
+    $week_start) {
+
+    $state = array(
+      'year' => $this->stateYear,
+      'month' => $this->stateMonth,
+      'day' => $this->stateDay,
+      'hour' => $this->stateHour,
+    );
+
+    // In the common case when the interval is 1, we'll visit every possible
+    // value so we don't need to do any math and can just jump to the first
+    // hour, day, etc.
+    if ($interval == 1) {
+      if ($this->isCursorBehind($cursor, $state, $scale)) {
+        switch ($scale) {
+          case self::SCALE_DAILY:
+            $this->cursorDay = 1;
+            break;
+          case self::SCALE_HOURLY:
+            $this->cursorHour = 0;
+            break;
+        }
+      }
+      return array(false, $state);
+    }
+
+    $year_map = $this->getYearMap($cursor['year'], $week_start);
+    while ($this->isCursorBehind($cursor, $state, $scale)) {
+      switch ($scale) {
+        case self::SCALE_DAILY:
+          $cursor['day'] += $interval;
+          break;
+        case self::SCALE_HOURLY:
+          $cursor['hour'] += $interval;
+          break;
+      }
+
+      if ($scale <= self::SCALE_HOURLY) {
+        while ($cursor['hour'] >= 24) {
+          $cursor['hour'] -= 24;
+          $cursor['day']++;
+        }
+      }
+
+      if ($scale <= self::SCALE_DAILY) {
+        while ($cursor['day'] > $year_map['monthDays'][$cursor['month']]) {
+          $cursor['day'] -= $year_map['monthDays'][$cursor['month']];
+          $cursor['month']++;
+          if ($cursor['month'] > 12) {
+            $cursor['month'] -= 12;
+            $cursor['year']++;
+            $year_map = $this->getYearMap($cursor['year'], $week_start);
+          }
+        }
+      }
+    }
+
+    switch ($scale) {
+      case self::SCALE_DAILY:
+        $this->cursorDay = $cursor['day'];
+        break;
+      case self::SCALE_HOURLY:
+        $this->cursorHour = $cursor['hour'];
+        break;
+    }
+
+    $skip = $this->isCursorBehind($state, $cursor, $scale);
+
+    return array($skip, $cursor);
+  }
+
+  private function isCursorBehind(array $cursor, array $state, $scale) {
+    if ($cursor['year'] < $state['year']) {
+      return true;
+    } else if ($cursor['year'] > $state['year']) {
+      return false;
+    }
+
+    if ($cursor['month'] < $state['month']) {
+      return true;
+    } else if ($cursor['month'] > $state['month']) {
+      return false;
+    }
+
+    if ($scale >= self::SCALE_DAILY) {
+      return false;
+    }
+
+    if ($cursor['day'] < $state['day']) {
+      return true;
+    } else if ($cursor['day'] > $state['day']) {
+      return false;
+    }
+
+    if ($scale >= self::SCALE_HOURLY) {
+      return false;
+    }
+
+    if ($cursor['hour'] < $state['hour']) {
+      return true;
+    } else if ($cursor['hour'] > $state['hour']) {
+      return false;
+    }
+
+    return false;
+  }
+
+
 
 }

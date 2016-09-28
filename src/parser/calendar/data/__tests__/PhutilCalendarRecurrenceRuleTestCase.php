@@ -815,6 +815,54 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       $expect);
   }
 
+  public function testHourlyRecurrenceRules() {
+    $tests = array();
+    $expect = array();
+
+    $tests[] = array();
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970902T100000Z',
+      '19970902T110000Z',
+    );
+
+    $tests[] = array(
+      'INTERVAL' => 2,
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970902T110000Z',
+      '19970902T130000Z',
+    );
+
+    $tests[] = array(
+      'INTERVAL' => 769,
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19971004T100000Z',
+      '19971105T110000Z',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+    );
+    $expect[] = array(
+      '19980101T000000Z',
+      '19980101T010000Z',
+      '19980101T020000Z',
+    );
+
+    $this->assertRules(
+      array(
+        'FREQ' => 'HOURLY',
+        'COUNT' => 3,
+        'DTSTART' => '19970902T090000Z',
+      ),
+      $tests,
+      $expect);
+  }
+
 
   private function assertRules(array $defaults, array $tests, array $expect) {
     foreach ($tests as $key => $test) {
