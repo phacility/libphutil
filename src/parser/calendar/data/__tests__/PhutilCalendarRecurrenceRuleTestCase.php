@@ -209,6 +209,54 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
     );
 
     $tests[] = array(
+      'BYDAY' => array('1TU', '-1TH'),
+    );
+    $expect[] = array(
+      '19971225',
+      '19980106',
+      '19981231',
+    );
+
+    // Same test as above, just making sure the optional "+" syntax works.
+    $tests[] = array(
+      'BYDAY' => array('+1TU', '-1TH'),
+    );
+    $expect[] = array(
+      '19971225',
+      '19980106',
+      '19981231',
+    );
+
+    $tests[] = array(
+      'BYDAY' => array('3TU', '-3TH'),
+    );
+    $expect[] = array(
+      '19971211',
+      '19980120',
+      '19981217',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+      'BYDAY' => array('1TU', '-1TH'),
+    );
+    $expect[] = array(
+      '19980106',
+      '19980129',
+      '19980303',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+      'BYDAY' => array('3TU', '-3TH'),
+    );
+    $expect[] = array(
+      '19980115',
+      '19980120',
+      '19980312',
+    );
+
+    $tests[] = array(
       'BYYEARDAY' => array(1, 100, 200, 365),
       'COUNT' => 4,
     );

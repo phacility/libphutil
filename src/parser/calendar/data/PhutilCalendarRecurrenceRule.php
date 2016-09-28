@@ -210,7 +210,7 @@ final class PhutilCalendarRecurrenceRule
     $constants = implode('|', $constants);
 
     $pattern = '/^(?:[+-]?([1-9]\d?))?('.$constants.')\z/';
-    foreach ($by_day as $value) {
+    foreach ($by_day as $key => $value) {
       $matches = null;
       if (!preg_match($pattern, $value, $matches)) {
         throw new Exception(
@@ -234,6 +234,9 @@ final class PhutilCalendarRecurrenceRule
             $magnitude,
             $maximum));
       }
+
+      // Normalize "+3FR" into "3FR".
+      $by_day[$key] = ltrim($value, '+');
     }
 
     $this->byDay = array_fuse($by_day);
@@ -589,9 +592,10 @@ final class PhutilCalendarRecurrenceRule
     $by_monthday = $this->getByMonthDay();
 
     // Likewise, we need to generate all months if we have BYYEARDAY or
-    // BYWEEKNO.
+    // BYWEEKNO or BYDAY.
     $by_yearday = $this->getByYearDay();
     $by_weekno = $this->getByWeekNumber();
+    $by_day = $this->getByDay();
 
     while (!$this->setMonths) {
       $this->nextYear();
@@ -601,6 +605,7 @@ final class PhutilCalendarRecurrenceRule
         || $by_monthday
         || $by_yearday
         || $by_weekno
+        || $by_day
         || ($scale < self::SCALE_MONTHLY);
 
       if ($is_dynamic) {
@@ -776,6 +781,19 @@ final class PhutilCalendarRecurrenceRule
       }
     }
 
+    $frequency = $this->getFrequency();
+    $is_yearly = ($frequency == self::FREQUENCY_YEARLY);
+    $is_monthly = ($frequency == self::FREQUENCY_MONTHLY);
+
+    // As a special case, BYDAY applies to relative month offsets if BYMONTH
+    // is present in a YEARLY rule.
+    if ($is_yearly) {
+      if ($this->getByMonth()) {
+        $is_yearly = false;
+        $is_monthly = true;
+      }
+    }
+
     $weeks = array();
     foreach ($selection as $key => $info) {
       if ($info['month'] != $this->stateMonth) {
@@ -783,11 +801,20 @@ final class PhutilCalendarRecurrenceRule
       }
 
       if ($by_day) {
-        // TODO: This only handles "BYDAY=MO,TU". It does not yet properly
-        // handle "BYDAY=+1FR" (e.g., the first Friday in the month).
-
         if (empty($by_day[$info['weekday']])) {
-          continue;
+          if ($is_yearly) {
+            if (empty($by_day[$info['weekday.yearly']]) &&
+                empty($by_day[$info['-weekday.yearly']])) {
+              continue;
+            }
+          } else if ($is_monthly) {
+            if (empty($by_day[$info['weekday.monthly']]) &&
+                empty($by_day[$info['-weekday.monthly']])) {
+              continue;
+            }
+          } else {
+            continue;
+          }
         }
       }
 
@@ -910,10 +937,24 @@ final class PhutilCalendarRecurrenceRule
     $weekday_map = self::getWeekdayIndexMap();
     $weekday_map = array_flip($weekday_map);
 
+    $yearly_counts = array();
+    $monthly_counts = array();
+
     $month_number = 1;
     $month_day = 1;
     for ($year_day = 1; $year_day <= $max_day; $year_day++) {
       $key = "{$month_number}M{$month_day}D";
+
+      $short_day = $weekday_map[$weekday];
+      if (empty($yearly_counts[$short_day])) {
+        $yearly_counts[$short_day] = 0;
+      }
+      $yearly_counts[$short_day]++;
+
+      if (empty($monthly_counts[$month_number][$short_day])) {
+        $monthly_counts[$month_number][$short_day] = 0;
+      }
+      $monthly_counts[$month_number][$short_day]++;
 
       $info = array(
         'year' => $year,
@@ -924,7 +965,9 @@ final class PhutilCalendarRecurrenceRule
         'yearday' => $year_day,
         '-yearday' => -$max_day + $year_day - 1,
         'week' => $week_number,
-        'weekday' => $weekday_map[$weekday],
+        'weekday' => $short_day,
+        'weekday.yearly' => $yearly_counts[$short_day],
+        'weekday.monthly' => $monthly_counts[$month_number][$short_day],
       );
 
       $info_map[$key] = $info;
@@ -983,6 +1026,22 @@ final class PhutilCalendarRecurrenceRule
       } else {
         $info['-week'] = -$week_number + $week - 1;
       }
+
+      // Do all the arithmetic to figure out if this is the -19th Thursday
+      // in the year and such.
+      $month_number = $info['month'];
+      $short_day = $info['weekday'];
+      $monthly_count = $monthly_counts[$month_number][$short_day];
+      $monthly_index = $info['weekday.monthly'];
+      $info['-weekday.monthly'] = -$monthly_count + $monthly_index - 1;
+      $info['-weekday.monthly'] .= $short_day;
+      $info['weekday.monthly'] .= $short_day;
+
+      $yearly_count = $yearly_counts[$short_day];
+      $yearly_index = $info['weekday.yearly'];
+      $info['-weekday.yearly'] = -$yearly_count + $yearly_index - 1;
+      $info['-weekday.yearly'] .= $short_day;
+      $info['weekday.yearly'] .= $short_day;
 
       $info_map[$key] = $info;
     }
