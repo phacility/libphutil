@@ -42,8 +42,6 @@ final class PhutilCalendarRecurrenceRule
   private $stateMonth;
   private $stateYear;
 
-  private $initialMonth;
-  private $initialYear;
   private $baseYear;
   private $isAllDay;
   private $activeSet = array();
@@ -324,8 +322,6 @@ final class PhutilCalendarRecurrenceRule
     // TODO: Figure this out.
     $this->cursorWeek = null;
     $this->cursorDay = $date->getDay();
-    $this->cursorDayMonth = $date->getMonth();
-    $this->cursorDayYear = $date->getYear();
     $this->cursorMonth = $date->getMonth();
     $this->cursorYear = $date->getYear();
 
@@ -356,9 +352,19 @@ final class PhutilCalendarRecurrenceRule
           break;
         case self::FREQUENCY_MONTHLY:
           $this->cursorMonth -= $interval;
+
           while ($this->cursorMonth < 1) {
-            $this->cursorYear--;
-            $this->cursorMonth += 12;
+            $this->rewindMonth();
+          }
+          break;
+        case self::FREQUENCY_DAILY:
+          $this->cursorDay -= $interval;
+
+          $week_start = $this->getWeekStart();
+          while ($this->cursorDay < 1) {
+            $year_map = $this->getYearMap($this->cursorYear, $week_start);
+            $this->cursorDay += $year_map['monthDays'][$this->cursorMonth];
+            $this->rewindMonth();
           }
           break;
         default:
@@ -373,9 +379,8 @@ final class PhutilCalendarRecurrenceRule
       $this->minimumEpoch = null;
     }
 
-
-    $this->initialMonth = $this->cursorMonth;
-    $this->initialYear = $this->cursorYear;
+    $this->cursorDayMonth = $this->cursorMonth;
+    $this->cursorDayYear = $this->cursorYear;
 
     $by_hour = $this->getByHour();
     $by_minute = $this->getByMinute();
@@ -1230,8 +1235,16 @@ final class PhutilCalendarRecurrenceRule
     if ($scale < self::SCALE_YEARLY) {
       $parts[] = $this->stateMonth;
     }
+    if ($scale < self::SCALE_MONTHLY) {
+      $parts[] = $this->stateDay;
+    }
 
     return implode('/', $parts);
+  }
+
+  private function rewindMonth() {
+    $this->cursorYear--;
+    $this->cursorMonth += 12;
   }
 
 }

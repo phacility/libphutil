@@ -723,7 +723,7 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
     );
 
     // This is testing that INTERVAL is respected in the presence of a BYMONTH
-    // filter which skips some months
+    // filter which skips some months.
     $tests[] = array(
       'BYMONTH' => array(12),
       'INTERVAL' => 17,
@@ -734,7 +734,76 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19981205',
     );
 
+    $tests[] = array(
+      'BYMONTHDAY' => array(1, 3),
+    );
+    $expect[] = array(
+      '19970903',
+      '19971001',
+      '19971003',
+    );
 
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+      'BYMONTHDAY' => array(5, 7),
+    );
+    $expect[] = array(
+      '19980105',
+      '19980107',
+      '19980305',
+    );
+
+    $tests[] = array(
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19970902',
+      '19970904',
+      '19970909',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19980101',
+      '19980106',
+      '19980108',
+    );
+
+    $tests[] = array(
+      'BYMONTHDAY' => array(1, 3),
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19980101',
+      '19980203',
+      '19980303',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+      'BYMONTHDAY' => array(1, 3),
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19980101',
+      '19980303',
+      '20010301',
+    );
+
+    $tests[] = array(
+      'BYHOUR' => array(6, 18),
+      'BYMINUTE' => array(15, 45),
+      'BYSETPOS' => array(3, -3),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T181500Z',
+      '19970903T064500Z',
+      '19970903T181500Z',
+    );
 
     $this->assertRules(
       array(
