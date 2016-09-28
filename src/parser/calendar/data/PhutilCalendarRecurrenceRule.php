@@ -44,6 +44,9 @@ final class PhutilCalendarRecurrenceRule
   private $initialYear;
   private $baseYear;
   private $isAllDay;
+  private $activeSet = array();
+  private $nextSet = array();
+  private $minimumEpoch;
 
   const FREQUENCY_SECONDLY = 'SECONDLY';
   const FREQUENCY_MINUTELY = 'MINUTELY';
@@ -336,6 +339,37 @@ final class PhutilCalendarRecurrenceRule
     $this->stateMonth = null;
     $this->stateYear = null;
 
+    // If we have a BYSETPOS, we need to generate the entire set before we
+    // can filter it and return results. Normally, we start generating at
+    // the start date, but we need to go back one interval to generate
+    // BYSETPOS events so we can make sure the entire set is generated.
+    if ($this->getBySetPosition()) {
+      $frequency = $this->getFrequency();
+      $interval = $this->getInterval();
+      switch ($frequency) {
+        case self::FREQUENCY_YEARLY:
+          $this->cursorYear -= $interval;
+          break;
+        case self::FREQUENCY_MONTHLY:
+          $this->cursorMonth -= $interval;
+          while ($this->cursorMonth < 1) {
+            $this->cursorYear--;
+            $this->cursorMonth += 12;
+          }
+          break;
+        default:
+          throw new Exception(
+            pht(
+              'BYSETPOS not yet supported for FREQ "%s".',
+              $frequency));
+      }
+
+      $this->minimumEpoch = $this->getStartDateTime()->getEpoch();
+    } else {
+      $this->minimumEpoch = null;
+    }
+
+
     $this->initialMonth = $this->cursorMonth;
     $this->initialYear = $this->cursorYear;
 
@@ -355,30 +389,92 @@ final class PhutilCalendarRecurrenceRule
   }
 
   public function getNextEvent($cursor) {
+    while (true) {
+      $event = $this->generateNextEvent();
+      if (!$event) {
+        break;
+      }
+
+      $epoch = $event->getEpoch();
+      if ($this->minimumEpoch) {
+        if ($epoch < $this->minimumEpoch) {
+          continue;
+        }
+      }
+
+      if ($epoch < $cursor) {
+        continue;
+      }
+
+      break;
+    }
+
+    return $event;
+  }
+
+  private function generateNextEvent() {
+    if ($this->activeSet) {
+      return array_pop($this->activeSet);
+    }
+
     $this->baseYear = $this->cursorYear;
 
-    if ($this->isAllDay) {
-      $this->nextDay();
-    } else {
-      $this->nextSecond();
+    $by_setpos = $this->getBySetPosition();
+    if ($by_setpos) {
+      $old_state = $this->getSetPositionState();
     }
 
-    $result = id(new PhutilCalendarAbsoluteDateTime())
-      ->setViewerTimezone($this->getViewerTimezone())
-      ->setYear($this->stateYear)
-      ->setMonth($this->stateMonth)
-      ->setDay($this->stateDay);
+    while (!$this->activeSet) {
+      $this->activeSet = $this->nextSet;
+      $this->nextSet = array();
 
-    if ($this->isAllDay) {
-      $result->setIsAllDay(true);
-    } else {
-      $result
-        ->setHour($this->stateHour)
-        ->setMinute($this->stateMinute)
-        ->setSecond($this->stateSecond);
+      while (true) {
+        if ($this->isAllDay) {
+          $this->nextDay();
+        } else {
+          $this->nextSecond();
+        }
+
+        $result = id(new PhutilCalendarAbsoluteDateTime())
+          ->setViewerTimezone($this->getViewerTimezone())
+          ->setYear($this->stateYear)
+          ->setMonth($this->stateMonth)
+          ->setDay($this->stateDay);
+
+        if ($this->isAllDay) {
+          $result->setIsAllDay(true);
+        } else {
+          $result
+            ->setHour($this->stateHour)
+            ->setMinute($this->stateMinute)
+            ->setSecond($this->stateSecond);
+        }
+
+        // If we don't have BYSETPOS, we're all done. We put this into the
+        // set and will immediately return it.
+        if (!$by_setpos) {
+          $this->activeSet[] = $result;
+          break;
+        }
+
+        // Otherwise, check if we've completed a set. The set is complete if
+        // the state has moved past the span we were examining (for example,
+        // with a YEARLY event, if the state is now in the next year).
+        $new_state = $this->getSetPositionState();
+        if ($new_state == $old_state) {
+          $this->activeSet[] = $result;
+          continue;
+        }
+
+        $this->activeSet = $this->applySetPos($this->activeSet, $by_setpos);
+        $this->activeSet = array_reverse($this->activeSet);
+        $this->nextSet[] = $result;
+        $old_state = $new_state;
+        break;
+      }
     }
 
-    return $result;
+    return array_pop($this->activeSet);
   }
 
 
@@ -392,7 +488,6 @@ final class PhutilCalendarRecurrenceRule
     $interval = $this->getInterval();
     $is_secondly = ($frequency == self::FREQUENCY_SECONDLY);
     $by_second = $this->getBySecond();
-    $by_setpos = $this->getBySetPosition();
 
     while (!$this->setSeconds) {
       $this->nextMinute();
@@ -405,10 +500,6 @@ final class PhutilCalendarRecurrenceRule
         $seconds = array(
           $this->cursorSecond,
         );
-      }
-
-      if ($is_secondly && $by_setpos) {
-        $seconds = $this->applySetPos($seconds, $by_setpos);
       }
 
       $this->setSeconds = array_reverse($seconds);
@@ -428,7 +519,6 @@ final class PhutilCalendarRecurrenceRule
     $scale = $this->getFrequencyScale();
     $is_minutely = ($frequency === self::FREQUENCY_MINUTELY);
     $by_minute = $this->getByMinute();
-    $by_setpos = $this->getBySetPosition();
 
     while (!$this->setMinutes) {
       $this->nextHour();
@@ -445,10 +535,6 @@ final class PhutilCalendarRecurrenceRule
         $minutes = array(
           $this->cursorMinute,
         );
-      }
-
-      if ($is_minutely && $by_setpos) {
-        $minutes = $this->applySetPos($minutes, $by_setpos);
       }
 
       $this->setMinutes = array_reverse($minutes);
@@ -468,7 +554,6 @@ final class PhutilCalendarRecurrenceRule
     $scale = $this->getFrequencyScale();
     $is_hourly = ($frequency === self::FREQUENCY_HOURLY);
     $by_hour = $this->getByHour();
-    $by_setpos = $this->getBySetPosition();
 
     while (!$this->setHours) {
       $this->nextDay();
@@ -485,10 +570,6 @@ final class PhutilCalendarRecurrenceRule
         $hours = array(
           $this->cursorHour,
         );
-      }
-
-      if ($is_hourly && $by_setpos) {
-        $hours = $this->applySetPos($hours, $by_setpos);
       }
 
       $this->setHours = array_reverse($hours);
@@ -513,7 +594,6 @@ final class PhutilCalendarRecurrenceRule
     $by_monthday = $this->getByMonthDay();
     $by_yearday = $this->getByYearDay();
     $by_weekno = $this->getByWeekNumber();
-    $by_setpos = $this->getBySetPosition();
     $week_start = $this->getWeekStart();
 
     while (!$this->setDays) {
@@ -553,18 +633,8 @@ final class PhutilCalendarRecurrenceRule
         }
       }
 
-      // Apply weekly BYSETPOS, if one exists.
-      if ($is_weekly && $by_setpos) {
-        $weeks = $this->applySetPos($weeks, $by_setpos);
-      }
-
       // Unpack the weeks into days.
       $days = array_mergev($weeks);
-
-      // Apply daily BYSETPOS, if one exists.
-      if ($is_daily && $by_setpos) {
-        $days = $this->applySetPos($days, $by_setpos);
-      }
 
       $this->setDays = array_reverse($days);
     }
@@ -584,7 +654,6 @@ final class PhutilCalendarRecurrenceRule
     $is_monthly = ($frequency === self::FREQUENCY_MONTHLY);
 
     $by_month = $this->getByMonth();
-    $by_setpos = $this->getBySetPosition();
 
     // If we have a BYMONTHDAY, we consider that set of days in every month.
     // For example, "FREQ=YEARLY;BYMONTHDAY=3" means "the third day of every
@@ -616,10 +685,6 @@ final class PhutilCalendarRecurrenceRule
         $months = array(
           $this->cursorMonth,
         );
-      }
-
-      if ($is_monthly && $by_setpos) {
-        $months = $this->applySetPos($months, $by_setpos);
       }
 
       $this->setMonths = array_reverse($months);
@@ -1097,6 +1162,8 @@ final class PhutilCalendarRecurrenceRule
     }
 
     sort($select);
+    $select = array_unique($select);
+
     return array_select_keys($values, $select);
   }
 
@@ -1137,6 +1204,18 @@ final class PhutilCalendarRecurrenceRule
             $source));
       }
     }
+  }
+
+  private function getSetPositionState() {
+    $scale = $this->getFrequencyScale();
+
+    $parts = array();
+    $parts[] = $this->stateYear;
+    if ($scale < self::SCALE_YEARLY) {
+      $parts[] = $this->stateMonth;
+    }
+
+    return implode('/', $parts);
   }
 
 }

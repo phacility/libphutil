@@ -419,19 +419,16 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19970902T063010Z',
     );
 
-    // TODO: This does not pass yet because BYSETPOS is not implemented
-    // properly for YEARLY rules.
-
-    // $tests[] = array(
-    //   'BYMONTHDAY' => array(15),
-    //   'BYHOUR' => array(6, 18),
-    //   'BYSETPOS' => array(3, -3),
-    // );
-    // $expect[] = array(
-    //   '19971115T180000Z',
-    //   '19980215T060000Z',
-    //   '19981115T180000Z',
-    // );
+    $tests[] = array(
+      'BYMONTHDAY' => array(15),
+      'BYHOUR' => array(6, 18),
+      'BYSETPOS' => array(3, -3),
+    );
+    $expect[] = array(
+      '19971115T180000Z',
+      '19980215T060000Z',
+      '19981115T180000Z',
+    );
 
     $this->assertRules(
       array(
@@ -587,18 +584,15 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '20010301',
     );
 
-    // TODO: This test does not pass yet because BYSETPOS is not implemented
-    // correctly.
-
-    // $tests[] = array(
-    //   'BYDAY' => array('MO', 'TU', 'WE', 'TH', 'FR'),
-    //   'BYSETPOS' => array(-1),
-    // );
-    // $expect[] = array(
-    //   '19970930',
-    //   '19971031',
-    //   '19971128',
-    // );
+    $tests[] = array(
+      'BYDAY' => array('MO', 'TU', 'WE', 'TH', 'FR'),
+      'BYSETPOS' => array(-1),
+    );
+    $expect[] = array(
+      '19970930',
+      '19971031',
+      '19971128',
+    );
 
     $tests[] = array(
       'BYDAY' => array('1MO', '1TU', '1WE', '1TH', '1FR', '-1FR'),
@@ -647,40 +641,38 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19971002T000006Z',
     );
 
-    // TODO: These tests rely on BYSETPOS and do not work yet.
+    $tests[] = array(
+      'BYMONTHDAY' => array(13, 17),
+      'BYHOUR' => array(6, 18),
+      'BYSETPOS' => array(3, -3),
+    );
+    $expect[] = array(
+      '19970913T180000Z',
+      '19970917T060000Z',
+      '19971013T180000Z',
+    );
 
-    // $tests[] = array(
-    //   'BYMONTHDAY' => array(13, 17),
-    //   'BYHOUR' => array(6, 18),
-    //   'BYSETPOS' => array(3, -3),
-    // );
-    // $expect[] = array(
-    //   '19970913T180000Z',
-    //   '19970917T060000Z',
-    //   '19971013T180000Z',
-    // );
+    $tests[] = array(
+      'BYMONTHDAY' => array(13, 17),
+      'BYHOUR' => array(6, 18),
+      'BYSETPOS' => array(3, 3, -3),
+    );
+    $expect[] = array(
+      '19970913T180000Z',
+      '19970917T060000Z',
+      '19971013T180000Z',
+    );
 
-    // $tests[] = array(
-    //   'BYMONTHDAY' => array(13, 17),
-    //   'BYHOUR' => array(6, 18),
-    //   'BYSETPOS' => array(3, 3, -3),
-    // );
-    // $expect[] = array(
-    //   '19970913T180000Z',
-    //   '19970917T060000Z',
-    //   '19971013T180000Z',
-    // );
-
-    // $tests[] = array(
-    //   'BYMONTHDAY' => array(13, 17),
-    //   'BYHOUR' => array(6, 18),
-    //   'BYSETPOS' => array(4, -1),
-    // );
-    // $expect[] = array(
-    //   '19970917T180000Z',
-    //   '19971017T180000Z',
-    //   '19971117T180000Z',
-    // );
+    $tests[] = array(
+      'BYMONTHDAY' => array(13, 17),
+      'BYHOUR' => array(6, 18),
+      'BYSETPOS' => array(4, -1),
+    );
+    $expect[] = array(
+      '19970917T180000Z',
+      '19971017T180000Z',
+      '19971117T180000Z',
+    );
 
     $this->assertRules(
       array(
