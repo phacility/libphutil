@@ -303,6 +303,15 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '20091228',
     );
 
+    $tests[] = array(
+      'BYHOUR' => array(6, 18),
+    );
+    $expect[] = array(
+      '19970902T060000Z',
+      '19970902T180000Z',
+      '19980902T060000Z',
+    );
+
     $this->assertRules(
       array(
         'FREQ' => 'YEARLY',
@@ -352,6 +361,11 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       $by_weekno = idx($options, 'BYWEEKNO');
       if ($by_weekno) {
         $rrule->setByWeekNumber($by_weekno);
+      }
+
+      $by_hour = idx($options, 'BYHOUR');
+      if ($by_hour) {
+        $rrule->setByHour($by_hour);
       }
 
       $set = id(new PhutilCalendarRecurrenceSet())

@@ -43,6 +43,7 @@ final class PhutilCalendarRecurrenceRule
   private $initialMonth;
   private $initialYear;
   private $baseYear;
+  private $isAllDay;
 
   const FREQUENCY_SECONDLY = 'SECONDLY';
   const FREQUENCY_MINUTELY = 'MINUTELY';
@@ -334,15 +335,26 @@ final class PhutilCalendarRecurrenceRule
 
     $this->initialMonth = $this->cursorMonth;
     $this->initialYear = $this->cursorYear;
+
+    $by_hour = $this->getByHour();
+    $by_minute = $this->getByMinute();
+    $by_second = $this->getBySecond();
+
+    $scale = $this->getFrequencyScale();
+
+    // We return all-day events if the start date is an all-day event and we
+    // don't have more granular selectors or a more granular frequency.
+    $this->isAllDay = $date->getIsAllDay()
+      && !$by_hour
+      && !$by_minute
+      && !$by_second
+      && ($scale > self::SCALE_HOURLY);
   }
 
   public function getNextEvent($cursor) {
-    $date = $this->getStartDateTime();
-
     $this->baseYear = $this->cursorYear;
 
-    $all_day = $date->getIsAllDay();
-    if ($all_day) {
+    if ($this->isAllDay) {
       $this->nextDay();
     } else {
       $this->nextSecond();
@@ -354,7 +366,7 @@ final class PhutilCalendarRecurrenceRule
       ->setMonth($this->stateMonth)
       ->setDay($this->stateDay);
 
-    if ($all_day) {
+    if ($this->isAllDay) {
       $result->setIsAllDay(true);
     } else {
       $result
