@@ -1090,6 +1090,395 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       $expect);
   }
 
+  public function testRFC5545RecurrenceRules() {
+    // These tests are derived from the examples in RFC5545.
+    $tests = array();
+    $expect = array();
+
+    $tests[] = array(
+      'FREQ' => 'DAILY',
+      'COUNT' => 10,
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970903T090000Z',
+      '19970904T090000Z',
+      '19970905T090000Z',
+      '19970906T090000Z',
+      '19970907T090000Z',
+      '19970908T090000Z',
+      '19970909T090000Z',
+      '19970910T090000Z',
+      '19970911T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'DAILY',
+      'INTERVAL' => 2,
+      'DTSTART' => '19970902T090000Z',
+      'COUNT' => 5,
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970904T090000Z',
+      '19970906T090000Z',
+      '19970908T090000Z',
+      '19970910T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'YEARLY',
+      'BYMONTH' => array(1),
+      'BYDAY' => array('MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'),
+      'DTSTART' => '19970902T090000Z',
+      'COUNT' => 3,
+    );
+    $expect[] = array(
+      '19980101T090000Z',
+      '19980102T090000Z',
+      '19980103T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'COUNT' => 3,
+      'BYDAY' => array('1FR'),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970905T090000Z',
+      '19971003T090000Z',
+      '19971107T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'INTERVAL' => 2,
+      'COUNT' => 5,
+      'BYDAY' => array('1SU', '-1SU'),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970907T090000Z',
+      '19970928T090000Z',
+      '19971102T090000Z',
+      '19971130T090000Z',
+      '19980104T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'COUNT' => 6,
+      'BYDAY' => array('-2MO'),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970922T090000Z',
+      '19971020T090000Z',
+      '19971117T090000Z',
+      '19971222T090000Z',
+      '19980119T090000Z',
+      '19980216T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'COUNT' => 6,
+      'BYMONTHDAY' => array(-3),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970928T090000Z',
+      '19971029T090000Z',
+      '19971128T090000Z',
+      '19971229T090000Z',
+      '19980129T090000Z',
+      '19980226T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'COUNT' => 5,
+      'BYMONTHDAY' => array(2, 15),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970915T090000Z',
+      '19971002T090000Z',
+      '19971015T090000Z',
+      '19971102T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'COUNT' => 5,
+      'BYMONTHDAY' => array(-1, 1),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970930T090000Z',
+      '19971001T090000Z',
+      '19971031T090000Z',
+      '19971101T090000Z',
+      '19971130T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'COUNT' => 7,
+      'INTERVAL' => 18,
+      'BYMONTHDAY' => array(10, 11, 12, 13, 14, 15),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970910T090000Z',
+      '19970911T090000Z',
+      '19970912T090000Z',
+      '19970913T090000Z',
+      '19970914T090000Z',
+      '19970915T090000Z',
+      '19990310T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'COUNT' => 6,
+      'INTERVAL' => 2,
+      'BYDAY' => array('TU'),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970909T090000Z',
+      '19970916T090000Z',
+      '19970923T090000Z',
+      '19970930T090000Z',
+      '19971104T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'YEARLY',
+      'COUNT' => 10,
+      'BYMONTH' => array(6, 7),
+      'DTSTART' => '19970610T090000Z',
+    );
+    $expect[] = array(
+      '19970610T090000Z',
+      '19970710T090000Z',
+      '19980610T090000Z',
+      '19980710T090000Z',
+      '19990610T090000Z',
+      '19990710T090000Z',
+      '20000610T090000Z',
+      '20000710T090000Z',
+      '20010610T090000Z',
+      '20010710T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'YEARLY',
+      'COUNT' => 4,
+      'INTERVAL' => 3,
+      'BYYEARDAY' => array(1, 100, 200),
+      'DTSTART' => '19970101T090000Z',
+    );
+    $expect[] = array(
+      '19970101T090000Z',
+      '19970410T090000Z',
+      '19970719T090000Z',
+      '20000101T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'YEARLY',
+      'COUNT' => 3,
+      'BYDAY' => array('20MO'),
+      'DTSTART' => '19970519T090000Z',
+    );
+    $expect[] = array(
+      '19970519T090000Z',
+      '19980518T090000Z',
+      '19990517T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'YEARLY',
+      'COUNT' => 3,
+      'BYWEEKNO' => array(20),
+      'BYDAY' => array('MO'),
+      'DTSTART' => '19970512T090000Z',
+    );
+    $expect[] = array(
+      '19970512T090000Z',
+      '19980511T090000Z',
+      '19990517T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'YEARLY',
+      'BYDAY' => array('TH'),
+      'BYMONTH' => array(3),
+      'DTSTART' => '19970313T090000Z',
+      'COUNT' => 5,
+    );
+    $expect[] = array(
+      '19970313T090000Z',
+      '19970320T090000Z',
+      '19970327T090000Z',
+      '19980305T090000Z',
+      '19980312T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'YEARLY',
+      'BYDAY' => array('TH'),
+      'BYMONTH' => array(6, 7, 8),
+      'DTSTART' => '19970101T090000Z',
+      'COUNT' => 15,
+    );
+    $expect[] = array(
+      '19970605T090000Z',
+      '19970612T090000Z',
+      '19970619T090000Z',
+      '19970626T090000Z',
+      '19970703T090000Z',
+      '19970710T090000Z',
+      '19970717T090000Z',
+      '19970724T090000Z',
+      '19970731T090000Z',
+      '19970807T090000Z',
+      '19970814T090000Z',
+      '19970821T090000Z',
+      '19970828T090000Z',
+      '19980604T090000Z',
+      '19980611T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'YEARLY',
+      'BYDAY' => array('FR'),
+      'BYMONTHDAY' => array(13),
+      'COUNT' => 4,
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19980213T090000Z',
+      '19980313T090000Z',
+      '19981113T090000Z',
+      '19990813T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'BYDAY' => array('SA'),
+      'BYMONTHDAY' => array(7, 8, 9, 10, 11, 12, 13),
+      'COUNT' => 10,
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970913T090000Z',
+      '19971011T090000Z',
+      '19971108T090000Z',
+      '19971213T090000Z',
+      '19980110T090000Z',
+      '19980207T090000Z',
+      '19980307T090000Z',
+      '19980411T090000Z',
+      '19980509T090000Z',
+      '19980613T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'YEARLY',
+      'INTERVAL' => 4,
+      'BYMONTH' => array(11),
+      'BYDAY' => array('TU'),
+      'BYMONTHDAY' => array(2, 3, 4, 5, 6, 7, 8),
+      'COUNT' => 6,
+      'DTSTART' => '19961105T090000Z',
+    );
+    $expect[] = array(
+      '19961105T090000Z',
+      '20001107T090000Z',
+      '20041102T090000Z',
+      '20081104T090000Z',
+      '20121106T090000Z',
+      '20161108T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'BYDAY' => array('TU', 'WE', 'TH'),
+      'BYSETPOS' => array(3),
+      'COUNT' => 3,
+      'DTSTART' => '19970904T090000Z',
+    );
+    $expect[] = array(
+      '19970904T090000Z',
+      '19971007T090000Z',
+      '19971106T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MONTHLY',
+      'BYDAY' => array('MO', 'TU', 'WE', 'TH', 'FR'),
+      'BYSETPOS' => array(-2),
+      'COUNT' => 3,
+      'DTSTART' => '19970929T090000Z',
+    );
+    $expect[] = array(
+      '19970929T090000Z',
+      '19971030T090000Z',
+      '19971127T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'HOURLY',
+      'INTERVAL' => 3,
+      'DTSTART' => '19970929T090000Z',
+      'COUNT' => 3,
+    );
+    $expect[] = array(
+      '19970929T090000Z',
+      '19970929T120000Z',
+      '19970929T150000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MINUTELY',
+      'INTERVAL' => 15,
+      'COUNT' => 6,
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970902T091500Z',
+      '19970902T093000Z',
+      '19970902T094500Z',
+      '19970902T100000Z',
+      '19970902T101500Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'MINUTELY',
+      'INTERVAL' => 90,
+      'COUNT' => 4,
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970902T103000Z',
+      '19970902T120000Z',
+      '19970902T133000Z',
+    );
+
+
+    $this->assertRules(array(), $tests, $expect);
+  }
+
+
   private function assertRules(array $defaults, array $tests, array $expect) {
     foreach ($tests as $key => $test) {
       $options = $test + $defaults;
