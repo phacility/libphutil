@@ -362,6 +362,10 @@ final class PhutilCalendarRecurrenceRule
           $this->cursorHour -= $interval;
           $this->rewindHour();
           break;
+        case self::FREQUENCY_MINUTELY:
+          $this->cursorMinute -= $interval;
+          $this->rewindMinute();
+          break;
         default:
           throw new Exception(
             pht(
@@ -1236,6 +1240,9 @@ final class PhutilCalendarRecurrenceRule
     if ($scale < self::SCALE_DAILY) {
       $parts[] = $this->stateHour;
     }
+    if ($scale < self::SCALE_HOURLY) {
+      $parts[] = $this->stateMinute;
+    }
 
     return implode('/', $parts);
   }
@@ -1262,6 +1269,14 @@ final class PhutilCalendarRecurrenceRule
       $this->cursorHour += 24;
       $this->cursorDay--;
       $this->rewindDay();
+    }
+  }
+
+  private function rewindMinute() {
+    while ($this->cursorMinute < 0) {
+      $this->cursorMinute += 60;
+      $this->cursorHour--;
+      $this->rewindHour();
     }
   }
 
