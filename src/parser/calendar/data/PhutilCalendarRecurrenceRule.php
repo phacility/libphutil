@@ -366,10 +366,11 @@ final class PhutilCalendarRecurrenceRule
           $this->cursorMinute -= $interval;
           $this->rewindMinute();
           break;
+        case self::FREQUENCY_SECONDLY:
         default:
           throw new Exception(
             pht(
-              'BYSETPOS not yet supported for FREQ "%s".',
+              'RRULE specifies BYSETPOS with FREQ "%s", but this is invalid.',
               $frequency));
       }
 
