@@ -1474,6 +1474,108 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19970902T133000Z',
     );
 
+    $tests[] = array(
+      'FREQ' => 'WEEKLY',
+      'COUNT' => 10,
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970909T090000Z',
+      '19970916T090000Z',
+      '19970923T090000Z',
+      '19970930T090000Z',
+      '19971007T090000Z',
+      '19971014T090000Z',
+      '19971021T090000Z',
+      '19971028T090000Z',
+      '19971104T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'WEEKLY',
+      'INTERVAL' => 2,
+      'COUNT' => 6,
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970916T090000Z',
+      '19970930T090000Z',
+      '19971014T090000Z',
+      '19971028T090000Z',
+      '19971111T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'WEEKLY',
+      'COUNT' => 10,
+      'WKST' => 'SU',
+      'BYDAY' => array('TU', 'TH'),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970904T090000Z',
+      '19970909T090000Z',
+      '19970911T090000Z',
+      '19970916T090000Z',
+      '19970918T090000Z',
+      '19970923T090000Z',
+      '19970925T090000Z',
+      '19970930T090000Z',
+      '19971002T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'WEEKLY',
+      'INTERVAL' => 2,
+      'COUNT' => 8,
+      'WKST' => 'SU',
+      'BYDAY' => array('TU', 'TH'),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970904T090000Z',
+      '19970916T090000Z',
+      '19970918T090000Z',
+      '19970930T090000Z',
+      '19971002T090000Z',
+      '19971014T090000Z',
+      '19971016T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'WEEKLY',
+      'INTERVAL' => 2,
+      'COUNT' => 4,
+      'BYDAY' => array('TU', 'SU'),
+      'WKST' => 'MO',
+      'DTSTART' => '19970805T090000Z',
+    );
+    $expect[] = array(
+      '19970805T090000Z',
+      '19970810T090000Z',
+      '19970819T090000Z',
+      '19970824T090000Z',
+    );
+
+    $tests[] = array(
+      'FREQ' => 'WEEKLY',
+      'INTERVAL' => 2,
+      'COUNT' => 4,
+      'BYDAY' => array('TU', 'SU'),
+      'WKST' => 'SU',
+      'DTSTART' => '19970805T090000Z',
+    );
+    $expect[] = array(
+      '19970805T090000Z',
+      '19970817T090000Z',
+      '19970819T090000Z',
+      '19970831T090000Z',
+    );
+
 
     $this->assertRules(array(), $tests, $expect);
   }
@@ -1538,6 +1640,11 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       $by_setpos = idx($options, 'BYSETPOS');
       if ($by_setpos) {
         $rrule->setBySetPosition($by_setpos);
+      }
+
+      $week_start = idx($options, 'WKST');
+      if ($week_start) {
+        $rrule->setWeekStart($week_start);
       }
 
       $set = id(new PhutilCalendarRecurrenceSet())

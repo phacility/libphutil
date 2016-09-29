@@ -23,6 +23,8 @@ final class PhutilCalendarRecurrenceRule
   private $cursorHour;
   private $cursorHourState;
   private $cursorWeek;
+  private $cursorWeekday;
+  private $cursorWeekState;
   private $cursorDay;
   private $cursorDayState;
   private $cursorMonth;
@@ -33,12 +35,14 @@ final class PhutilCalendarRecurrenceRule
   private $setHours;
   private $setDays;
   private $setMonths;
+  private $setWeeks;
   private $setYears;
 
   private $stateSecond;
   private $stateMinute;
   private $stateHour;
   private $stateDay;
+  private $stateWeek;
   private $stateMonth;
   private $stateYear;
 
@@ -313,17 +317,62 @@ final class PhutilCalendarRecurrenceRule
   }
 
   public function resetSource() {
+    $frequency = $this->getFrequency();
+
+    if ($this->getByMonthDay()) {
+      switch ($frequency) {
+        case self::FREQUENCY_WEEKLY:
+          // RFC5545: "The BYMONTHDAY rule part MUST NOT be specified when the
+          // FREQ rule part is set to WEEKLY."
+          throw new Exception(
+            pht(
+              'RRULE specifies BYMONTHDAY with FREQ set to WEEKLY, which '.
+              'violates RFC5545.'));
+          break;
+        default:
+          break;
+      }
+
+    }
+
+    if ($this->getByYearDay()) {
+      switch ($frequency) {
+        case self::FREQUENCY_DAILY:
+        case self::FREQUENCY_WEEKLY:
+        case self::FREQUENCY_MONTHLY:
+          // RFC5545: "The BYYEARDAY rule part MUST NOT be specified when the
+          // FREQ rule part is set to DAILY, WEEKLY, or MONTHLY."
+          throw new Exception(
+            pht(
+              'RRULE specifies BYYEARDAY with FREQ of DAILY, WEEKLY or '.
+              'MONTHLY, which violates RFC5545.'));
+        default:
+          break;
+      }
+    }
+
+    // TODO
+    // RFC5545: "The BYDAY rule part MUST NOT be specified with a numeric
+    // value when the FREQ rule part is not set to MONTHLY or YEARLY."
+    // RFC5545: "Furthermore, the BYDAY rule part MUST NOT be specified with a
+    // numeric value with the FREQ rule part set to YEARLY when the BYWEEKNO
+    // rule part is specified."
+
+
     $date = $this->getStartDateTime();
 
     $this->cursorSecond = $date->getSecond();
     $this->cursorMinute = $date->getMinute();
     $this->cursorHour = $date->getHour();
 
-    // TODO: Figure this out.
-    $this->cursorWeek = null;
     $this->cursorDay = $date->getDay();
     $this->cursorMonth = $date->getMonth();
     $this->cursorYear = $date->getYear();
+
+    $year_map = $this->getYearMap($this->cursorYear, $this->getWeekStart());
+    $key = $this->cursorMonth.'M'.$this->cursorDay.'D';
+    $this->cursorWeek = $year_map['info'][$key]['week'];
+    $this->cursorWeekday = $year_map['info'][$key]['weekday'];
 
     $this->setSeconds = array();
     $this->setMinutes = array();
@@ -336,6 +385,7 @@ final class PhutilCalendarRecurrenceRule
     $this->stateMinute = null;
     $this->stateHour = null;
     $this->stateDay = null;
+    $this->stateWeek = null;
     $this->stateMonth = null;
     $this->stateYear = null;
 
@@ -344,7 +394,6 @@ final class PhutilCalendarRecurrenceRule
     // the start date, but we need to go back one interval to generate
     // BYSETPOS events so we can make sure the entire set is generated.
     if ($this->getBySetPosition()) {
-      $frequency = $this->getFrequency();
       $interval = $this->getInterval();
       switch ($frequency) {
         case self::FREQUENCY_YEARLY:
@@ -373,20 +422,22 @@ final class PhutilCalendarRecurrenceRule
               'RRULE specifies BYSETPOS with FREQ "%s", but this is invalid.',
               $frequency));
       }
-
-      $this->minimumEpoch = $this->getStartDateTime()->getEpoch();
-    } else {
-      $this->minimumEpoch = null;
     }
+
+    // We can generate events from before the cursor when evaluating rules
+    // with BYSETPOS or FREQ=WEEKLY.
+    $this->minimumEpoch = $this->getStartDateTime()->getEpoch();
 
     $cursor_state = array(
       'year' => $this->cursorYear,
       'month' => $this->cursorMonth,
+      'week' => $this->cursorWeek,
       'day' => $this->cursorDay,
       'hour' => $this->cursorHour,
     );
 
     $this->cursorDayState = $cursor_state;
+    $this->cursorWeekState = $cursor_state;
     $this->cursorHourState = $cursor_state;
 
     $by_hour = $this->getByHour();
@@ -596,7 +647,8 @@ final class PhutilCalendarRecurrenceRule
 
   protected function nextDay() {
     if ($this->setDays) {
-      $this->stateDay = array_pop($this->setDays);
+      $info = array_pop($this->setDays);
+      $this->setDayState($info);
       return;
     }
 
@@ -614,9 +666,14 @@ final class PhutilCalendarRecurrenceRule
     $week_start = $this->getWeekStart();
 
     while (!$this->setDays) {
-      $this->nextMonth();
+      if ($is_weekly) {
+        $this->nextWeek();
+      } else {
+        $this->nextMonth();
+      }
 
       $is_dynamic = $is_daily
+        || $is_weekly
         || $by_day
         || $by_monthday
         || $by_yearday
@@ -626,7 +683,7 @@ final class PhutilCalendarRecurrenceRule
       if ($is_dynamic) {
         $weeks = $this->newDaysSet(
           ($is_daily ? $interval : 1),
-          ($is_weekly ? $interval : null),
+          ($is_weekly ? $interval : 1),
           $by_day,
           $by_monthday,
           $by_yearday,
@@ -642,8 +699,9 @@ final class PhutilCalendarRecurrenceRule
             array(),
           );
         } else {
+          $key = $this->stateMonth.'M'.$this->cursorDay.'D';
           $weeks = array(
-            array($this->cursorDay),
+            array($year_map['info'][$key]),
           );
         }
       }
@@ -654,7 +712,14 @@ final class PhutilCalendarRecurrenceRule
       $this->setDays = array_reverse($days);
     }
 
-    $this->stateDay = array_pop($this->setDays);
+    $info = array_pop($this->setDays);
+    $this->setDayState($info);
+  }
+
+  private function setDayState(array $info) {
+    $this->stateDay = $info['monthday'];
+    $this->stateWeek = $info['week'];
+    $this->stateMonth = $info['month'];
   }
 
   protected function nextMonth() {
@@ -706,6 +771,30 @@ final class PhutilCalendarRecurrenceRule
     }
 
     $this->stateMonth = array_pop($this->setMonths);
+  }
+
+  protected function nextWeek() {
+    if ($this->setWeeks) {
+      $this->stateWeek = array_pop($this->setWeeks);
+      return;
+    }
+
+    $frequency = $this->getFrequency();
+    $interval = $this->getInterval();
+    $scale = $this->getFrequencyScale();
+    $by_weekno = $this->getByWeekNumber();
+
+    while (!$this->setWeeks) {
+      $this->nextYear();
+
+      $weeks = $this->newWeeksSet(
+        $interval,
+        $by_weekno);
+
+      $this->setWeeks = array_reverse($weeks);
+    }
+
+    $this->stateWeek = array_pop($this->setWeeks);
   }
 
   protected function nextYear() {
@@ -801,6 +890,35 @@ final class PhutilCalendarRecurrenceRule
     return $result;
   }
 
+  private function newWeeksSet($interval, $set) {
+    $week_start = $this->getWeekStart();
+
+    list($skip, $this->cursorWeekState) = $this->advanceCursorState(
+      $this->cursorWeekState,
+      self::SCALE_WEEKLY,
+      $interval,
+      $week_start);
+
+    if ($skip) {
+      return array();
+    }
+
+    $year_map = $this->getYearMap($this->stateYear, $week_start);
+
+    $result = array();
+    while (true) {
+      if (!isset($year_map['weekMap'][$this->cursorWeek])) {
+        break;
+      }
+      $result[] = $this->cursorWeek;
+      $this->cursorWeek += $interval;
+    }
+
+    $this->cursorWeek -= $year_map['weekCount'];
+
+    return $result;
+  }
+
   private function newDaysSet(
     $interval_day,
     $interval_week,
@@ -810,33 +928,21 @@ final class PhutilCalendarRecurrenceRule
     $by_weekno,
     $week_start) {
 
+    $frequency = $this->getFrequency();
+    $is_yearly = ($frequency == self::FREQUENCY_YEARLY);
+    $is_monthly = ($frequency == self::FREQUENCY_MONTHLY);
+    $is_weekly = ($frequency == self::FREQUENCY_WEEKLY);
+
     $selection = array();
-    if ($interval_week) {
+    if ($is_weekly) {
       $year_map = $this->getYearMap($this->stateYear, $week_start);
 
-      while (true) {
-        // TODO: This is all garbage?
-        if ($this->cursorWeek > $year_map['weekCount']) {
-          $this->cursorWeek -= $year_map['weekCount'];
-          break;
-        }
-
-        foreach ($year_map['weeks'][$this->cursorWeek] as $key) {
+      if (isset($year_map['weekMap'][$this->stateWeek])) {
+        foreach ($year_map['weekMap'][$this->stateWeek] as $key) {
           $selection[] = $year_map['info'][$key];
         }
-
-        $last = last($selection);
-        if ($last['month'] > $this->stateMonth) {
-          break;
-        }
-
-        $this->cursorWeek += $interval_week;
       }
     } else {
-      if (!$interval_day) {
-        $interval_day = 1;
-      }
-
       // If the day cursor is behind the current year and month, we need to
       // forward it in INTERVAL increments so we end up with the right offset
       // in the current month.
@@ -867,10 +973,6 @@ final class PhutilCalendarRecurrenceRule
       }
     }
 
-    $frequency = $this->getFrequency();
-    $is_yearly = ($frequency == self::FREQUENCY_YEARLY);
-    $is_monthly = ($frequency == self::FREQUENCY_MONTHLY);
-
     // As a special case, BYDAY applies to relative month offsets if BYMONTH
     // is present in a YEARLY rule.
     if ($is_yearly) {
@@ -880,10 +982,27 @@ final class PhutilCalendarRecurrenceRule
       }
     }
 
+    // As a special case, BYDAY makes us examine all week days. This doesn't
+    // check BYMONTHDAY or BYYEARDAY because they are not valid with WEEKLY.
+    $filter_weekday = true;
+    if ($is_weekly) {
+      if ($by_day) {
+        $filter_weekday = false;
+      }
+    }
+
     $weeks = array();
     foreach ($selection as $key => $info) {
-      if ($info['month'] != $this->stateMonth) {
-        continue;
+      if ($is_weekly) {
+        if ($filter_weekday) {
+          if ($info['weekday'] != $this->cursorWeekday) {
+            continue;
+          }
+        }
+      } else {
+        if ($info['month'] != $this->stateMonth) {
+          continue;
+        }
       }
 
       if ($by_day) {
@@ -925,7 +1044,7 @@ final class PhutilCalendarRecurrenceRule
         }
       }
 
-      $weeks[$info['week']][] = $info['monthday'];
+      $weeks[$info['week']][] = $info;
     }
 
     return array_values($weeks);
@@ -1132,11 +1251,17 @@ final class PhutilCalendarRecurrenceRule
       $info_map[$key] = $info;
     }
 
+    $week_map = array();
+    foreach ($info_map as $key => $info) {
+      $week_map[$info['week']][] = $key;
+    }
+
     return array(
       'info' => $info_map,
       'weekCount' => $week_number,
       'dayCount' => $max_day,
       'monthDays' => $month_days,
+      'weekMap' => $week_map,
     );
   }
 
@@ -1232,17 +1357,22 @@ final class PhutilCalendarRecurrenceRule
 
     $parts = array();
     $parts[] = $this->stateYear;
-    if ($scale < self::SCALE_YEARLY) {
-      $parts[] = $this->stateMonth;
-    }
-    if ($scale < self::SCALE_MONTHLY) {
-      $parts[] = $this->stateDay;
-    }
-    if ($scale < self::SCALE_DAILY) {
-      $parts[] = $this->stateHour;
-    }
-    if ($scale < self::SCALE_HOURLY) {
-      $parts[] = $this->stateMinute;
+
+    if ($scale == self::SCALE_WEEKLY) {
+      $parts[] = $this->stateWeek;
+    } else {
+      if ($scale < self::SCALE_YEARLY) {
+        $parts[] = $this->stateMonth;
+      }
+      if ($scale < self::SCALE_MONTHLY) {
+        $parts[] = $this->stateDay;
+      }
+      if ($scale < self::SCALE_DAILY) {
+        $parts[] = $this->stateHour;
+      }
+      if ($scale < self::SCALE_HOURLY) {
+        $parts[] = $this->stateMinute;
+      }
     }
 
     return implode('/', $parts);
@@ -1290,6 +1420,7 @@ final class PhutilCalendarRecurrenceRule
     $state = array(
       'year' => $this->stateYear,
       'month' => $this->stateMonth,
+      'week' => $this->stateWeek,
       'day' => $this->stateDay,
       'hour' => $this->stateHour,
     );
@@ -1306,8 +1437,12 @@ final class PhutilCalendarRecurrenceRule
           case self::SCALE_HOURLY:
             $this->cursorHour = 0;
             break;
+          case self::SCALE_WEEKLY:
+            $this->cursorWeek = 1;
+            break;
         }
       }
+
       return array(false, $state);
     }
 
@@ -1320,12 +1455,23 @@ final class PhutilCalendarRecurrenceRule
         case self::SCALE_HOURLY:
           $cursor['hour'] += $interval;
           break;
+        case self::SCALE_WEEKLY:
+          $cursor['week'] += $interval;
+          break;
       }
 
       if ($scale <= self::SCALE_HOURLY) {
         while ($cursor['hour'] >= 24) {
           $cursor['hour'] -= 24;
           $cursor['day']++;
+        }
+      }
+
+      if ($scale == self::SCALE_WEEKLY) {
+        while ($cursor['week'] > $year_map['weekCount']) {
+          $cursor['week'] -= $year_map['weekCount'];
+          $cursor['year']++;
+          $year_map = $this->getYearMap($cursor['year'], $week_start);
         }
       }
 
@@ -1349,6 +1495,9 @@ final class PhutilCalendarRecurrenceRule
       case self::SCALE_HOURLY:
         $this->cursorHour = $cursor['hour'];
         break;
+      case self::SCALE_WEEKLY:
+        $this->cursorWeek = $cursor['week'];
+        break;
     }
 
     $skip = $this->isCursorBehind($state, $cursor, $scale);
@@ -1360,6 +1509,10 @@ final class PhutilCalendarRecurrenceRule
     if ($cursor['year'] < $state['year']) {
       return true;
     } else if ($cursor['year'] > $state['year']) {
+      return false;
+    }
+
+    if ($scale == self::SCALE_WEEKLY) {
       return false;
     }
 
@@ -1391,7 +1544,6 @@ final class PhutilCalendarRecurrenceRule
 
     return false;
   }
-
 
 
 }
