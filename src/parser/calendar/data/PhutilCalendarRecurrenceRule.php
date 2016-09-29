@@ -352,20 +352,15 @@ final class PhutilCalendarRecurrenceRule
           break;
         case self::FREQUENCY_MONTHLY:
           $this->cursorMonth -= $interval;
-
-          while ($this->cursorMonth < 1) {
-            $this->rewindMonth();
-          }
+          $this->rewindMonth();
           break;
         case self::FREQUENCY_DAILY:
           $this->cursorDay -= $interval;
-
-          $week_start = $this->getWeekStart();
-          while ($this->cursorDay < 1) {
-            $year_map = $this->getYearMap($this->cursorYear, $week_start);
-            $this->cursorDay += $year_map['monthDays'][$this->cursorMonth];
-            $this->rewindMonth();
-          }
+          $this->rewindDay();
+          break;
+        case self::FREQUENCY_HOURLY:
+          $this->cursorHour -= $interval;
+          $this->rewindHour();
           break;
         default:
           throw new Exception(
@@ -1238,13 +1233,36 @@ final class PhutilCalendarRecurrenceRule
     if ($scale < self::SCALE_MONTHLY) {
       $parts[] = $this->stateDay;
     }
+    if ($scale < self::SCALE_DAILY) {
+      $parts[] = $this->stateHour;
+    }
 
     return implode('/', $parts);
   }
 
   private function rewindMonth() {
-    $this->cursorYear--;
-    $this->cursorMonth += 12;
+    while ($this->cursorMonth < 1) {
+      $this->cursorYear--;
+      $this->cursorMonth += 12;
+    }
+  }
+
+  private function rewindDay() {
+    $week_start = $this->getWeekStart();
+    while ($this->cursorDay < 1) {
+      $year_map = $this->getYearMap($this->cursorYear, $week_start);
+      $this->cursorDay += $year_map['monthDays'][$this->cursorMonth];
+      $this->cursorMonth--;
+      $this->rewindMonth();
+    }
+  }
+
+  private function rewindHour() {
+    while ($this->cursorHour < 0) {
+      $this->cursorHour += 24;
+      $this->cursorDay--;
+      $this->rewindDay();
+    }
   }
 
   private function advanceCursorState(

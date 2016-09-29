@@ -853,6 +853,131 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       '19980101T020000Z',
     );
 
+    $tests[] = array(
+      'BYMONTHDAY' => array(1, 3),
+    );
+    $expect[] = array(
+      '19970903T000000Z',
+      '19970903T010000Z',
+      '19970903T020000Z',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+      'BYMONTHDAY' => array(5, 7),
+    );
+    $expect[] = array(
+      '19980105T000000Z',
+      '19980105T010000Z',
+      '19980105T020000Z',
+    );
+
+    $tests[] = array(
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19970902T090000Z',
+      '19970902T100000Z',
+      '19970902T110000Z',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19980101T000000Z',
+      '19980101T010000Z',
+      '19980101T020000Z',
+    );
+
+    $tests[] = array(
+      'BYMONTHDAY' => array(1, 3),
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19980101T000000Z',
+      '19980101T010000Z',
+      '19980101T020000Z',
+    );
+
+    $tests[] = array(
+      'BYMONTHDAY' => array(1, 3),
+      'BYMONTH' => array(1, 3),
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19980101T000000Z',
+      '19980101T010000Z',
+      '19980101T020000Z',
+    );
+
+    $tests[] = array(
+      'COUNT' => 4,
+      'BYYEARDAY' => array(1, 100, 200, 365),
+    );
+    $expect[] = array(
+      '19971231T000000Z',
+      '19971231T010000Z',
+      '19971231T020000Z',
+      '19971231T030000Z',
+    );
+
+    $tests[] = array(
+      'COUNT' => 4,
+      'BYYEARDAY' => array(-365, -266, -166, -1),
+    );
+    $expect[] = array(
+      '19971231T000000Z',
+      '19971231T010000Z',
+      '19971231T020000Z',
+      '19971231T030000Z',
+    );
+
+    $tests[] = array(
+      'COUNT' => 4,
+      'BYMONTH' => array(4, 7),
+      'BYYEARDAY' => array(1, 100, 200, 365),
+    );
+    $expect[] = array(
+      '19980410T000000Z',
+      '19980410T010000Z',
+      '19980410T020000Z',
+      '19980410T030000Z',
+    );
+
+    $tests[] = array(
+      'COUNT' => 4,
+      'BYMONTH' => array(4, 7),
+      'BYYEARDAY' => array(-365, -266, -166, -1),
+    );
+    $expect[] = array(
+      '19980410T000000Z',
+      '19980410T010000Z',
+      '19980410T020000Z',
+      '19980410T030000Z',
+    );
+
+    $tests[] = array(
+      'BYHOUR' => array(6, 18),
+    );
+    $expect[] = array(
+      '19970902T180000Z',
+      '19970903T060000Z',
+      '19970903T180000Z',
+    );
+
+    $tests[] = array(
+      'BYMINUTE' => array(15, 45),
+      'BYSECOND' => array(15, 45),
+      'BYSETPOS' => array(3, -3),
+    );
+    $expect[] = array(
+      '19970902T091545Z',
+      '19970902T094515Z',
+      '19970902T101545Z',
+    );
+
     $this->assertRules(
       array(
         'FREQ' => 'HOURLY',
