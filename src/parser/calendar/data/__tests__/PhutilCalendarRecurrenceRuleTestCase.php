@@ -684,6 +684,94 @@ final class PhutilCalendarRecurrenceRuleTestCase extends PhutilTestCase {
       $expect);
   }
 
+  public function testWeeklyRecurrenceRules() {
+    $tests = array();
+    $expect = array();
+
+    $tests[] = array();
+    $expect[] = array(
+      '19970902',
+      '19970909',
+      '19970916',
+    );
+
+    $tests[] = array(
+      'INTERVAL' => 2,
+    );
+    $expect[] = array(
+      '19970902',
+      '19970916',
+      '19970930',
+    );
+
+    $tests[] = array(
+      'INTERVAL' => 20,
+    );
+    $expect[] = array(
+      '19970902',
+      '19980120',
+      '19980609',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+    );
+    $expect[] = array(
+      '19980106',
+      '19980113',
+      '19980120',
+    );
+
+    $tests[] = array(
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19970902',
+      '19970904',
+      '19970909',
+    );
+
+    $tests[] = array(
+      'BYMONTH' => array(1, 3),
+      'BYDAY' => array('TU', 'TH'),
+    );
+    $expect[] = array(
+      '19980101',
+      '19980106',
+      '19980108',
+    );
+
+    $tests[] = array(
+      'BYHOUR' => array(6, 18),
+    );
+    $expect[] = array(
+      '19970902T060000Z',
+      '19970902T180000Z',
+      '19970909T060000Z',
+    );
+
+    $tests[] = array(
+      'BYDAY' => array('TU', 'TH'),
+      'BYHOUR' => array(6, 18),
+      'BYSETPOS' => array(3, -3),
+      'DTSTART' => '19970902T090000Z',
+    );
+    $expect[] = array(
+      '19970902T180000Z',
+      '19970904T060000Z',
+      '19970909T180000Z',
+    );
+
+    $this->assertRules(
+      array(
+        'FREQ' => 'WEEKLY',
+        'COUNT' => 3,
+        'DTSTART' => '19970902',
+      ),
+      $tests,
+      $expect);
+  }
+
   public function testDailyRecurrenceRules() {
     $tests = array();
     $expect = array();

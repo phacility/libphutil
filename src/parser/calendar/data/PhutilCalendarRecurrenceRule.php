@@ -403,6 +403,10 @@ final class PhutilCalendarRecurrenceRule
           $this->cursorMonth -= $interval;
           $this->rewindMonth();
           break;
+        case self::FREQUENCY_WEEKLY:
+          $this->cursorWeek -= $interval;
+          $this->rewindWeek();
+          break;
         case self::FREQUENCY_DAILY:
           $this->cursorDay -= $interval;
           $this->rewindDay();
@@ -672,22 +676,26 @@ final class PhutilCalendarRecurrenceRule
         $this->nextMonth();
       }
 
+      // NOTE: We normally handle BYMONTH when iterating months, but it acts
+      // like a filter if FREQ=WEEKLY.
+
       $is_dynamic = $is_daily
         || $is_weekly
         || $by_day
         || $by_monthday
         || $by_yearday
         || $by_weekno
+        || ($by_month && $is_weekly)
         || ($scale < self::SCALE_DAILY);
 
       if ($is_dynamic) {
         $weeks = $this->newDaysSet(
           ($is_daily ? $interval : 1),
-          ($is_weekly ? $interval : 1),
           $by_day,
           $by_monthday,
           $by_yearday,
           $by_weekno,
+          $by_month,
           $week_start);
       } else {
         // The cursor day may not actually exist in the current month, so
@@ -921,11 +929,11 @@ final class PhutilCalendarRecurrenceRule
 
   private function newDaysSet(
     $interval_day,
-    $interval_week,
     $by_day,
     $by_monthday,
     $by_yearday,
     $by_weekno,
+    $by_month,
     $week_start) {
 
     $frequency = $this->getFrequency();
@@ -1040,6 +1048,12 @@ final class PhutilCalendarRecurrenceRule
       if ($by_weekno) {
         if (empty($by_weekno[$info['week']]) &&
             empty($by_weekno[$info['-week']])) {
+          continue;
+        }
+      }
+
+      if ($by_month) {
+        if (empty($by_month[$info['month']])) {
           continue;
         }
       }
@@ -1382,6 +1396,15 @@ final class PhutilCalendarRecurrenceRule
     while ($this->cursorMonth < 1) {
       $this->cursorYear--;
       $this->cursorMonth += 12;
+    }
+  }
+
+  private function rewindWeek() {
+    $week_start = $this->getWeekStart();
+    while ($this->cursorWeek < 1) {
+      $this->cursorYear--;
+      $year_map = $this->getYearMap($this->cursorYear, $week_start);
+      $this->cursorWeek += $year_map['weekCount'];
     }
   }
 
