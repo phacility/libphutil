@@ -37,6 +37,39 @@ final class PhutilICSWriterTestCase extends PhutilTestCase {
     $this->assertICS('writer-tea-time.ics', $ics_data);
   }
 
+  public function testICSWriterChristmas() {
+    $start = PhutilCalendarAbsoluteDateTime::newFromISO8601('20001225T000000Z');
+    $end = PhutilCalendarAbsoluteDateTime::newFromISO8601('20001226T000000Z');
+
+    $rrule = id(new PhutilCalendarRecurrenceRule())
+      ->setFrequency(PhutilCalendarRecurrenceRule::FREQUENCY_YEARLY)
+      ->setByMonth(array(12))
+      ->setByMonthDay(array(25));
+
+    $event = id(new PhutilCalendarEventNode())
+      ->setUID('recurring-christmas')
+      ->setName('Christmas')
+      ->setDescription('Festival holiday first occurring in the year 2000.')
+      ->setStartDateTime($start)
+      ->setEndDateTime($end)
+      ->setCreatedDateTime($start)
+      ->setModifiedDateTime($start)
+      ->setRecurrenceRule($rrule)
+      ->setRecurrenceExceptions(
+        array(
+          // In 2007, Christmas was cancelled.
+          PhutilCalendarAbsoluteDateTime::newFromISO8601('20071225T000000Z'),
+        ))
+      ->setRecurrenceDates(
+        array(
+          // We had an extra early Christmas in 2009.
+          PhutilCalendarAbsoluteDateTime::newFromISO8601('20091125T000000Z'),
+        ));
+
+    $ics_data = $this->writeICSSingleEvent($event);
+    $this->assertICS('writer-recurring-christmas.ics', $ics_data);
+  }
+
   public function testICSWriterAllDay() {
     $event = id(new PhutilCalendarEventNode())
       ->setUID('christmas-day')

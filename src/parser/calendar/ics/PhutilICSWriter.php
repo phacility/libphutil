@@ -209,6 +209,27 @@ final class PhutilICSWriter extends Phobject {
       }
     }
 
+    $rrule = $event->getRecurrenceRule();
+    if ($rrule) {
+      $properties[] = $this->newRRULEProperty(
+        'RRULE',
+        $rrule);
+    }
+
+    $exdates = $event->getRecurrenceExceptions();
+    if ($exdates) {
+      $properties[] = $this->newDateTimesProperty(
+        'EXDATE',
+        $exdates);
+    }
+
+    $rdates = $event->getRecurrenceDates();
+    if ($rdates) {
+      $properties[] = $this->newDateTimesProperty(
+        'RDATE',
+        $rdates);
+    }
+
     return $properties;
   }
 
@@ -238,9 +259,17 @@ final class PhutilICSWriter extends Phobject {
     $name,
     PhutilCalendarDateTime $value,
     array $parameters = array()) {
-    $datetime = $value->getISO8601();
 
-    if ($value->getIsAllDay()) {
+    return $this->newDateTimesProperty($name, array($value), $parameters);
+  }
+
+  private function newDateTimesProperty(
+    $name,
+    array $values,
+    array $parameters = array()) {
+    assert_instances_of($values, 'PhutilCalendarDateTime');
+
+    if (head($values)->getIsAllDay()) {
       $parameters[] = array(
         'name' => 'VALUE',
         'values' => array(
@@ -249,7 +278,13 @@ final class PhutilICSWriter extends Phobject {
       );
     }
 
-    return $this->newProperty($name, $datetime, $parameters);
+    $datetimes = array();
+    foreach ($values as $value) {
+      $datetimes[] = $value->getISO8601();
+    }
+    $datetimes = implode(';', $datetimes);
+
+    return $this->newProperty($name, $datetimes, $parameters);
   }
 
   private function newUserProperty(
@@ -290,6 +325,15 @@ final class PhutilICSWriter extends Phobject {
     // isn't clear if these are important to external programs or not.
 
     return $this->newProperty($name, $value->getURI(), $parameters);
+  }
+
+  private function newRRULEProperty(
+    $name,
+    PhutilCalendarRecurrenceRule $rule,
+    array $parameters = array()) {
+
+    $value = $rule->toRRULE();
+    return $this->newProperty($name, $value, $parameters);
   }
 
   private function newProperty(

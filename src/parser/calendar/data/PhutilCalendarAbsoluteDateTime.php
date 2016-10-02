@@ -166,9 +166,15 @@ final class PhutilCalendarAbsoluteDateTime
     $m = $this->getMonth();
     $d = $this->getDay();
 
-    $h = $this->getHour();
-    $i = $this->getMinute();
-    $s = $this->getSecond();
+    if ($this->getIsAllDay()) {
+      $h = 0;
+      $i = 0;
+      $s = 0;
+    } else {
+      $h = $this->getHour();
+      $i = $this->getMinute();
+      $s = $this->getSecond();
+    }
 
     $format = sprintf('%04d-%02d-%02d %02d:%02d:%02d', $y, $m, $d, $h, $i, $s);
 
