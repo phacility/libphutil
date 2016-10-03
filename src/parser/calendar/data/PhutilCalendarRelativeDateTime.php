@@ -22,7 +22,7 @@ final class PhutilCalendarRelativeDateTime
     return $this->duration;
   }
 
-  protected function newPHPDateTime() {
+  public function newPHPDateTime() {
     $datetime = parent::newPHPDateTime();
     $duration = $this->getDuration();
 

@@ -31,16 +31,31 @@ abstract class PhutilCalendarDateTime
 
   public function getISO8601() {
     $datetime = $this->newPHPDateTime();
-    $datetime->setTimezone(new DateTimeZone('UTC'));
 
     if ($this->getIsAllDay()) {
       return $datetime->format('Ymd');
-    } else {
+    } else if ($this->getTimezone()) {
+      // With a timezone, the event occurs at a specific second universally.
+      // We return the UTC representation of that point in time.
+      $datetime->setTimezone(new DateTimeZone('UTC'));
       return $datetime->format('Ymd\\THis\\Z');
+    } else {
+      // With no timezone, events are "floating" and occur at local time.
+      // We return a representation without the "Z".
+      return $datetime->format('Ymd\\THis');
     }
   }
 
-  abstract protected function newPHPDateTimeZone();
-  abstract protected function newPHPDateTime();
+  public function newAbsoluteDateTime() {
+    $epoch = $this->getEpoch();
+    $timezone = $this->getTimezone();
+    return PhutilCalendarAbsoluteDateTime::newFromEpoch($epoch, $timezone)
+      ->setIsAllDay($this->getIsAllDay())
+      ->setViewerTimezone($this->getViewerTimezone());
+  }
 
+  abstract public function newPHPDateTimeZone();
+  abstract public function newPHPDateTime();
+
+  abstract public function getTimezone();
 }

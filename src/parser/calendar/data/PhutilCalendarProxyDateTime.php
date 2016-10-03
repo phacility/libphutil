@@ -32,12 +32,16 @@ abstract class PhutilCalendarProxyDateTime
     return $this->getProxy()->getIsAllDay();
   }
 
-  protected function newPHPDateTimezone() {
+  public function newPHPDateTimezone() {
     return $this->getProxy()->newPHPDateTimezone();
   }
 
-  protected function newPHPDateTime() {
+  public function newPHPDateTime() {
     return $this->getProxy()->newPHPDateTime();
+  }
+
+  public function getTimezone() {
+    return $this->getProxy()->getTimezone();
   }
 
 }

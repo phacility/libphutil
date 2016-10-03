@@ -703,6 +703,7 @@ final class PhutilCalendarRecurrenceRule
         }
 
         $result = id(new PhutilCalendarAbsoluteDateTime())
+          ->setTimezone($this->getStartDateTime()->getTimezone())
           ->setViewerTimezone($this->getViewerTimezone())
           ->setYear($this->stateYear)
           ->setMonth($this->stateMonth)

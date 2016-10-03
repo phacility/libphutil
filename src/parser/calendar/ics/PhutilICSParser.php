@@ -746,39 +746,15 @@ final class PhutilICSParser extends Phobject {
 
     $value = head($value);
 
-    $pattern =
-      '/^'.
-      '(?P<sign>[+-])?'.
-      'P'.
-      '(?:'.
-        '(?P<W>\d+)W'.
-        '|'.
-        '(?:(?:(?P<D>\d+)D)?'.
-          '(?:T(?:(?P<H>\d+)H)?(?:(?P<M>\d+)M)?(?:(?P<S>\d+)S)?)?'.
-        ')'.
-      ')'.
-      '\z/';
-
-    $matches = null;
-    $ok = preg_match($pattern, $value, $matches);
-    if (!$ok) {
+    try {
+      $duration = PhutilCalendarDuration::newFromISO8601($value);
+    } catch (Exception $ex) {
       $this->raiseParseFailure(
         self::PARSE_BAD_DURATION,
         pht(
-          'Expected DURATION in the format "P12DT3H4M5S", found '.
-          '"%s".',
-          $value));
+          'Invalid DURATION: %s',
+          $ex->getMessage()));
     }
-
-    $is_negative = (idx($matches, 'sign') == '-');
-
-    $duration = id(new PhutilCalendarDuration())
-      ->setIsNegative($is_negative)
-      ->setWeeks((int)idx($matches, 'W', 0))
-      ->setDays((int)idx($matches, 'D', 0))
-      ->setHours((int)idx($matches, 'H', 0))
-      ->setMinutes((int)idx($matches, 'M', 0))
-      ->setSeconds((int)idx($matches, 'S', 0));
 
     return $duration;
   }
