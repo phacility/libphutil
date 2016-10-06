@@ -22,6 +22,7 @@ final class PhutilProseDifferenceEngine extends Phobject {
     $v_parts = $this->splitCorpus($v, $level);
 
     $matrix = id(new PhutilEditDistanceMatrix())
+      ->setMaximumLength(128)
       ->setSequences($u_parts, $v_parts)
       ->setComputeString(true);
 
