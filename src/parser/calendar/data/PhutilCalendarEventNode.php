@@ -18,6 +18,7 @@ final class PhutilCalendarEventNode
   private $recurrenceRule;
   private $recurrenceExceptions = array();
   private $recurrenceDates = array();
+  private $recurrenceID;
 
   public function setUID($uid) {
     $this->uid = $uid;
@@ -174,6 +175,15 @@ final class PhutilCalendarEventNode
 
   public function getRecurrenceDates() {
     return $this->recurrenceDates;
+  }
+
+  public function setRecurrenceID($recurrence_id) {
+    $this->recurrenceID = $recurrence_id;
+    return $this;
+  }
+
+  public function getRecurrenceID() {
+    return $this->recurrenceID;
   }
 
 }

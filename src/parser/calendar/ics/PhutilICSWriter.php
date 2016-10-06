@@ -216,6 +216,13 @@ final class PhutilICSWriter extends Phobject {
         $rrule);
     }
 
+    $recurrence_id = $event->getRecurrenceID();
+    if ($recurrence_id) {
+      $properties[] = $this->newTextProperty(
+        'RECURRENCE-ID',
+        $recurrence_id);
+    }
+
     $exdates = $event->getRecurrenceExceptions();
     if ($exdates) {
       $properties[] = $this->newDateTimesProperty(
