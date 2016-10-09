@@ -15,6 +15,10 @@ final class PhutilCalendarEventNode
   private $modifiedDateTime;
   private $organizer;
   private $attendees = array();
+  private $recurrenceRule;
+  private $recurrenceExceptions = array();
+  private $recurrenceDates = array();
+  private $recurrenceID;
 
   public function setUID($uid) {
     $this->uid = $uid;
@@ -123,6 +127,63 @@ final class PhutilCalendarEventNode
   public function addAttendee(PhutilCalendarUserNode $attendee) {
     $this->attendees[] = $attendee;
     return $this;
+  }
+
+  public function setRecurrenceRule(
+    PhutilCalendarRecurrenceRule $recurrence_rule) {
+    $this->recurrenceRule = $recurrence_rule;
+    return $this;
+  }
+
+  public function getRecurrenceRule() {
+    return $this->recurrenceRule;
+  }
+
+  public function setRecurrenceUntilDateTime(PhutilCalendarDateTime $date) {
+    $this->recurrenceUntilDateTime = $date;
+    return $this;
+  }
+
+  public function getRecurrenceUntilDateTime() {
+    return $this->recurrenceUntilDateTime;
+  }
+
+  public function setRecurrenceCount($recurrence_count) {
+    $this->recurrenceCount = $recurrence_count;
+    return $this;
+  }
+
+  public function getRecurrenceCount() {
+    return $this->recurrenceCount;
+  }
+
+  public function setRecurrenceExceptions(array $recurrence_exceptions) {
+    assert_instances_of($recurrence_exceptions, 'PhutilCalendarDateTime');
+    $this->recurrenceExceptions = $recurrence_exceptions;
+    return $this;
+  }
+
+  public function getRecurrenceExceptions() {
+    return $this->recurrenceExceptions;
+  }
+
+  public function setRecurrenceDates(array $recurrence_dates) {
+    assert_instances_of($recurrence_dates, 'PhutilCalendarDateTime');
+    $this->recurrenceDates = $recurrence_dates;
+    return $this;
+  }
+
+  public function getRecurrenceDates() {
+    return $this->recurrenceDates;
+  }
+
+  public function setRecurrenceID($recurrence_id) {
+    $this->recurrenceID = $recurrence_id;
+    return $this;
+  }
+
+  public function getRecurrenceID() {
+    return $this->recurrenceID;
   }
 
 }

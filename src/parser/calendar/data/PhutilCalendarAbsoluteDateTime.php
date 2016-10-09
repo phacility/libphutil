@@ -75,6 +75,92 @@ final class PhutilCalendarAbsoluteDateTime
       ->setTimezone($timezone);
   }
 
+  public static function newFromDictionary(array $dict) {
+    static $keys;
+    if ($keys === null) {
+      $keys = array_fuse(
+        array(
+          'kind',
+          'year',
+          'month',
+          'day',
+          'hour',
+          'minute',
+          'second',
+          'timezone',
+          'isAllDay',
+        ));
+    }
+
+    foreach ($dict as $key => $value) {
+      if (!isset($keys[$key])) {
+        throw new Exception(
+          pht(
+            'Unexpected key "%s" in datetime dictionary, expected keys: %s.',
+            $key,
+            implode(', ', array_keys($keys))));
+      }
+    }
+
+    if (idx($dict, 'kind') !== 'absolute') {
+      throw new Exception(
+        pht(
+          'Expected key "%s" with value "%s" in datetime dictionary.',
+          'kind',
+          'absolute'));
+    }
+
+    if (!isset($dict['year'])) {
+      throw new Exception(
+        pht(
+          'Expected key "%s" in datetime dictionary.',
+          'year'));
+    }
+
+    $datetime = id(new self())
+      ->setYear(idx($dict, 'year'))
+      ->setMonth(idx($dict, 'month', 1))
+      ->setDay(idx($dict, 'day', 1))
+      ->setHour(idx($dict, 'hour', 0))
+      ->setMinute(idx($dict, 'minute', 0))
+      ->setSecond(idx($dict, 'second', 0))
+      ->setTimezone(idx($dict, 'timezone'))
+      ->setIsAllDay(idx($dict, 'isAllDay', false));
+
+    return $datetime;
+  }
+
+  public function newRelativeDateTime($duration) {
+    if (is_string($duration)) {
+      $duration = PhutilCalendarDuration::newFromISO8601($duration);
+    }
+
+    if (!($duration instanceof PhutilCalendarDuration)) {
+      throw new Exception(
+        pht(
+          'Expected "PhutilCalendarDuration" object or ISO8601 duration '.
+          'string.'));
+    }
+
+    return id(new PhutilCalendarRelativeDateTime())
+      ->setOrigin($this)
+      ->setDuration($duration);
+  }
+
+  public function toDictionary() {
+    return array(
+      'kind' => 'absolute',
+      'year' => $this->getYear(),
+      'month' => $this->getMonth(),
+      'day' => $this->getDay(),
+      'hour' => $this->getHour(),
+      'minute' => $this->getMinute(),
+      'second' => $this->getSecond(),
+      'timezone' => $this->getTimezone(),
+      'isAllDay' => $this->getIsAllDay(),
+    );
+  }
+
   public function setYear($year) {
     $this->year = $year;
     return $this;
@@ -154,21 +240,27 @@ final class PhutilCalendarAbsoluteDateTime
         'Datetime has no timezone or viewer timezone.'));
   }
 
-  protected function newPHPDateTimeZone() {
+  public function newPHPDateTimeZone() {
     $zone = $this->getEffectiveTimezone();
     return new DateTimeZone($zone);
   }
 
-  protected function newPHPDateTime() {
+  public function newPHPDateTime() {
     $zone = $this->newPHPDateTimeZone();
 
     $y = $this->getYear();
     $m = $this->getMonth();
     $d = $this->getDay();
 
-    $h = $this->getHour();
-    $i = $this->getMinute();
-    $s = $this->getSecond();
+    if ($this->getIsAllDay()) {
+      $h = 0;
+      $i = 0;
+      $s = 0;
+    } else {
+      $h = $this->getHour();
+      $i = $this->getMinute();
+      $s = $this->getSecond();
+    }
 
     $format = sprintf('%04d-%02d-%02d %02d:%02d:%02d', $y, $m, $d, $h, $i, $s);
 

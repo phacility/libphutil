@@ -17,6 +17,8 @@ final class PhutilCalendarRecurrenceRule
   private $byMonth = array();
   private $bySetPosition = array();
   private $weekStart = self::WEEKDAY_MONDAY;
+  private $count;
+  private $until;
 
   private $cursorSecond;
   private $cursorMinute;
@@ -84,6 +86,175 @@ final class PhutilCalendarRecurrenceRule
   const WEEKINDEX_FRIDAY = 5;
   const WEEKINDEX_SATURDAY = 6;
 
+  public function toDictionary() {
+    $parts = array();
+
+    $parts['FREQ'] = $this->getFrequency();
+
+    $interval = $this->getInterval();
+    if ($interval != 1) {
+      $parts['INTERVAL'] = $interval;
+    }
+
+    $by_second = $this->getBySecond();
+    if ($by_second) {
+      $parts['BYSECOND'] = $by_second;
+    }
+
+    $by_minute = $this->getByMinute();
+    if ($by_minute) {
+      $parts['BYMINUTE'] = $by_minute;
+    }
+
+    $by_hour = $this->getByHour();
+    if ($by_hour) {
+      $parts['BYHOUR'] = $by_hour;
+    }
+
+    $by_day = $this->getByDay();
+    if ($by_day) {
+      $parts['BYDAY'] = $by_day;
+    }
+
+    $by_month = $this->getByMonth();
+    if ($by_month) {
+      $parts['BYMONTH'] = $by_month;
+    }
+
+    $by_monthday = $this->getByMonthDay();
+    if ($by_monthday) {
+      $parts['BYMONTHDAY'] = $by_monthday;
+    }
+
+    $by_yearday = $this->getByYearDay();
+    if ($by_yearday) {
+      $parts['BYYEARDAY'] = $by_yearday;
+    }
+
+    $by_weekno = $this->getByWeekNumber();
+    if ($by_weekno) {
+      $parts['BYWEEKNO'] = $by_weekno;
+    }
+
+    $by_setpos = $this->getBySetPosition();
+    if ($by_setpos) {
+      $parts['BYSETPOS'] = $by_setpos;
+    }
+
+    $wkst = $this->getWeekStart();
+    if ($wkst != self::WEEKDAY_MONDAY) {
+      $parts['WKST'] = $wkst;
+    }
+
+    $count = $this->getCount();
+    if ($count) {
+      $parts['COUNT'] = $count;
+    }
+
+    $until = $this->getUntil();
+    if ($until) {
+      $parts['UNTIL'] = $until->getISO8601();
+    }
+
+    return $parts;
+  }
+
+  public static function newFromDictionary(array $dict) {
+    static $expect;
+    if ($expect === null) {
+      $expect = array_fuse(
+        array(
+          'FREQ',
+          'INTERVAL',
+          'BYSECOND',
+          'BYMINUTE',
+          'BYHOUR',
+          'BYDAY',
+          'BYMONTHDAY',
+          'BYYEARDAY',
+          'BYWEEKNO',
+          'BYSETPOS',
+          'WKST',
+          'UNTIL',
+          'COUNT',
+        ));
+    }
+
+    foreach ($dict as $key => $value) {
+      if (empty($expect[$key])) {
+        throw new Exception(
+          pht(
+            'RRULE dictionary includes unknown key "%s". Expected keys '.
+            'are: %s.',
+            $key,
+            implode(', ', array_keys($expect))));
+      }
+    }
+
+    $rrule = id(new self())
+      ->setFrequency(idx($dict, 'FREQ'))
+      ->setInterval(idx($dict, 'INTERVAL', 1))
+      ->setBySecond(idx($dict, 'BYSECOND', array()))
+      ->setByMinute(idx($dict, 'BYMINUTE', array()))
+      ->setByHour(idx($dict, 'BYHOUR', array()))
+      ->setByDay(idx($dict, 'BYDAY', array()))
+      ->setByMonthDay(idx($dict, 'BYMONTHDAY', array()))
+      ->setByYearDay(idx($dict, 'BYYEARDAY', array()))
+      ->setByWeekNumber(idx($dict, 'BYWEEKNO', array()))
+      ->setBySetPosition(idx($dict, 'BYSETPOS', array()))
+      ->setWeekStart(idx($dict, 'WKST', self::WEEKDAY_MONDAY));
+
+    $count = idx($dict, 'COUNT');
+    if ($count) {
+      $rrule->setCount($count);
+    }
+
+    $until = idx($dict, 'UNTIL');
+    if ($until) {
+      $until = PhutilCalendarAbsoluteDateTime::newFromISO8601($until);
+      $rrule->setUntil($until);
+    }
+
+    return $rrule;
+  }
+
+  public function toRRULE() {
+    $dict = $this->toDictionary();
+
+    $parts = array();
+    foreach ($dict as $key => $value) {
+      if (is_array($value)) {
+        $value = implode(',', $value);
+      }
+      $parts[] = "{$key}={$value}";
+    }
+
+    return implode(';', $parts);
+  }
+
+  public static function newFromRRULE($rrule) {
+    $parts = explode(';', $rrule);
+
+    $dict = array();
+    foreach ($parts as $part) {
+      list($key, $value) = explode('=', $part, 2);
+      switch ($key) {
+        case 'FREQ':
+        case 'INTERVAL':
+        case 'WKST':
+        case 'COUNT':
+        case 'UNTIL';
+          break;
+        default:
+          $value = explode(',', $value);
+          break;
+      }
+      $dict[$key] = $value;
+    }
+
+    return self::newFromDictionary($dict);
+  }
+
   private static function getAllWeekdayConstants() {
     return array_keys(self::getWeekdayIndexMap());
   }
@@ -124,6 +295,31 @@ final class PhutilCalendarRecurrenceRule
 
   public function getStartDateTime() {
     return $this->startDateTime;
+  }
+
+  public function setCount($count) {
+    if ($count < 1) {
+      throw new Exception(
+        pht(
+          'RRULE COUNT value "%s" is invalid: count must be at least 1.',
+          $count));
+    }
+
+    $this->count = $count;
+    return $this;
+  }
+
+  public function getCount() {
+    return $this->count;
+  }
+
+  public function setUntil(PhutilCalendarDateTime $until) {
+    $this->until = $until;
+    return $this;
+  }
+
+  public function getUntil() {
+    return $this->until;
   }
 
   public function setFrequency($frequency) {
@@ -507,6 +703,7 @@ final class PhutilCalendarRecurrenceRule
         }
 
         $result = id(new PhutilCalendarAbsoluteDateTime())
+          ->setTimezone($this->getStartDateTime()->getTimezone())
           ->setViewerTimezone($this->getViewerTimezone())
           ->setYear($this->stateYear)
           ->setMonth($this->stateMonth)
