@@ -572,6 +572,7 @@ final class PhutilICSParser extends Phobject {
             $buf .= $c;
             break;
         }
+        $esc = false;
       }
     }
 

@@ -139,24 +139,6 @@ final class PhutilCalendarEventNode
     return $this->recurrenceRule;
   }
 
-  public function setRecurrenceUntilDateTime(PhutilCalendarDateTime $date) {
-    $this->recurrenceUntilDateTime = $date;
-    return $this;
-  }
-
-  public function getRecurrenceUntilDateTime() {
-    return $this->recurrenceUntilDateTime;
-  }
-
-  public function setRecurrenceCount($recurrence_count) {
-    $this->recurrenceCount = $recurrence_count;
-    return $this;
-  }
-
-  public function getRecurrenceCount() {
-    return $this->recurrenceCount;
-  }
-
   public function setRecurrenceExceptions(array $recurrence_exceptions) {
     assert_instances_of($recurrence_exceptions, 'PhutilCalendarDateTime');
     $this->recurrenceExceptions = $recurrence_exceptions;

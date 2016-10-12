@@ -48,7 +48,7 @@ abstract class PhutilCalendarDateTime
 
   public function newAbsoluteDateTime() {
     $epoch = $this->getEpoch();
-    $timezone = $this->getTimezone();
+    $timezone = nonempty($this->getTimezone(), 'UTC');
     return PhutilCalendarAbsoluteDateTime::newFromEpoch($epoch, $timezone)
       ->setIsAllDay($this->getIsAllDay())
       ->setViewerTimezone($this->getViewerTimezone());
