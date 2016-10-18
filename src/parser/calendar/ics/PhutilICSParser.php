@@ -656,6 +656,10 @@ final class PhutilICSParser extends Phobject {
         $duration = $this->newDurationFromProperty($parameters, $value);
         $node->setDuration($duration);
         break;
+      case 'RRULE':
+        $rrule = $this->newRecurrenceRuleFromProperty($parameters, $value);
+        $node->setRecurrenceRule($rrule);
+        break;
     }
 
   }
@@ -758,6 +762,10 @@ final class PhutilICSParser extends Phobject {
     }
 
     return $duration;
+  }
+
+  private function newRecurrenceRuleFromProperty(array $parameters, $value) {
+    return PhutilCalendarRecurrenceRule::newFromRRULE($value['value']);
   }
 
   private function getScalarParameterValue(
