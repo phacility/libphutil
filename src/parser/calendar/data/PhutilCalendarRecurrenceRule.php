@@ -170,6 +170,7 @@ final class PhutilCalendarRecurrenceRule
           'BYMINUTE',
           'BYHOUR',
           'BYDAY',
+          'BYMONTH',
           'BYMONTHDAY',
           'BYYEARDAY',
           'BYWEEKNO',
@@ -198,6 +199,7 @@ final class PhutilCalendarRecurrenceRule
       ->setByMinute(idx($dict, 'BYMINUTE', array()))
       ->setByHour(idx($dict, 'BYHOUR', array()))
       ->setByDay(idx($dict, 'BYDAY', array()))
+      ->setByMonth(idx($dict, 'BYMONTH', array()))
       ->setByMonthDay(idx($dict, 'BYMONTHDAY', array()))
       ->setByYearDay(idx($dict, 'BYYEARDAY', array()))
       ->setByWeekNumber(idx($dict, 'BYWEEKNO', array()))
@@ -250,6 +252,36 @@ final class PhutilCalendarRecurrenceRule
           break;
       }
       $dict[$key] = $value;
+    }
+
+    $int_lists = array_fuse(
+      array(
+        // NOTE: "BYDAY" is absent, and takes a list like "MO, TU, WE".
+        'BYSECOND',
+        'BYMINUTE',
+        'BYHOUR',
+        'BYMONTH',
+        'BYMONTHDAY',
+        'BYYEARDAY',
+        'BYWEEKNO',
+        'BYSETPOS',
+      ));
+
+    foreach ($dict as $key => $value) {
+      if (isset($int_lists[$key])) {
+        foreach ($value as $k => $v) {
+          if (!preg_match('/^-?\d+\z/', $v)) {
+            throw new Exception(
+              pht(
+                'Unexpected value "%s" in "%s" RRULE property: expected '.
+                'only integers.',
+                $v,
+                $key));
+          }
+          $value[$k] = (int)$v;
+        }
+        $dict[$key] = $value;
+      }
     }
 
     return self::newFromDictionary($dict);

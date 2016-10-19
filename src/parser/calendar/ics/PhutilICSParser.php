@@ -660,6 +660,10 @@ final class PhutilICSParser extends Phobject {
         $rrule = $this->newRecurrenceRuleFromProperty($parameters, $value);
         $node->setRecurrenceRule($rrule);
         break;
+      case 'RECURRENCE-ID':
+        $text = $this->newTextFromProperty($parameters, $value);
+        $node->setRecurrenceID($text);
+        break;
     }
 
   }
