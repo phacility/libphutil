@@ -184,6 +184,17 @@ final class PhutilClassMapQuery extends Phobject {
 
 
   /**
+   * Delete all class map caches.
+   *
+   * @return void
+   * @task exec
+   */
+  public static function deleteCaches() {
+    self::$cache = array();
+  }
+
+
+  /**
    * Generate the core query results.
    *
    * This method is used to fill the cache.
