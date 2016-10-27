@@ -727,7 +727,7 @@ phutil_register_library_map(array(
     'PhutilCalendarDateTime' => 'Phobject',
     'PhutilCalendarDocumentNode' => 'PhutilCalendarContainerNode',
     'PhutilCalendarDuration' => 'Phobject',
-    'PhutilCalendarEventNode' => 'PhutilCalendarNode',
+    'PhutilCalendarEventNode' => 'PhutilCalendarContainerNode',
     'PhutilCalendarNode' => 'Phobject',
     'PhutilCalendarProxyDateTime' => 'PhutilCalendarDateTime',
     'PhutilCalendarRawNode' => 'PhutilCalendarContainerNode',
