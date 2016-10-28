@@ -664,6 +664,10 @@ final class PhutilICSParser extends Phobject {
         $text = $this->newTextFromProperty($parameters, $value);
         $node->setRecurrenceID($text);
         break;
+      case 'ATTENDEE':
+        $attendee = $this->newAttendeeFromProperty($parameters, $value);
+        $node->addAttendee($attendee);
+        break;
     }
 
   }
@@ -671,6 +675,30 @@ final class PhutilICSParser extends Phobject {
   private function newTextFromProperty(array $parameters, array $value) {
     $value = $value['value'];
     return implode("\n\n", $value);
+  }
+
+  private function newAttendeeFromProperty(array $parameters, array $value) {
+    $uri = $value['value'];
+
+    switch (idx($parameters, 'PARTSTAT')) {
+      case 'ACCEPTED':
+        $status = PhutilCalendarUserNode::STATUS_ACCEPTED;
+        break;
+      case 'DECLINED':
+        $status = PhutilCalendarUserNode::STATUS_DECLINED;
+        break;
+      case 'NEEDS-ACTION':
+      default:
+        $status = PhutilCalendarUserNode::STATUS_INVITED;
+        break;
+    }
+
+    $name = $this->getScalarParameterValue($parameters, 'CN');
+
+    return id(new PhutilCalendarUserNode())
+      ->setURI($uri)
+      ->setName($name)
+      ->setStatus($status);
   }
 
   private function newDateTimeFromProperty(array $parameters, array $value) {

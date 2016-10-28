@@ -169,6 +169,20 @@ final class PhutilICSParserTestCase extends PhutilTestCase {
       $end->getEpoch());
   }
 
+  public function testICSVALARM() {
+    $event = $this->parseICSSingleEvent('valarm.ics');
+
+    // For now, we parse but ignore VALARM sections. This test just makes
+    // sure they survive parsing.
+
+    $start_epoch = strtotime('2016-10-19 22:00:00 UTC');
+    $this->assertEqual(1476914400, $start_epoch);
+
+    $this->assertEqual(
+      $start_epoch,
+      $event->getStartDateTime()->getEpoch());
+  }
+
   public function testICSDuration() {
     $event = $this->parseICSSingleEvent('duration.ics');
 
@@ -211,7 +225,6 @@ final class PhutilICSParserTestCase extends PhutilTestCase {
       'err-root-property.ics' => PhutilICSParser::PARSE_ROOT_PROPERTY,
       'err-unescaped-backslash.ics' =>
         PhutilICSParser::PARSE_UNESCAPED_BACKSLASH,
-      'err-unexpected-child.ics' => PhutilICSParser::PARSE_UNEXPECTED_CHILD,
       'err-unexpected-text.ics' => PhutilICSParser::PARSE_UNEXPECTED_TEXT,
       'err-multiple-parameters.ics' =>
         PhutilICSParser::PARSE_MULTIPLE_PARAMETERS,

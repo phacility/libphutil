@@ -267,7 +267,26 @@ final class PhutilCalendarRecurrenceRule
         'BYSETPOS',
       ));
 
+    $int_values = array_fuse(
+      array(
+        'COUNT',
+        'INTERVAL',
+      ));
+
     foreach ($dict as $key => $value) {
+      if (isset($int_values[$key])) {
+        // None of these values may be negative.
+        if (!preg_match('/^\d+\z/', $value)) {
+          throw new Exception(
+            pht(
+              'Unexpected value "%s" in "%s" RULE property: expected an '.
+              'integer.',
+              $value,
+              $key));
+        }
+        $dict[$key] = (int)$value;
+      }
+
       if (isset($int_lists[$key])) {
         foreach ($value as $k => $v) {
           if (!preg_match('/^-?\d+\z/', $v)) {
