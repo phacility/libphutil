@@ -125,7 +125,7 @@ final class PhutilCalendarAbsoluteDateTime
       ->setMinute(idx($dict, 'minute', 0))
       ->setSecond(idx($dict, 'second', 0))
       ->setTimezone(idx($dict, 'timezone'))
-      ->setIsAllDay(idx($dict, 'isAllDay', false));
+      ->setIsAllDay((bool)idx($dict, 'isAllDay', false));
 
     return $datetime;
   }
@@ -150,14 +150,14 @@ final class PhutilCalendarAbsoluteDateTime
   public function toDictionary() {
     return array(
       'kind' => 'absolute',
-      'year' => $this->getYear(),
-      'month' => $this->getMonth(),
-      'day' => $this->getDay(),
-      'hour' => $this->getHour(),
-      'minute' => $this->getMinute(),
-      'second' => $this->getSecond(),
+      'year' => (int)$this->getYear(),
+      'month' => (int)$this->getMonth(),
+      'day' => (int)$this->getDay(),
+      'hour' => (int)$this->getHour(),
+      'minute' => (int)$this->getMinute(),
+      'second' => (int)$this->getSecond(),
       'timezone' => $this->getTimezone(),
-      'isAllDay' => $this->getIsAllDay(),
+      'isAllDay' => (bool)$this->getIsAllDay(),
     );
   }
 

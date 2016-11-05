@@ -75,7 +75,8 @@ final class PhutilCalendarEventNode
         ->setDuration($duration);
     }
 
-    return null;
+    // If no end date or duration are specified, the event is instantaneous.
+    return $start;
   }
 
   public function setDuration(PhutilCalendarDuration $duration) {

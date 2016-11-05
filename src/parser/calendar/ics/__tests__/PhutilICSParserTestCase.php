@@ -113,6 +113,16 @@ final class PhutilICSParserTestCase extends PhutilTestCase {
       $event->getEndDateTime()->getEpoch());
   }
 
+  public function testICSOddTimezone() {
+    $event = $this->parseICSSingleEvent('zimbra-timezone.ics');
+
+    $start = $event->getStartDateTime();
+
+    $this->assertEqual(
+      '20170303T140000Z',
+      $start->getISO8601());
+  }
+
   public function testICSFloatingTime() {
     // This tests "floating" event times, which have no absolute time and are
     // supposed to be interpreted using the viewer's timezone. It also uses
@@ -234,8 +244,6 @@ final class PhutilICSParserTestCase extends PhutilTestCase {
         PhutilICSParser::PARSE_MANY_DATETIME,
       'err-bad-datetime.ics' =>
         PhutilICSParser::PARSE_BAD_DATETIME,
-      'err-bad-tzid.ics' =>
-        PhutilICSParser::PARSE_BAD_TZID,
       'err-empty-duration.ics' =>
         PhutilICSParser::PARSE_EMPTY_DURATION,
       'err-many-duration.ics' =>
