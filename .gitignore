@@ -26,6 +26,7 @@
 
 # libphutil
 /src/.phutil_module_cache
+/src/.cache
 /support/phutiltestlib/.phutil_module_cache
 
 # This file overrides "default.pem" if present.
