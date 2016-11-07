@@ -79,10 +79,10 @@ final class PhutilProseDifferenceEngine extends Phobject {
     }
 
     $pieces = preg_split($expr, $corpus, -1, PREG_SPLIT_DELIM_CAPTURE);
-    return $this->stitchPieces($pieces);
+    return $this->stitchPieces($pieces, $level);
   }
 
-  private function stitchPieces(array $pieces) {
+  private function stitchPieces(array $pieces, $level) {
     $results = array();
     $count = count($pieces);
     for ($ii = 0; $ii < $count; $ii += 2) {
@@ -90,7 +90,28 @@ final class PhutilProseDifferenceEngine extends Phobject {
       if ($ii + 1 < $count) {
         $result .= $pieces[$ii + 1];
       }
-      $results[] = $result;
+
+      if ($level == 1) {
+        // Split pieces into separate text and whitespace sections: make one
+        // piece out of all the whitespace at the beginning, one piece out of
+        // all the actual text in the middle, and one piece out of all the
+        // whitespace at the end.
+
+        $matches = null;
+        preg_match('/^(\s*)(.*?)(\s*)\z/', $result, $matches);
+
+        if (strlen($matches[1])) {
+          $results[] = $matches[1];
+        }
+        if (strlen($matches[2])) {
+          $results[] = $matches[2];
+        }
+        if (strlen($matches[3])) {
+          $results[] = $matches[3];
+        }
+      } else {
+        $results[] = $result;
+      }
     }
 
     // If the input ended with a delimiter, we can get an empty final piece.
