@@ -47,7 +47,7 @@ abstract class PhutilLocale extends Phobject {
    * @return string Variant for use.
    */
   public function selectGenderVariant($variant, array $translations) {
-    if ($variant == PhutilPerson::SEX_FEMALE) {
+    if ($variant == PhutilPerson::GENDER_FEMININE) {
       return end($translations);
     } else {
       return reset($translations);

@@ -525,6 +525,7 @@ phutil_register_library_map(array(
     'phutil_loggable_string' => 'utils/utils.php',
     'phutil_parse_bytes' => 'utils/viewutils.php',
     'phutil_passthru' => 'future/exec/execx.php',
+    'phutil_person' => 'internationalization/pht.php',
     'phutil_register_library' => 'moduleutils/core.php',
     'phutil_register_library_map' => 'moduleutils/core.php',
     'phutil_safe_html' => 'markup/render.php',

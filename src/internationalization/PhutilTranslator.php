@@ -164,18 +164,18 @@ final class PhutilTranslator extends Phobject {
     }
 
     if ($variant instanceof PhutilNumber) {
-      $is_sex = false;
+      $is_gender = false;
       $variant = $variant->getNumber();
     } else if ($variant instanceof PhutilPerson) {
-      $is_sex = true;
-      $variant = $variant->getSex();
+      $is_gender = true;
+      $variant = $variant->getGender();
     } else if (is_int($variant)) {
-      $is_sex = false;
+      $is_gender = false;
     } else {
       return null;
     }
 
-    if ($is_sex) {
+    if ($is_gender) {
       return $this->locale->selectGenderVariant($variant, $translations);
     } else {
 

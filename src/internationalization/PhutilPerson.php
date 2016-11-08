@@ -1,10 +1,11 @@
 <?php
 
 interface PhutilPerson {
-  const SEX_MALE = 'm';
-  const SEX_FEMALE = 'f';
-  const SEX_UNKNOWN = '';
 
-  public function getSex();
+  const GENDER_MASCULINE = 'm';
+  const GENDER_FEMININE = 'f';
+  const GENDER_UNKNOWN = '';
+
+  public function getGender();
   public function __toString();
 }
