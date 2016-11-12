@@ -186,9 +186,9 @@ final class PhutilProseDiff extends Phobject {
     }
 
     $suffix_len = 0;
-    for ($pos = 1; $pos <= $min_len; $pos++) {
-      $o = $o_text[$o_len - $pos];
-      $n = $n_text[$n_len - $pos];
+    for ($pos = 0; $pos < ($min_len - $prefix_len); $pos++) {
+      $o = $o_text[$o_len - ($pos + 1)];
+      $n = $n_text[$n_len - ($pos + 1)];
       if ($o !== $n) {
         break;
       }
@@ -210,14 +210,20 @@ final class PhutilProseDiff extends Phobject {
     if ($prefix_len < $o_len) {
       $results[] = array(
         'type' => '-',
-        'text' => substr($o_text, $prefix_len, $o_len - $suffix_len),
+        'text' => substr(
+          $o_text,
+          $prefix_len,
+          $o_len - $prefix_len - $suffix_len),
       );
     }
 
     if ($prefix_len < $n_len) {
       $results[] = array(
         'type' => '+',
-        'text' => substr($n_text, $prefix_len, $n_len - $suffix_len),
+        'text' => substr(
+          $n_text,
+          $prefix_len,
+          $n_len - $prefix_len - $suffix_len),
       );
     }
 

@@ -3,21 +3,10 @@
 final class PhutilProseDifferenceEngine extends Phobject {
 
   public function getDiff($u, $v) {
-    $diff = id(new PhutilProseDiff());
-
-    $this->buildDiff($diff, $u, $v, 1);
-    $diff->reorderParts();
-
-    return $diff;
+    return $this->buildDiff($u, $v, 1);
   }
 
-  private function buildDiff(PhutilProseDiff $diff, $u, $v, $level) {
-    if ($level == 4) {
-      $diff->addPart('-', $u);
-      $diff->addPart('+', $v);
-      return;
-    }
-
+  private function buildDiff($u, $v, $level) {
     $u_parts = $this->splitCorpus($u, $level);
     $v_parts = $this->splitCorpus($v, $level);
 
@@ -38,6 +27,7 @@ final class PhutilProseDifferenceEngine extends Phobject {
     $edits = $matrix->getEditString();
     $edits_length = strlen($edits);
 
+    $diff = new PhutilProseDiff();
     for ($ii = 0; $ii < $edits_length; $ii++) {
       $c = $edits[$ii];
       if ($c == 's') {
@@ -51,7 +41,8 @@ final class PhutilProseDifferenceEngine extends Phobject {
         $diff->addPart('+', $v_parts[$v_pos]);
         $v_pos++;
       } else if ($c == 'x') {
-        $this->buildDiff($diff, $u_parts[$u_pos], $v_parts[$v_pos], $level + 1);
+        $diff->addPart('-', $u_parts[$u_pos]);
+        $diff->addPart('+', $v_parts[$v_pos]);
         $u_pos++;
         $v_pos++;
       } else {
@@ -61,6 +52,88 @@ final class PhutilProseDifferenceEngine extends Phobject {
             $c));
       }
     }
+
+    $diff->reorderParts();
+
+    // If we just built a character-level diff, we're all done and do not
+    // need to go any deeper.
+    if ($level == 3) {
+      return $diff;
+    }
+
+    $blocks = array();
+    $block = null;
+    foreach ($diff->getParts() as $part) {
+      $type = $part['type'];
+      $text = $part['text'];
+      switch ($type) {
+        case '=':
+          if ($block) {
+            $blocks[] = $block;
+            $block = null;
+          }
+          $blocks[] = array(
+            'type' => $type,
+            'text' => $text,
+          );
+          break;
+        case '-':
+          if (!$block) {
+            $block = array(
+              'type' => '!',
+              'old' => '',
+              'new' => '',
+            );
+          }
+          $block['old'] .= $text;
+          break;
+        case '+':
+          if (!$block) {
+            $block = array(
+              'type' => '!',
+              'old' => '',
+              'new' => '',
+            );
+          }
+          $block['new'] .= $text;
+          break;
+      }
+    }
+
+    if ($block) {
+      $blocks[] = $block;
+    }
+
+    $result = new PhutilProseDiff();
+    foreach ($blocks as $block) {
+      $type = $block['type'];
+      if ($type == '=') {
+        $result->addPart('=', $block['text']);
+      } else {
+        $old = $block['old'];
+        $new = $block['new'];
+        if (!strlen($old) && !strlen($new)) {
+          // Nothing to do.
+        } else if (!strlen($old)) {
+          $result->addPart('+', $new);
+        } else if (!strlen($new)) {
+          $result->addPart('-', $old);
+        } else {
+          $subdiff = $this->buildDiff(
+            $old,
+            $new,
+            $level + 1);
+
+          foreach ($subdiff->getParts() as $part) {
+            $result->addPart($part['type'], $part['text']);
+          }
+        }
+      }
+    }
+
+    $result->reorderParts();
+
+    return $result;
   }
 
   private function splitCorpus($corpus, $level) {
@@ -79,10 +152,10 @@ final class PhutilProseDifferenceEngine extends Phobject {
     }
 
     $pieces = preg_split($expr, $corpus, -1, PREG_SPLIT_DELIM_CAPTURE);
-    return $this->stitchPieces($pieces);
+    return $this->stitchPieces($pieces, $level);
   }
 
-  private function stitchPieces(array $pieces) {
+  private function stitchPieces(array $pieces, $level) {
     $results = array();
     $count = count($pieces);
     for ($ii = 0; $ii < $count; $ii += 2) {
@@ -90,7 +163,28 @@ final class PhutilProseDifferenceEngine extends Phobject {
       if ($ii + 1 < $count) {
         $result .= $pieces[$ii + 1];
       }
-      $results[] = $result;
+
+      if ($level == 1) {
+        // Split pieces into separate text and whitespace sections: make one
+        // piece out of all the whitespace at the beginning, one piece out of
+        // all the actual text in the middle, and one piece out of all the
+        // whitespace at the end.
+
+        $matches = null;
+        preg_match('/^(\s*)(.*?)(\s*)\z/', $result, $matches);
+
+        if (strlen($matches[1])) {
+          $results[] = $matches[1];
+        }
+        if (strlen($matches[2])) {
+          $results[] = $matches[2];
+        }
+        if (strlen($matches[3])) {
+          $results[] = $matches[3];
+        }
+      } else {
+        $results[] = $result;
+      }
     }
 
     // If the input ended with a delimiter, we can get an empty final piece.

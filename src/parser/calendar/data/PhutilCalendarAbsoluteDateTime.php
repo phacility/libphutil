@@ -267,4 +267,9 @@ final class PhutilCalendarAbsoluteDateTime
     return new DateTime($format, $zone);
   }
 
+
+  public function newAbsoluteDateTime() {
+    return clone $this;
+  }
+
 }

@@ -7,6 +7,7 @@ final class PhutilTranslator extends Phobject {
   private $locale;
   private $localeCode;
   private $shouldPostProcess;
+  private $willTranslateCallback;
   private $translations = array();
 
   public static function getInstance() {
@@ -27,10 +28,19 @@ final class PhutilTranslator extends Phobject {
     return $this;
   }
 
+  public function setWillTranslateCallback($callback) {
+    $this->willTranslateCallback = $callback;
+    return $this;
+  }
+
+  public function getWillTranslateCallback() {
+    return $this->willTranslateCallback;
+  }
+
   /**
    * Add translations which will be later used by @{method:translate}.
    * The parameter is an array of strings (for simple translations) or arrays
-   * (for translastions with variants). The number of items in the array is
+   * (for translations with variants). The number of items in the array is
    * language specific. It is `array($singular, $plural)` for English.
    *
    *   array(
@@ -63,13 +73,17 @@ final class PhutilTranslator extends Phobject {
   }
 
   public function translate($text /* , ... */) {
+    $args = func_get_args();
+
+    if ($this->willTranslateCallback) {
+      call_user_func_array($this->willTranslateCallback, $args);
+    }
+
     if (isset($this->translations[$text])) {
       $translation = $this->translations[$text];
     } else {
       $translation = $text;
     }
-
-    $args = func_get_args();
 
     while (is_array($translation)) {
       $arg = next($args);
@@ -150,18 +164,18 @@ final class PhutilTranslator extends Phobject {
     }
 
     if ($variant instanceof PhutilNumber) {
-      $is_sex = false;
+      $is_gender = false;
       $variant = $variant->getNumber();
     } else if ($variant instanceof PhutilPerson) {
-      $is_sex = true;
-      $variant = $variant->getSex();
+      $is_gender = true;
+      $variant = $variant->getGender();
     } else if (is_int($variant)) {
-      $is_sex = false;
+      $is_gender = false;
     } else {
       return null;
     }
 
-    if ($is_sex) {
+    if ($is_gender) {
       return $this->locale->selectGenderVariant($variant, $translations);
     } else {
 

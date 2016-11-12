@@ -31,3 +31,16 @@ function phutil_count($countable) {
 
   return new PhutilNumber(count($countable));
 }
+
+/**
+ * Provide a gendered argument to the translation engine.
+ *
+ * This function does nothing and only serves as a marker for the static
+ * extractor so it knows particular arguments may vary on gender.
+ *
+ * @param PhutilPerson Something implementing @{interface:PhutilPerson}.
+ * @return PhutilPerson The argument, unmodified.
+ */
+function phutil_person(PhutilPerson $person) {
+  return $person;
+}

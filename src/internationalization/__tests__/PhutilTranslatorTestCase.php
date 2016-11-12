@@ -79,12 +79,12 @@ final class PhutilTranslatorTestCase extends PhutilTestCase {
       'Test () napsal.',
       $translator->translate('%s wrote.', $person));
 
-    $person->setSex(PhutilPerson::SEX_MALE);
+    $person->setGender(PhutilPerson::GENDER_MASCULINE);
     $this->assertEqual(
       'Test (m) napsal.',
       $translator->translate('%s wrote.', $person));
 
-    $person->setSex(PhutilPerson::SEX_FEMALE);
+    $person->setGender(PhutilPerson::GENDER_FEMININE);
     $this->assertEqual(
       'Test (f) napsala.',
       $translator->translate('%s wrote.', $person));

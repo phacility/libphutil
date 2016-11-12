@@ -122,6 +122,36 @@ final class PhutilProseDiffTestCase extends PhutilTestCase {
       ),
       pht('Summary diff with last change.'));
 
+    $this->assertProseParts(
+      'aaa aaa aaa aaa, bbb bbb bbb bbb.',
+      "aaa aaa aaa aaa, bbb bbb bbb bbb.\n\n- ccc ccc ccc",
+      array(
+        '= aaa aaa aaa aaa, bbb bbb bbb bbb.',
+        "+ \n\n- ccc ccc ccc",
+      ),
+      pht('Diff with new trailing content.'));
+
+    $this->assertProseParts(
+      'aaa aaa aaa aaa, bbb bbb bbb bbb.',
+      'aaa aaa aaa aaa bbb bbb bbb bbb.',
+      array(
+        '= aaa aaa aaa aaa',
+        '- ,',
+        '=  bbb bbb bbb bbb.',
+      ),
+      pht('Diff with a removed comma.'));
+
+    $this->assertProseParts(
+      'aaa aaa aaa aaa, bbb bbb bbb bbb.',
+      "aaa aaa aaa aaa bbb bbb bbb bbb.\n\n- ccc ccc ccc!",
+      array(
+        '= aaa aaa aaa aaa',
+        '- ,',
+        '=  bbb bbb bbb bbb.',
+        "+ \n\n- ccc ccc ccc!",
+      ),
+      pht('Diff with a removed comma and new trailing content.'));
+
   }
 
   private function assertProseParts($old, $new, array $expect_parts, $label) {

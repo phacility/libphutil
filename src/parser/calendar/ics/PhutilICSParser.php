@@ -840,6 +840,15 @@ final class PhutilICSParser extends Phobject {
       return $tzid;
     }
 
+    // These are alternate names for timezones.
+    $aliases = array(
+      'Etc/GMT' => 'UTC',
+    );
+
+    if (isset($aliases[$tzid])) {
+      return $aliases[$tzid];
+    }
+
     // Look for something that looks like "UTC+3" or "GMT -05.00". If we find
     // anything
     $offset_pattern =

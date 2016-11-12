@@ -98,7 +98,7 @@ final class AphrontWriteGuard extends Phobject {
     if ($this->allowDepth > 0) {
       throw new Exception(
         pht(
-          'Imbalanced %s: more % calls than %s calls.',
+          'Imbalanced %s: more %s calls than %s calls.',
           __CLASS__,
           'beginUnguardedWrites()',
           'endUnguardedWrites()'));
