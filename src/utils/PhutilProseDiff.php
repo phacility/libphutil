@@ -164,6 +164,12 @@ final class PhutilProseDiff extends Phobject {
       '!' => true,
       ',' => true,
       '?' => true,
+      ']' => true,
+      '[' => true,
+      '(' => true,
+      ')' => true,
+      '<' => true,
+      '>' => true,
     );
 
     $o_text = $o_merge['text'];

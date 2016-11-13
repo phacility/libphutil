@@ -152,6 +152,27 @@ final class PhutilProseDiffTestCase extends PhutilTestCase {
       ),
       pht('Diff with a removed comma and new trailing content.'));
 
+    $this->assertProseParts(
+      '[ ] Walnuts',
+      '[X] Walnuts',
+      array(
+        '= [',
+        '-  ',
+        '+ X',
+        '= ] Walnuts',
+      ),
+      pht('Diff adding a tickmark to a checkbox list.'));
+
+    $this->assertProseParts(
+      '[[ ./week49 ]]',
+      '[[ ./week50 ]]',
+      array(
+        '= [[ ./week',
+        '- 49',
+        '+ 50',
+        '=  ]]',
+      ),
+      pht('Diff changing a remarkup wiki link target.'));
   }
 
   private function assertProseParts($old, $new, array $expect_parts, $label) {
