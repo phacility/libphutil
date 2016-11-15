@@ -843,6 +843,9 @@ final class PhutilICSParser extends Phobject {
     // These are alternate names for timezones.
     $aliases = array(
       'Etc/GMT' => 'UTC',
+
+      // See T11816#200486.
+      'W. Europe Standard Time' => 'Europe/Berlin',
     );
 
     if (isset($aliases[$tzid])) {
@@ -850,7 +853,7 @@ final class PhutilICSParser extends Phobject {
     }
 
     // Look for something that looks like "UTC+3" or "GMT -05.00". If we find
-    // anything
+    // anything, pick a timezone with that offset.
     $offset_pattern =
       '/'.
       '(?:UTC|GMT)'.
