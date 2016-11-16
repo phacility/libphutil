@@ -841,12 +841,21 @@ final class PhutilICSParser extends Phobject {
     }
 
     // These are alternate names for timezones.
-    $aliases = array(
-      'Etc/GMT' => 'UTC',
+    static $aliases;
 
-      // See T11816#200486.
-      'W. Europe Standard Time' => 'Europe/Berlin',
-    );
+    if ($aliases === null) {
+      $aliases = array(
+        'Etc/GMT' => 'UTC',
+      );
+
+      // Load the map of Windows timezones.
+      $root_path = dirname(phutil_get_library_root('phutil'));
+      $windows_path = $root_path.'/resources/timezones/windows_timezones.json';
+      $windows_data = Filesystem::readFile($windows_path);
+      $windows_zones = phutil_json_decode($windows_data);
+
+      $aliases = $aliases + $windows_zones;
+    }
 
     if (isset($aliases[$tzid])) {
       return $aliases[$tzid];
