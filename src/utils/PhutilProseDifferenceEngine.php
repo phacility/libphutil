@@ -3,7 +3,7 @@
 final class PhutilProseDifferenceEngine extends Phobject {
 
   public function getDiff($u, $v) {
-    return $this->buildDiff($u, $v, 1);
+    return $this->buildDiff($u, $v, 0);
   }
 
   private function buildDiff($u, $v, $level) {
@@ -119,13 +119,19 @@ final class PhutilProseDifferenceEngine extends Phobject {
         } else if (!strlen($new)) {
           $result->addPart('-', $old);
         } else {
-          $subdiff = $this->buildDiff(
-            $old,
-            $new,
-            $level + 1);
+          if ($matrix->didReachMaximumLength()) {
+            // If this text was too big to diff, don't try to subdivide it.
+            $result->addPart('-', $old);
+            $result->addPart('+', $new);
+          } else {
+            $subdiff = $this->buildDiff(
+              $old,
+              $new,
+              $level + 1);
 
-          foreach ($subdiff->getParts() as $part) {
-            $result->addPart($part['type'], $part['text']);
+            foreach ($subdiff->getParts() as $part) {
+              $result->addPart($part['type'], $part['text']);
+            }
           }
         }
       }
@@ -138,6 +144,10 @@ final class PhutilProseDifferenceEngine extends Phobject {
 
   private function splitCorpus($corpus, $level) {
     switch ($level) {
+      case 0:
+        // Level 0: Split into paragraphs.
+        $expr = '/([\n]+)/';
+        break;
       case 1:
         // Level 1: Split into sentences.
         $expr = '/([\n,!;?\.]+)/';
@@ -164,7 +174,7 @@ final class PhutilProseDifferenceEngine extends Phobject {
         $result .= $pieces[$ii + 1];
       }
 
-      if ($level == 1) {
+      if ($level < 2) {
         // Split pieces into separate text and whitespace sections: make one
         // piece out of all the whitespace at the beginning, one piece out of
         // all the actual text in the middle, and one piece out of all the
