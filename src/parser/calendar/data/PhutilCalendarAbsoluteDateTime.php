@@ -225,19 +225,31 @@ final class PhutilCalendarAbsoluteDateTime
   }
 
   private function getEffectiveTimezone() {
-    $zone = $this->getTimezone();
-    if ($zone !== null) {
-      return $zone;
+    $date_timezone = $this->getTimezone();
+    $viewer_timezone = $this->getViewerTimezone();
+
+    // Because all-day events are always "floating", the effective timezone
+    // is the viewer timezone if it is available. Otherwise, we'll return a
+    // DateTime object with the correct values, but it will be incorrectly
+    // adjusted forward or backward to the viewer's zone later.
+
+    $zones = array();
+    if ($this->getIsAllDay()) {
+      $zones[] = $viewer_timezone;
+      $zones[] = $date_timezone;
+    } else {
+      $zones[] = $date_timezone;
+      $zones[] = $viewer_timezone;
+    }
+    $zones = array_filter($zones);
+
+    if (!$zones) {
+      throw new Exception(
+        pht(
+          'Datetime has no timezone or viewer timezone.'));
     }
 
-    $zone = $this->getViewerTimezone();
-    if ($zone !== null) {
-      return $zone;
-    }
-
-    throw new Exception(
-      pht(
-        'Datetime has no timezone or viewer timezone.'));
+    return head($zones);
   }
 
   public function newPHPDateTimeZone() {

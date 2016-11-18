@@ -841,16 +841,28 @@ final class PhutilICSParser extends Phobject {
     }
 
     // These are alternate names for timezones.
-    $aliases = array(
-      'Etc/GMT' => 'UTC',
-    );
+    static $aliases;
+
+    if ($aliases === null) {
+      $aliases = array(
+        'Etc/GMT' => 'UTC',
+      );
+
+      // Load the map of Windows timezones.
+      $root_path = dirname(phutil_get_library_root('phutil'));
+      $windows_path = $root_path.'/resources/timezones/windows_timezones.json';
+      $windows_data = Filesystem::readFile($windows_path);
+      $windows_zones = phutil_json_decode($windows_data);
+
+      $aliases = $aliases + $windows_zones;
+    }
 
     if (isset($aliases[$tzid])) {
       return $aliases[$tzid];
     }
 
     // Look for something that looks like "UTC+3" or "GMT -05.00". If we find
-    // anything
+    // anything, pick a timezone with that offset.
     $offset_pattern =
       '/'.
       '(?:UTC|GMT)'.

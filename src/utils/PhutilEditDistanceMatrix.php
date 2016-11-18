@@ -55,6 +55,7 @@ final class PhutilEditDistanceMatrix extends Phobject {
   private $maximumLength;
   private $computeString;
   private $applySmoothing = self::SMOOTHING_NONE;
+  private $reachedMaximumLength;
 
   private $x;
   private $y;
@@ -75,6 +76,10 @@ final class PhutilEditDistanceMatrix extends Phobject {
 
   public function getMaximumLength() {
     return coalesce($this->maximumLength, $this->getInfinity());
+  }
+
+  public function didReachMaximumLength() {
+    return $this->reachedMaximumLength;
   }
 
   public function setComputeString($compute_string) {
@@ -199,6 +204,7 @@ final class PhutilEditDistanceMatrix extends Phobject {
 
     $max = $this->getMaximumLength();
     if (count($x) > $max || count($y) > $max) {
+      $this->reachedMaximumLength = true;
       return ($this->insertCost * count($y)) + ($this->deleteCost * count($x));
     }
 
@@ -245,6 +251,7 @@ final class PhutilEditDistanceMatrix extends Phobject {
 
     $max = $this->getMaximumLength();
     if (count($x) > $max || count($y) > $max) {
+      $this->reachedMaximumLength = true;
       return $this->padEditString(
         str_repeat('d', count($x)).
         str_repeat('i', count($y)));

@@ -152,6 +152,47 @@ final class PhutilProseDiffTestCase extends PhutilTestCase {
       ),
       pht('Diff with a removed comma and new trailing content.'));
 
+    $this->assertProseParts(
+      '[ ] Walnuts',
+      '[X] Walnuts',
+      array(
+        '= [',
+        '-  ',
+        '+ X',
+        '= ] Walnuts',
+      ),
+      pht('Diff adding a tickmark to a checkbox list.'));
+
+    $this->assertProseParts(
+      '[[ ./week49 ]]',
+      '[[ ./week50 ]]',
+      array(
+        '= [[ ./week',
+        '- 49',
+        '+ 50',
+        '=  ]]',
+      ),
+      pht('Diff changing a remarkup wiki link target.'));
+
+    // Create a large corpus with many sentences and paragraphs.
+    $large_paragraph = 'xyz. ';
+    $large_paragraph = str_repeat($large_paragraph, 50);
+    $large_paragraph = rtrim($large_paragraph);
+
+    $large_corpus = $large_paragraph."\n\n";
+    $large_corpus = str_repeat($large_corpus, 50);
+    $large_corpus = rtrim($large_corpus);
+
+    $this->assertProseParts(
+      $large_corpus,
+      "aaa\n\n".$large_corpus."\n\nzzz",
+      array(
+        "+ aaa\n\n",
+        '= '.$large_corpus,
+        "+ \n\nzzz",
+      ),
+      pht('Adding initial and final lines to a large corpus.'));
+
   }
 
   private function assertProseParts($old, $new, array $expect_parts, $label) {
