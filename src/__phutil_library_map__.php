@@ -491,6 +491,7 @@ phutil_register_library_map(array(
     'phutil_console_get_terminal_width' => 'console/format.php',
     'phutil_console_prompt' => 'console/format.php',
     'phutil_console_require_tty' => 'console/format.php',
+    'phutil_console_select' => 'console/format.php',
     'phutil_console_wrap' => 'console/format.php',
     'phutil_count' => 'internationalization/pht.php',
     'phutil_date_format' => 'utils/viewutils.php',

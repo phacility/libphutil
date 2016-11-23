@@ -24,6 +24,20 @@ function phutil_console_confirm($prompt, $default_no = true) {
   }
 }
 
+function phutil_console_select($prompt, $min, $max) {
+  $select_options = '['.$min.' - '.$max.']';
+  do {
+    $response = phutil_console_prompt($prompt.' '.$select_options);
+    $selection = trim($response);
+
+    if (preg_match('/^\d+\z/', $selection)) {
+      $selection = (int)$selection;
+      if ($selection >= $min && $selection <= $max) {
+        return $selection;
+      }
+    }
+  } while (true);
+}
 
 function phutil_console_prompt($prompt, $history = '') {
   echo "\n\n";
