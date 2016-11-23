@@ -82,9 +82,10 @@ function phutil_console_prompt($prompt, $history = '') {
  *
  * @param   string  Text to wrap.
  * @param   int     Optional indent level.
+ * @param   bool    True to also indent the first line.
  * @return  string  Wrapped text.
  */
-function phutil_console_wrap($text, $indent = 0) {
+function phutil_console_wrap($text, $indent = 0, $with_prefix = true) {
   $lines = array();
 
   $width = (78 - $indent);
@@ -163,7 +164,13 @@ function phutil_console_wrap($text, $indent = 0) {
   }
 
   foreach ($lines as $idx => $line) {
-    $lines[$idx] = $pre.implode('', $line);
+    if ($idx == 0 && !$with_prefix) {
+      $prefix = null;
+    } else {
+      $prefix = $pre;
+    }
+
+    $lines[$idx] = $prefix.implode('', $line);
   }
 
   return implode('', $lines);

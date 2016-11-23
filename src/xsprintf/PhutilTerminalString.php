@@ -15,6 +15,18 @@ final class PhutilTerminalString extends Phobject {
     return $this->string;
   }
 
+  public function applyWrap() {
+    $string = (string)$this;
+    $string = phutil_console_wrap($string);
+    return new self($string);
+  }
+
+  public function applyIndent($depth, $with_prefix = true) {
+    $string = (string)$this;
+    $string = phutil_console_wrap($string, $depth, $with_prefix);
+    return new self($string);
+  }
+
   public static function escapeStringValue($value, $allow_whitespace) {
     if ($value instanceof PhutilTerminalString) {
       return (string)$value;

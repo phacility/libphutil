@@ -50,7 +50,8 @@ final class PhutilConsoleList extends PhutilConsoleView {
     $output = array();
     foreach ($this->getItems() as $item) {
       if ($this->wrap) {
-        $item = phutil_console_wrap($item, $indent_depth);
+        $item = tsprintf('%s', $item)
+          ->applyIndent($indent_depth, false);
       }
 
       $output[] = $indent_string.$bullet.$item;

@@ -29,7 +29,10 @@ final class PhutilConsoleBlock extends PhutilConsoleView {
 
       switch ($type) {
         case 'paragraph':
-          $item = phutil_console_wrap($item)."\n";
+          $item = array(
+            tsprintf('%s', $item)->applyWrap(),
+            "\n",
+          );
           break;
         case 'list':
           $item = $item;
