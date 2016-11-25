@@ -3,10 +3,9 @@
 final class PhutilSearchQueryCompilerTestCase
   extends PhutilTestCase {
 
-
   public function testCompileQueries() {
     $tests = array(
-      '' => '',
+      '' => null,
       'cat dog' => '+"cat" +"dog"',
       'cat -dog' => '+"cat" -"dog"',
       'cat-dog' => '+"cat-dog"',
@@ -60,9 +59,44 @@ final class PhutilSearchQueryCompilerTestCase
 
   }
 
-  private function assertCompileQueries(array $tests, $operators = null) {
+  public function testCompileQueriesWithStemming() {
+    $stemming_tests = array(
+      'cat dog' => array(
+        null,
+        '+"cat" +"dog"',
+      ),
+      'cats dogs' => array(
+        null,
+        '+"cat" +"dog"',
+      ),
+      'cats "dogs"' => array(
+        '+"dogs"',
+        '+"cat"',
+      ),
+      '"blessed blade" of the windseeker' => array(
+        '+"blessed blade"',
+        '+"of" +"the" +"windseek"',
+      ),
+      'mailing users for mentions on tasks' => array(
+        null,
+        '+"mail" +"user" +"for" +"mention" +"on" +"task"',
+      ),
+    );
+
+    $stemmer = new PhutilSearchStemmer();
+    $this->assertCompileQueries($stemming_tests, null, $stemmer);
+  }
+
+  private function assertCompileQueries(
+    array $tests,
+    $operators = null,
+    PhutilSearchStemmer $stemmer = null) {
     foreach ($tests as $input => $expect) {
       $caught = null;
+
+      $query = null;
+      $literal_query = null;
+      $stemmed_query = null;
 
       try {
         $compiler = id(new PhutilSearchQueryCompiler())
@@ -72,19 +106,39 @@ final class PhutilSearchQueryCompilerTestCase
           $compiler->setOperators($operators);
         }
 
-        $query = $compiler->compileQuery();
+        if ($stemmer !== null) {
+          $compiler->setStemmer($stemmer);
+        }
+
+        if ($stemmer) {
+          $literal_query = $compiler->compileLiteralQuery();
+          $stemmed_query = $compiler->compileStemmedQuery();
+        } else {
+          $query = $compiler->compileQuery();
+        }
       } catch (PhutilSearchQueryCompilerSyntaxException $ex) {
         $caught = $ex;
       }
 
       if ($caught !== null) {
         $query = false;
+        $literal_query = false;
+        $stemmed_query = false;
       }
 
-      $this->assertEqual(
-        $expect,
-        $query,
-        pht('Compilation of query: %s', $input));
+      if (!$stemmer) {
+        $this->assertEqual(
+          $expect,
+          $query,
+          pht('Compilation of query: %s', $input));
+      } else {
+        $this->assertEqual(
+          $expect,
+          ($literal_query === false)
+            ? false
+            : array($literal_query, $stemmed_query),
+          pht('Stemmed compilation of query: %s', $input));
+      }
     }
   }
 

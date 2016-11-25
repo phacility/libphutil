@@ -5,6 +5,7 @@ final class PhutilSearchQueryCompiler
 
   private $operators = '+ -><()~*:""&|';
   private $query;
+  private $stemmer;
 
   const OPERATOR_NOT = 'not';
   const OPERATOR_AND = 'and';
@@ -27,6 +28,15 @@ final class PhutilSearchQueryCompiler
     return $this->query;
   }
 
+  public function setStemmer(PhutilSearchStemmer $stemmer) {
+    $this->stemmer = $stemmer;
+    return $this;
+  }
+
+  public function getStemmer() {
+    return $this->stemmer;
+  }
+
   public function compileQuery() {
     $query = $this->getQuery();
     $tokens = $this->tokenizeQuery($query);
@@ -36,8 +46,46 @@ final class PhutilSearchQueryCompiler
       $result[] = $this->renderToken($token);
     }
 
-    $result = array_unique($result);
-    return implode(' ', $result);
+    return $this->compileRenderedTokens($result);
+  }
+
+  public function compileLiteralQuery() {
+    $query = $this->getQuery();
+    $tokens = $this->tokenizeQuery($query);
+
+    $result = array();
+    foreach ($tokens as $token) {
+      if (!$token['quoted']) {
+        continue;
+      }
+      $result[] = $this->renderToken($token);
+    }
+
+    return $this->compileRenderedTokens($result);
+  }
+
+  public function compileStemmedQuery() {
+    $query = $this->getQuery();
+    $tokens = $this->tokenizeQuery($query);
+
+    $result = array();
+    foreach ($tokens as $token) {
+      if ($token['quoted']) {
+        continue;
+      }
+      $result[] = $this->renderToken($token, $this->getStemmer());
+    }
+
+    return $this->compileRenderedTokens($result);
+  }
+
+  private function compileRenderedTokens(array $list) {
+    if (!$list) {
+      return null;
+    }
+
+    $list = array_unique($list);
+    return implode(' ', $list);
   }
 
   private function tokenizeQuery($query) {
@@ -184,8 +232,16 @@ final class PhutilSearchQueryCompiler
     return $results;
   }
 
-  private function renderToken(array $token) {
-    $value = $this->quoteToken($token['value']);
+  private function renderToken(
+    array $token,
+    PhutilSearchStemmer $stemmer = null) {
+    $value = $token['value'];
+
+    if ($stemmer) {
+      $value = $stemmer->stemToken($value);
+    }
+
+    $value = $this->quoteToken($value);
     $operator = $token['operator'];
     $prefix = $this->getOperatorPrefix($operator);
 
