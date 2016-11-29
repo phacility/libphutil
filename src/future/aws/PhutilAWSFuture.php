@@ -8,7 +8,6 @@ abstract class PhutilAWSFuture extends FutureProxy {
   private $region;
   private $httpMethod = 'GET';
   private $path = '/';
-  private $params = array();
   private $endpoint;
   private $data = '';
   private $headers = array();
@@ -83,8 +82,7 @@ abstract class PhutilAWSFuture extends FutureProxy {
   }
 
   protected function getParameters() {
-    $params = $this->params;
-    return $params;
+    return array();
   }
 
   public function addHeader($key, $value) {
@@ -131,7 +129,12 @@ abstract class PhutilAWSFuture extends FutureProxy {
       ->setService($this->getServiceName())
       ->setAccessKey($access_key)
       ->setSecretKey($secret_key)
+      ->setSignContent($this->shouldSignContent())
       ->signRequest($future);
+  }
+
+  protected function shouldSignContent() {
+    return false;
   }
 
   protected function didReceiveResult($result) {

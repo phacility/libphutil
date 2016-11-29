@@ -5,6 +5,7 @@ final class PhutilAWSv4Signature extends Phobject {
   private $accessKey;
   private $secretKey;
   private $signingKey;
+  private $signContent;
 
   private $date;
 
@@ -68,6 +69,15 @@ final class PhutilAWSv4Signature extends Phobject {
     return 'AWS4-HMAC-SHA256';
   }
 
+  public function setSignContent($sign_content) {
+    $this->signContent = $sign_content;
+    return $this;
+  }
+
+  public function getSignContent() {
+    return $this->signContent;
+  }
+
   private function getHost(HTTPSFuture $future) {
     $uri = new PhutilURI($future->getURI());
     return $uri->getDomain();
@@ -81,7 +91,10 @@ final class PhutilAWSv4Signature extends Phobject {
   public function signRequest(HTTPSFuture $future) {
     $body_signature = $this->getBodySignature($future);
 
-    $future->addHeader('X-Amz-Content-sha256', $body_signature);
+    if ($this->getSignContent()) {
+      $future->addHeader('X-Amz-Content-sha256', $body_signature);
+    }
+
     $future->addHeader('X-Amz-Date', $this->getDate());
 
     $request_signature = $this->getCanonicalRequestSignature(
