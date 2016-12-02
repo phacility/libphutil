@@ -52,7 +52,10 @@ final class PhutilCalendarRelativeDateTime
 
   public function newAbsoluteDateTime() {
     $clone = clone $this;
-    $clone->setViewerTimezone(null);
+
+    if ($clone->getTimezone()) {
+      $clone->setViewerTimezone(null);
+    }
 
     $datetime = $clone->newPHPDateTime();
 

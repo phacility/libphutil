@@ -23,6 +23,26 @@ final class PhutilCalendarDateTimeTestCase extends PhutilTestCase {
     $this->assertEqual(
       '20161129',
       $end->getISO8601());
+
+    // This is a date which explicitly has no specified timezone.
+    $start = PhutilCalendarAbsoluteDateTime::newFromISO8601('20161128', null)
+      ->setViewerTimezone('UTC');
+
+    $this->assertEqual(
+      '20161128',
+      $start->getISO8601());
+
+    $end = $start
+      ->newAbsoluteDateTime()
+      ->setHour(0)
+      ->setMinute(0)
+      ->setSecond(0)
+      ->newRelativeDateTime('P1D')
+      ->newAbsoluteDateTime();
+
+    $this->assertEqual(
+      '20161129',
+      $end->getISO8601());
   }
 
 
