@@ -216,6 +216,32 @@ final class PhutilICSParserTestCase extends PhutilTestCase {
       $event->getEndDateTime()->getEpoch());
   }
 
+  public function testICSWeeklyEvent() {
+    $event = $this->parseICSSingleEvent('weekly.ics');
+
+    $start = $event->getStartDateTime();
+    $start->setViewerTimezone('UTC');
+
+    $rrule = $event->getRecurrenceRule()
+      ->setStartDateTime($start);
+
+    $rset = id(new PhutilCalendarRecurrenceSet())
+      ->addSource($rrule);
+
+    $result = $rset->getEventsBetween(null, null, 3);
+
+    $expect = array(
+      PhutilCalendarAbsoluteDateTime::newFromISO8601('20150811'),
+      PhutilCalendarAbsoluteDateTime::newFromISO8601('20150818'),
+      PhutilCalendarAbsoluteDateTime::newFromISO8601('20150825'),
+    );
+
+    $this->assertEqual(
+      mpull($expect, 'getISO8601'),
+      mpull($result, 'getISO8601'),
+      pht('Weekly recurring event.'));
+  }
+
   public function testICSParserErrors() {
     $map = array(
       'err-missing-end.ics' => PhutilICSParser::PARSE_MISSING_END,

@@ -18,6 +18,10 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       'optional int? (minimum 300)',
       'list<wild>',
       'list<list<list<map<string, string>>>> (easy)',
+      '\\SomeClass',
+      '\\Namespace\\SomeClass',
+      '\\NamespaceA\\NamespaceB\\NamespaceC',
+      'NamespaceA\\NamespaceB\\NamespaceC',
     );
 
     $bad = array(
@@ -29,6 +33,10 @@ final class PhutilTypeSpecTestCase extends PhutilTestCase {
       '(derp)',
       'list<string (capital letters), string>',
       'int?|string',
+      '\\',
+      '\\\\',
+      '\\SomeClass\\',
+      'SomeClass\\',
     );
 
     $good = array_fill_keys($good, true);

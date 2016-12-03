@@ -14,6 +14,10 @@ abstract class PhutilCalendarProxyDateTime
     return $this->proxy;
   }
 
+  public function __clone() {
+    $this->proxy = clone $this->proxy;
+  }
+
   public function setViewerTimezone($timezone) {
     $this->getProxy()->setViewerTimezone($timezone);
     return $this;

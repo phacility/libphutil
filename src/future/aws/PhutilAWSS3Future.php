@@ -63,4 +63,8 @@ final class PhutilAWSS3Future extends PhutilAWSFuture {
     return parent::didReceiveResult($result);
   }
 
+  protected function shouldSignContent() {
+    return true;
+  }
+
 }

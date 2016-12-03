@@ -19,6 +19,7 @@ final class PhutilAWSv4SignatureTestCase extends PhutilTestCase {
     $signature = id(new PhutilAWSv4Signature())
       ->setAccessKey($access_key)
       ->setSecretKey(new PhutilOpaqueEnvelope($secret_key))
+      ->setSignContent(true)
       ->setDate($date)
       ->setRegion($region)
       ->setService($service);
@@ -55,6 +56,7 @@ EOSIGNATURE;
     $signature = id(new PhutilAWSv4Signature())
       ->setAccessKey($access_key)
       ->setSecretKey(new PhutilOpaqueEnvelope($secret_key))
+      ->setSignContent(true)
       ->setDate($date)
       ->setRegion($region)
       ->setService($service);
@@ -88,6 +90,7 @@ EOSIGNATURE;
     $signature = id(new PhutilAWSv4Signature())
       ->setAccessKey($access_key)
       ->setSecretKey(new PhutilOpaqueEnvelope($secret_key))
+      ->setSignContent(true)
       ->setDate($date)
       ->setRegion($region)
       ->setService($service);
@@ -121,6 +124,7 @@ EOSIGNATURE;
     $signature = id(new PhutilAWSv4Signature())
       ->setAccessKey($access_key)
       ->setSecretKey(new PhutilOpaqueEnvelope($secret_key))
+      ->setSignContent(true)
       ->setDate($date)
       ->setRegion($region)
       ->setService($service);
@@ -138,6 +142,38 @@ EOSIGNATURE;
     $this->assertSignature($expect, $future);
   }
 
+  public function testAWSv4SignaturesVanillaQuery() {
+    $access_key = 'AKIDEXAMPLE';
+    $secret_key = 'wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY';
+    $date = '20150830T123600Z';
+    $region = 'us-east-1';
+    $service = 'service';
+    $uri = 'https://example.amazonaws.com/?Param2=value2&Param1=value1';
+    $method = 'GET';
+
+    $future = id(new HTTPSFuture($uri))
+      ->setMethod($method);
+
+    $signature = id(new PhutilAWSv4Signature())
+      ->setAccessKey($access_key)
+      ->setSecretKey(new PhutilOpaqueEnvelope($secret_key))
+      ->setSignContent(false)
+      ->setDate($date)
+      ->setRegion($region)
+      ->setService($service);
+
+    $signature->signRequest($future);
+
+    $expect = <<<EOSIGNATURE
+AWS4-HMAC-SHA256
+
+Credential=AKIDEXAMPLE/20150830/us-east-1/service/aws4_request,
+SignedHeaders=host;x-amz-date,
+Signature=b97d918cfa904a5beff61c982a1b6f458b799221646efd99d3219ec94cdf2500
+EOSIGNATURE;
+
+    $this->assertSignature($expect, $future);
+  }
 
   private function assertSignature($expect, HTTPSFuture $signed) {
     $authorization = null;
