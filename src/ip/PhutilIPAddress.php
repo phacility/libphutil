@@ -11,6 +11,7 @@ abstract class PhutilIPAddress
   }
 
   abstract public function toBits();
+  abstract public function getBitCount();
   abstract public function getAddress();
 
   public static function newAddress($in) {

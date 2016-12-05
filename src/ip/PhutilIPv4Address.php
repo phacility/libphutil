@@ -16,6 +16,10 @@ final class PhutilIPv4Address extends PhutilIPAddress {
     return $this->ip;
   }
 
+  public function getBitCount() {
+    return 32;
+  }
+
   protected static function newFromString($str) {
     $matches = null;
     $ok = preg_match('(^(\d+)\.(\d+)\.(\d+).(\d+)\z)', $str, $matches);

@@ -182,7 +182,7 @@ final class PhutilIPAddressTestCase extends PhutilTestCase {
     }
   }
 
-  public function testValidCIDRBlocks() {
+  public function testValidIPv4CIDRBlocks() {
     $cases = array(
       // Valid block.
       '1.0.0.0/16' => true,
@@ -217,23 +217,87 @@ final class PhutilIPAddressTestCase extends PhutilTestCase {
     }
   }
 
-  public function testCIDRBlockContains() {
+  public function testValidIPv6CIDRBlocks() {
+    $cases = array(
+      // Valid block.
+      '::/16' => true,
+      '::/128' => true,
+
+      // No nonsense.
+      '::/1/2' => false,
+      '::/::' => false,
+      '::' => false,
+
+      // No leading zeroes.
+      '::/01' => false,
+
+      // No out-of-range masks.
+      '::/129' => false,
+    );
+
+    foreach ($cases as $input => $expect) {
+      $caught = null;
+      try {
+        PhutilCIDRBlock::newBlock($input);
+      } catch (Exception $ex) {
+        $caught = $ex;
+      }
+
+      $this->assertEqual(
+        $expect,
+        !($caught instanceof Exception),
+        'PhutilCIDRBlock['.$input.']');
+    }
+  }
+
+  public function testIPv4CIDRBlockContains() {
     $cases = array(
       '0.0.0.0/0' => array(
         '0.0.0.0' => true,
         '1.1.1.1' => true,
         '2.3.4.5' => true,
+        '::' => false,
+        '::1' => false,
+        '::ffff:0:0' => false,
       ),
       '0.0.0.2/32' => array(
         '0.0.0.1' => false,
         '0.0.0.2' => true,
         '0.0.0.3' => false,
+        '::' => false,
       ),
       '172.30.0.0/16' => array(
         '172.29.255.255' => false,
         '172.30.0.0' => true,
         '172.30.255.255' => true,
         '172.31.0.0' => false,
+        '::' => false,
+      ),
+    );
+
+    foreach ($cases as $input_block => $tests) {
+      $block = PhutilCIDRBlock::newBlock($input_block);
+      foreach ($tests as $input => $expect) {
+        $this->assertEqual(
+          $expect,
+          $block->containsAddress($input),
+          'PhutilCIDRBlock['.$input_block.']->containsAddress('.$input.')');
+      }
+    }
+  }
+
+  public function testIPv6CIDRBlockContains() {
+    $cases = array(
+      '::/0' => array(
+        '1::' => true,
+        '2::' => true,
+        '127.0.0.1' => false,
+      ),
+      '::ffff:0:0/96' => array(
+        '::ffff:0:0' => true,
+        '::ffff:ffff:ffff' => true,
+        '::fffe:0:0' => false,
+        '127.0.0.1' => false,
       ),
     );
 

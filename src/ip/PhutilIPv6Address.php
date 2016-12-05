@@ -13,6 +13,10 @@ final class PhutilIPv6Address extends PhutilIPAddress {
     // <private>
   }
 
+  public function getBitCount() {
+    return 128;
+  }
+
   protected static function newFromString($str) {
     $parts = explode(':', $str);
     if (count($parts) > 8) {
