@@ -303,7 +303,7 @@ final class PhutilClassMapQuery extends Phobject {
    * @return string Cache key.
    * @task cache
    */
-  private function getCacheKey() {
+  public function getCacheKey() {
     $parts = array(
       $this->ancestorClass,
       $this->uniqueMethod,
