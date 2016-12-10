@@ -45,7 +45,16 @@ final class PhutilSearchStemmer
       $loaded = true;
     }
 
-    return Porter::stem($normalized_token);
+    $stem = Porter::stem($normalized_token);
+
+    // If the stem is too short, it won't be a candidate for indexing. These
+    // tokens are also likely to be acronyms (like "DNS") rather than real
+    // English words.
+    if (strlen($stem) < 3) {
+      return $normalized_token;
+    }
+
+    return $stem;
   }
 
 }

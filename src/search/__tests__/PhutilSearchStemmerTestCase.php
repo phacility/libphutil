@@ -30,6 +30,11 @@ final class PhutilSearchStemmerTestCase
 
       // Stems should be normalized.
       'DOG' => 'dog',
+
+      // If stemming would bring a token under 3 characters, it should not
+      // be stemmed.
+      'dns' => 'dns',
+      'nis' => 'nis',
     );
 
     $stemmer = new PhutilSearchStemmer();

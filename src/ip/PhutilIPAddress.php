@@ -1,88 +1,43 @@
 <?php
 
 /**
- * Represent and manipulate IP addresses.
- *
- * NOTE: This class only supports IPv4 for now.
+ * Represent and manipulate IPv4 and IPv6 addresses.
  */
-final class PhutilIPAddress extends Phobject {
-
-  private $ip;
-  private $bits;
+abstract class PhutilIPAddress
+  extends Phobject {
 
   private function __construct() {
     // <private>
   }
 
+  abstract public function toBits();
+  abstract public function getBitCount();
+  abstract public function getAddress();
+
   public static function newAddress($in) {
     if ($in instanceof PhutilIPAddress) {
-      return $in;
+      return clone $in;
     }
 
-    return self::newFromString($in);
-  }
-
-  private static function newFromString($str) {
-    $matches = null;
-    $ok = preg_match('(^(\d+)\.(\d+)\.(\d+).(\d+)\z)', $str, $matches);
-    if (!$ok) {
-      throw new Exception(
-        pht(
-          'IP address "%s" is not properly formatted. Expected an IP '.
-          'address like "%s".',
-          $str,
-          '23.45.67.89'));
+    try {
+      return PhutilIPv4Address::newFromString($in);
+    } catch (Exception $ex) {
+      // Continue, trying the address as IPv6 instead.
     }
 
-    $parts = array_slice($matches, 1);
-    foreach ($parts as $part) {
-      if (preg_match('/^0\d/', $part)) {
-        throw new Exception(
-          pht(
-            'IP address "%s" is not properly formatted. Address segments '.
-            'should have no leading zeroes, but segment "%s" has a leading '.
-            'zero.',
-            $str,
-            $part));
-      }
-
-      $value = (int)$part;
-      if ($value < 0 || $value > 255) {
-        throw new Exception(
-          pht(
-            'IP address "%s" is not properly formatted. Address segments '.
-            'should be between 0 and 255, inclusive, but segment "%s" has '.
-            'a value outside of this range.',
-            $str,
-            $part));
-      }
+    try {
+      return PhutilIPv6Address::newFromString($in);
+    } catch (Exception $ex) {
+      // Continue, throwing a more tailored exception below.
     }
 
-    $obj = new PhutilIPAddress();
-    $obj->ip = $str;
-
-    return $obj;
-  }
-
-  public function toBits() {
-    if ($this->bits === null) {
-      $bits = '';
-      foreach (explode('.', $this->ip) as $part) {
-        $value = (int)$part;
-        for ($ii = 7; $ii >= 0; $ii--) {
-          $mask = (1 << $ii);
-          if (($value & $mask) === $mask) {
-            $bits .= '1';
-          } else {
-            $bits .= '0';
-          }
-        }
-      }
-
-      $this->bits = $bits;
-    }
-
-    return $this->bits;
+    throw new Exception(
+      pht(
+        'IP address "%s" is not properly formatted. Expected an IPv4 address '.
+        'like "%s", or an IPv6 address like "%s".',
+        $in,
+        '23.45.67.89',
+        '2345:6789:0123:abcd::'));
   }
 
 }
