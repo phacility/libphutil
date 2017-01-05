@@ -87,7 +87,29 @@ abstract class PhutilExecutableFuture extends Future {
    */
   final public function getEnv() {
     if (!$this->hasEnv()) {
-      $this->setEnv($_ENV, $wipe_process_env = true);
+      $default_env = $_ENV;
+
+      // If `variables_order` does not include "E", the $_ENV superglobal
+      // does not build and there's no apparent reasonable way for us to
+      // rebuild it (we could perhaps parse the output of `export`).
+
+      // For now, explicitly populate variables which we rely on and which
+      // we know may exist. After T12071, we should be able to rely on
+      // $_ENV and no longer need to do this.
+
+      $known_keys = array(
+        'PHABRICATOR_ENV',
+        'PHABRICATOR_INSTANCE',
+      );
+
+      foreach ($known_keys as $known_key) {
+        $value = getenv($known_key);
+        if (strlen($value)) {
+          $default_env[$known_key] = $value;
+        }
+      }
+
+      $this->setEnv($default_env, $wipe_process_env = true);
     }
 
     return $this->env;
