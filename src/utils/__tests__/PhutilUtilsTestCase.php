@@ -584,8 +584,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
 
     $invalid_cases = array(
-      '[' =>
-        'syntax error, unexpected $end, expecting \']\' in Unknown on line 1',
+      '[' => new PhutilINIParserException(),
     );
 
     foreach ($invalid_cases as $input => $expect) {
@@ -595,8 +594,7 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       } catch (Exception $ex) {
         $caught = $ex;
       }
-      $this->assertTrue($caught instanceof PhutilINIParserException);
-      $this->assertEqual($expect, $caught->getMessage());
+      $this->assertTrue($caught instanceof $expect);
     }
   }
 
