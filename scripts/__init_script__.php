@@ -1,6 +1,10 @@
 <?php
 
-declare(ticks = 1);
+if (function_exists('pcntl_async_signals')) {
+  pcntl_async_signals(true);
+} else {
+  declare(ticks = 1);
+}
 
 function __phutil_init_script__() {
   // Adjust the runtime language configuration to be reasonable and inline with
