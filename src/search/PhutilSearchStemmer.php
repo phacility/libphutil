@@ -9,10 +9,12 @@ final class PhutilSearchStemmer
   }
 
   public function stemCorpus($corpus) {
-    $tokens = preg_split('/[^a-zA-Z0-9\x7F-\xFF]+/', $corpus);
+    $tokens = preg_split('/[^a-zA-Z0-9\x7F-\xFF._]+/', $corpus);
 
     $words = array();
     foreach ($tokens as $key => $token) {
+      $token = trim($token, '._');
+
       if (strlen($token) < 3) {
         continue;
       }
@@ -37,6 +39,13 @@ final class PhutilSearchStemmer
    * @phutil-external-symbol class Porter
    */
   private function applyStemmer($normalized_token) {
+    // If the token has internal punctuation, handle it literally. This
+    // deals with things like domain names, Conduit API methods, and other
+    // sorts of informal tokens.
+    if (preg_match('/[._]/', $normalized_token)) {
+      return $normalized_token;
+    }
+
     static $loaded;
 
     if ($loaded === null) {
@@ -44,6 +53,7 @@ final class PhutilSearchStemmer
       require_once $root.'/externals/porter-stemmer/src/Porter.php';
       $loaded = true;
     }
+
 
     $stem = Porter::stem($normalized_token);
 

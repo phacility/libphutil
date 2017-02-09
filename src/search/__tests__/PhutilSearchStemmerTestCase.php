@@ -35,6 +35,14 @@ final class PhutilSearchStemmerTestCase
       // be stemmed.
       'dns' => 'dns',
       'nis' => 'nis',
+
+      // Complex tokens with internal punctuation should be left untouched;
+      // these are usually things like domain names, API calls, informal tags,
+      // etc.
+      'apples' => 'appl',
+      'bananas' => 'banana',
+      'apples_bananas' => 'apples_bananas',
+      'apples_bananas.apples_bananas' => 'apples_bananas.apples_bananas',
     );
 
     $stemmer = new PhutilSearchStemmer();
@@ -57,6 +65,10 @@ final class PhutilSearchStemmerTestCase
       'in a 1-meter radius around a target.' =>
         'firebal seventh level spell which deal 2d16 point damag meter '.
         'radiu around target',
+      'apples-bananas' => 'appl banana',
+      'apples_bananas' => 'apples_bananas',
+      'apples.bananas' => 'apples.bananas',
+      'oddly-proportioned' => 'oddli proport',
     );
 
     $stemmer = new PhutilSearchStemmer();
