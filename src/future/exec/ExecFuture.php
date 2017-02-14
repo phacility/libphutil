@@ -426,7 +426,10 @@ final class ExecFuture extends PhutilExecutableFuture {
   public function resolveKill() {
     if (!$this->result) {
       $signal = 9;
-      proc_terminate($this->proc, $signal);
+
+      if ($this->proc) {
+        proc_terminate($this->proc, $signal);
+      }
 
       $this->result = array(
         128 + $signal,

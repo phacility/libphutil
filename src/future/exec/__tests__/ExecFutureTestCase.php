@@ -63,6 +63,14 @@ final class ExecFutureTestCase extends PhutilTestCase {
     $future->resolve();
   }
 
+  public function testTerminateWithoutStart() {
+    // We never start this future, but it should be fine to kill a future from
+    // any state.
+    $future = new ExecFuture('sleep 1');
+    $future->resolveKill();
+
+    $this->assertTrue(true);
+  }
 
   public function testTimeoutTestShouldRunLessThan1Sec() {
     // NOTE: This is partly testing that we choose appropriate select wait
