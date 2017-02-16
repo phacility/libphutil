@@ -90,7 +90,7 @@ final class PhutilAPCKeyValueCache extends PhutilKeyValueCache {
     return $this;
   }
 
-  private static function isAPCU() {
+  private static function isAPCu() {
     return function_exists('apcu_fetch');
   }
 

@@ -4,6 +4,8 @@ final class HTTPFutureParseResponseStatus extends HTTPFutureResponseStatus {
 
   const ERROR_MALFORMED_RESPONSE = 1;
 
+  private $rawResponse;
+
   public function __construct($code, $raw_response) {
     $this->rawResponse = $raw_response;
     parent::__construct($code);

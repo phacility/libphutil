@@ -4,6 +4,7 @@ final class PhutilAWSException extends Exception {
 
   private $httpStatus;
   private $requestID;
+  private $params;
 
   public function __construct($http_status, array $params) {
     $this->httpStatus = $http_status;
