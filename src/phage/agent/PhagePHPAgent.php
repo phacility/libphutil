@@ -17,10 +17,14 @@ final class PhagePHPAgent extends Phobject {
         $iterator->setUpdateInterval(0.050);
         foreach ($iterator as $key => $future) {
           if ($future === null) {
+            foreach ($this->exec as $read_key => $read_future) {
+              $this->readFuture($read_key, $read_future);
+            }
+
             break;
+          } else {
+            $this->resolveFuture($key, $future);
           }
-          $this->resolveFuture($key, $future);
-          break;
         }
       } else {
         PhutilChannel::waitForAny(array($this->getMaster()));
@@ -67,6 +71,8 @@ final class PhagePHPAgent extends Phobject {
         $cmd = $spec['command'];
 
         $future = new ExecFuture('%C', $cmd);
+        $future->isReady();
+
         $this->exec[$key] = $future;
         break;
       case 'EXIT':
@@ -75,7 +81,34 @@ final class PhagePHPAgent extends Phobject {
     }
   }
 
-  private function resolveFuture($key, Future $future) {
+  private function readFuture($key, ExecFuture $future) {
+    $master = $this->getMaster();
+
+    list($stdout, $stderr) = $future->read();
+    $future->discardBuffers();
+
+    if (strlen($stdout)) {
+      $master->write(
+        array(
+          'type' => 'TEXT',
+          'key' => $key,
+          'kind' => 'stdout',
+          'text' => $stdout,
+        ));
+    }
+
+    if (strlen($stderr)) {
+      $master->write(
+        array(
+          'type' => 'TEXT',
+          'key' => $key,
+          'kind' => 'stderr',
+          'text' => $stderr,
+        ));
+    }
+  }
+
+  private function resolveFuture($key, ExecFuture $future) {
     $result = $future->resolve();
     $master = $this->getMaster();
 
@@ -87,6 +120,7 @@ final class PhagePHPAgent extends Phobject {
         'stdout'  => $result[1],
         'stderr'  => $result[2],
       ));
+
     unset($this->exec[$key]);
   }
 

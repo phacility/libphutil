@@ -63,7 +63,12 @@ final class PhagePHPAgentBootloader extends PhageAgentBootloader {
       foreach ($files as $file) {
         $main_sequence->addFile($root.'/'.$file);
       }
-      $main_sequence->addText('id(new PhagePHPAgent($I))->execute();');
+
+      // NOTE: If we use id() here, we don't get a stack trace out of it when
+      // we call a nonexistent method from inside "execute()"? Not exactly sure
+      // what's going on here, but just sweep it under the rug for now.
+
+      $main_sequence->addText('$A = new PhagePHPAgent($I); $A->execute();');
       $main_length = strlen($main_sequence->toString());
 
       $boot_sequence = new PhutilBallOfPHP();
@@ -77,6 +82,7 @@ final class PhagePHPAgentBootloader extends PhageAgentBootloader {
           }
           $buffer .= $data;
         }
+
         eval($buffer);';
       $boot_sequence->addText($boot);
       $boot_length = strlen($boot_sequence->toString());
