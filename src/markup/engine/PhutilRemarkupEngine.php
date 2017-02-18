@@ -293,7 +293,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
       $rule->didMarkupText();
     }
 
-    return $this->restoreText(idx($dict, 'output'), $this->isTextMode());
+    return $this->restoreText(idx($dict, 'output'));
   }
 
   public function restoreText($text) {

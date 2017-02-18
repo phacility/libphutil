@@ -69,7 +69,8 @@ final class PhutilSignalRouter extends Phobject {
       throw new PhutilAggregateException(
         pht(
           'Signal handlers raised exceptions while handling "%s".',
-          phutil_get_signal_name($signo)));
+          phutil_get_signal_name($signo)),
+        $exceptions);
     }
 
     switch ($signo) {

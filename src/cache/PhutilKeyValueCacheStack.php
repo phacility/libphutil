@@ -68,7 +68,7 @@ final class PhutilKeyValueCacheStack extends PhutilKeyValueCache {
    * @task    config
    */
   public function setNextTTL($ttl) {
-    $this->ttl = $ttl;
+    $this->nextTTL = $ttl;
     return $this;
   }
 

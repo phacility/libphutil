@@ -16,12 +16,19 @@ final class PhutilLogFileChannel extends PhutilChannelChannel {
 
   public function read() {
     $buffer = parent::read();
-    $this->log('>>> '.phutil_loggable_string($buffer));
+
+    if (strlen($buffer)) {
+      $this->log('>>> '.phutil_loggable_string($buffer));
+    }
+
     return $buffer;
   }
 
   public function write($message) {
-    $this->log('<<< '.phutil_loggable_string($message));
+    if (strlen($message)) {
+      $this->log('<<< '.phutil_loggable_string($message));
+    }
+
     return parent::write($message);
   }
 

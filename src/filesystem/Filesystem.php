@@ -384,7 +384,7 @@ final class Filesystem extends Phobject {
    * Get the last modified time of a file
    *
    * @param string Path to file
-   * @return Time last modified
+   * @return int Time last modified
    *
    * @task file
    */
