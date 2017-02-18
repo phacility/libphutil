@@ -107,7 +107,7 @@ abstract class PhageAgentAction
                   $exit_code),
                 $key.'/exit');
 
-              fprintf(STDOUT, $exit_code);
+              fprintf(STDOUT, '%s', $exit_code);
             }
 
             unset($this->commands[$key]);
@@ -160,7 +160,7 @@ abstract class PhageAgentAction
     }
 
     $text = $this->formatOutput($text, $label);
-    fprintf($target, $text);
+    fprintf($target, '%s', $text);
   }
 
   private function formatOutput($output, $context) {
