@@ -29,7 +29,8 @@
  *
  * @param  string  sprintf()-style format string.
  * @param  ...     Zero or more arguments.
- * @return string  Formatted string, escaped appropriately for shell contexts.
+ * @return PhutilCommandString  Formatted string, escaped appropriately for
+ *   shell contexts.
  */
 function csprintf($pattern /* , ... */) {
   $args = func_get_args();
@@ -41,7 +42,8 @@ function csprintf($pattern /* , ... */) {
  *
  * @param  string  sprintf()-style format string.
  * @param  list    List of zero or more arguments to csprintf().
- * @return string  Formatted string, escaped appropriately for shell contexts.
+ * @return PhutilCommandString  Formatted string, escaped appropriately for
+ *   shell contexts.
  */
 function vcsprintf($pattern, array $argv) {
   array_unshift($argv, $pattern);

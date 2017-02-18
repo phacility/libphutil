@@ -117,6 +117,9 @@ final class PhutilArgumentParser extends Phobject {
     return $this->parseInternal($specs, false);
   }
 
+  /**
+   * @return  this
+   */
   private function parseInternal(array $specs, $correct_spelling) {
     $specs = PhutilArgumentSpecification::newSpecsFromList($specs);
     $this->mergeSpecs($specs);
