@@ -99,13 +99,15 @@ abstract class PhageAgentAction
 
             $exit_code = $message['err'];
 
+            $command->setExitCode($exit_code);
+
             if ($exit_code != 0) {
               $exit_code = $this->formatOutput(
                 pht(
                   'Command ("%s") exited nonzero ("%s")!',
                   $command->getCommand(),
                   $exit_code),
-                $key.'/exit');
+                $command->getLabel());
 
               fprintf(STDOUT, '%s', $exit_code);
             }
