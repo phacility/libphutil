@@ -135,6 +135,10 @@ abstract class PhageAgentAction
           throw new Exception(pht('Channel closed unexpectedly!'));
         }
       }
+
+      if ($message === null) {
+        break;
+      }
     }
   }
 
