@@ -2,17 +2,16 @@
 
 /**
  * Oversees a daemon and restarts it if it fails.
+ *
+ * @task signals Signal Handling
  */
 final class PhutilDaemonOverseer extends Phobject {
 
   private $argv;
-  private $moreArgs;
-  private $inAbruptShutdown;
-  private $inGracefulShutdown;
   private static $instance;
 
   private $config;
-  private $daemons = array();
+  private $pools = array();
   private $traceMode;
   private $traceMemory;
   private $daemonize;
@@ -21,11 +20,19 @@ final class PhutilDaemonOverseer extends Phobject {
   private $libraries = array();
   private $modules = array();
   private $verbose;
-  private $err = 0;
   private $lastPidfile;
   private $startEpoch;
   private $autoscale = array();
   private $autoscaleConfig = array();
+
+  const SIGNAL_NOTIFY = 'signal/notify';
+  const SIGNAL_RELOAD = 'signal/reload';
+  const SIGNAL_GRACEFUL = 'signal/graceful';
+  const SIGNAL_TERMINATE = 'signal/terminate';
+
+  private $err = 0;
+  private $inAbruptShutdown;
+  private $inGracefulShutdown;
 
   public function __construct(array $argv) {
     PhutilServiceProfiler::getInstance()->enableDiscardMode();
@@ -149,11 +156,7 @@ EOHELP
 
     $this->modules = PhutilDaemonOverseerModule::getAllModules();
 
-    pcntl_signal(SIGUSR2, array($this, 'didReceiveNotifySignal'));
-
-    pcntl_signal(SIGHUP,  array($this, 'didReceiveReloadSignal'));
-    pcntl_signal(SIGINT,  array($this, 'didReceiveGracefulSignal'));
-    pcntl_signal(SIGTERM, array($this, 'didReceiveTerminalSignal'));
+    $this->installSignalHandlers();
   }
 
   public function addLibrary($library) {
@@ -162,272 +165,79 @@ EOHELP
   }
 
   public function run() {
-    $this->daemons = array();
-
-    foreach ($this->config['daemons'] as $config) {
-      $config += array(
-        'argv' => array(),
-        'autoscale' => array(),
-      );
-
-      $daemon = new PhutilDaemonHandle(
-        $this,
-        $config['class'],
-        $this->argv,
-        array(
-          'log' => $this->log,
-          'argv' => $config['argv'],
-          'load' => $this->libraries,
-          'autoscale' => $config['autoscale'],
-        ));
-
-      $daemon->setTraceMemory($this->traceMemory);
-
-      $this->addDaemon($daemon, $config);
-
-      $group = idx($config['autoscale'], 'group');
-      if (strlen($group)) {
-        if (isset($this->autoscaleConfig[$group])) {
-          throw new Exception(
-            pht(
-              'Two daemons are part of the same autoscale group ("%s"). '.
-              'Each daemon autoscale group must be unique.',
-              $group));
-        }
-        $this->autoscaleConfig[$group] = $config;
-      }
-    }
-
-    $should_reload = false;
+    $this->createDaemonPools();
 
     while (true) {
-      foreach ($this->modules as $module) {
-        try {
-          if ($module->shouldReloadDaemons()) {
-            $this->logMessage(
-              'RELO',
-              pht(
-                'Reloading daemons (triggered by overseer module "%s").',
-                get_class($module)));
-            $should_reload = true;
-          }
-        } catch (Exception $ex) {
-          phlog($ex);
-        }
-      }
-
-      if ($should_reload) {
-        $this->didReceiveReloadSignal(SIGHUP);
-        $should_reload = false;
+      if ($this->shouldReloadDaemons()) {
+        $this->didReceiveSignal(SIGHUP);
       }
 
       $futures = array();
-      foreach ($this->getDaemonHandles() as $daemon) {
-        $daemon->update();
-        if ($daemon->isRunning()) {
-          $futures[] = $daemon->getFuture();
-        }
+      foreach ($this->getDaemonPools() as $pool) {
+        $pool->updatePool();
 
-        if ($daemon->isDone()) {
-          $this->removeDaemon($daemon);
+        foreach ($pool->getFutures() as $future) {
+          $futures[] = $future;
         }
       }
 
       $this->updatePidfile();
-      $this->updateAutoscale();
+      $this->updateMemory();
 
-      if ($futures) {
-        $iter = id(new FutureIterator($futures))
-          ->setUpdateInterval(1);
-        foreach ($iter as $future) {
-          break;
-        }
-      } else {
+      $this->waitForDaemonFutures($futures);
+
+      if (!$futures) {
         if ($this->inGracefulShutdown) {
           break;
         }
-        sleep(1);
       }
     }
 
     exit($this->err);
   }
 
-  private function addDaemon(PhutilDaemonHandle $daemon, array $config) {
-    $id = $daemon->getDaemonID();
-    $this->daemons[$id] = array(
-      'handle' => $daemon,
-      'config' => $config,
+
+  private function waitForDaemonFutures(array $futures) {
+    assert_instances_of($futures, 'ExecFuture');
+
+    if ($futures) {
+      // TODO: This only wakes if any daemons actually exit. It would be a bit
+      // cleaner to wait on any I/O with Channels.
+      $iter = id(new FutureIterator($futures))
+        ->setUpdateInterval(1);
+      foreach ($iter as $future) {
+        break;
+      }
+    } else {
+      if (!$this->inGracefulShutdown) {
+        sleep(1);
+      }
+    }
+  }
+
+  private function createDaemonPools() {
+    $configs = $this->config['daemons'];
+
+    $forced_options = array(
+      'load' => $this->libraries,
+      'log' => $this->log,
     );
 
-    $autoscale_group = $this->getAutoscaleGroup($daemon);
-    if ($autoscale_group) {
-      $this->autoscale[$autoscale_group][$id] = true;
-    }
+    foreach ($configs as $config) {
+      $config = $forced_options + $config;
 
-    return $this;
-  }
+      $pool = PhutilDaemonPool::newFromConfig($config)
+        ->setOverseer($this)
+        ->setCommandLineArguments($this->argv);
 
-  private function removeDaemon(PhutilDaemonHandle $daemon) {
-    $id = $daemon->getDaemonID();
-
-    $autoscale_group = $this->getAutoscaleGroup($daemon);
-    if ($autoscale_group) {
-      unset($this->autoscale[$autoscale_group][$id]);
-    }
-
-    unset($this->daemons[$id]);
-
-    $daemon->didRemoveDaemon();
-
-    return $this;
-  }
-
-  private function getAutoscaleGroup(PhutilDaemonHandle $daemon) {
-    $id = $daemon->getDaemonID();
-    $autoscale = $this->daemons[$id]['config']['autoscale'];
-    return idx($autoscale, 'group');
-  }
-
-  private function getAutoscaleProperty($group_key, $key, $default = null) {
-    $config = $this->autoscaleConfig[$group_key]['autoscale'];
-    return idx($config, $key, $default);
-  }
-
-  public function didBeginWork(PhutilDaemonHandle $daemon) {
-    $id = $daemon->getDaemonID();
-    $busy = idx($this->daemons[$daemon->getDaemonID()], 'busy');
-    if (!$busy) {
-      $this->daemons[$id]['busy'] = time();
+      $this->pools[] = $pool;
     }
   }
 
-  public function didBeginIdle(PhutilDaemonHandle $daemon) {
-    $id = $daemon->getDaemonID();
-    unset($this->daemons[$id]['busy']);
+  private function getDaemonPools() {
+    return $this->pools;
   }
 
-  public function updateAutoscale() {
-    if ($this->inGracefulShutdown) {
-      return;
-    }
-
-    foreach ($this->autoscale as $group => $daemons) {
-      $scaleup_duration = $this->getAutoscaleProperty($group, 'up', 2);
-      $max_pool_size = $this->getAutoscaleProperty($group, 'pool', 8);
-      $reserve = $this->getAutoscaleProperty($group, 'reserve', 0);
-
-      // Don't scale a group if it is already at the maximum pool size.
-      if (count($daemons) >= $max_pool_size) {
-        continue;
-      }
-
-      $should_scale = true;
-      foreach ($daemons as $daemon_id => $ignored) {
-        $busy = idx($this->daemons[$daemon_id], 'busy');
-        if (!$busy) {
-          // At least one daemon in the group hasn't reported that it has
-          // started work.
-          $should_scale = false;
-          break;
-        }
-
-        if ((time() - $busy) < $scaleup_duration) {
-          // At least one daemon in the group was idle recently, so we have
-          // not fullly
-          $should_scale = false;
-          break;
-        }
-      }
-
-      // If we have a configured memory reserve for this pool, it tells us that
-      // we should not scale up unless there's at least that much memory left
-      // on the system (for example, a reserve of 0.25 means that 25% of system
-      // memory must be free to autoscale).
-      if ($should_scale && $reserve) {
-        // On some systems this may be slightly more expensive than other
-        // checks, so only do it once we're prepared to scale up.
-        $memory = PhutilSystem::getSystemMemoryInformation();
-        $free_ratio = ($memory['free'] / $memory['total']);
-
-        // If we don't have enough free memory, don't scale.
-        if ($free_ratio <= $reserve) {
-          continue;
-        }
-      }
-
-      if ($should_scale) {
-        $config = $this->autoscaleConfig[$group];
-
-        $config['autoscale']['clone'] = true;
-
-        $clone = new PhutilDaemonHandle(
-          $this,
-          $config['class'],
-          $this->argv,
-          array(
-            'log' => $this->log,
-            'argv' => $config['argv'],
-            'load' => $this->libraries,
-            'autoscale' => $config['autoscale'],
-          ));
-
-        $this->logMessage(
-          'AUTO',
-          pht(
-            'Scaling pool "%s" up to %s daemon(s).',
-            $group,
-            new PhutilNumber(count($daemons) + 1)));
-
-        $this->addDaemon($clone, $config);
-
-        // Don't scale more than one pool up per iteration. Otherwise, we could
-        // break the memory barrier if we have a lot of pools and scale them
-        // all up at once.
-        return;
-      }
-    }
-  }
-
-  public function didReceiveNotifySignal($signo) {
-    foreach ($this->getDaemonHandles() as $daemon) {
-      $daemon->didReceiveNotifySignal($signo);
-    }
-  }
-
-  public function didReceiveReloadSignal($signo) {
-    foreach ($this->getDaemonHandles() as $daemon) {
-      $daemon->didReceiveReloadSignal($signo);
-    }
-  }
-
-  public function didReceiveGracefulSignal($signo) {
-    // If we receive SIGINT more than once, interpret it like SIGTERM.
-    if ($this->inGracefulShutdown) {
-      return $this->didReceiveTerminalSignal($signo);
-    }
-    $this->inGracefulShutdown = true;
-
-    foreach ($this->getDaemonHandles() as $daemon) {
-      $daemon->didReceiveGracefulSignal($signo);
-    }
-  }
-
-  public function didReceiveTerminalSignal($signo) {
-    $this->err = 128 + $signo;
-    if ($this->inAbruptShutdown) {
-      exit($this->err);
-    }
-    $this->inAbruptShutdown = true;
-
-    foreach ($this->getDaemonHandles() as $daemon) {
-      $daemon->didReceiveTerminalSignal($signo);
-    }
-  }
-
-  private function getDaemonHandles() {
-    return ipull($this->daemons, 'handle');
-  }
 
   /**
    * Identify running daemons by examining the process table. This isn't
@@ -496,35 +306,45 @@ EOHELP
       return;
     }
 
+    $pidfile = $this->toDictionary();
+
+    if ($pidfile !== $this->lastPidfile) {
+      $this->lastPidfile = $pidfile;
+      $pidfile_path = $this->piddir.'/daemon.'.getmypid();
+      Filesystem::writeFile($pidfile_path, phutil_json_encode($pidfile));
+    }
+  }
+
+  public function toDictionary() {
     $daemons = array();
+    foreach ($this->getDaemonPools() as $pool) {
+      foreach ($pool->getDaemons() as $daemon) {
+        if (!$daemon->isRunning()) {
+          continue;
+        }
 
-    foreach ($this->daemons as $daemon) {
-      $handle = $daemon['handle'];
-      $config = $daemon['config'];
-
-      if (!$handle->isRunning()) {
-        continue;
+        $daemons[] = $daemon->toDictionary();
       }
-
-      $daemons[] = array(
-        'pid' => $handle->getPID(),
-        'id' => $handle->getDaemonID(),
-        'config' => $config,
-      );
     }
 
-    $pidfile = array(
+    return array(
       'pid' => getmypid(),
       'start' => $this->startEpoch,
       'config' => $this->config,
       'daemons' => $daemons,
     );
+  }
 
-    if ($pidfile !== $this->lastPidfile) {
-      $this->lastPidfile = $pidfile;
-      $pidfile_path = $this->piddir.'/daemon.'.getmypid();
-      Filesystem::writeFile($pidfile_path, json_encode($pidfile));
+  private function updateMemory() {
+    if (!$this->traceMemory) {
+      return;
     }
+
+    $this->logMessage(
+      'RAMS',
+      pht(
+        'Overseer Memory Usage: %s KB',
+        new PhutilNumber(memory_get_usage() / 1024, 1)));
   }
 
   public function logMessage($type, $message, $context = null) {
@@ -532,5 +352,102 @@ EOHELP
       error_log(date('Y-m-d g:i:s A').' ['.$type.'] '.$message);
     }
   }
+
+
+/* -(  Signal Handling  )---------------------------------------------------- */
+
+
+  /**
+   * @task signals
+   */
+  private function installSignalHandlers() {
+    $signals = array(
+      SIGUSR2,
+      SIGHUP,
+      SIGINT,
+      SIGTERM,
+    );
+
+    foreach ($signals as $signal) {
+      pcntl_signal($signal, array($this, 'didReceiveSignal'));
+    }
+  }
+
+
+  /**
+   * @task signals
+   */
+  public function didReceiveSignal($signo) {
+    switch ($signo) {
+      case SIGUSR2:
+        $signal_type = self::SIGNAL_NOTIFY;
+        break;
+      case SIGHUP:
+        $signal_type = self::SIGNAL_RELOAD;
+        break;
+      case SIGINT:
+        // If we receive SIGINT more than once, interpret it like SIGTERM.
+        if ($this->inGracefulShutdown) {
+          return $this->didReceiveSignal(SIGTERM);
+        }
+
+        $this->inGracefulShutdown = true;
+        $signal_type = self::SIGNAL_GRACEFUL;
+        break;
+      case SIGTERM:
+        // If we receive SIGTERM more than once, terminate abruptly.
+        $this->err = 128 + $signo;
+        if ($this->inAbruptShutdown) {
+          exit($this->err);
+        }
+
+        $this->inAbruptShutdown = true;
+        $signal_type = self::SIGNAL_TERMINATE;
+        break;
+      default:
+        throw new Exception(
+          pht(
+            'Signal handler called with unknown signal type ("%d")!',
+            $signo));
+    }
+
+    foreach ($this->getDaemonPools() as $pool) {
+      $pool->didReceiveSignal($signal_type, $signo);
+    }
+  }
+
+
+/* -(  Daemon Modules  )----------------------------------------------------- */
+
+
+  private function getModules() {
+    return $this->modules;
+  }
+
+  private function shouldReloadDaemons() {
+    $modules = $this->getModules();
+
+    $should_reload = false;
+    foreach ($modules as $module) {
+      try {
+        // NOTE: Even if one module tells us to reload, we call the method on
+        // each module anyway to make calls a little more predictable.
+
+        if ($module->shouldReloadDaemons()) {
+          $this->logMessage(
+            'RELO',
+            pht(
+              'Reloading daemons (triggered by overseer module "%s").',
+              get_class($module)));
+          $should_reload = true;
+        }
+      } catch (Exception $ex) {
+        phlog($ex);
+      }
+    }
+
+    return $should_reload;
+  }
+
 
 }

@@ -59,7 +59,7 @@ abstract class PhutilDaemon extends Phobject {
   private $inGracefulShutdown;
   private $workState = null;
   private $idleSince = null;
-  private $autoscaleProperties = array();
+  private $scaledownDuration;
 
   final public function setVerbose($verbose) {
     $this->verbose = $verbose;
@@ -68,6 +68,15 @@ abstract class PhutilDaemon extends Phobject {
 
   final public function getVerbose() {
     return $this->verbose;
+  }
+
+  final public function setScaledownDuration($scaledown_duration) {
+    $this->scaledownDuration = $scaledown_duration;
+    return $this;
+  }
+
+  final public function getScaledownDuration() {
+    return $this->scaledownDuration;
   }
 
   final public function __construct(array $argv) {
@@ -121,15 +130,14 @@ abstract class PhutilDaemon extends Phobject {
     $this->willSleep($duration);
     $this->stillWorking();
 
-    $is_autoscale = $this->isClonedAutoscaleDaemon();
-    $scale_down = $this->getAutoscaleDownDuration();
+    $scale_down = $this->getScaledownDuration();
 
     $max_sleep = 60;
-    if ($is_autoscale) {
+    if ($scale_down) {
       $max_sleep = min($max_sleep, $scale_down);
     }
 
-    if ($is_autoscale) {
+    if ($scale_down) {
       if ($this->workState == self::WORKSTATE_IDLE) {
         $dur = (time() - $this->idleSince);
         $this->log(pht('Idle for %s seconds.', $dur));
@@ -143,7 +151,7 @@ abstract class PhutilDaemon extends Phobject {
       // If this is an autoscaling clone and we've been idle for too long,
       // we're going to scale the pool down by exiting and not restarting. The
       // DOWN message tells the overseer that we don't want to be restarted.
-      if ($is_autoscale) {
+      if ($scale_down) {
         if ($this->workState == self::WORKSTATE_IDLE) {
           if ($this->idleSince && ($this->idleSince + $scale_down < time())) {
             $this->inGracefulShutdown = true;
@@ -327,8 +335,8 @@ abstract class PhutilDaemon extends Phobject {
    * Prepare to idle. This may autoscale the pool down.
    *
    * This notifies the overseer that the daemon is no longer busy. If daemons
-   * that are part of an autoscale pool are idle for a prolonged period of time,
-   * they may exit to scale the pool down.
+   * that are part of an autoscale pool are idle for a prolonged period of
+   * time, they may exit to scale the pool down.
    *
    * @return this
    * @task autoscale
@@ -342,66 +350,4 @@ abstract class PhutilDaemon extends Phobject {
 
     return $this;
   }
-
-
-  /**
-   * Determine if this is a clone or the original daemon.
-   *
-   * @return bool True if this is an cloned autoscaling daemon.
-   * @task autoscale
-   */
-  private function isClonedAutoscaleDaemon() {
-    return (bool)$this->getAutoscaleProperty('clone', false);
-  }
-
-
-  /**
-   * Get the duration (in seconds) which a daemon must be continuously idle
-   * for before it should exit to scale the pool down.
-   *
-   * @return int Duration, in seconds.
-   * @task autoscale
-   */
-  private function getAutoscaleDownDuration() {
-    return $this->getAutoscaleProperty('down', 15);
-  }
-
-
-  /**
-   * Configure autoscaling for this daemon.
-   *
-   * @param map<string, wild> Map of autoscale properties.
-   * @return this
-   * @task autoscale
-   */
-  public function setAutoscaleProperties(array $autoscale_properties) {
-    PhutilTypeSpec::checkMap(
-      $autoscale_properties,
-      array(
-        'group' => 'optional string',
-        'up' => 'optional int',
-        'down' => 'optional int',
-        'pool' => 'optional int',
-        'clone' => 'optional bool',
-        'reserve' => 'optional int|float',
-      ));
-
-    $this->autoscaleProperties = $autoscale_properties;
-
-    return $this;
-  }
-
-
-  /**
-   * Read autoscaling configuration for this daemon.
-   *
-   * @param string Property to read.
-   * @param wild Default value to return if the property is not set.
-   * @return wild Property value, or `$default` if one is not set.
-   * @task autoscale
-   */
-  private function getAutoscaleProperty($key, $default = null) {
-    return idx($this->autoscaleProperties, $key, $default);
-  }
-
 }
