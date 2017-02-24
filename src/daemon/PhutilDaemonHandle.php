@@ -192,8 +192,18 @@ final class PhutilDaemonHandle extends Phobject {
   }
 
   private function scheduleRestart() {
-    $this->logMessage('WAIT', pht('Waiting to restart process.'));
-    $this->restartAt = time() + self::getWaitBeforeRestart();
+    // Wait a minimum of a few sceconds before restarting, but we may wait
+    // longer if the daemon has initiated hibernation.
+    $default_restart = time() + self::getWaitBeforeRestart();
+    if ($default_restart >= $this->restartAt) {
+      $this->restartAt = $default_restart;
+    }
+
+    $this->logMessage(
+      'WAIT',
+      pht(
+        'Waiting %s second(s) to restart process.',
+        new PhutilNumber($this->restartAt - time())));
   }
 
   /**
@@ -351,6 +361,16 @@ final class PhutilDaemonHandle extends Phobject {
           // is trying to scale the pool down. We should not restart it.
           $this->shouldRestart = false;
           $this->shouldShutdown = true;
+          break;
+        case PhutilDaemon::MESSAGETYPE_HIBERNATE:
+          $config = idx($structure, 1);
+          $duration = (int)idx($config, 'duration', 0);
+          $this->restartAt = time() + $duration;
+          $this->logMessage(
+            'ZZZZ',
+            pht(
+              'Process is preparing to hibernate for %s second(s).',
+              new PhutilNumber($duration)));
           break;
         default:
           // If we can't parse this or it isn't a message we understand, just

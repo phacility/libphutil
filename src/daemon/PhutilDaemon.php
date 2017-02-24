@@ -47,6 +47,7 @@ abstract class PhutilDaemon extends Phobject {
   const MESSAGETYPE_BUSY = 'busy';
   const MESSAGETYPE_IDLE = 'idle';
   const MESSAGETYPE_DOWN = 'down';
+  const MESSAGETYPE_HIBERNATE = 'hibernate';
 
   const WORKSTATE_BUSY = 'busy';
   const WORKSTATE_IDLE = 'idle';
@@ -123,6 +124,35 @@ abstract class PhutilDaemon extends Phobject {
 
   final public function shouldExit() {
     return $this->inGracefulShutdown;
+  }
+
+  final protected function shouldHibernate($duration) {
+    // Don't hibernate if we don't have very long to sleep.
+    if ($duration < 5) {
+      return false;
+    }
+
+    // Never hibernate if we're part of a pool and could scale down instead.
+    // We only hibernate the last process to drop the pool size to zero.
+    if ($this->getScaledownDuration()) {
+      return false;
+    }
+
+    // Don't hibernate for too long.
+    $duration = max($duration, phutil_units('3 minutes in seconds'));
+
+    $this->emitOverseerMessage(
+      self::MESSAGETYPE_HIBERNATE,
+      array(
+        'duration' => $duration,
+      ));
+
+    $this->log(
+      pht(
+        'Preparing to hibernate for %s second(s).',
+        new PhutilNumber($duration)));
+
+    return true;
   }
 
   final protected function sleep($duration) {
