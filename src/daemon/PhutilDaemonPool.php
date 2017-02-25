@@ -215,16 +215,21 @@ final class PhutilDaemonPool extends Phobject {
     // we should not scale up unless there's at least that much memory left
     // on the system (for example, a reserve of 0.25 means that 25% of system
     // memory must be free to autoscale).
-    $reserve = $this->getPoolMemoryReserve();
-    if ($reserve) {
-      // On some systems this may be slightly more expensive than other checks,
-      // so we only do it once we're prepared to scale up.
-      $memory = PhutilSystem::getSystemMemoryInformation();
-      $free_ratio = ($memory['free'] / $memory['total']);
 
-      // If we don't have enough free memory, don't scale.
-      if ($free_ratio <= $reserve) {
-        return;
+    // Note that the first daemon is exempt: we'll always launch at least one
+    // daemon, regardless of any memory reservation.
+    if (count($daemons)) {
+      $reserve = $this->getPoolMemoryReserve();
+      if ($reserve) {
+        // On some systems this may be slightly more expensive than other
+        // checks, so we only do it once we're prepared to scale up.
+        $memory = PhutilSystem::getSystemMemoryInformation();
+        $free_ratio = ($memory['free'] / $memory['total']);
+
+        // If we don't have enough free memory, don't scale.
+        if ($free_ratio <= $reserve) {
+          return;
+        }
       }
     }
 
