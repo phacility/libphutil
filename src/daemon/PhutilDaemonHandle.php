@@ -8,40 +8,96 @@ final class PhutilDaemonHandle extends Phobject {
   const EVENT_WILL_GRACEFUL = 'daemon.willGraceful';
   const EVENT_WILL_EXIT     = 'daemon.willExit';
 
-  private $overseer;
-  private $daemonClass;
+  private $pool;
+  private $properties;
+  private $future;
   private $argv;
-  private $config;
+
+  private $restartAt;
+  private $busyEpoch;
+
   private $pid;
   private $daemonID;
   private $deadline;
   private $heartbeat;
   private $stdoutBuffer;
-  private $restartAt;
   private $shouldRestart = true;
   private $shouldShutdown;
-  private $future;
-  private $traceMemory;
 
-  public function __construct(
-    PhutilDaemonOverseer $overseer,
-    $daemon_class,
-    array $argv,
-    array $config) {
+  private function __construct() {
+    // <empty>
+  }
 
-    $this->overseer = $overseer;
-    $this->daemonClass = $daemon_class;
-    $this->argv = $argv;
-    $this->config = $config;
+  public static function newFromConfig(array $config) {
+    PhutilTypeSpec::checkMap(
+      $config,
+      array(
+        'class' => 'string',
+        'argv' => 'optional list<string>',
+        'load' => 'optional list<string>',
+        'log' => 'optional string|null',
+        'down' => 'optional int',
+      ));
+
+    $config = $config + array(
+      'argv' => array(),
+      'load' => array(),
+      'log' => null,
+      'down' => 15,
+    );
+
+    $daemon = new self();
+    $daemon->properties = $config;
+    $daemon->daemonID = $daemon->generateDaemonID();
+
+    return $daemon;
+  }
+
+  public function setDaemonPool(PhutilDaemonPool $daemon_pool) {
+    $this->pool = $daemon_pool;
+    return $this;
+  }
+
+  public function getDaemonPool() {
+    return $this->pool;
+  }
+
+  public function getBusyEpoch() {
+    return $this->busyEpoch;
+  }
+
+  public function getDaemonClass() {
+    return $this->getProperty('class');
+  }
+
+  private function getProperty($key) {
+    return idx($this->properties, $key);
+  }
+
+  public function setCommandLineArguments(array $arguments) {
+    $this->argv = $arguments;
+    return $this;
+  }
+
+  public function getCommandLineArguments() {
+    return $this->argv;
+  }
+
+  public function getDaemonArguments() {
+    return $this->getProperty('argv');
+  }
+
+  public function didLaunch() {
     $this->restartAt = time();
 
-    $this->daemonID = $this->generateDaemonID();
     $this->dispatchEvent(
       self::EVENT_DID_LAUNCH,
       array(
-        'argv' => $this->argv,
-        'explicitArgv' => idx($this->config, 'argv'),
+        'argv' => $this->getCommandLineArguments(),
+        'explicitArgv' => $this->getDaemonArguments(),
       ));
+
+    return $this;
   }
 
   public function isRunning() {
@@ -56,18 +112,7 @@ final class PhutilDaemonHandle extends Phobject {
     return $this->future;
   }
 
-  public function setTraceMemory($trace_memory) {
-    $this->traceMemory = $trace_memory;
-    return $this;
-  }
-
-  public function getTraceMemory() {
-    return $this->traceMemory;
-  }
-
   public function update() {
-    $this->updateMemory();
-
     if (!$this->isRunning()) {
       if (!$this->shouldRestart) {
         return;
@@ -115,6 +160,7 @@ final class PhutilDaemonHandle extends Phobject {
 
       if ($this->shouldShutdown) {
         $this->restartAt = null;
+        $this->dispatchEvent(self::EVENT_WILL_EXIT);
       } else {
         $this->scheduleRestart();
       }
@@ -146,8 +192,18 @@ final class PhutilDaemonHandle extends Phobject {
   }
 
   private function scheduleRestart() {
-    $this->logMessage('WAIT', pht('Waiting to restart process.'));
-    $this->restartAt = time() + self::getWaitBeforeRestart();
+    // Wait a minimum of a few sceconds before restarting, but we may wait
+    // longer if the daemon has initiated hibernation.
+    $default_restart = time() + self::getWaitBeforeRestart();
+    if ($default_restart >= $this->restartAt) {
+      $this->restartAt = $default_restart;
+    }
+
+    $this->logMessage(
+      'WAIT',
+      pht(
+        'Waiting %s second(s) to restart process.',
+        new PhutilNumber($this->restartAt - time())));
   }
 
   /**
@@ -193,8 +249,8 @@ final class PhutilDaemonHandle extends Phobject {
   }
 
   private function newExecFuture() {
-    $class = $this->daemonClass;
-    $argv = $this->argv;
+    $class = $this->getDaemonClass();
+    $argv = $this->getCommandLineArguments();
     $buffer_size = $this->getCaptureBufferSize();
 
     // NOTE: PHP implements proc_open() by running 'sh -c'. On most systems this
@@ -210,11 +266,15 @@ final class PhutilDaemonHandle extends Phobject {
     // the shell process won't properly posix_setsid() so the pgid of the child
     // won't be meaningful.
 
+    $config = $this->properties;
+    unset($config['class']);
+    $config = phutil_json_encode($config);
+
     return id(new ExecFuture('exec ./exec_daemon.php %s %Ls', $class, $argv))
       ->setCWD($this->getDaemonCWD())
       ->setStdoutSizeLimit($buffer_size)
       ->setStderrSizeLimit($buffer_size)
-      ->write(json_encode($this->config));
+      ->write($config);
   }
 
   /**
@@ -226,9 +286,9 @@ final class PhutilDaemonHandle extends Phobject {
    */
   private function dispatchEvent($type, array $params = array()) {
     $data = array(
-      'id' => $this->daemonID,
-      'daemonClass' => $this->daemonClass,
-      'childPID' => $this->pid,
+      'id' => $this->getDaemonID(),
+      'daemonClass' => $this->getDaemonClass(),
+      'childPID' => $this->getPID(),
     ) + $params;
 
     $event = new PhutilEvent($type, $data);
@@ -241,23 +301,14 @@ final class PhutilDaemonHandle extends Phobject {
   }
 
   private function annihilateProcessGroup() {
-    $pid = $this->pid;
+    $pid = $this->getPID();
+
     $pgid = posix_getpgid($pid);
     if ($pid && $pgid) {
       posix_kill(-$pgid, SIGTERM);
       sleep($this->getKillDelay());
       posix_kill(-$pgid, SIGKILL);
       $this->pid = null;
-    }
-  }
-
-  private function updateMemory() {
-    if ($this->traceMemory) {
-      $this->logMessage(
-        'RAMS',
-        pht(
-          'Overseer Memory Usage: %s KB',
-          new PhutilNumber(memory_get_usage() / 1024, 1)));
     }
   }
 
@@ -298,16 +349,28 @@ final class PhutilDaemonHandle extends Phobject {
           $this->deadline = time() + $this->getRequiredHeartbeatFrequency();
           break;
         case PhutilDaemon::MESSAGETYPE_BUSY:
-          $this->overseer->didBeginWork($this);
+          if (!$this->busyEpoch) {
+            $this->busyEpoch = time();
+          }
           break;
         case PhutilDaemon::MESSAGETYPE_IDLE:
-          $this->overseer->didBeginIdle($this);
+          $this->busyEpoch = null;
           break;
         case PhutilDaemon::MESSAGETYPE_DOWN:
           // The daemon is exiting because it doesn't have enough work and it
           // is trying to scale the pool down. We should not restart it.
           $this->shouldRestart = false;
           $this->shouldShutdown = true;
+          break;
+        case PhutilDaemon::MESSAGETYPE_HIBERNATE:
+          $config = idx($structure, 1);
+          $duration = (int)idx($config, 'duration', 0);
+          $this->restartAt = time() + $duration;
+          $this->logMessage(
+            'ZZZZ',
+            pht(
+              'Process is preparing to hibernate for %s second(s).',
+              new PhutilNumber($duration)));
           break;
         default:
           // If we can't parse this or it isn't a message we understand, just
@@ -319,7 +382,7 @@ final class PhutilDaemonHandle extends Phobject {
   }
 
   public function didReceiveNotifySignal($signo) {
-    $pid = $this->pid;
+    $pid = $this->getPID();
     if ($pid) {
       posix_kill($pid, $signo);
     }
@@ -349,7 +412,7 @@ final class PhutilDaemonHandle extends Phobject {
     // naturally be restarted after it exits, as though it had exited after an
     // unhandled exception.
 
-    posix_kill($this->pid, SIGINT);
+    posix_kill($this->getPID(), SIGINT);
   }
 
   public function didReceiveGracefulSignal($signo) {
@@ -370,10 +433,10 @@ final class PhutilDaemonHandle extends Phobject {
 
     $this->logMessage('DONE', $sigmsg, $signo);
 
-    posix_kill($this->pid, SIGINT);
+    posix_kill($this->getPID(), SIGINT);
   }
 
-  public function didReceiveTerminalSignal($signo) {
+  public function didReceiveTerminateSignal($signo) {
     $this->shouldShutdown = true;
     $this->shouldRestart = false;
 
@@ -392,7 +455,8 @@ final class PhutilDaemonHandle extends Phobject {
   }
 
   private function logMessage($type, $message, $context = null) {
-    $this->overseer->logMessage($type, $message, $context);
+    $this->getDaemonPool()->logMessage($type, $message, $context);
+
     $this->dispatchEvent(
       self::EVENT_DID_LOG,
       array(
@@ -402,8 +466,13 @@ final class PhutilDaemonHandle extends Phobject {
       ));
   }
 
-  public function didRemoveDaemon() {
-    $this->dispatchEvent(self::EVENT_WILL_EXIT);
+  public function toDictionary() {
+    return array(
+      'pid' => $this->getPID(),
+      'id' => $this->getDaemonID(),
+      'config' => $this->properties,
+    );
   }
+
 
 }

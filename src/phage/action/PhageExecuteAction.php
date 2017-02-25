@@ -5,6 +5,7 @@ final class PhageExecuteAction
 
   private $command;
   private $label;
+  private $exitCode;
 
   public function isContainerAction() {
     return false;
@@ -26,6 +27,15 @@ final class PhageExecuteAction
 
   public function getLabel() {
     return $this->label;
+  }
+
+  public function setExitCode($exit_code) {
+    $this->exitCode = $exit_code;
+    return $this;
+  }
+
+  public function getExitCode() {
+    return $this->exitCode;
   }
 
 }

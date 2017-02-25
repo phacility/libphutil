@@ -67,7 +67,7 @@ PhutilTypeSpec::checkMap(
     'log' => 'optional string|null',
     'argv' => 'optional list<wild>',
     'load' => 'optional list<string>',
-    'autoscale' => 'optional wild',
+    'down' => 'optional int',
   ));
 
 $log = idx($config, 'log');
@@ -123,9 +123,9 @@ if ($verbose) {
   $daemon->setVerbose(true);
 }
 
-$autoscale = idx($config, 'autoscale');
-if ($autoscale) {
-  $daemon->setAutoscaleProperties($autoscale);
+$down_duration = idx($config, 'down');
+if ($down_duration) {
+  $daemon->setScaledownDuration($down_duration);
 }
 
 $daemon->execute();
