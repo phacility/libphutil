@@ -269,8 +269,8 @@ final class XHPASTNode extends AASTNode {
 
       $body = $namespace->getChildByIndex(1);
       if ($body->getTypeName() != 'n_EMPTY') {
-        if ($body->containsDescendant($this)) {
-          return self::getNamespaceName($namespace);
+        if (!$body->containsDescendant($this)) {
+          continue;
         }
       }
 
