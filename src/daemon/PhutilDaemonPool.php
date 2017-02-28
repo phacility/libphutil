@@ -9,6 +9,8 @@ final class PhutilDaemonPool extends Phobject {
   private $daemons = array();
   private $argv;
 
+  private $lastAutoscaleUpdate;
+
   private function __construct() {
     // <empty>
   }
@@ -184,22 +186,41 @@ final class PhutilDaemonPool extends Phobject {
   }
 
   private function updateAutoscale() {
+    // Don't try to autoscale more than once per second. This mostly stops the
+    // logs from getting flooded in verbose mode.
+    $now = time();
+    if ($this->lastAutoscaleUpdate >= $now) {
+      return;
+    }
+    $this->lastAutoscaleUpdate = $now;
+
     $daemons = $this->getDaemons();
 
     // If this pool is already at the maximum size, we can't launch any new
     // daemons.
     $max_size = $this->getPoolMaximumSize();
     if (count($daemons) >= $max_size) {
+      $this->logMessage(
+        'POOL',
+        pht(
+          'Autoscale pool "%s" already at maximum size (%d of %d).',
+          $this->getPoolLabel(),
+          new PhutilNumber(count($daemons)),
+          new PhutilNumber($max_size)));
       return;
     }
 
-    $now = time();
     $scaleup_duration = $this->getPoolScaleupDuration();
 
     foreach ($daemons as $daemon) {
       $busy_epoch = $daemon->getBusyEpoch();
       // If any daemons haven't started work yet, don't scale the pool up.
       if (!$busy_epoch) {
+        $this->logMessage(
+          'POOL',
+          pht(
+            'Autoscale pool "%s" has an idle daemon, declining to scale.',
+            $this->getPoolLabel()));
         return;
       }
 
@@ -207,6 +228,14 @@ final class PhutilDaemonPool extends Phobject {
       // to scale the pool up.
       $busy_for = ($now - $busy_epoch);
       if ($busy_for < $scaleup_duration) {
+        $this->logMessage(
+          'POOL',
+          pht(
+            'Autoscale pool "%s" has not been busy long enough to scale up '.
+            '(busy for %s of %s seconds).',
+            $this->getPoolLabel(),
+            new PhutilNumber($busy_for),
+            new PhutilNumber($scaleup_duration)));
         return;
       }
     }
@@ -228,6 +257,14 @@ final class PhutilDaemonPool extends Phobject {
 
         // If we don't have enough free memory, don't scale.
         if ($free_ratio <= $reserve) {
+          $this->logMessage(
+            'POOL',
+            pht(
+              'Autoscale pool "%s" does not have enough free memory to '.
+              'scale up (%s free of %s reserved).',
+              $this->getPoolLabel(),
+              new PhutilNumber($free_ratio, 3),
+              new PhutilNumber($reserve, 3)));
           return;
         }
       }
