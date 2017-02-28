@@ -178,7 +178,14 @@ final class PhutilDaemonPool extends Phobject {
       $daemon->update();
 
       if ($daemon->isDone()) {
-        unset($daemons[$key]);
+        unset($this->daemons[$key]);
+
+        $this->logMessage(
+          'POOL',
+          pht(
+            'Autoscale pool "%s" scaled down to %s daemon(s).',
+            $this->getPoolLabel(),
+            new PhutilNumber(count($this->daemons))));
       }
     }
 
@@ -203,7 +210,7 @@ final class PhutilDaemonPool extends Phobject {
       $this->logMessage(
         'POOL',
         pht(
-          'Autoscale pool "%s" already at maximum size (%d of %d).',
+          'Autoscale pool "%s" already at maximum size (%s of %s).',
           $this->getPoolLabel(),
           new PhutilNumber(count($daemons)),
           new PhutilNumber($max_size)));
