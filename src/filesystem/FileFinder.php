@@ -250,9 +250,16 @@ final class FileFinder extends Phobject {
       $files = explode("\0", $stdout);
 
       // On OSX/BSD, find prepends a './' to each file.
-      for ($i = 0; $i < count($files); $i++) {
-        if (substr($files[$i], 0, 2) == './') {
-          $files[$i] = substr($files[$i], 2);
+      foreach ($files as $key => $file) {
+        // When matching directories, we can get "." back in the result set,
+        // but this isn't an interesting result.
+        if ($file == '.') {
+          unset($files[$key]);
+          continue;
+        }
+
+        if (substr($files[$key], 0, 2) == './') {
+          $files[$key] = substr($files[$key], 2);
         }
       }
     }
