@@ -20,6 +20,7 @@ final class PhageAgentTestCase extends PhutilTestCase {
         'type'    => 'EXEC',
         'key'     => 1,
         'command' => 'echo phage',
+        'timeout' => null,
       ));
 
     $this->agentExpect(
@@ -30,6 +31,7 @@ final class PhageAgentTestCase extends PhutilTestCase {
         'err'     => 0,
         'stdout'  => "phage\n",
         'stderr'  => '',
+        'timeout' => false,
       ),
       pht("'%s' for %s", 'echo phage', $name));
 

@@ -71,6 +71,12 @@ final class PhagePHPAgent extends Phobject {
         $cmd = $spec['command'];
 
         $future = new ExecFuture('%C', $cmd);
+
+        $timeout = $spec['timeout'];
+        if ($timeout) {
+          $future->setTimeout(ceil($timeout));
+        }
+
         $future->isReady();
 
         $this->exec[$key] = $future;
@@ -119,6 +125,7 @@ final class PhagePHPAgent extends Phobject {
         'err'     => $result[0],
         'stdout'  => $result[1],
         'stderr'  => $result[2],
+        'timeout' => (bool)$future->getWasKilledByTimeout(),
       ));
 
     unset($this->exec[$key]);
