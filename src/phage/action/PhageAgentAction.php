@@ -139,6 +139,7 @@ abstract class PhageAgentAction
         'type' => 'EXEC',
         'key' => $key,
         'command' => $command->getCommand()->getUnmaskedString(),
+        'timeout' => $command->getTimeout(),
       ));
 
     if ($throttle) {
@@ -183,6 +184,7 @@ abstract class PhageAgentAction
             $exit_code = $message['err'];
 
             $command->setExitCode($exit_code);
+            $command->setDidTimeout((bool)idx($message, 'timeout'));
 
             if ($exit_code != 0) {
               $exit_code = $this->formatOutput(

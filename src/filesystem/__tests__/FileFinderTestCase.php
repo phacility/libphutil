@@ -76,7 +76,7 @@ final class FileFinderTestCase extends PhutilTestCase {
     }
   }
 
-  public function testFinderWithDirectories() {
+  public function testFinderWithFilesAndDirectories() {
     foreach (array('php', 'shell') as $mode) {
       $files = $this->getFinder()
         ->setGenerateChecksums(true)
@@ -101,6 +101,26 @@ final class FileFinderTestCase extends PhutilTestCase {
       $this->assertEqual($files['test.txt'],
           'aea46212fa8b8d0e0e6aa34a15c9e2f5');
       $this->assertEqual($files['include_dir.txt'], null);
+    }
+  }
+
+  public function testFinderWithDirectories() {
+    foreach (array('php', 'shell') as $mode) {
+      $directories = $this->getFinder()
+        ->withType('d')
+        ->setForceMode($mode)
+        ->find();
+
+      sort($directories);
+      $directories = array_values($directories);
+
+      $this->assertEqual(
+        array(
+          'include_dir.txt',
+          'include_dir.txt/subdir.txt',
+        ),
+        $directories,
+        pht('FileFinder of directories in "%s" mode', $mode));
     }
   }
 
