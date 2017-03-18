@@ -152,6 +152,14 @@ EOHELP
       } else if ($pid) {
         exit(0);
       }
+
+      if (!posix_isatty(STDOUT)) {
+        $sid = posix_setsid();
+        if ($sid <= 0) {
+          throw new Exception(pht('Failed to create new process session!'));
+        }
+      }
+
     }
 
     $this->logMessage(
