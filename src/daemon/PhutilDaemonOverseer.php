@@ -154,6 +154,12 @@ EOHELP
       }
     }
 
+    $this->logMessage(
+      'OVER',
+      pht(
+        'Started new daemon overseer (with PID "%s").',
+        getmypid()));
+
     $this->modules = PhutilDaemonOverseerModule::getAllModules();
 
     $this->installSignalHandlers();
@@ -348,7 +354,15 @@ EOHELP
   }
 
   public function logMessage($type, $message, $context = null) {
-    if ($this->traceMode || $this->verbose) {
+    $always_log = false;
+    switch ($type) {
+      case 'OVER':
+      case 'SGNL':
+        $always_log = true;
+        break;
+    }
+
+    if ($always_log || $this->traceMode || $this->verbose) {
       error_log(date('Y-m-d g:i:s A').' ['.$type.'] '.$message);
     }
   }
@@ -378,6 +392,14 @@ EOHELP
    * @task signals
    */
   public function didReceiveSignal($signo) {
+    $this->logMessage(
+      'SGNL',
+      pht(
+        'Overseer ("%d") received signal %d ("%s").',
+        getmypid(),
+        $signo,
+        phutil_get_signal_name($signo)));
+
     switch ($signo) {
       case SIGUSR2:
         $signal_type = self::SIGNAL_NOTIFY;
