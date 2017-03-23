@@ -23,6 +23,7 @@ final class PhutilDaemonHandle extends Phobject {
   private $stdoutBuffer;
   private $shouldRestart = true;
   private $shouldShutdown;
+  private $hibernating = false;
 
   private function __construct() {
     // <empty>
@@ -102,6 +103,29 @@ final class PhutilDaemonHandle extends Phobject {
 
   public function isRunning() {
     return (bool)$this->future;
+  }
+
+  public function isHibernating() {
+    return
+      !$this->isRunning() &&
+      !$this->isDone() &&
+      $this->hibernating;
+  }
+
+  public function wakeFromHibernation() {
+    if (!$this->isHibernating()) {
+      return $this;
+    }
+
+    $this->logMessage(
+      'WAKE',
+      pht(
+        'Process is being awakened from hibernation.'));
+
+    $this->restartAt = time();
+    $this->update();
+
+    return $this;
   }
 
   public function isDone() {
@@ -318,6 +342,7 @@ final class PhutilDaemonHandle extends Phobject {
     $this->deadline = time() + $this->getRequiredHeartbeatFrequency();
     $this->heartbeat = time() + self::getHeartbeatEventFrequency();
     $this->stdoutBuffer = '';
+    $this->hibernating = false;
 
     $this->future = $this->newExecFuture();
     $this->future->start();
@@ -366,6 +391,7 @@ final class PhutilDaemonHandle extends Phobject {
           $config = idx($structure, 1);
           $duration = (int)idx($config, 'duration', 0);
           $this->restartAt = time() + $duration;
+          $this->hibernating = true;
           $this->logMessage(
             'ZZZZ',
             pht(

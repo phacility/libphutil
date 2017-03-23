@@ -187,6 +187,12 @@ EOHELP
       foreach ($this->getDaemonPools() as $pool) {
         $pool->updatePool();
 
+        if ($pool->isHibernating()) {
+          if ($this->shouldWakePool($pool)) {
+            $pool->wakeFromHibernation();
+          }
+        }
+
         foreach ($pool->getFutures() as $future) {
           $futures[] = $future;
         }
@@ -476,5 +482,27 @@ EOHELP
     return $should_reload;
   }
 
+  private function shouldWakePool(PhutilDaemonPool $pool) {
+    $modules = $this->getModules();
+
+    $should_wake = false;
+    foreach ($modules as $module) {
+      try {
+        if ($module->shouldWakePool($pool)) {
+          $this->logMessage(
+            'WAKE',
+            pht(
+              'Waking pool "%s" (triggered by overseer module "%s").',
+              $pool->getPoolLabel(),
+              get_class($module)));
+          $should_wake = true;
+        }
+      } catch (Exception $ex) {
+        phlog($ex);
+      }
+    }
+
+    return $should_wake;
+  }
 
 }

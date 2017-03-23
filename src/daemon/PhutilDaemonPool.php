@@ -192,6 +192,45 @@ final class PhutilDaemonPool extends Phobject {
     $this->updateAutoscale();
   }
 
+  public function isHibernating() {
+    foreach ($this->getDaemons() as $daemon) {
+      if (!$daemon->isHibernating()) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  public function wakeFromHibernation() {
+    if (!$this->isHibernating()) {
+      return $this;
+    }
+
+    $this->logMessage(
+      'WAKE',
+      pht(
+        'Autoscale pool "%s" is being awakened from hibernation.',
+        $this->getPoolLabel()));
+
+    $did_wake_daemons = false;
+    foreach ($this->getDaemons() as $daemon) {
+      if ($daemon->isHibernating()) {
+        $daemon->wakeFromHibernation();
+        $did_wake_daemons = true;
+      }
+    }
+
+    if (!$did_wake_daemons) {
+      // TODO: Pools currently can't scale down to 0 daemons, but we should
+      // scale up immediately here once they can.
+    }
+
+    $this->updatePool();
+
+    return $this;
+  }
+
   private function updateAutoscale() {
     // Don't try to autoscale more than once per second. This mostly stops the
     // logs from getting flooded in verbose mode.
