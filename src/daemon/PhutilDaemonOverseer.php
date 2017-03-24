@@ -184,6 +184,8 @@ EOHELP
       }
 
       $futures = array();
+
+      $running_pools = false;
       foreach ($this->getDaemonPools() as $pool) {
         $pool->updatePool();
 
@@ -198,6 +200,10 @@ EOHELP
         foreach ($pool->getFutures() as $future) {
           $futures[] = $future;
         }
+
+        if ($pool->getDaemons()) {
+          $running_pools = true;
+        }
       }
 
       $this->updatePidfile();
@@ -205,7 +211,7 @@ EOHELP
 
       $this->waitForDaemonFutures($futures);
 
-      if (!$futures) {
+      if (!$futures && !$running_pools) {
         if ($this->shouldShutdown()) {
           break;
         }

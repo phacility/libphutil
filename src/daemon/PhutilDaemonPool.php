@@ -124,6 +124,13 @@ final class PhutilDaemonPool extends Phobject {
   }
 
   public function didReceiveSignal($signal, $signo) {
+    switch ($signal) {
+      case PhutilDaemonOverseer::SIGNAL_GRACEFUL:
+      case PhutilDaemonOverseer::SIGNAL_TERMINATE:
+        $this->inShutdown = true;
+        break;
+    }
+
     foreach ($this->getDaemons() as $daemon) {
       switch ($signal) {
         case PhutilDaemonOverseer::SIGNAL_NOTIFY:
@@ -133,11 +140,9 @@ final class PhutilDaemonPool extends Phobject {
           $daemon->didReceiveReloadSignal($signo);
           break;
         case PhutilDaemonOverseer::SIGNAL_GRACEFUL:
-          $this->inShutdown = true;
           $daemon->didReceiveGracefulSignal($signo);
           break;
         case PhutilDaemonOverseer::SIGNAL_TERMINATE:
-          $this->inShutdown = true;
           $daemon->didReceiveTerminateSignal($signo);
           break;
         default:
@@ -189,12 +194,21 @@ final class PhutilDaemonPool extends Phobject {
 
         unset($this->daemons[$key]);
 
-        $this->logMessage(
-          'POOL',
-          pht(
-            'Autoscale pool "%s" scaled down to %s daemon(s).',
-            $this->getPoolLabel(),
-            new PhutilNumber(count($this->daemons))));
+        if ($this->shouldShutdown()) {
+          $this->logMessage(
+            'DOWN',
+            pht(
+              'Pool "%s" is exiting, with %s daemon(s) remaining.',
+              $this->getPoolLabel(),
+              new PhutilNumber(count($this->daemons))));
+        } else {
+          $this->logMessage(
+            'POOL',
+            pht(
+              'Autoscale pool "%s" scaled down to %s daemon(s).',
+              $this->getPoolLabel(),
+              new PhutilNumber(count($this->daemons))));
+        }
       }
     }
 
