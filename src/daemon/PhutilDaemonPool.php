@@ -10,6 +10,7 @@ final class PhutilDaemonPool extends Phobject {
   private $argv;
 
   private $lastAutoscaleUpdate;
+  private $inShutdown;
 
   private function __construct() {
     // <empty>
@@ -62,6 +63,10 @@ final class PhutilDaemonPool extends Phobject {
 
   public function getCommandLineArguments() {
     return $this->commandLineArguments;
+  }
+
+  private function shouldShutdown() {
+    return $this->inShutdown;
   }
 
   private function newDaemon() {
@@ -128,9 +133,11 @@ final class PhutilDaemonPool extends Phobject {
           $daemon->didReceiveReloadSignal($signo);
           break;
         case PhutilDaemonOverseer::SIGNAL_GRACEFUL:
+          $this->inShutdown = true;
           $daemon->didReceiveGracefulSignal($signo);
           break;
         case PhutilDaemonOverseer::SIGNAL_TERMINATE:
+          $this->inShutdown = true;
           $daemon->didReceiveTerminateSignal($signo);
           break;
         default:
@@ -232,6 +239,10 @@ final class PhutilDaemonPool extends Phobject {
   }
 
   private function updateAutoscale() {
+    if ($this->shouldShutdown()) {
+      return;
+    }
+
     // Don't try to autoscale more than once per second. This mostly stops the
     // logs from getting flooded in verbose mode.
     $now = time();

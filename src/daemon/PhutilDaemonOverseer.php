@@ -187,9 +187,11 @@ EOHELP
       foreach ($this->getDaemonPools() as $pool) {
         $pool->updatePool();
 
-        if ($pool->isHibernating()) {
-          if ($this->shouldWakePool($pool)) {
-            $pool->wakeFromHibernation();
+        if (!$this->shouldShutdown()) {
+          if ($pool->isHibernating()) {
+            if ($this->shouldWakePool($pool)) {
+              $pool->wakeFromHibernation();
+            }
           }
         }
 
@@ -204,7 +206,7 @@ EOHELP
       $this->waitForDaemonFutures($futures);
 
       if (!$futures) {
-        if ($this->inGracefulShutdown) {
+        if ($this->shouldShutdown()) {
           break;
         }
       }
@@ -226,7 +228,7 @@ EOHELP
         break;
       }
     } else {
-      if (!$this->inGracefulShutdown) {
+      if (!$this->shouldShutdown()) {
         sleep(1);
       }
     }
@@ -503,6 +505,10 @@ EOHELP
     }
 
     return $should_wake;
+  }
+
+  private function shouldShutdown() {
+    return $this->inGracefulShutdown || $this->inAbruptShutdown;
   }
 
 }
