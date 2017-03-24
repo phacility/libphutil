@@ -185,6 +185,8 @@ final class PhutilDaemonPool extends Phobject {
       $daemon->update();
 
       if ($daemon->isDone()) {
+        $daemon->didExit();
+
         unset($this->daemons[$key]);
 
         $this->logMessage(

@@ -24,6 +24,7 @@ final class PhutilDaemonHandle extends Phobject {
   private $shouldRestart = true;
   private $shouldShutdown;
   private $hibernating = false;
+  private $shouldSendExitEvent = false;
 
   private function __construct() {
     // <empty>
@@ -90,6 +91,7 @@ final class PhutilDaemonHandle extends Phobject {
 
   public function didLaunch() {
     $this->restartAt = time();
+    $this->shouldSendExitEvent = true;
 
     $this->dispatchEvent(
       self::EVENT_DID_LAUNCH,
@@ -184,7 +186,6 @@ final class PhutilDaemonHandle extends Phobject {
 
       if ($this->shouldShutdown) {
         $this->restartAt = null;
-        $this->dispatchEvent(self::EVENT_WILL_EXIT);
       } else {
         $this->scheduleRestart();
       }
@@ -500,5 +501,13 @@ final class PhutilDaemonHandle extends Phobject {
     );
   }
 
+  public function didExit() {
+    if ($this->shouldSendExitEvent) {
+      $this->dispatchEvent(self::EVENT_WILL_EXIT);
+      $this->shouldSendExitEvent = false;
+    }
+
+    return $this;
+  }
 
 }
