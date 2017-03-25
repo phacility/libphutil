@@ -169,7 +169,7 @@ abstract class PhutilDaemon extends Phobject {
 
     if ($scale_down) {
       if ($this->workState == self::WORKSTATE_IDLE) {
-        $dur = (time() - $this->idleSince);
+        $dur = $this->getIdleDuration();
         $this->log(pht('Idle for %s seconds.', $dur));
       }
     }
@@ -380,4 +380,14 @@ abstract class PhutilDaemon extends Phobject {
 
     return $this;
   }
+
+  protected function getIdleDuration() {
+    if (!$this->idleSince) {
+      return null;
+    }
+
+    $now = time();
+    return ($now - $this->idleSince);
+  }
+
 }
