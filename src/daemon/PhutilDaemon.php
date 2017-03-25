@@ -128,7 +128,7 @@ abstract class PhutilDaemon extends Phobject {
 
   final protected function shouldHibernate($duration) {
     // Don't hibernate if we don't have very long to sleep.
-    if ($duration < 5) {
+    if ($duration < 30) {
       return false;
     }
 
