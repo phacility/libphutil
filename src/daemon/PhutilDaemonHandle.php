@@ -393,6 +393,7 @@ final class PhutilDaemonHandle extends Phobject {
           $duration = (int)idx($config, 'duration', 0);
           $this->restartAt = time() + $duration;
           $this->hibernating = true;
+          $this->busyEpoch = null;
           $this->logMessage(
             'ZZZZ',
             pht(
