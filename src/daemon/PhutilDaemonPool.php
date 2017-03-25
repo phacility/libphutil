@@ -10,6 +10,7 @@ final class PhutilDaemonPool extends Phobject {
   private $argv;
 
   private $lastAutoscaleUpdate;
+  private $inShutdown;
 
   private function __construct() {
     // <empty>
@@ -62,6 +63,10 @@ final class PhutilDaemonPool extends Phobject {
 
   public function getCommandLineArguments() {
     return $this->commandLineArguments;
+  }
+
+  private function shouldShutdown() {
+    return $this->inShutdown;
   }
 
   private function newDaemon() {
@@ -119,6 +124,13 @@ final class PhutilDaemonPool extends Phobject {
   }
 
   public function didReceiveSignal($signal, $signo) {
+    switch ($signal) {
+      case PhutilDaemonOverseer::SIGNAL_GRACEFUL:
+      case PhutilDaemonOverseer::SIGNAL_TERMINATE:
+        $this->inShutdown = true;
+        break;
+    }
+
     foreach ($this->getDaemons() as $daemon) {
       switch ($signal) {
         case PhutilDaemonOverseer::SIGNAL_NOTIFY:
@@ -178,21 +190,75 @@ final class PhutilDaemonPool extends Phobject {
       $daemon->update();
 
       if ($daemon->isDone()) {
+        $daemon->didExit();
+
         unset($this->daemons[$key]);
 
-        $this->logMessage(
-          'POOL',
-          pht(
-            'Autoscale pool "%s" scaled down to %s daemon(s).',
-            $this->getPoolLabel(),
-            new PhutilNumber(count($this->daemons))));
+        if ($this->shouldShutdown()) {
+          $this->logMessage(
+            'DOWN',
+            pht(
+              'Pool "%s" is exiting, with %s daemon(s) remaining.',
+              $this->getPoolLabel(),
+              new PhutilNumber(count($this->daemons))));
+        } else {
+          $this->logMessage(
+            'POOL',
+            pht(
+              'Autoscale pool "%s" scaled down to %s daemon(s).',
+              $this->getPoolLabel(),
+              new PhutilNumber(count($this->daemons))));
+        }
       }
     }
 
     $this->updateAutoscale();
   }
 
+  public function isHibernating() {
+    foreach ($this->getDaemons() as $daemon) {
+      if (!$daemon->isHibernating()) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  public function wakeFromHibernation() {
+    if (!$this->isHibernating()) {
+      return $this;
+    }
+
+    $this->logMessage(
+      'WAKE',
+      pht(
+        'Autoscale pool "%s" is being awakened from hibernation.',
+        $this->getPoolLabel()));
+
+    $did_wake_daemons = false;
+    foreach ($this->getDaemons() as $daemon) {
+      if ($daemon->isHibernating()) {
+        $daemon->wakeFromHibernation();
+        $did_wake_daemons = true;
+      }
+    }
+
+    if (!$did_wake_daemons) {
+      // TODO: Pools currently can't scale down to 0 daemons, but we should
+      // scale up immediately here once they can.
+    }
+
+    $this->updatePool();
+
+    return $this;
+  }
+
   private function updateAutoscale() {
+    if ($this->shouldShutdown()) {
+      return;
+    }
+
     // Don't try to autoscale more than once per second. This mostly stops the
     // logs from getting flooded in verbose mode.
     $now = time();

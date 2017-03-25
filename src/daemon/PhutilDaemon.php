@@ -139,7 +139,7 @@ abstract class PhutilDaemon extends Phobject {
     }
 
     // Don't hibernate for too long.
-    $duration = max($duration, phutil_units('3 minutes in seconds'));
+    $duration = min($duration, phutil_units('3 minutes in seconds'));
 
     $this->emitOverseerMessage(
       self::MESSAGETYPE_HIBERNATE,
