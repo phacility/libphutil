@@ -83,17 +83,38 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('evil.com', $uri->getDomain());
     $this->assertEqual('http://u:p@evil.com?%40good.com=', (string)$uri);
 
-    $uri = new PhutilURI('http://good.com#u:p@evil.com/');
-    $this->assertEqual('good.com#u', $uri->getUser());
-    $this->assertEqual('p', $uri->getPass());
-    $this->assertEqual('evil.com', $uri->getDomain());
-    $this->assertEqual('http://good.com%23u:p@evil.com/', (string)$uri);
+    // The behavior of URLs in these forms differs for different versions
+    // of cURL, PHP, and other software. Because safe parsing is a tricky
+    // proposition and these URIs are almost certainly malicious, we just
+    // reject them. See T12526 for discussion.
 
-    $uri = new PhutilURI('http://good.com?u:p@evil.com/');
-    $this->assertEqual('', $uri->getUser());
-    $this->assertEqual('', $uri->getPass());
-    $this->assertEqual('good.com', $uri->getDomain());
-    $this->assertEqual('http://good.com?u%3Ap%40evil.com%2F=', (string)$uri);
+    $dangerous = array(
+      // Ambiguous encoding.
+      'http://good.com#u:p@evil.com/' => true,
+      'http://good.com?u:p@evil.com/' => true,
+
+      // Unambiguous encoding: with a trailing slash.
+      'http://good.com/#u:p@evil.com/' => false,
+      'http://good.com/?u:p@evil.com/' => false,
+
+      // Unambiguous encoding: with escaping.
+      'http://good.com%23u:p@evil.com/' => false,
+      'http://good.com%40u:p@evil.com/' => false,
+    );
+
+    foreach ($dangerous as $input => $expect) {
+      $caught = null;
+      try {
+        new PhutilURI($input);
+      } catch (Exception $ex) {
+        $caught = $ex;
+      }
+
+      $this->assertEqual(
+        $expect,
+        ($caught instanceof $ex),
+        pht('Unexpected parse result for dangerous URI "%s".', $input));
+    }
 
     $uri = new PhutilURI('www.example.com');
     $this->assertEqual('', $uri->getProtocol());
