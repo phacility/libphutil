@@ -99,8 +99,7 @@ final class PhutilSearchQueryCompilerTestCase
       $stemmed_query = null;
 
       try {
-        $compiler = id(new PhutilSearchQueryCompiler())
-          ->setQuery($input);
+        $compiler = new PhutilSearchQueryCompiler();
 
         if ($operators !== null) {
           $compiler->setOperators($operators);
@@ -110,11 +109,13 @@ final class PhutilSearchQueryCompilerTestCase
           $compiler->setStemmer($stemmer);
         }
 
+        $tokens = $compiler->newTokens($input);
+
         if ($stemmer) {
-          $literal_query = $compiler->compileLiteralQuery();
-          $stemmed_query = $compiler->compileStemmedQuery();
+          $literal_query = $compiler->compileLiteralQuery($tokens);
+          $stemmed_query = $compiler->compileStemmedQuery($tokens);
         } else {
-          $query = $compiler->compileQuery();
+          $query = $compiler->compileQuery($tokens);
         }
       } catch (PhutilSearchQueryCompilerSyntaxException $ex) {
         $caught = $ex;

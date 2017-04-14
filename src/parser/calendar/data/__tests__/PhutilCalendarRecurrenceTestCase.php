@@ -154,8 +154,8 @@ final class PhutilCalendarRecurrenceTestCase extends PhutilTestCase {
       pht('Multiple lists, one result.'));
 
     $expect = array(
-      PhutilCalendarAbsoluteDateTime::newFromISO8601('20160103T120000Z'),
-      PhutilCalendarAbsoluteDateTime::newFromISO8601('20160104T120000Z'),
+      2 => PhutilCalendarAbsoluteDateTime::newFromISO8601('20160103T120000Z'),
+      3 => PhutilCalendarAbsoluteDateTime::newFromISO8601('20160104T120000Z'),
     );
     $result = $date_set->getEventsBetween(
       PhutilCalendarAbsoluteDateTime::newFromISO8601('20160103T120000Z'),
@@ -164,6 +164,33 @@ final class PhutilCalendarRecurrenceTestCase extends PhutilTestCase {
       mpull($expect, 'getISO8601'),
       mpull($result, 'getISO8601'),
       pht('Multiple lists, time window.'));
+  }
+
+  public function testCalendarRecurrenceOffsets() {
+    $list = array(
+      PhutilCalendarAbsoluteDateTime::newFromISO8601('20160101T120000Z'),
+      PhutilCalendarAbsoluteDateTime::newFromISO8601('20160103T120000Z'),
+      PhutilCalendarAbsoluteDateTime::newFromISO8601('20160102T120000Z'),
+    );
+
+    $source = id(new PhutilCalendarRecurrenceList())
+      ->setDates($list);
+
+    $set = id(new PhutilCalendarRecurrenceSet())
+      ->addSource($source);
+
+    $t1 = PhutilCalendarAbsoluteDateTime::newFromISO8601('20160102T120001Z');
+    $t2 = PhutilCalendarAbsoluteDateTime::newFromISO8601('20160103T120000Z');
+
+    $expect = array(
+      2 => $t2,
+    );
+
+    $result = $set->getEventsBetween($t1, null, 0xFFFF);
+    $this->assertEqual(
+      mpull($expect, 'getISO8601'),
+      mpull($result, 'getISO8601'),
+      pht('Correct event indexes with start date.'));
   }
 
 }

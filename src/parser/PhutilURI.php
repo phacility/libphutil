@@ -45,6 +45,16 @@ final class PhutilURI extends Phobject {
 
     $type = self::TYPE_URI;
 
+    // Reject ambiguous URIs outright. Different versions of different clients
+    // parse these in different ways. See T12526 for discussion.
+    if (preg_match('(^[^/:]*://[^/]*[#?].*:)', $uri)) {
+      throw new Exception(
+        pht(
+          'Rejecting ambiguous URI "%s". This URI is not formatted or '.
+          'encoded properly.',
+          $uri));
+    }
+
     $matches = null;
     if (preg_match('(^([^/:]*://[^/]*)(\\?.*)\z)', $uri, $matches)) {
       // If the URI is something like `idea://open?file=/path/to/file`, the

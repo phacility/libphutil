@@ -50,9 +50,9 @@ final class PhutilCalendarRecurrenceSet
     if ($start) {
       $start = clone $start;
       $start->setViewerTimezone($timezone);
-      $cursor = $start->getEpoch();
+      $min_epoch = $start->getEpoch();
     } else {
-      $cursor = 0;
+      $min_epoch = 0;
     }
 
     if ($end) {
@@ -64,6 +64,8 @@ final class PhutilCalendarRecurrenceSet
     }
 
     $results = array();
+    $index = 0;
+    $cursor = 0;
     while (true) {
       // Get the next event for each source which we don't have a future
       // event for.
@@ -130,7 +132,15 @@ final class PhutilCalendarRecurrenceSet
       // skip it and move on. If it's not an exception, it does occur, so
       // we record it.
       if (!$is_exception) {
-        $results[] = $next_source['state'];
+
+        // Only actually include this event in the results if it starts after
+        // any specified start time. We increment the index regardless, so we
+        // return results with proper offsets.
+        if ($next_source['epoch'] >= $min_epoch) {
+          $results[$index] = $next_source['state'];
+        }
+        $index++;
+
         if ($limit !== null && (count($results) >= $limit)) {
           break;
         }

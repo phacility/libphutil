@@ -19,15 +19,6 @@ final class PhutilSearchQueryCompiler
     return $this->operators;
   }
 
-  public function setQuery($query) {
-    $this->query = $query;
-    return $this;
-  }
-
-  public function getQuery() {
-    return $this->query;
-  }
-
   public function setStemmer(PhutilSearchStemmer $stemmer) {
     $this->stemmer = $stemmer;
     return $this;
@@ -37,9 +28,8 @@ final class PhutilSearchQueryCompiler
     return $this->stemmer;
   }
 
-  public function compileQuery() {
-    $query = $this->getQuery();
-    $tokens = $this->tokenizeQuery($query);
+  public function compileQuery(array $tokens) {
+    assert_instances_of($tokens, 'PhutilSearchQueryToken');
 
     $result = array();
     foreach ($tokens as $token) {
@@ -49,13 +39,12 @@ final class PhutilSearchQueryCompiler
     return $this->compileRenderedTokens($result);
   }
 
-  public function compileLiteralQuery() {
-    $query = $this->getQuery();
-    $tokens = $this->tokenizeQuery($query);
+  public function compileLiteralQuery(array $tokens) {
+    assert_instances_of($tokens, 'PhutilSearchQueryToken');
 
     $result = array();
     foreach ($tokens as $token) {
-      if (!$token['quoted']) {
+      if (!$token->isQuoted()) {
         continue;
       }
       $result[] = $this->renderToken($token);
@@ -64,13 +53,12 @@ final class PhutilSearchQueryCompiler
     return $this->compileRenderedTokens($result);
   }
 
-  public function compileStemmedQuery() {
-    $query = $this->getQuery();
-    $tokens = $this->tokenizeQuery($query);
+  public function compileStemmedQuery(array $tokens) {
+    assert_instances_of($tokens, 'PhutilSearchQueryToken');
 
     $result = array();
     foreach ($tokens as $token) {
-      if ($token['quoted']) {
+      if ($token->isQuoted()) {
         continue;
       }
       $result[] = $this->renderToken($token, $this->getStemmer());
@@ -86,6 +74,17 @@ final class PhutilSearchQueryCompiler
 
     $list = array_unique($list);
     return implode(' ', $list);
+  }
+
+  public function newTokens($query) {
+    $results = $this->tokenizeQuery($query);
+
+    $tokens = array();
+    foreach ($results as $result) {
+      $tokens[] = PhutilSearchQueryToken::newFromDictionary($result);
+    }
+
+    return $tokens;
   }
 
   private function tokenizeQuery($query) {
@@ -233,16 +232,16 @@ final class PhutilSearchQueryCompiler
   }
 
   private function renderToken(
-    array $token,
+    PhutilSearchQueryToken $token,
     PhutilSearchStemmer $stemmer = null) {
-    $value = $token['value'];
+    $value = $token->getValue();
 
     if ($stemmer) {
       $value = $stemmer->stemToken($value);
     }
 
     $value = $this->quoteToken($value);
-    $operator = $token['operator'];
+    $operator = $token->getOperator();
     $prefix = $this->getOperatorPrefix($operator);
 
     $value = $prefix.$value;
@@ -282,6 +281,5 @@ final class PhutilSearchQueryCompiler
 
     return $open_quote.$value.$close_quote;
   }
-
 
 }
