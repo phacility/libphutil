@@ -26,6 +26,13 @@ final class PhutilRemarkupLiteralBlockRule extends PhutilRemarkupBlockRule {
     while (preg_match('/^\s*%%%/', $lines[$cursor])) {
       $num_lines++;
 
+      // If the line has ONLY "%%%", the block opener doesn't get to double
+      // up as a block terminator.
+      if (preg_match('/^\s*%%%\s*\z/', $lines[$cursor])) {
+        $num_lines++;
+        $cursor++;
+      }
+
       while (isset($lines[$cursor])) {
         if (!preg_match('/%%%\s*$/', $lines[$cursor])) {
           $num_lines++;
