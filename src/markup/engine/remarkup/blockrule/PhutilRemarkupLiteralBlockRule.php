@@ -2,6 +2,10 @@
 
 final class PhutilRemarkupLiteralBlockRule extends PhutilRemarkupBlockRule {
 
+  public function getPriority() {
+    return 450;
+  }
+
   public function getMatchingLineCount(array $lines, $cursor) {
     // NOTE: We're consuming all continguous blocks of %%% literals, so this:
     //

@@ -14,10 +14,16 @@ abstract class PhutilRemarkupBlockRule extends Phobject {
    * patterns. For example, `  - Lorem ipsum...` may be a code block or a
    * list.
    *
-   * @return float  Priority at which this block should execute.
+   * @return int Priority at which this block should execute.
    */
   public function getPriority() {
-    return 500.0;
+    return 500;
+  }
+
+  final public function getPriorityVector() {
+    return id(new PhutilSortVector())
+      ->addInt($this->getPriority())
+      ->addString(get_class($this));
   }
 
   abstract public function markupText($text, $children);
