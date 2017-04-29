@@ -3,7 +3,7 @@
 final class PhutilRemarkupReplyBlockRule extends PhutilRemarkupBlockRule {
 
   public function getPriority() {
-    return 400.0;
+    return 400;
   }
 
   public function getMatchingLineCount(array $lines, $cursor) {

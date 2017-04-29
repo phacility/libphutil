@@ -177,24 +177,30 @@ final class PhutilDeferredLog extends Phobject {
     // and invoke possible __toString() calls.
     $line = $this->format();
 
-    if ($this->file !== null) {
-      $dir = dirname($this->file);
-      if (!Filesystem::pathExists($dir)) {
-        Filesystem::createDirectory($dir, 0755, true);
-      }
-
-      $ok = @file_put_contents(
-        $this->file,
-        $line,
-        FILE_APPEND | LOCK_EX);
-
-      if ($ok === false) {
-        $message = pht("Unable to write to logfile '%s'!", $this->file);
-        if ($this->failQuietly) {
-          phlog($message);
-        } else {
-          throw new Exception($message);
+    try {
+      if ($this->file !== null) {
+        $dir = dirname($this->file);
+        if (!Filesystem::pathExists($dir)) {
+          Filesystem::createDirectory($dir, 0755, true);
         }
+
+        $ok = @file_put_contents(
+          $this->file,
+          $line,
+          FILE_APPEND | LOCK_EX);
+
+        if ($ok === false) {
+          throw new Exception(
+            pht(
+              'Unable to write to logfile "%s"!',
+              $this->file));
+        }
+      }
+    } catch (Exception $ex) {
+      if ($this->failQuietly) {
+        phlog($ex);
+      } else {
+        throw $ex;
       }
     }
 
