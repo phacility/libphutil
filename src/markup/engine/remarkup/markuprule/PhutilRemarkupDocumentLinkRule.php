@@ -120,9 +120,16 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
       $protocols = $this->getEngine()->getConfig(
         'uri.allowed-protocols',
         array());
-      $protocol = id(new PhutilURI($uri))->getProtocol();
-      if (!idx($protocols, $protocol)) {
-        // Don't treat this as a URI if it's not an allowed protocol.
+
+      try {
+        $protocol = id(new PhutilURI($uri))->getProtocol();
+        if (!idx($protocols, $protocol)) {
+          // Don't treat this as a URI if it's not an allowed protocol.
+          $is_uri = false;
+        }
+      } catch (Exception $ex) {
+        // We can end up here if we try to parse an ambiguous URI, see
+        // T12796.
         $is_uri = false;
       }
     }
