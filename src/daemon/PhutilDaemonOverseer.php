@@ -336,7 +336,21 @@ EOHELP
     if ($pidfile !== $this->lastPidfile) {
       $this->lastPidfile = $pidfile;
       $pidfile_path = $this->piddir.'/daemon.'.getmypid();
-      Filesystem::writeFile($pidfile_path, phutil_json_encode($pidfile));
+      try {
+        Filesystem::writeFile(
+          $pidfile_path,
+          phutil_json_encode($pidfile));
+      } catch (Exception $ex) {
+        // This write can fail if the disk is full. We already tested the
+        // directory for writability on startup, so just ignore this and
+        // move on rather than crashing. If the disk is full this error may
+        // not make it to a log file, but at least we tried.
+        $this->logMessage(
+          'PIDF',
+          pht(
+            'Unable to update PID file: %s.',
+            $ex->getMessage()));
+      }
     }
   }
 
@@ -377,6 +391,7 @@ EOHELP
     switch ($type) {
       case 'OVER':
       case 'SGNL':
+      case 'PIDF':
         $always_log = true;
         break;
     }
