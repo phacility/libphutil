@@ -39,19 +39,35 @@ final class PhutilRemarkupSimpleTableBlockRule extends PhutilRemarkupBlockRule {
           ')*'.
         ')/', $line, $matches);
 
-      $headings = true;
+      $any_header = false;
+      $any_content = false;
+
       $cells = array();
       foreach ($matches[1] as $cell) {
         $cell = trim($cell);
 
-        // Cell isn't empty and doesn't look like heading.
-        if (!preg_match('/^(|--+)$/', $cell)) {
-          $headings = false;
+        // If this row only has empty cells and "--" cells, and it has at
+        // least one "--" cell, it's marking the rows above as <th> cells
+        // instead of <td> cells.
+
+        // If it has other types of cells, it's always a content row.
+
+        // If it has only empty cells, it's an empty row.
+
+        if (strlen($cell)) {
+          if (preg_match('/^--+\z/', $cell)) {
+            $any_header = true;
+          } else {
+            $any_content = true;
+          }
         }
+
         $cells[] = array('type' => 'td', 'content' => $this->applyRules($cell));
       }
 
-      if (!$headings) {
+      $is_header = ($any_header && !$any_content);
+
+      if (!$is_header) {
         $rows[] = array('type' => 'tr', 'content' => $cells);
       } else if ($rows) {
         // Mark previous row with headings.

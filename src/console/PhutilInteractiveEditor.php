@@ -260,18 +260,16 @@ final class PhutilInteractiveEditor extends Phobject {
       return $editor;
     }
 
-    // Look for `editor` in PATH, some systems provide an editor which is
-    // linked to something sensible.
-    if (Filesystem::binaryExists('editor')) {
-      return 'editor';
-    }
-
     if ($this->fallback) {
       return $this->fallback;
     }
 
-    if (Filesystem::binaryExists('nano')) {
-      return 'nano';
+    $candidates = array('editor', 'nano', 'sensible-editor', 'vi');
+
+    foreach ($candidates as $cmd) {
+      if (Filesystem::binaryExists($cmd)) {
+        return $cmd;
+      }
     }
 
     throw new Exception(
