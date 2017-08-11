@@ -130,6 +130,20 @@ final class PhutilURITestCase extends PhutilTestCase {
   public function testStrictURIParsingOfHosts() {
     $uri = new PhutilURI('http://&amp;/');
     $this->assertEqual('', $uri->getDomain());
+
+    // See T12961 for more discussion of these hosts which begin with "-".
+    $uri = new PhutilURI('ssh://-oProxyCommand/');
+    $this->assertEqual('', $uri->getDomain());
+    $uri = new PhutilURI('ssh://-oProxyCommand=curl/');
+    $this->assertEqual('', $uri->getDomain());
+    $uri = new PhutilURI('ssh://.com/');
+    $this->assertEqual('', $uri->getDomain());
+
+    // Make sure newlines are rejected.
+    $uri = new PhutilURI("ssh://example.com\n.domain.us/");
+    $this->assertEqual('', $uri->getDomain());
+    $uri = new PhutilURI("ssh://example.com\n");
+    $this->assertEqual('', $uri->getDomain());
   }
 
   public function testStrictURIParsingOfLeadingWhitespace() {
