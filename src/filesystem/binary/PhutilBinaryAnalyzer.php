@@ -27,11 +27,13 @@ abstract class PhutilBinaryAnalyzer
 
   final public function requireBinaryVersion() {
     $version = $this->getBinaryVersion();
+    $binary = $this->getBinaryName();
     if ($version === null) {
       throw new Exception(
         pht(
           'Unable to determine the installed version of binary "%s". This '.
-          'version is required.'));
+          'version is required.',
+          $binary));
     }
     return $version;
   }
