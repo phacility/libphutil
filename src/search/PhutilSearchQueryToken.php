@@ -5,6 +5,7 @@ final class PhutilSearchQueryToken extends Phobject {
   private $isQuoted;
   private $value;
   private $operator;
+  private $function;
 
   public static function newFromDictionary(array $dictionary) {
     $token = new self();
@@ -12,6 +13,7 @@ final class PhutilSearchQueryToken extends Phobject {
     $token->isQuoted = $dictionary['quoted'];
     $token->operator = $dictionary['operator'];
     $token->value = $dictionary['value'];
+    $token->function = idx($dictionary, 'function');
 
     return $token;
   }
@@ -26,6 +28,10 @@ final class PhutilSearchQueryToken extends Phobject {
 
   public function getOperator() {
     return $this->operator;
+  }
+
+  public function getFunction() {
+    return $this->function;
   }
 
 }

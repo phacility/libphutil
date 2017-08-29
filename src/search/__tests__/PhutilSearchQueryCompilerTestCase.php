@@ -87,6 +87,43 @@ final class PhutilSearchQueryCompilerTestCase
     $this->assertCompileQueries($stemming_tests, null, $stemmer);
   }
 
+  public function testCompileQueriesWithFunctions() {
+    $op_and = PhutilSearchQueryCompiler::OPERATOR_AND;
+    $op_sub = PhutilSearchQueryCompiler::OPERATOR_SUBSTRING;
+    $op_exact = PhutilSearchQueryCompiler::OPERATOR_EXACT;
+
+    $function_tests = array(
+      'cat' => array(
+        array(null, $op_and, 'cat'),
+      ),
+      ':cat' => array(
+        array(null, $op_and, 'cat'),
+      ),
+      'title:cat' => array(
+        array('title', $op_and, 'cat'),
+      ),
+      'title:cat:dog' => array(
+        array('title', $op_and, 'cat:dog'),
+      ),
+      'title:~cat' => array(
+        array('title', $op_sub, 'cat'),
+      ),
+      'cat title:="Meow Meow"' => array(
+        array(null, $op_and, 'cat'),
+        array('title', $op_exact, 'Meow Meow'),
+      ),
+      'title:cat title:dog' => array(
+        array('title', $op_and, 'cat'),
+        array('title', $op_and, 'dog'),
+      ),
+      '~"core and seven years ag"' => array(
+        array(null, $op_sub, 'core and seven years ag'),
+      ),
+    );
+
+    $this->assertCompileFunctionQueries($function_tests);
+  }
+
   private function assertCompileQueries(
     array $tests,
     $operators = null,
@@ -140,6 +177,29 @@ final class PhutilSearchQueryCompilerTestCase
             : array($literal_query, $stemmed_query),
           pht('Stemmed compilation of query: %s', $input));
       }
+    }
+  }
+
+  private function assertCompileFunctionQueries(array $tests) {
+    foreach ($tests as $input => $expect) {
+      $compiler = id(new PhutilSearchQueryCompiler())
+        ->setEnableFunctions(true);
+
+      $tokens = $compiler->newTokens($input);
+
+      $result = array();
+      foreach ($tokens as $token) {
+        $result[] = array(
+          $token->getFunction(),
+          $token->getOperator(),
+          $token->getValue(),
+        );
+      }
+
+      $this->assertEqual(
+        $expect,
+        $result,
+        pht('Function compilation of query: %s', $input));
     }
   }
 
