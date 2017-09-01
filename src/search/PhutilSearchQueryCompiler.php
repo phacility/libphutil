@@ -6,9 +6,12 @@ final class PhutilSearchQueryCompiler
   private $operators = '+ -><()~*:""&|';
   private $query;
   private $stemmer;
+  private $enableFunctions = false;
 
   const OPERATOR_NOT = 'not';
   const OPERATOR_AND = 'and';
+  const OPERATOR_SUBSTRING = 'sub';
+  const OPERATOR_EXACT = 'exact';
 
   public function setOperators($operators) {
     $this->operators = $operators;
@@ -26,6 +29,15 @@ final class PhutilSearchQueryCompiler
 
   public function getStemmer() {
     return $this->stemmer;
+  }
+
+  public function setEnableFunctions($enable_functions) {
+    $this->enableFunctions = $enable_functions;
+    return $this;
+  }
+
+  public function getEnableFunctions() {
+    return $this->enableFunctions;
   }
 
   public function compileQuery(array $tokens) {
@@ -102,11 +114,21 @@ final class PhutilSearchQueryCompiler
     $query = phutil_utf8v($query);
     $length = count($query);
 
+    $enable_functions = $this->getEnableFunctions();
+
     $mode = 'scan';
     $current_operator = array();
     $current_token = array();
+    $current_function = null;
     $is_quoted = false;
     $tokens = array();
+
+    if ($enable_functions) {
+      $operator_characters = '[~=+-]';
+    } else {
+      $operator_characters = '[+-]';
+    }
+
     for ($ii = 0; $ii < $length; $ii++) {
       $character = $query[$ii];
 
@@ -115,7 +137,36 @@ final class PhutilSearchQueryCompiler
           continue;
         }
 
+        $mode = 'function';
+      }
+
+      if ($mode == 'function') {
         $mode = 'operator';
+
+        if ($enable_functions) {
+          $found = false;
+          for ($jj = $ii; $jj < $length; $jj++) {
+            if (preg_match('/^[a-zA-Z]\z/u', $query[$jj])) {
+              continue;
+            }
+            if ($query[$jj] == ':') {
+              $found = $jj;
+            }
+            break;
+          }
+
+          if ($found !== false) {
+            $function = array_slice($query, $ii, ($jj - $ii));
+            $current_function = implode('', $function);
+
+            if (!strlen($current_function)) {
+              $current_function = null;
+            }
+
+            $ii = $jj;
+            continue;
+          }
+        }
       }
 
       if ($mode == 'operator') {
@@ -123,7 +174,7 @@ final class PhutilSearchQueryCompiler
           continue;
         }
 
-        if (preg_match('/^[+-]\z/', $character)) {
+        if (preg_match('/^'.$operator_characters.'\z/', $character)) {
           $current_operator[] = $character;
           continue;
         }
@@ -164,13 +215,21 @@ final class PhutilSearchQueryCompiler
         }
 
         if ($capture) {
-          $tokens[] = array(
+          $token = array(
             'operator' => $current_operator,
             'quoted' => $was_quoted,
             'value' => $current_token,
           );
+
+          if ($enable_functions) {
+            $token['function'] = $current_function;
+          }
+
+          $tokens[] = $token;
+
           $current_operator = array();
           $current_token = array();
+          $current_function = null;
           continue;
         } else {
           $current_token[] = $character;
@@ -191,11 +250,17 @@ final class PhutilSearchQueryCompiler
           implode('', $current_operator)));
     }
 
-    $tokens[] = array(
+    $token = array(
       'operator' => $current_operator,
       'quoted' => false,
       'value' => $current_token,
     );
+
+    if ($enable_functions) {
+      $token['function'] = $current_function;
+    }
+
+    $tokens[] = $token;
 
     $results = array();
     foreach ($tokens as $token) {
@@ -210,6 +275,12 @@ final class PhutilSearchQueryCompiler
         case '-':
           $operator = self::OPERATOR_NOT;
           break;
+        case '~':
+          $operator = self::OPERATOR_SUBSTRING;
+          break;
+        case '=':
+          $operator = self::OPERATOR_EXACT;
+          break;
         case '':
         case '+':
           $operator = self::OPERATOR_AND;
@@ -221,11 +292,17 @@ final class PhutilSearchQueryCompiler
               $operator_string));
       }
 
-      $results[] = array(
+      $result = array(
         'operator' => $operator,
         'quoted' => $token['quoted'],
         'value' => $value,
       );
+
+      if ($enable_functions) {
+        $result['function'] = $token['function'];
+      }
+
+      $results[] = $result;
     }
 
     return $results;
