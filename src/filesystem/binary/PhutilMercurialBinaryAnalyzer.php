@@ -9,7 +9,13 @@ final class PhutilMercurialBinaryAnalyzer
   const CAPABILITY_INJECTION = 'injection';
 
   protected function newBinaryVersion() {
-    list($err, $stdout) = exec_manual('hg --version --quiet');
+    $future = id(new ExecFuture('hg --version --quiet'))
+      ->setEnv(
+        array(
+          'HGPLAIN' => 1,
+        ));
+
+    list($err, $stdout) = $future->resolve();
 
     if ($err) {
       return null;
