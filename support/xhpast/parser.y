@@ -1085,8 +1085,15 @@ return_type:
   %empty {
     $$ = NNEW(n_EMPTY);
   }
+| ':' '?' type {
+    $$ = NNEW(n_DECLARATION_RETURN);
+    $$->appendChild($2);
+    $$->appendChild($3);
+  }
 | ':' type {
-    $$ = $2;
+    $$ = NNEW(n_DECLARATION_RETURN);
+    $$->appendChild(NNEW(n_EMPTY));
+    $$->appendChild($2);
   }
 ;
 
