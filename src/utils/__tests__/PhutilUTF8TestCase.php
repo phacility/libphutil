@@ -609,6 +609,22 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
     $this->assertTrue(true);
   }
 
+  public function testCJK() {
+    $map = array(
+      '' => false,
+      'a' => false,
+      '.' => false,
+      "\xE2\x98\x83" => false,
+      "\xE5\xA0\xB1" => true,
+    );
+
+    foreach ($map as $input => $expect) {
+      $actual = phutil_utf8_is_cjk($input);
+
+      $this->assertEqual($expect, $actual, pht('CJK: "%s"', $input));
+    }
+  }
+
   public function testUTF8BMP() {
     $tests = array(
       ''  => array(
