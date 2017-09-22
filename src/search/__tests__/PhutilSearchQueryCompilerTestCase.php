@@ -92,6 +92,8 @@ final class PhutilSearchQueryCompilerTestCase
     $op_sub = PhutilSearchQueryCompiler::OPERATOR_SUBSTRING;
     $op_exact = PhutilSearchQueryCompiler::OPERATOR_EXACT;
 
+    $mao = "\xE7\x8C\xAB";
+
     $function_tests = array(
       'cat' => array(
         array(null, $op_and, 'cat'),
@@ -118,6 +120,18 @@ final class PhutilSearchQueryCompilerTestCase
       ),
       '~"core and seven years ag"' => array(
         array(null, $op_sub, 'core and seven years ag'),
+      ),
+      $mao => array(
+        array(null, $op_sub, $mao),
+      ),
+      '+'.$mao => array(
+        array(null, $op_and, $mao),
+      ),
+      '~'.$mao => array(
+        array(null, $op_sub, $mao),
+      ),
+      '"'.$mao.'"' => array(
+        array(null, $op_and, $mao),
       ),
     );
 

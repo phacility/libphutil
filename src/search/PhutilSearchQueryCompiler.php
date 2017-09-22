@@ -271,6 +271,8 @@ final class PhutilSearchQueryCompiler
         continue;
       }
 
+      $is_quoted = $token['quoted'];
+
       switch ($operator_string) {
         case '-':
           $operator = self::OPERATOR_NOT;
@@ -281,9 +283,19 @@ final class PhutilSearchQueryCompiler
         case '=':
           $operator = self::OPERATOR_EXACT;
           break;
-        case '':
         case '+':
           $operator = self::OPERATOR_AND;
+          break;
+        case '':
+          // See T12995. If this query term contains Chinese, Japanese or
+          // Korean characters, treat the term as a substring term by default.
+          // These languages do not separate words with spaces, so the term
+          // search mode is normally useless.
+          if ($enable_functions && !$is_quoted && phutil_utf8_is_cjk($value)) {
+            $operator = self::OPERATOR_SUBSTRING;
+          } else {
+            $operator = self::OPERATOR_AND;
+          }
           break;
         default:
           throw new PhutilSearchQueryCompilerSyntaxException(
@@ -294,7 +306,7 @@ final class PhutilSearchQueryCompiler
 
       $result = array(
         'operator' => $operator,
-        'quoted' => $token['quoted'],
+        'quoted' => $is_quoted,
         'value' => $value,
       );
 

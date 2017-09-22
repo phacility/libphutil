@@ -328,6 +328,64 @@ function phutil_utf8_console_strlen($string) {
 
 
 /**
+ * Test if a string contains Chinese, Japanese, or Korean characters.
+ *
+ * Most languages use spaces to separate words, but these languages do not.
+ *
+ * @param string String to examine, in UTF8.
+ * @return bool True if the string contains Chinese, Japanese, or Korean
+ *   characters.
+ */
+function phutil_utf8_is_cjk($string) {
+  $codepoints = phutil_utf8v_codepoints($string);
+
+  foreach ($codepoints as $codepoint) {
+    // CJK Unified Ideographs
+    if ($codepoint >= 0x4E00 && $codepoint <= 0x9FFF) {
+      return true;
+    }
+
+    // CJK Unified Ideographs Extension A
+    if ($codepoint >= 0x3400 && $codepoint <= 0x4DBF) {
+      return true;
+    }
+
+    // CJK Unified Ideographs Extension B
+    if ($codepoint >= 0x20000 && $codepoint <= 0x2A6DF) {
+      return true;
+    }
+
+    // CJK Unified Ideographs Extension C
+    if ($codepoint >= 0x2A700 && $codepoint <= 0x2B73F) {
+      return true;
+    }
+
+    // CJK Unified Ideographs Extension D
+    if ($codepoint >= 0x2B740 && $codepoint <= 0x2B81F) {
+      return true;
+    }
+
+    // CJK Unified Ideographs Extension E
+    if ($codepoint >= 0x2B820 && $codepoint <= 0x2CEAF) {
+      return true;
+    }
+
+    // CJK Unified Ideographs Extension F
+    if ($codepoint >= 0x2CEB0 && $codepoint <= 0x2EBEF) {
+      return true;
+    }
+
+    // CJK Compatibility Ideographs
+    if ($codepoint >= 0xF900 && $codepoint <= 0xFAFF) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
+/**
  * Split a UTF-8 string into an array of characters. Combining characters are
  * also split.
  *
