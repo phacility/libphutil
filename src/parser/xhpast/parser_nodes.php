@@ -121,5 +121,6 @@ function xhp_parser_node_constants() {
     9112 => 'n_YIELD',
     9113 => 'n_FINALLY',
     9114 => 'n_UNPACK',
+    9115 => 'n_DECLARATION_RETURN',
   );
 }
