@@ -9,6 +9,7 @@ final class PhutilSearchStemmer
   }
 
   public function stemCorpus($corpus) {
+    $corpus = $this->normalizeCorpus($corpus);
     $tokens = preg_split('/[^a-zA-Z0-9\x7F-\xFF._]+/', $corpus);
 
     $words = array();
@@ -19,13 +20,12 @@ final class PhutilSearchStemmer
         continue;
       }
 
-      $normal_word = $this->normalizeToken($token);
-      $words[$normal_word] = $normal_word;
+      $words[$token] = $token;
     }
 
     $stems = array();
-    foreach ($words as $normal_word) {
-      $stems[] = $this->applyStemmer($normal_word);
+    foreach ($words as $word) {
+      $stems[] = $this->applyStemmer($word);
     }
 
     return implode(' ', $stems);
@@ -33,6 +33,10 @@ final class PhutilSearchStemmer
 
   private function normalizeToken($token) {
     return phutil_utf8_strtolower($token);
+  }
+
+  private function normalizeCorpus($corpus) {
+    return phutil_utf8_strtolower($corpus);
   }
 
   /**
