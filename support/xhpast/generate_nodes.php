@@ -120,6 +120,7 @@ $nodes = array(
   'n_YIELD',
   'n_FINALLY',
   'n_UNPACK',
+  'n_DECLARATION_RETURN',
 );
 
 $nodes = array_combine(
