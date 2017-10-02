@@ -32,11 +32,18 @@ final class PhutilRemarkupHyperlinkRule extends PhutilRemarkupRule {
   }
 
   protected function markupHyperlink(array $matches) {
+    try {
+      $uri = new PhutilURI($matches[1]);
+    } catch (Exception $ex) {
+      return $matches[0];
+    }
+
+    $protocol = $uri->getProtocol();
+
     $protocols = $this->getEngine()->getConfig(
       'uri.allowed-protocols',
       array());
 
-    $protocol = id(new PhutilURI($matches[1]))->getProtocol();
     if (!idx($protocols, $protocol)) {
       // If this URI doesn't use a whitelisted protocol, don't link it. This
       // is primarily intended to prevent javascript:// silliness.
@@ -100,6 +107,12 @@ final class PhutilRemarkupHyperlinkRule extends PhutilRemarkupRule {
     if (preg_match('/\\)$/', $match) && !preg_match('/\\(/', $match)) {
       $tail = ')'.$tail;
       $match = substr($match, 0, -1);
+    }
+
+    try {
+      $uri = new PhutilURI($match);
+    } catch (Exception $ex) {
+      return $matches[0];
     }
 
     return hsprintf('%s%s', $this->markupHyperlink(array(null, $match)), $tail);
