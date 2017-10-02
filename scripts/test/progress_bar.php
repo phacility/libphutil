@@ -43,6 +43,19 @@ try {
   echo pht('Caught exception!')."\n";
 }
 
+echo "\n".pht(
+  "RESIZING BARS\n".
+  "If you resize the window while a progress bars draws, it should more or ".
+  "less detect the change.");
+
+$n = 1024;
+$bar = id(new PhutilConsoleProgressBar())
+  ->setTotal($n);
+for ($ii = 0; $ii < $n; $ii++) {
+  $bar->update(1);
+  usleep(10000);
+}
+$bar->done();
 
 function run_interrupt_bar() {
   $bar = id(new PhutilConsoleProgressBar())

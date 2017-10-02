@@ -90,6 +90,9 @@ function __phutil_init_script__() {
 
   $handler = new PhutilBacktraceSignalHandler();
   $router->installHandler('phutil.backtrace', $handler);
+
+  $handler = new PhutilConsoleMetricsSignalHandler();
+  $router->installHandler('phutil.winch', $handler);
 }
 
 __phutil_init_script__();

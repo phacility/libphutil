@@ -18,6 +18,7 @@ final class PhutilSignalRouter extends Phobject {
       if (function_exists('pcntl_signal')) {
         pcntl_signal(SIGHUP, array($router, 'routeSignal'));
         pcntl_signal(SIGTERM, array($router, 'routeSignal'));
+        pcntl_signal(SIGWINCH, array($router, 'routeSignal'));
       }
 
       self::$router = $router;
