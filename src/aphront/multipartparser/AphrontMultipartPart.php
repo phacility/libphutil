@@ -7,6 +7,8 @@ final class AphrontMultipartPart extends Phobject {
 
   private $name;
   private $filename;
+  private $tempFile;
+  private $byteSize = 0;
 
   public function appendRawHeader($bytes) {
     $parser = id(new AphrontHTTPHeaderParser())
@@ -38,10 +40,15 @@ final class AphrontMultipartPart extends Phobject {
   }
 
   public function appendData($bytes) {
+    $this->byteSize += strlen($bytes);
+
     if ($this->isVariable()) {
       $this->value .= $bytes;
     } else {
-      throw new Exception(pht('File multipart stuff is not yet supported.'));
+      if (!$this->tempFile) {
+        $this->tempFile = new TempFile(getmypid().'.upload');
+      }
+      Filesystem::appendFile($this->tempFile, $bytes);
     }
 
     return $this;
@@ -61,6 +68,29 @@ final class AphrontMultipartPart extends Phobject {
     }
 
     return $this->value;
+  }
+
+  public function getPHPFileDictionary() {
+    if (!$this->tempFile) {
+      $this->appendData('');
+    }
+
+    $mime_type = 'application/octet-stream';
+    foreach ($this->headers as $header) {
+      list($name, $value) = $header;
+      if (strtolower($name) == 'content-type') {
+        $mime_type = $value;
+        break;
+      }
+    }
+
+    return array(
+      'name' => $this->filename,
+      'type' => $mime_type,
+      'tmp_name' => (string)$this->tempFile,
+      'error' => 0,
+      'size' => $this->byteSize,
+    );
   }
 
 }
