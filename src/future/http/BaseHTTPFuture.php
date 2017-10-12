@@ -264,6 +264,18 @@ abstract class BaseHTTPFuture extends Future {
     return $this->addHeader('Authorization', 'Basic '.$credentials);
   }
 
+  public function getHTTPRequestByteLength() {
+    // NOTE: This isn't very accurate, but it's only used by the "--trace"
+    // call profiler to help pick out huge requests.
+    $data = $this->getData();
+
+    if (is_scalar($data)) {
+      return strlen($data);
+    }
+
+    return strlen(http_build_query($data, '', '&'));
+  }
+
 
 /* -(  Resolving the Request  )---------------------------------------------- */
 
