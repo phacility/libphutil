@@ -155,12 +155,8 @@ final class ConduitClient extends Phobject {
         $this->password);
     }
 
-    $conduit_future = new ConduitFuture($core_future);
-    $conduit_future->setClient($this, $method);
-    $conduit_future->beginProfile($data);
-    $conduit_future->isReady();
-
-    return $conduit_future;
+    return id(new ConduitFuture($core_future))
+      ->setClient($this, $method);
   }
 
   public function setBasicAuthCredentials($username, $password) {
