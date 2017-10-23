@@ -204,29 +204,52 @@ final class PhutilBootloader {
         $root = $_SERVER['PHUTIL_LIBRARY_ROOT'];
       }
     }
-    $okay = $this->executeInclude($root.$path.'/__phutil_library_init__.php');
-    if (!$okay) {
-      throw new PhutilBootloaderException(
-        "Include of '{$path}/__phutil_library_init__.php' failed!");
-    }
+
+    $this->executeInclude($root.$path.'/__phutil_library_init__.php');
   }
 
   public function loadLibrarySource($library, $source) {
     $path = $this->getLibraryRoot($library).'/'.$source;
-    $okay = $this->executeInclude($path);
-    if (!$okay) {
-      throw new PhutilBootloaderException("Include of '{$path}' failed!");
-    }
+    $this->executeInclude($path);
   }
 
   private function executeInclude($path) {
-    // Suppress warning spew if the file does not exist; we'll throw an
-    // exception instead. We still emit error text in the case of syntax errors.
-    $old = error_reporting(E_ALL & ~E_WARNING);
+    // Include the source using `include_once`, but convert any warnings or
+    // errors into exceptions.
+
+    // Some messages, including "Declaration of X should be compatible with Y",
+    // do not cause `include_once` to return an error code. Use
+    // error_get_last() to make sure we're catching everything in every PHP
+    // version.
+
+    // (Also, the severity of some messages changed between versions of PHP.)
+
+    // Note that we may enter this method after some earlier, unrelated error.
+    // In this case, error_get_last() will return information for that error.
+    // In PHP7 and later we could use error_clear_last() to clear that error,
+    // but the function does not exist in earlier versions of PHP. Instead,
+    // check if the value has changed.
+
+    // See also T12190.
+
+    $old_last = error_get_last();
+
+    $old = error_reporting(0);
     $okay = include_once $path;
     error_reporting($old);
 
-    return $okay;
+    if (!$okay) {
+      throw new Exception("Source file \"{$path}\" failed to load.");
+    }
+
+    $new_last = error_get_last();
+    if ($new_last !== null) {
+      if ($new_last !== $old_last) {
+        $message = $new_last['message'];
+        throw new Exception(
+          "Error while loading file \"{$path}\": {$message}");
+      }
+    }
   }
 
   private function loadExtension($library, $root, $path) {
@@ -235,11 +258,7 @@ final class PhutilBootloader {
     $old_classes = array_fill_keys(get_declared_classes(), true);
     $old_interfaces = array_fill_keys(get_declared_interfaces(), true);
 
-    $ok = $this->executeInclude($path);
-    if (!$ok) {
-      throw new PhutilBootloaderException(
-        "Include of extension file '{$path}' failed!");
-    }
+    $this->executeInclude($path);
 
     $new_functions = get_defined_functions();
     $new_functions = array_fill_keys($new_functions['user'], true);
