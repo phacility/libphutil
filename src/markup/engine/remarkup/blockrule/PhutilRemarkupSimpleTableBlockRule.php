@@ -73,7 +73,14 @@ final class PhutilRemarkupSimpleTableBlockRule extends PhutilRemarkupBlockRule {
         // Mark previous row with headings.
         foreach ($cells as $i => $cell) {
           if ($cell['content']) {
-            $rows[last_key($rows)]['content'][$i]['type'] = 'th';
+            $last_key = last_key($rows);
+            if (!isset($rows[$last_key]['content'][$i])) {
+              // If this row has more cells than the previous row, there may
+              // not be a cell above this one to turn into a <th />.
+              continue;
+            }
+
+            $rows[$last_key]['content'][$i]['type'] = 'th';
           }
         }
       }
