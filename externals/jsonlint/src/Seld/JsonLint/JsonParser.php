@@ -200,7 +200,7 @@ class JsonLintJsonParser
                         } elseif (preg_match('{".+?(\\\\[^"bfnrt/\\\\u])}', $this->lexer->getUpcomingInput(), $match)) {
                             $message .= ", it appears you have an unescaped backslash at: ".$match[1];
                         } elseif (preg_match('{"(?:[^"]+|\\\\")*$}m', $this->lexer->getUpcomingInput())) {
-                            $message .= ", it appears you forgot to terminated the string, or attempted to write a multiline string which is invalid";
+                            $message .= ", it appears you forgot to terminate the string, or attempted to write a multiline string which is invalid";
                         }
                     }
 
