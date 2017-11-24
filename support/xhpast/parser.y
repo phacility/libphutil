@@ -1087,7 +1087,7 @@ return_type:
   }
 | ':' '?' type {
     $$ = NNEW(n_DECLARATION_RETURN);
-    $$->appendChild($2);
+    $$->appendChild(NTYPE($2, n_STRING));
     $$->appendChild($3);
   }
 | ':' type {

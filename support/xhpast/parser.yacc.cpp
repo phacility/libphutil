@@ -4725,7 +4725,7 @@ yyreduce:
 #line 1088 "parser.y" /* yacc.c:1646  */
     {
     (yyval) = NNEW(n_DECLARATION_RETURN);
-    (yyval)->appendChild((yyvsp[-1]));
+    (yyval)->appendChild(NTYPE((yyvsp[-1]), n_STRING));
     (yyval)->appendChild((yyvsp[0]));
   }
 #line 4732 "parser.yacc.cpp" /* yacc.c:1646  */
