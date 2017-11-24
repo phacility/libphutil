@@ -1067,6 +1067,10 @@ optional_type:
     $$ = NNEW(n_EMPTY);
   }
 | type
+| '?' type {
+    $$ = NNEW(n_NULLABLE_TYPE);
+    $$->appendChild($2);
+  }
 ;
 
 type:
@@ -1085,14 +1089,8 @@ return_type:
   %empty {
     $$ = NNEW(n_EMPTY);
   }
-| ':' '?' type {
+| ':' optional_type {
     $$ = NNEW(n_DECLARATION_RETURN);
-    $$->appendChild(NTYPE($2, n_STRING));
-    $$->appendChild($3);
-  }
-| ':' type {
-    $$ = NNEW(n_DECLARATION_RETURN);
-    $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild($2);
   }
 ;
