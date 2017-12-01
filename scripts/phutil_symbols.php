@@ -540,6 +540,7 @@ function phutil_symbols_get_builtins() {
       // For discussion, see T12855.
       'Throwable' => true,
       'Error' => true,
+      'ParseError' => true,
     ),
     'function'  => array_filter(
       array(

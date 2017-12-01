@@ -234,9 +234,27 @@ final class PhutilBootloader {
 
     $old_last = error_get_last();
 
-    $old = error_reporting(0);
-    $okay = include_once $path;
-    error_reporting($old);
+    try {
+      $old = error_reporting(0);
+      $okay = include_once $path;
+      error_reporting($old);
+    } catch (Exception $ex) {
+      throw $ex;
+    } catch (ParseError $throwable) {
+      // NOTE: As of PHP7, syntax errors may raise a ParseError (which is a
+      // Throwable, not an Exception) with a useless message (like "syntax
+      // error, unexpected ':'") and a trace which ends a level above this.
+
+      // Treating this object normally results in an unusable message which
+      // does not identify where the syntax error occurred. Converting it to
+      // a string and taking the first line gives us something reasonable,
+      // however.
+      $message = (string)$throwable;
+      $message = preg_split("/\n/", $message);
+      $message = reset($message);
+
+      throw new Exception($message);
+    }
 
     if (!$okay) {
       throw new Exception("Source file \"{$path}\" failed to load.");
