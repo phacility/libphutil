@@ -72,11 +72,20 @@ final class PhutilMarkupTestCase extends PhutilTestCase {
 
       // These should get the implicit insertion.
       'http://www.example.org/' => true,
-      '///evil.com/' => true,
       '  http://www.example.org/' => true,
       'ftp://filez.com' => true,
       'mailto:santa@northpole.com' => true,
       'tel:18005555555' => true,
+
+      // These are protocol-relative hrefs. Browers will treat a URI with
+      // a leading slash followed by any positive number of slashes and
+      // backslashes as a protocol-relative link.
+      '//evil.com/' => true,
+      '/\\evil.com/' => true,
+      '///evil.com/' => true,
+      '//\\evil.com/' => true,
+      '/\\/evil.com/' => true,
+      '/\\\\/evil.com' => true,
     );
 
     foreach ($map as $input => $expect) {

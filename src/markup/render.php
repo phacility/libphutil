@@ -35,9 +35,14 @@ function phutil_tag($tag, array $attributes = array(), $content = null) {
       $is_anchor_href = ($href[0] == '#');
 
       // Is this a link to a resource on the same domain? The second part of
-      // this excludes "///evil.com/" protocol-relative hrefs.
-      $is_domain_href = ($href[0] == '/') &&
-                        (!isset($href[1]) || $href[1] != '/');
+      // this excludes "//evil.com/" protocol-relative hrefs. The third part
+      // of this excludes "/\evil.com/" protocol-relative fantasy hrefs which
+      // are completely made up but which browsers all respect. Broadly,
+      // browsers will dutifuly treat "/" followed by ANY sequence of "/" and
+      // "\" as though it were "//".
+      $is_domain_href =
+        ($href[0] == '/') &&
+        (!isset($href[1]) || ($href[1] != '/' && $href[1] != '\\'));
 
       // If the `rel` attribute is not specified, fill in `rel="noreferrer"`.
       // Effectively, this serves to make the default behavior for offsite
