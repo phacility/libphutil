@@ -2,8 +2,12 @@
 
 final class FileFinderTestCase extends PhutilTestCase {
 
-  private function newFinder() {
-    return id(new FileFinder(dirname(__FILE__).'/data'))
+  private function newFinder($directory = null) {
+    if (!$directory) {
+      $directory = dirname(__FILE__).'/data';
+    }
+
+    return id(new FileFinder($directory))
       ->excludePath('./exclude')
       ->excludePath('subdir.txt');
   }
@@ -117,6 +121,68 @@ final class FileFinderTestCase extends PhutilTestCase {
         ->withSuffix('txt'),
       array(
         'include_dir.txt/subdir.txt/alsoinclude.txt',
+      ));
+  }
+
+  public function testFinderWithGlobMagic() {
+    // Fill a temporary directory with all this magic garbage so we don't have
+    // to check a bunch of files with backslashes in their names into version
+    // control.
+    $tmp_dir = Filesystem::createTemporaryDirectory();
+
+    $crazy_magic = array(
+      'backslash\\.\\*',
+      'star-*.*',
+      'star-*.txt',
+      'star.t*t',
+      'star.tesseract',
+    );
+
+    foreach ($crazy_magic as $sketchy_path) {
+      Filesystem::writeFile($tmp_dir.'/'.$sketchy_path, '.');
+    }
+
+    $this->assertFinder(
+      pht('Glob Magic, Literal .t*t'),
+      $this->newFinder($tmp_dir)
+        ->withType('f')
+        ->withSuffix('t*t'),
+      array(
+        'star.t*t',
+      ));
+
+    $this->assertFinder(
+      pht('Glob Magic, .tesseract'),
+      $this->newFinder($tmp_dir)
+        ->withType('f')
+        ->withSuffix('tesseract'),
+      array(
+        'star.tesseract',
+      ));
+
+    $this->assertFinder(
+      pht('Glob Magic, Name'),
+      $this->newFinder($tmp_dir)
+        ->withType('f')
+        ->withName('star-*'),
+      array());
+
+    $this->assertFinder(
+      pht('Glob Magic, Name + Suffix'),
+      $this->newFinder($tmp_dir)
+        ->withType('f')
+        ->withName('star-*.*'),
+      array(
+        'star-*.*',
+      ));
+
+    $this->assertFinder(
+      pht('Glob Magic, Backslash Suffix'),
+      $this->newFinder($tmp_dir)
+        ->withType('f')
+        ->withSuffix('\\*'),
+      array(
+        'backslash\\.\\*',
       ));
   }
 

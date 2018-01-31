@@ -58,7 +58,7 @@ final class FileFinder extends Phobject {
    * @task config
    */
   public function withSuffix($suffix) {
-    $this->suffix[] = '*.'.$suffix;
+    $this->suffix[] = $suffix;
     return $this;
   }
 
@@ -128,8 +128,10 @@ final class FileFinder extends Phobject {
 
     if ($this->suffix) {
       $matches = false;
-      foreach ($this->suffix as $curr_suffix) {
-        if (fnmatch($curr_suffix, $file)) {
+      foreach ($this->suffix as $suffix) {
+        $suffix = addcslashes($suffix, '\\?*');
+        $suffix = '*.'.$suffix;
+        if (fnmatch($suffix, $file)) {
           $matches = true;
           break;
         }
@@ -248,11 +250,11 @@ final class FileFinder extends Phobject {
       }
 
       if ($this->name) {
-        $command[] = $this->generateList('name', $this->name);
+        $command[] = $this->generateList('name', $this->name, 'name');
       }
 
       if ($this->suffix) {
-        $command[] = $this->generateList('name', $this->suffix);
+        $command[] = $this->generateList('name', $this->suffix, 'suffix');
       }
 
       if ($this->paths) {
@@ -307,11 +309,29 @@ final class FileFinder extends Phobject {
   /**
    * @task internal
    */
-  private function generateList($flag, array $items) {
-    $items = array_map('escapeshellarg', $items);
+  private function generateList(
+    $flag,
+    array $items,
+    $mode = 'path') {
+
     foreach ($items as $key => $item) {
-      $items[$key] = '-'.$flag.' '.$item;
+      // If the mode is not "path" mode, we're going to escape glob characters
+      // in the pattern. Otherwise, we escape only backslashes.
+      if ($mode === 'path') {
+        $item = addcslashes($item, '\\');
+      } else {
+        $item = addcslashes($item, '\\*?');
+      }
+
+      if ($mode === 'suffix') {
+        $item = '*.'.$item;
+      }
+
+      $item = (string)csprintf('%s %s', '-'.$flag, $item);
+
+      $items[$key] = $item;
     }
+
     $items = implode(' -o ', $items);
     return '"(" '.$items.' ")"';
   }
