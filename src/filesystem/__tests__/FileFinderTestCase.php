@@ -184,6 +184,26 @@ final class FileFinderTestCase extends PhutilTestCase {
       array(
         'backslash\\.\\*',
       ));
+
+    $this->assertFinder(
+      pht('Glob Magic, With Globs'),
+      $this->newFinder($tmp_dir)
+        ->withType('f')
+        ->withNameGlob('star-*'),
+      array(
+        'star-*.*',
+        'star-*.txt',
+      ));
+
+    $this->assertFinder(
+      pht('Glob Magic, With Globs + Suffix'),
+      $this->newFinder($tmp_dir)
+        ->withType('f')
+        ->withNameGlob('star-*')
+        ->withSuffix('txt'),
+      array(
+        'star-*.txt',
+      ));
   }
 
   private function assertFinder($label, FileFinder $finder, $expect) {

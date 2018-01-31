@@ -22,6 +22,7 @@ final class FileFinder extends Phobject {
   private $paths = array();
   private $name = array();
   private $suffix = array();
+  private $nameGlobs = array();
   private $type;
   private $generateChecksums = false;
   private $followSymlinks;
@@ -98,6 +99,11 @@ final class FileFinder extends Phobject {
     return $this->generateChecksums;
   }
 
+  public function withNameGlob($pattern) {
+    $this->nameGlobs[] = $pattern;
+    return $this;
+  }
+
   /**
    * @task config
    * @param string Either "php", "shell", or the empty string.
@@ -116,6 +122,23 @@ final class FileFinder extends Phobject {
       $matches = false;
       foreach ($this->name as $curr_name) {
         if (basename($file) === $curr_name) {
+          $matches = true;
+          break;
+        }
+      }
+
+      if (!$matches) {
+        return false;
+      }
+    }
+
+    if ($this->nameGlobs) {
+      $name = basename($file);
+
+      $matches = false;
+      foreach ($this->nameGlobs as $glob) {
+        $glob = addcslashes($glob, '\\');
+        if (fnmatch($glob, $name)) {
           $matches = true;
           break;
         }
@@ -261,6 +284,10 @@ final class FileFinder extends Phobject {
         $command[] = $this->generateList('path', $this->paths);
       }
 
+      if ($this->nameGlobs) {
+        $command[] = $this->generateList('name', $this->nameGlobs);
+      }
+
       $command[] = '-print0';
 
       array_unshift($args, implode(' ', $command));
@@ -312,12 +339,12 @@ final class FileFinder extends Phobject {
   private function generateList(
     $flag,
     array $items,
-    $mode = 'path') {
+    $mode = 'glob') {
 
     foreach ($items as $key => $item) {
-      // If the mode is not "path" mode, we're going to escape glob characters
+      // If the mode is not "glob" mode, we're going to escape glob characters
       // in the pattern. Otherwise, we escape only backslashes.
-      if ($mode === 'path') {
+      if ($mode === 'glob') {
         $item = addcslashes($item, '\\');
       } else {
         $item = addcslashes($item, '\\*?');
