@@ -107,38 +107,56 @@ final class FileFinder extends Phobject {
    * @task internal
    */
   public function validateFile($file) {
-    $matches = !count($this->name) && !count($this->suffix);
-    foreach ($this->name as $curr_name) {
-      if (basename($file) === $curr_name) {
-        $matches = true;
-        break;
+
+    if ($this->name) {
+      $matches = false;
+      foreach ($this->name as $curr_name) {
+        if (basename($file) === $curr_name) {
+          $matches = true;
+          break;
+        }
       }
-    }
-    foreach ($this->suffix as $curr_suffix) {
-      if (fnmatch($curr_suffix, $file)) {
-        $matches = true;
-        break;
+
+      if (!$matches) {
+        return false;
       }
-    }
-    if (!$matches) {
-      return false;
     }
 
-    $matches = (count($this->paths) == 0);
-    foreach ($this->paths as $path) {
-      if (fnmatch($path, $this->root.'/'.$file)) {
-        $matches = true;
-        break;
+    if ($this->suffix) {
+      $matches = false;
+      foreach ($this->suffix as $curr_suffix) {
+        if (fnmatch($curr_suffix, $file)) {
+          $matches = true;
+          break;
+        }
+      }
+
+      if (!$matches) {
+        return false;
+      }
+    }
+
+    if ($this->paths) {
+      $matches = false;
+      foreach ($this->paths as $path) {
+        if (fnmatch($path, $this->root.'/'.$file)) {
+          $matches = true;
+          break;
+        }
+      }
+
+      if (!$matches) {
+        return false;
       }
     }
 
     $fullpath = $this->root.'/'.ltrim($file, '/');
     if (($this->type == 'f' && is_dir($fullpath))
         || ($this->type == 'd' && !is_dir($fullpath))) {
-      $matches = false;
+      return false;
     }
 
-    return $matches;
+    return true;
   }
 
   /**
@@ -225,10 +243,12 @@ final class FileFinder extends Phobject {
         $args[] = $this->type;
       }
 
-      if ($this->name || $this->suffix) {
-        $command[] = $this->generateList('name', array_merge(
-          $this->name,
-          $this->suffix));
+      if ($this->name) {
+        $command[] = $this->generateList('name', $this->name);
+      }
+
+      if ($this->suffix) {
+        $command[] = $this->generateList('name', $this->suffix);
       }
 
       if ($this->paths) {

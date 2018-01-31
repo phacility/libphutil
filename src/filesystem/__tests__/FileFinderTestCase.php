@@ -162,4 +162,20 @@ final class FileFinderTestCase extends PhutilTestCase {
     }
   }
 
+  public function testFinderWithNameAndSuffix() {
+    foreach (array('php', 'shell') as $mode) {
+      $files = $this->getFinder()
+        ->withType('f')
+        ->withName('alsoinclude.txt')
+        ->withSuffix('txt')
+        ->setForceMode($mode)
+        ->find();
+
+      $this->assertEqual(
+        array(
+          'include_dir.txt/subdir.txt/alsoinclude.txt',
+        ),
+        $files);
+    }
+  }
 }
