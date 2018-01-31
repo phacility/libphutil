@@ -94,6 +94,10 @@ final class FileFinder extends Phobject {
     return $this;
   }
 
+  public function getGenerateChecksums() {
+    return $this->generateChecksums;
+  }
+
   /**
    * @task config
    * @param string Either "php", "shell", or the empty string.
