@@ -897,3 +897,54 @@ function phutil_utf8v_combine_characters(array $characters) {
 
   return $parts;
 }
+
+
+/**
+ * Return the current system locale setting (LC_ALL).
+ *
+ * @return string Current system locale setting.
+ */
+function phutil_get_system_locale() {
+  $locale = setlocale(LC_ALL, 0);
+
+  if ($locale === false) {
+    throw new Exception(
+      pht(
+        'Unable to determine current system locale (call to '.
+        '"setlocale(LC_ALL, 0)" failed).'));
+  }
+
+  return $locale;
+}
+
+
+/**
+ * Test if a system locale (LC_ALL) is available on the system.
+ *
+ * @param string Locale name like "en_US.UTF-8".
+ * @return bool True if the locale is available.
+ */
+function phutil_is_system_locale_available($locale) {
+  $old_locale = phutil_get_system_locale();
+  $is_available = @setlocale(LC_ALL, $locale);
+  setlocale(LC_ALL, $old_locale);
+
+  return ($is_available !== false);
+}
+
+
+/**
+ * Set the system locale (LC_ALL) to a particular value.
+ *
+ * @param string New locale setting.
+ * @return void
+ */
+function phutil_set_system_locale($locale) {
+  $ok = @setlocale(LC_ALL, $locale);
+  if (!$ok) {
+    throw new Exception(
+      pht(
+        'Failed to set system locale (to "%s").',
+        $locale));
+  }
+}
