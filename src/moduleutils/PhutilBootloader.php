@@ -215,7 +215,7 @@ final class PhutilBootloader {
 
   private function executeInclude($path) {
     // Include the source using `include_once`, but convert any warnings or
-    // errors into exceptions.
+    // recoverable errors into exceptions.
 
     // Some messages, including "Declaration of X should be compatible with Y",
     // do not cause `include_once` to return an error code. Use
@@ -230,12 +230,18 @@ final class PhutilBootloader {
     // but the function does not exist in earlier versions of PHP. Instead,
     // check if the value has changed.
 
+    // Some parser-like errors, including "class must implement all abstract
+    // methods", cause PHP to fatal immediately with an E_ERROR. In these
+    // cases, include_once() does not throw and never returns. We leave
+    // reporting enabled for these errors since we don't have a way to do
+    // anything more graceful.
+
     // See also T12190.
 
     $old_last = error_get_last();
 
     try {
-      $old = error_reporting(0);
+      $old = error_reporting(E_ERROR);
       $okay = include_once $path;
       error_reporting($old);
     } catch (Exception $ex) {
