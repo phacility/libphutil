@@ -91,4 +91,40 @@ final class PhutilEmailAddressTestCase extends PhutilTestCase {
       $email->getAddress());
   }
 
+  public function testEmailEncoding() {
+    $cases = array(
+      array(
+        'Tangerine Q. Hawthorne',
+        'thawthorne@blackspire.bunker',
+        '"Tangerine Q. Hawthorne" <thawthorne@blackspire.bunker>',
+      ),
+      array(
+        'Hector "\\" Backslash',
+        'hector@backslash',
+        '"Hector \\"\\\\\\" Backslash" <hector@backslash>',
+      ),
+      array(
+        'My Middle Name "<name@domain>" Is My Email',
+        'name@domain',
+        '"My Middle Name \\"<name@domain>\\" Is My Email" <name@domain>',
+      ),
+      array(
+        "My Legal Name\nContains A Newline",
+        'newline@example',
+        '"My Legal Name Contains A Newline" <newline@example>',
+      ),
+    );
+
+    foreach ($cases as $case) {
+      list($name, $address, $expect) = $case;
+      $actual = (string)id(new PhutilEmailAddress())
+        ->setDisplayName($name)
+        ->setAddress($address);
+      $this->assertEqual(
+        $expect,
+        $actual,
+        pht('Email: %s + %s -> %s', $name, $address, $expect));
+    }
+  }
+
 }
