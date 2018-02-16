@@ -15,7 +15,26 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
 
     // Handle markdown-style links: [name](href)
     $text = preg_replace_callback(
-      '@\B\\[([^\\]]+)\\]\\(([^\\)]+)\\)\B@U',
+      '@'.
+        '\B'.
+        '\\[([^\\]]+)\\]'.
+        '\\('.
+          '(\s*'.
+            // See T12343. This is making some kind of effort to implement
+            // parenthesis balancing rules. It won't get nested parentheses
+            // right, but should do OK for Wikipedia pages, which seem to be
+            // the most important use case.
+
+            // Match zero or more non-parenthesis, non-space characters.
+            '[^\s()]*'.
+            // Match zero or more sequences of "(...)", where two balanced
+            // parentheses enclose zero or more normal characters. If we
+            // match some, optionally match more stuff at the end.
+            '(?:(?:\\([^ ()]*\\))+[^\s()]*)?'.
+          '\s*)'.
+        '\\)'.
+      '\B'.
+      '@U',
       array($this, 'markupAlternateLink'),
       $text);
 
@@ -94,6 +113,10 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
       return $matches[0];
     }
 
+    if (!strlen($uri[0])) {
+      return $matches[0];
+    }
+
     if (strpos($uri, '/') === false &&
         strpos($uri, '@') === false &&
         strncmp($uri, 'tel:', 4)) {
@@ -132,6 +155,13 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
         // T12796.
         $is_uri = false;
       }
+    }
+
+    // As a special case, skip "[[ / ]]" so that Phriction picks it up as a
+    // link to the Phriction root. It is more useful to be able to use this
+    // syntax to link to the root document than the home page of the install.
+    if ($uri == '/') {
+      $is_uri = false;
     }
 
     if (!$is_uri) {
