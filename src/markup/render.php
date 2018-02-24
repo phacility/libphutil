@@ -22,40 +22,13 @@
  * @return PhutilSafeHTML Tag object.
  */
 function phutil_tag($tag, array $attributes = array(), $content = null) {
-  // If the `href` attribute is present:
-  //   - make sure it is not a "javascript:" URI. We never permit these.
-  //   - if the tag is an `<a>` and the link is to some foreign resource,
-  //     add `rel="nofollow"` by default.
+  // If the `href` attribute is present, make sure it is not a "javascript:"
+  // URI. We never permit these.
   if (!empty($attributes['href'])) {
-
     // This might be a URI object, so cast it to a string.
     $href = (string)$attributes['href'];
 
     if (isset($href[0])) {
-      $is_anchor_href = ($href[0] == '#');
-
-      // Is this a link to a resource on the same domain? The second part of
-      // this excludes "//evil.com/" protocol-relative hrefs. The third part
-      // of this excludes "/\evil.com/" protocol-relative fantasy hrefs which
-      // are completely made up but which browsers all respect. Broadly,
-      // browsers will dutifuly treat "/" followed by ANY sequence of "/" and
-      // "\" as though it were "//".
-      $is_domain_href =
-        ($href[0] == '/') &&
-        (!isset($href[1]) || ($href[1] != '/' && $href[1] != '\\'));
-
-      // If the `rel` attribute is not specified, fill in `rel="noreferrer"`.
-      // Effectively, this serves to make the default behavior for offsite
-      // links "do not send a  referrer", which is broadly desirable. Specifying
-      // some non-null `rel` will skip this.
-      if (!isset($attributes['rel'])) {
-        if (!$is_anchor_href && !$is_domain_href) {
-          if ($tag == 'a') {
-            $attributes['rel'] = 'noreferrer';
-          }
-        }
-      }
-
       // Block 'javascript:' hrefs at the tag level: no well-designed
       // application should ever use them, and they are a potent attack vector.
 
@@ -63,7 +36,7 @@ function phutil_tag($tag, array $attributes = array(), $content = null) {
       // doing a cheap version of this test first to avoid calling preg_match()
       // on URIs which begin with '/' or `#`. These cover essentially all URIs
       // in Phabricator.
-      if (!$is_anchor_href && !$is_domain_href) {
+      if (($href[0] !== '/') && ($href[0] !== '#')) {
         // Chrome 33 and IE 11 both interpret "javascript\n:" as a Javascript
         // URI, and all browsers interpret "  javascript:" as a Javascript URI,
         // so be aggressive about looking for "javascript:" in the initial

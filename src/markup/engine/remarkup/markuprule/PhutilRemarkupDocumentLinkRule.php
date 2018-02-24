@@ -91,9 +91,10 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
     return phutil_tag(
       'a',
       array(
-        'href'    => $link,
-        'class'   => 'remarkup-link',
-        'target'  => $target,
+        'href' => $link,
+        'class' => 'remarkup-link',
+        'target' => $target,
+        'rel' => 'noreferrer',
       ),
       $name);
   }
