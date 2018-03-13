@@ -44,4 +44,11 @@ final class PhutilSortVector
     return implode("\0", $this->parts);
   }
 
+  /**
+   * This allows you to sort a list of sort vectors using @{function:msortv}.
+   */
+  public function getSelf() {
+    return $this;
+  }
+
 }
