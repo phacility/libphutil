@@ -10,12 +10,23 @@ final class PhutilServiceProfiler extends Phobject {
   private $listeners = array();
   private $events = array();
   private $logSize = 0;
+
   private $discardMode = false;
+  private $collectStackTraces;
 
   private function __construct() {}
 
   public function enableDiscardMode() {
     $this->discardMode = true;
+  }
+
+  public function setCollectStackTraces($collect_stack_traces) {
+    $this->collectStackTraces = $collect_stack_traces;
+    return $this;
+  }
+
+  public function getCollectStackTraces() {
+    return $this->collectStackTraces;
   }
 
   public static function getInstance() {
@@ -27,6 +38,13 @@ final class PhutilServiceProfiler extends Phobject {
 
   public function beginServiceCall(array $data) {
     $data['begin'] = microtime(true);
+
+    if ($this->collectStackTraces) {
+      $trace = debug_backtrace();
+      $trace = PhutilErrorHandler::formatStacktrace($trace);
+      $data['trace'] = $trace;
+    }
+
     $id = $this->logSize++;
     $this->events[$id] = $data;
     foreach ($this->listeners as $listener) {
