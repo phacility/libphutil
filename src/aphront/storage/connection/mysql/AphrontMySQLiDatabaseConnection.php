@@ -6,6 +6,8 @@
 final class AphrontMySQLiDatabaseConnection
   extends AphrontBaseMySQLDatabaseConnection {
 
+  private $connectionOpen = false;
+
   public function escapeUTF8String($string) {
     $this->validateUTF8String($string);
     return $this->escapeBinaryString($string);
@@ -24,7 +26,10 @@ final class AphrontMySQLiDatabaseConnection
   }
 
   protected function closeConnection() {
-    $this->requireConnection()->close();
+    if ($this->connectionOpen) {
+      $this->requireConnection()->close();
+      $this->connectionOpen = false;
+    }
   }
 
   protected function connect() {
@@ -75,6 +80,8 @@ final class AphrontMySQLiDatabaseConnection
       $error = $conn->connect_error;
       $this->throwConnectionException($errno, $error, $user, $host);
     }
+
+    $this->connectionOpen = true;
 
     $ok = @$conn->set_charset('utf8mb4');
     if (!$ok) {
