@@ -209,13 +209,11 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
       array("Gr\xCD\xA0mpyCatSmiles", 8, '...', "Gr\xCD\xA0mpy..."),
       array("X\xCD\xA0\xCD\xA0\xCD\xA0Y", 1, '', "X\xCD\xA0\xCD\xA0\xCD\xA0"),
 
-      // This behavior is maybe a little bad, but it seems mostly reasonable,
-      // at least for latin languages.
       array(
         'Derp, supercalafragalisticexpialadoshus',
         30,
         '...',
-        'Derp...',
+        'Derp, supercalafragalistice...',
       ),
 
       // If a string has only word-break characters in it, we should just cut
@@ -224,6 +222,13 @@ final class PhutilUTF8TestCase extends PhutilTestCase {
 
       // Terminal is longer than requested input.
       array('derp', 3, 'quack', 'quack'),
+
+      array(
+        'O123: com/oracle/java/path/to/application/source/ThingFactory.java',
+        32,
+        '...',
+        'O123: com/oracle/java/path/to...',
+      ),
     );
 
     foreach ($inputs as $input) {

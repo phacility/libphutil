@@ -239,6 +239,7 @@ final class PhutilUTF8StringTruncator extends Phobject {
     // Search backward in the string, looking for reasonable places to break it.
     $word_boundary = null;
     $stop_boundary = null;
+    $any_nonboundary = false;
 
     // If we do a word break with a terminal, we have to look beyond at least
     // the number of characters in the terminal. If the terminal is longer than
@@ -250,7 +251,12 @@ final class PhutilUTF8StringTruncator extends Phobject {
     // a non-latin language without word break characters we're just wasting
     // time.
 
-    $search = max(0, $cutoff - 256);
+    // See PHI654. We also only look for a break near the end of the text,
+    // relative to the length of the text. If the text is something like
+    // "O123: MMMMMM..." or "See path/to/long/thing", we want to cut the very
+    // long word in half, not just render "O123..." or "See...".
+
+    $search = max(0, $cutoff - 256, $cutoff / 2);
     for ($ii = min($cutoff, $glyph_len - 1); $ii >= $search; $ii--) {
       $c = $string_gv[$ii];
 
@@ -260,6 +266,7 @@ final class PhutilUTF8StringTruncator extends Phobject {
         $stop_boundary = $ii + 1;
         break;
       } else {
+        $any_nonboundary = true;
         if ($word_boundary !== null) {
           break;
         }
@@ -275,7 +282,7 @@ final class PhutilUTF8StringTruncator extends Phobject {
 
     // If we didn't find any boundary characters or we found ONLY boundary
     // characters, just break at the maximum character length.
-    if ($word_boundary === null || $word_boundary === 0) {
+    if ($word_boundary === null || !$any_nonboundary) {
       $word_boundary = $cutoff;
     }
 
