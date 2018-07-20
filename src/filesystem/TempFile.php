@@ -30,10 +30,15 @@ final class TempFile extends Phobject {
    * @param string? Filename hint. This is useful if you intend to edit the
    *                file with an interactive editor, so the user's editor shows
    *                "commit-message" instead of "p3810hf-1z9b89bas".
+   * @param string? Root directory to hold the file. If omitted, the system
+   *                temporary directory (often "/tmp") will be used by default.
    * @task create
    */
-  public function __construct($filename = null) {
-    $this->dir = Filesystem::createTemporaryDirectory();
+  public function __construct($filename = null, $root_directory = null) {
+    $this->dir = Filesystem::createTemporaryDirectory(
+      '',
+      0700,
+      $root_directory);
     if ($filename === null) {
       $this->file = tempnam($this->dir, getmypid().'-');
     } else {

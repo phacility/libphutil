@@ -677,18 +677,30 @@ final class Filesystem extends Phobject {
    * @param  string    Optional directory prefix.
    * @param  int       Permissions to create the directory with. By default,
    *                   these permissions are very restrictive (0700).
+   * @param  string    Optional root directory. If not provided, the system
+   *                   temporary directory (often "/tmp") will be used.
    * @return string    Path to newly created temporary directory.
    *
    * @task   directory
    */
-  public static function createTemporaryDirectory($prefix = '', $umask = 0700) {
+  public static function createTemporaryDirectory(
+    $prefix = '',
+    $umask = 0700,
+    $root_directory = null) {
     $prefix = preg_replace('/[^A-Z0-9._-]+/i', '', $prefix);
 
-    $tmp = sys_get_temp_dir();
-    if (!$tmp) {
-      throw new FilesystemException(
-        $tmp,
-        pht('Unable to determine system temporary directory.'));
+    if ($root_directory !== null) {
+      $tmp = $root_directory;
+      self::assertExists($tmp);
+      self::assertIsDirectory($tmp);
+      self::assertWritable($tmp);
+    } else {
+      $tmp = sys_get_temp_dir();
+      if (!$tmp) {
+        throw new FilesystemException(
+          $tmp,
+          pht('Unable to determine system temporary directory.'));
+      }
     }
 
     $base = $tmp.DIRECTORY_SEPARATOR.$prefix;
