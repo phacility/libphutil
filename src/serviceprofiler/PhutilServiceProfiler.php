@@ -190,7 +190,24 @@ final class PhutilServiceProfiler extends Phobject {
       $mark,
       $id,
       $type,
-      $desc);
+      self::escapeProfilerStringForDisplay($desc));
   }
+
+  private static function escapeProfilerStringForDisplay($string) {
+    // Convert tabs and newlines to spaces and collapse blocks of whitespace,
+    // most often formatting in queries.
+    $string = preg_replace('/\s{2,}/', ' ', $string);
+
+    // Replace sequences of binary characters with printable text. We allow
+    // some printable characters to appear in between unprintable characters
+    // to try to collapse the entire run.
+    $string = preg_replace(
+      '/[\x00-\x1F\x7F-\xFF](.{0,12}[\x00-\x1F\x7F-\xFF])*/',
+      '<...binary data...>',
+      $string);
+
+    return $string;
+  }
+
 
 }
