@@ -7,12 +7,14 @@
 final class PhutilServiceProfiler extends Phobject {
 
   private static $instance;
+
   private $listeners = array();
   private $events = array();
   private $logSize = 0;
 
   private $discardMode = false;
   private $collectStackTraces;
+  private $zeroTime;
 
   private function __construct() {}
 
@@ -184,11 +186,18 @@ final class PhutilServiceProfiler extends Phobject {
         new PhutilNumber((int)(1000000 * $data['duration'])));
     }
 
+    $instance = self::getInstance();
+    if (!$instance->zeroTime) {
+      $instance->zeroTime = microtime(true);
+    }
+    $elapsed = microtime(true) - $instance->zeroTime;
+
     $console = PhutilConsole::getConsole();
     $console->writeLog(
-      "%s [%s] <%s> %s\n",
+      "%s [%s] (+%s) <%s> %s\n",
       $mark,
       $id,
+      pht('%s', new PhutilNumber((int)(1000 * $elapsed))),
       $type,
       self::escapeProfilerStringForDisplay($desc));
   }
