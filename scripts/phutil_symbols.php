@@ -547,12 +547,21 @@ function phutil_symbols_get_builtins() {
       // PHP7 defines these new parent classes of "Exception", but they do not
       // exist prior to PHP7. It's possible to use them safely in PHP5, in
       // some cases, to write code which is compatible with either PHP5 or
-      // PHP7, but it s hard for us tell if a particular use is safe or not.
+      // PHP7, but it's hard for us tell if a particular use is safe or not.
       // For now, assume users know what they're doing and that uses are safe.
       // For discussion, see T12855.
       'Throwable' => true,
       'Error' => true,
       'ParseError' => true,
+
+      // PHP7 types.
+      'bool' => true,
+      'float' => true,
+      'int' => true,
+      'string' => true,
+      'iterable' => true,
+      'object' => true,
+      'void' => true,
     ),
     'function'  => array_filter(
       array(
