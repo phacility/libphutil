@@ -312,6 +312,18 @@ foreach ($parameters as $parameter) {
   );
 }
 
+$returns = $root->selectDescendantsOfType('n_DECLARATION_RETURN');
+foreach ($returns as $return) {
+  $hint = $return->getChildByIndex(0);
+  if ($hint->getTypeName() !== 'n_CLASS_NAME') {
+    continue;
+  }
+  $need[] = array(
+    'type'   => 'class/interface',
+    'symbol' => $hint,
+  );
+}
+
 // This is "catch (Exception $ex)".
 $catches = $root->selectDescendantsOfType('n_CATCH');
 foreach ($catches as $catch) {
