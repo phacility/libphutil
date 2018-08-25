@@ -236,12 +236,16 @@ final class PhutilBootloader {
     // reporting enabled for these errors since we don't have a way to do
     // anything more graceful.
 
+    // Likewise, some errors, including "cannot redeclare Class::method()"
+    // cause PHP to fatal immediately with E_COMPILE_ERROR. Treat these like
+    // the similar errors which raise E_ERROR.
+
     // See also T12190.
 
     $old_last = error_get_last();
 
     try {
-      $old = error_reporting(E_ERROR);
+      $old = error_reporting(E_ERROR | E_COMPILE_ERROR);
       $okay = include_once $path;
       error_reporting($old);
     } catch (Exception $ex) {
