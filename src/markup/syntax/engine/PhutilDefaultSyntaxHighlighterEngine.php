@@ -80,6 +80,13 @@ final class PhutilDefaultSyntaxHighlighterEngine
         ->getHighlightFuture($source);
     }
 
+    if ($language == 'java') {
+      return id(new PhutilLexerSyntaxHighlighter())
+        ->setConfig('lexer', new PhutilJavaFragmentLexer())
+        ->setConfig('language', 'java')
+        ->getHighlightFuture($source);
+    }
+
     if ($language == 'json') {
       return id(new PhutilLexerSyntaxHighlighter())
         ->setConfig('lexer', new PhutilJSONFragmentLexer())
