@@ -48,7 +48,7 @@ final class PhutilHTTPResponseParser extends Phobject {
 
         $matches = null;
         $ok = preg_match(
-          '(^HTTP/\S+\s+(\d+)\s+(.*)$)i',
+          '(^HTTP/\S+\s+(\d+)(?:\s+(.*))?$)i',
           $first_line,
           $matches);
 

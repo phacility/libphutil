@@ -69,6 +69,27 @@ EORESPONSE;
       $input,
       id(new PhutilHTTPResponseParser())
         ->setFollowLocationHeaders(true));
+
+    $input = <<<EORESPONSE
+HTTP/1.0 200
+Reason: none
+
+This response has no "reason-phrase", which is unusual but valid.
+EORESPONSE;
+
+    $this->assertParse(
+      array(
+        array(
+          'code' => 200,
+          'headers' => array(
+            array('Reason', 'none'),
+          ),
+          'body' =>
+            'This response has no "reason-phrase", which is unusual but valid.',
+        ),
+      ),
+      $input,
+      id(new PhutilHTTPResponseParser()));
   }
 
   private function assertParse(array $expect, $input, $parser = null) {
