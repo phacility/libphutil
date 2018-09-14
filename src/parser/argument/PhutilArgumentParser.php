@@ -110,17 +110,22 @@ final class PhutilArgumentParser extends Phobject {
    *
    * @param   list  List of argument specs, see
    *                @{class:PhutilArgumentSpecification}.
+   * @param bool Require flags appear before any non-flag arguments.
    * @return  this
    * @task parse
    */
-  public function parsePartial(array $specs) {
-    return $this->parseInternal($specs, false);
+  public function parsePartial(array $specs, $initial_only = false) {
+    return $this->parseInternal($specs, false, $initial_only);
   }
 
   /**
    * @return  this
    */
-  private function parseInternal(array $specs, $correct_spelling) {
+  private function parseInternal(
+    array $specs,
+    $correct_spelling,
+    $initial_only) {
+
     $specs = PhutilArgumentSpecification::newSpecsFromList($specs);
     $this->mergeSpecs($specs);
 
@@ -130,6 +135,7 @@ final class PhutilArgumentParser extends Phobject {
 
     $argv = $this->argv;
     $len = count($argv);
+    $is_initial = true;
     for ($ii = 0; $ii < $len; $ii++) {
       $arg = $argv[$ii];
       $map = null;
@@ -151,6 +157,8 @@ final class PhutilArgumentParser extends Phobject {
         $pre = '-';
         $arg = substr($arg, 1);
         $map = $specs_by_short;
+      } else {
+        $is_initial = false;
       }
 
       if ($map) {
@@ -182,6 +190,14 @@ final class PhutilArgumentParser extends Phobject {
         }
 
         if (isset($map[$arg])) {
+          if ($initial_only && !$is_initial) {
+            throw new PhutilArgumentUsageException(
+              pht(
+                'Argument "%s" appears after the first non-flag argument. '.
+                'This special argument must appear before other arguments.',
+                "{$pre}{$arg}"));
+          }
+
           $spec = $map[$arg];
           unset($argv[$ii]);
 
@@ -282,7 +298,7 @@ final class PhutilArgumentParser extends Phobject {
    * @task parse
    */
   public function parseFull(array $specs) {
-    $this->parseInternal($specs, true);
+    $this->parseInternal($specs, true, false);
 
     if (count($this->argv)) {
       $arg = head($this->argv);
@@ -576,6 +592,11 @@ final class PhutilArgumentParser extends Phobject {
 
   public function getUnconsumedArgumentVector() {
     return $this->argv;
+  }
+
+  public function setUnconsumedArgumentVector(array $argv) {
+    $this->argv = $argv;
+    return $this;
   }
 
 
