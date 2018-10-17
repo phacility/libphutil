@@ -12,7 +12,7 @@ void print_node(xhpast::Node *node);
 int main(int argc, char* argv[]) {
   if (argc != 1) {
     // Coupling: modify also src/parser/xhpast/bin/PhutilXHPASTBinary.php
-    cout << "7.1.2\n";
+    cout << "7.1.3\n";
     return 0;
   }
 

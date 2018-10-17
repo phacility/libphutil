@@ -12,10 +12,232 @@
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
+#endif
+
+#ifdef yy_create_buffer
+#define xhpast_create_buffer_ALREADY_DEFINED
+#else
+#define yy_create_buffer xhpast_create_buffer
+#endif
+
+#ifdef yy_delete_buffer
+#define xhpast_delete_buffer_ALREADY_DEFINED
+#else
+#define yy_delete_buffer xhpast_delete_buffer
+#endif
+
+#ifdef yy_scan_buffer
+#define xhpast_scan_buffer_ALREADY_DEFINED
+#else
+#define yy_scan_buffer xhpast_scan_buffer
+#endif
+
+#ifdef yy_scan_string
+#define xhpast_scan_string_ALREADY_DEFINED
+#else
+#define yy_scan_string xhpast_scan_string
+#endif
+
+#ifdef yy_scan_bytes
+#define xhpast_scan_bytes_ALREADY_DEFINED
+#else
+#define yy_scan_bytes xhpast_scan_bytes
+#endif
+
+#ifdef yy_init_buffer
+#define xhpast_init_buffer_ALREADY_DEFINED
+#else
+#define yy_init_buffer xhpast_init_buffer
+#endif
+
+#ifdef yy_flush_buffer
+#define xhpast_flush_buffer_ALREADY_DEFINED
+#else
+#define yy_flush_buffer xhpast_flush_buffer
+#endif
+
+#ifdef yy_load_buffer_state
+#define xhpast_load_buffer_state_ALREADY_DEFINED
+#else
+#define yy_load_buffer_state xhpast_load_buffer_state
+#endif
+
+#ifdef yy_switch_to_buffer
+#define xhpast_switch_to_buffer_ALREADY_DEFINED
+#else
+#define yy_switch_to_buffer xhpast_switch_to_buffer
+#endif
+
+#ifdef yypush_buffer_state
+#define xhpastpush_buffer_state_ALREADY_DEFINED
+#else
+#define yypush_buffer_state xhpastpush_buffer_state
+#endif
+
+#ifdef yypop_buffer_state
+#define xhpastpop_buffer_state_ALREADY_DEFINED
+#else
+#define yypop_buffer_state xhpastpop_buffer_state
+#endif
+
+#ifdef yyensure_buffer_stack
+#define xhpastensure_buffer_stack_ALREADY_DEFINED
+#else
+#define yyensure_buffer_stack xhpastensure_buffer_stack
+#endif
+
+#ifdef yylex
+#define xhpastlex_ALREADY_DEFINED
+#else
+#define yylex xhpastlex
+#endif
+
+#ifdef yyrestart
+#define xhpastrestart_ALREADY_DEFINED
+#else
+#define yyrestart xhpastrestart
+#endif
+
+#ifdef yylex_init
+#define xhpastlex_init_ALREADY_DEFINED
+#else
+#define yylex_init xhpastlex_init
+#endif
+
+#ifdef yylex_init_extra
+#define xhpastlex_init_extra_ALREADY_DEFINED
+#else
+#define yylex_init_extra xhpastlex_init_extra
+#endif
+
+#ifdef yylex_destroy
+#define xhpastlex_destroy_ALREADY_DEFINED
+#else
+#define yylex_destroy xhpastlex_destroy
+#endif
+
+#ifdef yyget_debug
+#define xhpastget_debug_ALREADY_DEFINED
+#else
+#define yyget_debug xhpastget_debug
+#endif
+
+#ifdef yyset_debug
+#define xhpastset_debug_ALREADY_DEFINED
+#else
+#define yyset_debug xhpastset_debug
+#endif
+
+#ifdef yyget_extra
+#define xhpastget_extra_ALREADY_DEFINED
+#else
+#define yyget_extra xhpastget_extra
+#endif
+
+#ifdef yyset_extra
+#define xhpastset_extra_ALREADY_DEFINED
+#else
+#define yyset_extra xhpastset_extra
+#endif
+
+#ifdef yyget_in
+#define xhpastget_in_ALREADY_DEFINED
+#else
+#define yyget_in xhpastget_in
+#endif
+
+#ifdef yyset_in
+#define xhpastset_in_ALREADY_DEFINED
+#else
+#define yyset_in xhpastset_in
+#endif
+
+#ifdef yyget_out
+#define xhpastget_out_ALREADY_DEFINED
+#else
+#define yyget_out xhpastget_out
+#endif
+
+#ifdef yyset_out
+#define xhpastset_out_ALREADY_DEFINED
+#else
+#define yyset_out xhpastset_out
+#endif
+
+#ifdef yyget_leng
+#define xhpastget_leng_ALREADY_DEFINED
+#else
+#define yyget_leng xhpastget_leng
+#endif
+
+#ifdef yyget_text
+#define xhpastget_text_ALREADY_DEFINED
+#else
+#define yyget_text xhpastget_text
+#endif
+
+#ifdef yyget_lineno
+#define xhpastget_lineno_ALREADY_DEFINED
+#else
+#define yyget_lineno xhpastget_lineno
+#endif
+
+#ifdef yyset_lineno
+#define xhpastset_lineno_ALREADY_DEFINED
+#else
+#define yyset_lineno xhpastset_lineno
+#endif
+
+#ifdef yyget_column
+#define xhpastget_column_ALREADY_DEFINED
+#else
+#define yyget_column xhpastget_column
+#endif
+
+#ifdef yyset_column
+#define xhpastset_column_ALREADY_DEFINED
+#else
+#define yyset_column xhpastset_column
+#endif
+
+#ifdef yywrap
+#define xhpastwrap_ALREADY_DEFINED
+#else
+#define yywrap xhpastwrap
+#endif
+
+#ifdef yyget_lval
+#define xhpastget_lval_ALREADY_DEFINED
+#else
+#define yyget_lval xhpastget_lval
+#endif
+
+#ifdef yyset_lval
+#define xhpastset_lval_ALREADY_DEFINED
+#else
+#define yyset_lval xhpastset_lval
+#endif
+
+#ifdef yyalloc
+#define xhpastalloc_ALREADY_DEFINED
+#else
+#define yyalloc xhpastalloc
+#endif
+
+#ifdef yyrealloc
+#define xhpastrealloc_ALREADY_DEFINED
+#else
+#define yyrealloc xhpastrealloc
+#endif
+
+#ifdef yyfree
+#define xhpastfree_ALREADY_DEFINED
+#else
+#define yyfree xhpastfree
 #endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
@@ -88,29 +310,23 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
 
-#ifdef __cplusplus
+/* begin standard C++ headers. */
 
-/* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
-
-#else	/* ! __cplusplus */
-
-/* C99 requires __STDC__ to be defined as 1. */
-#if defined (__STDC__)
-
-#define YY_USE_CONST
-
-#endif	/* defined (__STDC__) */
-#endif	/* ! __cplusplus */
-
-#ifdef YY_USE_CONST
+/* TODO: this is always defined, so inline it */
 #define yyconst const
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define yynoreturn __attribute__((__noreturn__))
 #else
-#define yyconst
+#define yynoreturn
 #endif
 
 /* An opaque pointer. */
@@ -165,7 +381,7 @@ struct yy_buffer_state
 	/* Size of input buffer in bytes, not including room for EOB
 	 * characters.
 	 */
-	yy_size_t yy_buf_size;
+	int yy_buf_size;
 
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
@@ -193,7 +409,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -204,25 +420,25 @@ struct yy_buffer_state
 	};
 #endif /* !YY_STRUCT_YY_BUFFER_STATE */
 
-void xhpastrestart (FILE *input_file ,yyscan_t yyscanner );
-void xhpast_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-YY_BUFFER_STATE xhpast_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
-void xhpast_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void xhpast_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void xhpastpush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-void xhpastpop_buffer_state (yyscan_t yyscanner );
+void yyrestart ( FILE *input_file , yyscan_t yyscanner );
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size , yyscan_t yyscanner );
+void yy_delete_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yy_flush_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yypush_buffer_state ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+void yypop_buffer_state ( yyscan_t yyscanner );
 
-YY_BUFFER_STATE xhpast_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
-YY_BUFFER_STATE xhpast_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE xhpast_scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len , yyscan_t yyscanner );
 
-void *xhpastalloc (yy_size_t ,yyscan_t yyscanner );
-void *xhpastrealloc (void *,yy_size_t ,yyscan_t yyscanner );
-void xhpastfree (void * ,yyscan_t yyscanner );
+void *yyalloc ( yy_size_t , yyscan_t yyscanner );
+void *yyrealloc ( void *, yy_size_t , yyscan_t yyscanner );
+void yyfree ( void * , yyscan_t yyscanner );
 
 /* Begin user sect3 */
 
-#define xhpastwrap(n) 1
+#define xhpastwrap(yyscanner) (/*CONSTCOND*/1)
 #define YY_SKIP_YYWRAP
 
 #define yytext_ptr yytext_r
@@ -254,42 +470,46 @@ void xhpastfree (void * ,yyscan_t yyscanner );
 #define YY_EXTRA_TYPE void *
 #endif
 
-int xhpastlex_init (yyscan_t* scanner);
+int yylex_init (yyscan_t* scanner);
 
-int xhpastlex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+int yylex_init_extra ( YY_EXTRA_TYPE user_defined, yyscan_t* scanner);
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int xhpastlex_destroy (yyscan_t yyscanner );
+int yylex_destroy ( yyscan_t yyscanner );
 
-int xhpastget_debug (yyscan_t yyscanner );
+int yyget_debug ( yyscan_t yyscanner );
 
-void xhpastset_debug (int debug_flag ,yyscan_t yyscanner );
+void yyset_debug ( int debug_flag , yyscan_t yyscanner );
 
-YY_EXTRA_TYPE xhpastget_extra (yyscan_t yyscanner );
+YY_EXTRA_TYPE yyget_extra ( yyscan_t yyscanner );
 
-void xhpastset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+void yyset_extra ( YY_EXTRA_TYPE user_defined , yyscan_t yyscanner );
 
-FILE *xhpastget_in (yyscan_t yyscanner );
+FILE *yyget_in ( yyscan_t yyscanner );
 
-void xhpastset_in  (FILE * in_str ,yyscan_t yyscanner );
+void yyset_in  ( FILE * _in_str , yyscan_t yyscanner );
 
-FILE *xhpastget_out (yyscan_t yyscanner );
+FILE *yyget_out ( yyscan_t yyscanner );
 
-void xhpastset_out  (FILE * out_str ,yyscan_t yyscanner );
+void yyset_out  ( FILE * _out_str , yyscan_t yyscanner );
 
-int xhpastget_leng (yyscan_t yyscanner );
+			int yyget_leng ( yyscan_t yyscanner );
 
-char *xhpastget_text (yyscan_t yyscanner );
+char *yyget_text ( yyscan_t yyscanner );
 
-int xhpastget_lineno (yyscan_t yyscanner );
+int yyget_lineno ( yyscan_t yyscanner );
 
-void xhpastset_lineno (int line_number ,yyscan_t yyscanner );
+void yyset_lineno ( int _line_number , yyscan_t yyscanner );
 
-YYSTYPE * xhpastget_lval (yyscan_t yyscanner );
+int yyget_column  ( yyscan_t yyscanner );
 
-void xhpastset_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
+void yyset_column ( int _column_no , yyscan_t yyscanner );
+
+YYSTYPE * yyget_lval ( yyscan_t yyscanner );
+
+void yyset_lval ( YYSTYPE * yylval_param , yyscan_t yyscanner );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -297,18 +517,18 @@ void xhpastset_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int xhpastwrap (yyscan_t yyscanner );
+extern "C" int yywrap ( yyscan_t yyscanner );
 #else
-extern int xhpastwrap (yyscan_t yyscanner );
+extern int yywrap ( yyscan_t yyscanner );
 #endif
 #endif
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char *,yyconst char *,int ,yyscan_t yyscanner);
+static void yy_flex_strncpy ( char *, const char *, int , yyscan_t yyscanner);
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
+static int yy_flex_strlen ( const char * , yyscan_t yyscanner);
 #endif
 
 #ifndef YY_NO_INPUT
@@ -336,10 +556,10 @@ static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int xhpastlex \
-               (YYSTYPE * yylval_param ,yyscan_t yyscanner);
+extern int yylex \
+               (YYSTYPE * yylval_param , yyscan_t yyscanner);
 
-#define YY_DECL int xhpastlex \
+#define YY_DECL int yylex \
                (YYSTYPE * yylval_param , yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
@@ -357,10 +577,155 @@ extern int xhpastlex \
 #undef YY_DECL
 #endif
 
-#line 367 "scanner.l"
+#ifndef xhpast_create_buffer_ALREADY_DEFINED
+#undef yy_create_buffer
+#endif
+#ifndef xhpast_delete_buffer_ALREADY_DEFINED
+#undef yy_delete_buffer
+#endif
+#ifndef xhpast_scan_buffer_ALREADY_DEFINED
+#undef yy_scan_buffer
+#endif
+#ifndef xhpast_scan_string_ALREADY_DEFINED
+#undef yy_scan_string
+#endif
+#ifndef xhpast_scan_bytes_ALREADY_DEFINED
+#undef yy_scan_bytes
+#endif
+#ifndef xhpast_init_buffer_ALREADY_DEFINED
+#undef yy_init_buffer
+#endif
+#ifndef xhpast_flush_buffer_ALREADY_DEFINED
+#undef yy_flush_buffer
+#endif
+#ifndef xhpast_load_buffer_state_ALREADY_DEFINED
+#undef yy_load_buffer_state
+#endif
+#ifndef xhpast_switch_to_buffer_ALREADY_DEFINED
+#undef yy_switch_to_buffer
+#endif
+#ifndef xhpastpush_buffer_state_ALREADY_DEFINED
+#undef yypush_buffer_state
+#endif
+#ifndef xhpastpop_buffer_state_ALREADY_DEFINED
+#undef yypop_buffer_state
+#endif
+#ifndef xhpastensure_buffer_stack_ALREADY_DEFINED
+#undef yyensure_buffer_stack
+#endif
+#ifndef xhpastlex_ALREADY_DEFINED
+#undef yylex
+#endif
+#ifndef xhpastrestart_ALREADY_DEFINED
+#undef yyrestart
+#endif
+#ifndef xhpastlex_init_ALREADY_DEFINED
+#undef yylex_init
+#endif
+#ifndef xhpastlex_init_extra_ALREADY_DEFINED
+#undef yylex_init_extra
+#endif
+#ifndef xhpastlex_destroy_ALREADY_DEFINED
+#undef yylex_destroy
+#endif
+#ifndef xhpastget_debug_ALREADY_DEFINED
+#undef yyget_debug
+#endif
+#ifndef xhpastset_debug_ALREADY_DEFINED
+#undef yyset_debug
+#endif
+#ifndef xhpastget_extra_ALREADY_DEFINED
+#undef yyget_extra
+#endif
+#ifndef xhpastset_extra_ALREADY_DEFINED
+#undef yyset_extra
+#endif
+#ifndef xhpastget_in_ALREADY_DEFINED
+#undef yyget_in
+#endif
+#ifndef xhpastset_in_ALREADY_DEFINED
+#undef yyset_in
+#endif
+#ifndef xhpastget_out_ALREADY_DEFINED
+#undef yyget_out
+#endif
+#ifndef xhpastset_out_ALREADY_DEFINED
+#undef yyset_out
+#endif
+#ifndef xhpastget_leng_ALREADY_DEFINED
+#undef yyget_leng
+#endif
+#ifndef xhpastget_text_ALREADY_DEFINED
+#undef yyget_text
+#endif
+#ifndef xhpastget_lineno_ALREADY_DEFINED
+#undef yyget_lineno
+#endif
+#ifndef xhpastset_lineno_ALREADY_DEFINED
+#undef yyset_lineno
+#endif
+#ifndef xhpastget_column_ALREADY_DEFINED
+#undef yyget_column
+#endif
+#ifndef xhpastset_column_ALREADY_DEFINED
+#undef yyset_column
+#endif
+#ifndef xhpastwrap_ALREADY_DEFINED
+#undef yywrap
+#endif
+#ifndef xhpastget_lval_ALREADY_DEFINED
+#undef yyget_lval
+#endif
+#ifndef xhpastset_lval_ALREADY_DEFINED
+#undef yyset_lval
+#endif
+#ifndef xhpastget_lloc_ALREADY_DEFINED
+#undef yyget_lloc
+#endif
+#ifndef xhpastset_lloc_ALREADY_DEFINED
+#undef yyset_lloc
+#endif
+#ifndef xhpastalloc_ALREADY_DEFINED
+#undef yyalloc
+#endif
+#ifndef xhpastrealloc_ALREADY_DEFINED
+#undef yyrealloc
+#endif
+#ifndef xhpastfree_ALREADY_DEFINED
+#undef yyfree
+#endif
+#ifndef xhpasttext_ALREADY_DEFINED
+#undef yytext
+#endif
+#ifndef xhpastleng_ALREADY_DEFINED
+#undef yyleng
+#endif
+#ifndef xhpastin_ALREADY_DEFINED
+#undef yyin
+#endif
+#ifndef xhpastout_ALREADY_DEFINED
+#undef yyout
+#endif
+#ifndef xhpast_flex_debug_ALREADY_DEFINED
+#undef yy_flex_debug
+#endif
+#ifndef xhpastlineno_ALREADY_DEFINED
+#undef yylineno
+#endif
+#ifndef xhpasttables_fload_ALREADY_DEFINED
+#undef yytables_fload
+#endif
+#ifndef xhpasttables_destroy_ALREADY_DEFINED
+#undef yytables_destroy
+#endif
+#ifndef xhpastTABLES_NAME_ALREADY_DEFINED
+#undef yyTABLES_NAME
+#endif
+
+#line 368 "scanner.l"
 
 
-#line 364 "scanner.lex.hpp"
+#line 729 "scanner.lex.hpp"
 #undef xhpastIN_HEADER
 #endif /* xhpastHEADER_H */
 /* @generated */
