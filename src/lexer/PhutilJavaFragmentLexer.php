@@ -81,7 +81,7 @@ final class PhutilJavaFragmentLexer extends PhutilLexer {
           array('(package|import\\s+static|import)\\b', 'kn', 'import'),
           array('('.implode('|', $constants).')\\b', 'kc'),
           array('(class|interface)\\b', 'kd', 'class'),
-          array('"(\\\\\\\\|\\\\"|[^"]+)*"', 's'),
+          array('"(\\\\.|[^"\\\\]+)*"', 's'),
           array("'(\\\\.|[^\\\\]|\\\\u[0-9a-f-A-F]{4})'", 's'),
           array('([^\\W\\d]|\\$)[\\w$]*:', 'nl'),
           array('([^\\W\\d]|\\$)[\\w$]*', 'n'),
