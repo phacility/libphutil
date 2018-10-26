@@ -22,6 +22,8 @@ phutil_register_library_map(array(
     'AphrontConnectionQueryException' => 'aphront/storage/exception/AphrontConnectionQueryException.php',
     'AphrontCountQueryException' => 'aphront/storage/exception/AphrontCountQueryException.php',
     'AphrontDatabaseConnection' => 'aphront/storage/connection/AphrontDatabaseConnection.php',
+    'AphrontDatabaseTableRef' => 'xsprintf/AphrontDatabaseTableRef.php',
+    'AphrontDatabaseTableRefInterface' => 'xsprintf/AphrontDatabaseTableRefInterface.php',
     'AphrontDatabaseTransactionState' => 'aphront/storage/connection/AphrontDatabaseTransactionState.php',
     'AphrontDeadlockQueryException' => 'aphront/storage/exception/AphrontDeadlockQueryException.php',
     'AphrontDuplicateKeyQueryException' => 'aphront/storage/exception/AphrontDuplicateKeyQueryException.php',
@@ -644,6 +646,10 @@ phutil_register_library_map(array(
     'AphrontDatabaseConnection' => array(
       'Phobject',
       'PhutilQsprintfInterface',
+    ),
+    'AphrontDatabaseTableRef' => array(
+      'Phobject',
+      'AphrontDatabaseTableRefInterface',
     ),
     'AphrontDatabaseTransactionState' => 'Phobject',
     'AphrontDeadlockQueryException' => 'AphrontRecoverableQueryException',

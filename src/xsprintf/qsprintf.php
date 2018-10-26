@@ -234,6 +234,17 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         $type = 's';
         break;
 
+      case 'R': // Database + Table Reference
+        $database_name = $value->getAphrontRefDatabaseName();
+        $database_name = $escaper->escapeColumnName($database_name);
+
+        $table_name = $value->getAphrontRefTableName();
+        $table_name = $escaper->escapeColumnName($table_name);
+
+        $value = $database_name.'.'.$table_name;
+        $type = 's';
+        break;
+
       default:
         throw new XsprintfUnknownConversionException($type);
     }
@@ -309,6 +320,16 @@ function qsprintf_check_scalar_type($value, $type, $query) {
         throw new AphrontParameterQueryException(
           $query,
           pht('Expected a scalar or null for %%%s conversion.', $type));
+      }
+      break;
+
+    case 'R':
+      if (!($value instanceof AphrontDatabaseTableRefInterface)) {
+        throw new AphrontParameterQueryException(
+          pht(
+            'Parameter to "%s" conversion in "qsprintf(...)" is not an '.
+            'instance of AphrontDatabaseTableRefInterface.',
+            '%R'));
       }
       break;
 
