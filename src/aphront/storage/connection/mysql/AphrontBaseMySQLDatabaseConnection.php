@@ -297,10 +297,10 @@ abstract class AphrontBaseMySQLDatabaseConnection
         throw new AphrontConnectionLostQueryException($message);
       case 2006: // Gone Away
         $more = pht(
-          "This error may occur if your MySQL '%s' or '%s' ".
-          "configuration values are set too low.",
-          'wait_timeout',
-          'max_allowed_packet');
+          'This error may occur if your configured MySQL "wait_timeout" or '.
+          '"max_allowed_packet" values are too small. This may also indicate '.
+          'that something used the MySQL "KILL <process>" command to kill '.
+          'the connection running the query.');
         throw new AphrontConnectionLostQueryException("{$message}\n\n{$more}");
       case 1213: // Deadlock
         throw new AphrontDeadlockQueryException($message);
