@@ -61,12 +61,12 @@
 function qsprintf(PhutilQsprintfInterface $escaper, $pattern /* , ... */) {
   $args = func_get_args();
   array_shift($args);
-  return xsprintf('xsprintf_query', $escaper, $args);
+  return new PhutilQueryString($escaper, $args);
 }
 
 function vqsprintf(PhutilQsprintfInterface $escaper, $pattern, array $argv) {
   array_unshift($argv, $pattern);
-  return xsprintf('xsprintf_query', $escaper, $argv);
+  return new PhutilQueryString($escaper, $argv);
 }
 
 /**
@@ -74,12 +74,19 @@ function vqsprintf(PhutilQsprintfInterface $escaper, $pattern, array $argv) {
  * @{function:qsprintf}.
  */
 function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
-  $type    = $pattern[$pos];
-  $escaper = $userdata;
-  $next    = (strlen($pattern) > $pos + 1) ? $pattern[$pos + 1] : null;
+  $type = $pattern[$pos];
 
+  if (is_array($userdata)) {
+    $escaper = $userdata['escaper'];
+    $unmasked = $userdata['unmasked'];
+  } else {
+    $escaper = $userdata;
+    $unmasked = false;
+  }
+
+  $next = (strlen($pattern) > $pos + 1) ? $pattern[$pos + 1] : null;
   $nullable = false;
-  $done     = false;
+  $done = false;
 
   $prefix   = '';
 
@@ -190,6 +197,9 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         break;
 
       case 'Q': // Query Fragment
+        if ($value instanceof PhutilQueryString) {
+          $value = $value->getUnmaskedString();
+        }
         $type = 's';
         break;
 
@@ -287,6 +297,24 @@ function qsprintf_check_type($value, $type, $query) {
 function qsprintf_check_scalar_type($value, $type, $query) {
   switch ($type) {
     case 'Q':
+      // TODO: See T13217. Remove this eventually.
+      if (is_string($value)) {
+        phlog(
+          pht(
+            'UNSAFE: Raw string ("%s") passed to query ("%s") for "%%Q" '.
+            'conversion. %%Q should be passed a query string.',
+            $value,
+            $query));
+        break;
+      }
+
+      if (!($value instanceof PhutilQueryString)) {
+        throw new AphrontParameterQueryException(
+          $query,
+          pht('Expected a PhutilQueryString for %%%s conversion.', $type));
+      }
+      break;
+
     case 'LC':
     case 'T':
     case 'C':
