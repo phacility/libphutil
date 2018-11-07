@@ -20,23 +20,28 @@
  *     "List" versions of %d, %s, %f and %B. These are appropriate for use in
  *     an "IN" clause. For example:
  *
- *       qsprintf($escaper, 'WHERE hatID IN(%Ld)', $list_of_hats);
+ *       qsprintf($escaper, 'WHERE hatID IN (%Ld)', $list_of_hats);
  *
  *   %B ("Binary String")
  *     Escapes a string for insertion into a pure binary column, ignoring
  *     tests for characters outside of the basic multilingual plane.
  *
- *   %T ("Table")
- *     Escapes a table name.
- *
- *   %C, %LC
+ *   %C, %LC ("Column")
  *     Escapes a column name or a list of column names.
  *
  *   %K ("Comment")
  *     Escapes a comment.
  *
  *   %Q ("Query Fragment")
- *     Injects a raw query fragment. Extremely dangerous! Not escaped!
+ *     Injects a query fragment from a prior call to qsprintf().
+ *
+ *   %R ("Database and Table Reference")
+ *     Behaves like "%T.%T" and prints a full reference to a table including
+ *     the database. Accepts a AphrontDatabaseTableRefInterface.
+ *
+ *   %P ("Password or Secret")
+ *     Behaves like "%s", but shows "********" when the query is printed in
+ *     logs or traces. Accepts a PhutilOpaqueEnvelope.
  *
  *   %~ ("Substring")
  *     Escapes a substring query for a LIKE (or NOT LIKE) clause. For example:
@@ -57,6 +62,9 @@
  *
  *       //  Find all rows where `name` ends with $suffix.
  *       qsprintf($escaper, 'WHERE name LIKE %<', $suffix);
+ *
+ *   %T ("Table")
+ *     Escapes a table name. In most cases, you should use "%R" instead.
  */
 function qsprintf(PhutilQsprintfInterface $escaper, $pattern /* , ... */) {
   $args = func_get_args();
@@ -255,6 +263,16 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         $type = 's';
         break;
 
+      case 'P': // Password or Secret
+        if ($unmasked) {
+          $value = $value->openEnvelope();
+          $value = "'".$escaper->escapeUTF8String($value)."'";
+        } else {
+          $value = '********';
+        }
+        $type = 's';
+        break;
+
       default:
         throw new XsprintfUnknownConversionException($type);
     }
@@ -263,6 +281,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
   if ($prefix) {
     $value = $prefix.$value;
   }
+
   $pattern[$pos] = $type;
 }
 
@@ -358,6 +377,16 @@ function qsprintf_check_scalar_type($value, $type, $query) {
             'Parameter to "%s" conversion in "qsprintf(...)" is not an '.
             'instance of AphrontDatabaseTableRefInterface.',
             '%R'));
+      }
+      break;
+
+    case 'P':
+      if (!($value instanceof PhutilOpaqueEnvelope)) {
+        throw new AphrontParameterQueryException(
+          pht(
+            'Parameter to "%s" conversion in "qsprintf(...)" is not an '.
+            'instance of PhutilOpaqueEnvelope.',
+            '%P'));
       }
       break;
 
