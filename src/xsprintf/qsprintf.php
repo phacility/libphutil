@@ -179,25 +179,39 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
           $value = implode(', ', $value);
           break;
         case 'Q':
+          // TODO: Here, and in "%LO", "%LA", and "%LJ", we should eventually
+          // stop accepting strings.
           foreach ($value as $k => $v) {
+            if (is_string($v)) {
+              continue;
+            }
             $value[$k] = $v->getUnmaskedString();
           }
           $value = implode(', ', $value);
           break;
         case 'O':
           foreach ($value as $k => $v) {
+            if (is_string($v)) {
+              continue;
+            }
             $value[$k] = $v->getUnmaskedString();
           }
           $value = '(('.implode(') OR (', $value).'))';
           break;
         case 'A':
           foreach ($value as $k => $v) {
+            if (is_string($v)) {
+              continue;
+            }
             $value[$k] = $v->getUnmaskedString();
           }
           $value = '(('.implode(') AND (', $value).'))';
           break;
         case 'J':
           foreach ($value as $k => $v) {
+            if (is_string($v)) {
+              continue;
+            }
             $value[$k] = $v->getUnmaskedString();
           }
           $value = implode(' ', $value);
@@ -348,6 +362,19 @@ function qsprintf_check_scalar_type($value, $type, $query) {
     case 'LA':
     case 'LO':
     case 'LJ':
+      // TODO: See T13217. Remove this eventually.
+      if (is_string($value)) {
+        phlog(
+          pht(
+            'UNSAFE: Raw string ("%s") passed to query ("%s") subclause '.
+            'for "%%%s" conversion. Subclause conversions should be passed '.
+            'a list of PhutilQueryString objects.',
+            $value,
+            $query,
+            $type));
+        break;
+      }
+
       if (!($value instanceof PhutilQueryString)) {
         throw new AphrontParameterQueryException(
           $query,
