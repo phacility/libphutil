@@ -32,9 +32,9 @@
  *   %K ("Comment")
  *     Escapes a comment.
  *
- *   %Q, %LA, %LO, %LQ ("Query Fragment")
+ *   %Q, %LA, %LO, %LQ, %LJ ("Query Fragment")
  *     Injects a query fragment from a prior call to qsprintf(). The list
- *     variants join a list of query fragments with AND, OR, or comma.
+ *     variants join a list of query fragments with AND, OR, comma, or space.
  *
  *   %R ("Database and Table Reference")
  *     Behaves like "%T.%T" and prints a full reference to a table including
@@ -196,6 +196,12 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
           }
           $value = '(('.implode(') AND (', $value).'))';
           break;
+        case 'J':
+          foreach ($value as $k => $v) {
+            $value[$k] = $v->getUnmaskedString();
+          }
+          $value = implode(' ', $value);
+          break;
         default:
           throw new XsprintfUnknownConversionException("%L{$next}");
       }
@@ -314,6 +320,7 @@ function qsprintf_check_type($value, $type, $query) {
     case 'LQ':
     case 'LA':
     case 'LO':
+    case 'LJ':
       if (!is_array($value)) {
         throw new AphrontParameterQueryException(
           $query,
@@ -340,6 +347,7 @@ function qsprintf_check_scalar_type($value, $type, $query) {
     case 'LQ':
     case 'LA':
     case 'LO':
+    case 'LJ':
       if (!($value instanceof PhutilQueryString)) {
         throw new AphrontParameterQueryException(
           $query,
