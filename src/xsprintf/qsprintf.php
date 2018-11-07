@@ -196,7 +196,11 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
             }
             $value[$k] = $v->getUnmaskedString();
           }
-          $value = '(('.implode(') OR (', $value).'))';
+          if (count($value) == 1) {
+            $value = '('.head($value).')';
+          } else {
+            $value = '(('.implode(') OR (', $value).'))';
+          }
           break;
         case 'A':
           foreach ($value as $k => $v) {
@@ -205,7 +209,11 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
             }
             $value[$k] = $v->getUnmaskedString();
           }
-          $value = '(('.implode(') AND (', $value).'))';
+          if (count($value) == 1) {
+            $value = '('.head($value).')';
+          } else {
+            $value = '(('.implode(') AND (', $value).'))';
+          }
           break;
         case 'J':
           foreach ($value as $k => $v) {
