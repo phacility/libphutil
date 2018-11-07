@@ -32,8 +32,9 @@
  *   %K ("Comment")
  *     Escapes a comment.
  *
- *   %Q ("Query Fragment")
- *     Injects a query fragment from a prior call to qsprintf().
+ *   %Q, %LA, %LO, %LQ ("Query Fragment")
+ *     Injects a query fragment from a prior call to qsprintf(). The list
+ *     variants join a list of query fragments with AND, OR, or comma.
  *
  *   %R ("Database and Table Reference")
  *     Behaves like "%T.%T" and prints a full reference to a table including
@@ -177,6 +178,24 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
           }
           $value = implode(', ', $value);
           break;
+        case 'Q':
+          foreach ($value as $k => $v) {
+            $value[$k] = $v->getUnmaskedString();
+          }
+          $value = implode(', ', $value);
+          break;
+        case 'O':
+          foreach ($value as $k => $v) {
+            $value[$k] = $v->getUnmaskedString();
+          }
+          $value = '(('.implode(') OR (', $value).'))';
+          break;
+        case 'A':
+          foreach ($value as $k => $v) {
+            $value[$k] = $v->getUnmaskedString();
+          }
+          $value = '(('.implode(') AND (', $value).'))';
+          break;
         default:
           throw new XsprintfUnknownConversionException("%L{$next}");
       }
@@ -292,6 +311,9 @@ function qsprintf_check_type($value, $type, $query) {
     case 'LC':
     case 'LB':
     case 'Lf':
+    case 'LQ':
+    case 'LA':
+    case 'LO':
       if (!is_array($value)) {
         throw new AphrontParameterQueryException(
           $query,
@@ -315,6 +337,19 @@ function qsprintf_check_type($value, $type, $query) {
 
 function qsprintf_check_scalar_type($value, $type, $query) {
   switch ($type) {
+    case 'LQ':
+    case 'LA':
+    case 'LO':
+      if (!($value instanceof PhutilQueryString)) {
+        throw new AphrontParameterQueryException(
+          $query,
+          pht(
+            'Expected a list of PhutilQueryString objects for %%%s '.
+            'conversion.',
+            $type));
+      }
+      break;
+
     case 'Q':
       // TODO: See T13217. Remove this eventually.
       if (is_string($value)) {
