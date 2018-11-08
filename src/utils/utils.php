@@ -1138,6 +1138,29 @@ function phutil_units($description) {
 
 
 /**
+ * Compute the number of microseconds that have elapsed since an earlier
+ * timestamp (from `microtime(true)`).
+ *
+ * @param double Microsecond-precision timestamp, from `microtime(true)`.
+ * @return int Elapsed microseconds.
+ */
+function phutil_microseconds_since($timestamp) {
+  if (!is_float($timestamp)) {
+    throw new Exception(
+      pht(
+        'Argument to "phutil_microseconds_since(...)" should be a value '.
+        'returned from "microtime(true)".'));
+  }
+
+  $delta = (microtime(true) - $timestamp);
+  $delta = 1000000 * $delta;
+  $delta = (int)$delta;
+
+  return $delta;
+}
+
+
+/**
  * Decode a JSON dictionary.
  *
  * @param   string    A string which ostensibly contains a JSON-encoded list or

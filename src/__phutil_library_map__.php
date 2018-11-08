@@ -568,6 +568,7 @@ phutil_register_library_map(array(
     'phutil_json_encode' => 'utils/utils.php',
     'phutil_load_library' => 'moduleutils/core.php',
     'phutil_loggable_string' => 'utils/utils.php',
+    'phutil_microseconds_since' => 'utils/utils.php',
     'phutil_parse_bytes' => 'utils/viewutils.php',
     'phutil_passthru' => 'future/exec/execx.php',
     'phutil_person' => 'internationalization/pht.php',
