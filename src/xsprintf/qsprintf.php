@@ -26,8 +26,10 @@
  *     Escapes a string for insertion into a pure binary column, ignoring
  *     tests for characters outside of the basic multilingual plane.
  *
- *   %C, %LC ("Column")
- *     Escapes a column name or a list of column names.
+ *   %C, %LC, %LK ("Column", "Key Column")
+ *     Escapes a column name or a list of column names. The "%LK" variant
+ *     escapes a list of key column specifications which may look like
+ *     "column(32)".
  *
  *   %K ("Comment")
  *     Escapes a comment.
@@ -35,6 +37,9 @@
  *   %Q, %LA, %LO, %LQ, %LJ ("Query Fragment")
  *     Injects a query fragment from a prior call to qsprintf(). The list
  *     variants join a list of query fragments with AND, OR, comma, or space.
+ *
+ *   %Z ("Raw Query")
+ *     Injects a raw, unescaped query fragment. Dangerous!
  *
  *   %R ("Database and Table Reference")
  *     Behaves like "%T.%T" and prints a full reference to a table including
@@ -178,6 +183,27 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
           }
           $value = implode(', ', $value);
           break;
+        case 'K': // ...key columns.
+          // This is like "%LC", but for escaping column lists passed to key
+          // specifications. These should be escaped as "`column`(123)". For
+          // example:
+          //
+          //   ALTER TABLE `x` ADD KEY `y` (`u`(16), `v`(32));
+
+          foreach ($value as $k => $v) {
+            $matches = null;
+            if (preg_match('/\((\d+)\)\z/', $v, $matches)) {
+              $v = substr($v, 0, -(strlen($matches[1]) + 2));
+              $prefix_len = '('.((int)$matches[1]).')';
+            } else {
+              $prefix_len = '';
+            }
+
+            $value[$k] = $escaper->escapeColumnName($v).$prefix_len;
+          }
+
+          $value = implode(', ', $value);
+          break;
         case 'Q':
           // TODO: Here, and in "%LO", "%LA", and "%LJ", we should eventually
           // stop accepting strings.
@@ -255,6 +281,10 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         if ($value instanceof PhutilQueryString) {
           $value = $value->getUnmaskedString();
         }
+        $type = 's';
+        break;
+
+      case 'Z': // Raw Query Fragment
         $type = 's';
         break;
 
@@ -337,6 +367,7 @@ function qsprintf_check_type($value, $type, $query) {
     case 'Ld':
     case 'Ls':
     case 'LC':
+    case 'LK':
     case 'LB':
     case 'Lf':
     case 'LQ':
@@ -412,7 +443,16 @@ function qsprintf_check_scalar_type($value, $type, $query) {
       }
       break;
 
+    case 'Z':
+      if (!is_string($value)) {
+        throw new AphrontParameterQueryException(
+          $query,
+          pht('Value for "%%Z" conversion should be a raw string.'));
+      }
+      break;
+
     case 'LC':
+    case 'LK':
     case 'T':
     case 'C':
       if (!is_string($value)) {
