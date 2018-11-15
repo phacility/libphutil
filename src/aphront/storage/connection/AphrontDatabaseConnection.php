@@ -17,7 +17,7 @@ abstract class AphrontDatabaseConnection
   abstract public function getInsertID();
   abstract public function getAffectedRows();
   abstract public function selectAllResults();
-  abstract public function executeRawQuery($raw_query);
+  abstract public function executeQuery(PhutilQueryString $query);
   abstract public function executeRawQueries(array $raw_queries);
   abstract public function close();
   abstract public function openConnection();

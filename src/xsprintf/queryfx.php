@@ -4,10 +4,8 @@ function queryfx(AphrontDatabaseConnection $conn, $sql /* , ... */) {
   $argv = func_get_args();
   $query = call_user_func_array('qsprintf', $argv);
 
-  $query = $query->getUnmaskedString();
-
   $conn->setLastActiveEpoch(time());
-  $conn->executeRawQuery($query);
+  $conn->executeQuery($query);
 }
 
 function queryfx_all(AphrontDatabaseConnection $conn, $sql /* , ... */) {

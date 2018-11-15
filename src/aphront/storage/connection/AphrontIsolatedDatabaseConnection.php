@@ -66,11 +66,14 @@ final class AphrontIsolatedDatabaseConnection
     return $this->allResults;
   }
 
-  public function executeRawQuery($raw_query) {
+  public function executeQuery(PhutilQueryString $query) {
 
     // NOTE: "[\s<>K]*" allows any number of (properly escaped) comments to
     // appear prior to the allowed keyword, since this connection escapes
     // them as "<K>" (above).
+
+    $display_query = $query->getMaskedString();
+    $raw_query = $query->getUnmaskedString();
 
     $keywords = array(
       'INSERT',
@@ -94,10 +97,10 @@ final class AphrontIsolatedDatabaseConnection
           "trying to issue a query which does not begin with an allowed ".
           "keyword (%s): '%s'.",
           implode(', ', $keywords),
-          $raw_query));
+          $display_query));
     }
 
-    $this->transcript[] = $raw_query;
+    $this->transcript[] = $display_query;
 
     // NOTE: This method is intentionally simplified for now, since we're only
     // using it to stub out inserts/updates. In the future it will probably need
