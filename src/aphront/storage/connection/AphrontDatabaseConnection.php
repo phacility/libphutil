@@ -93,6 +93,27 @@ abstract class AphrontDatabaseConnection
     throw new Exception(pht('Async queries are not supported.'));
   }
 
+  /**
+   * Is this connection idle and safe to close?
+   *
+   * A connection is "idle" if it can be safely closed without loss of state.
+   * Connections inside a transaction or holding locks are not idle, even
+   * though they may not actively be executing queries.
+   *
+   * @return bool True if the connection is idle and can be safely closed.
+   */
+  public function isIdle() {
+    if ($this->isInsideTransaction()) {
+      return false;
+    }
+
+    if ($this->isHoldingAnyLock()) {
+      return false;
+    }
+
+    return true;
+  }
+
 
 /* -(  Global Locks  )------------------------------------------------------- */
 
