@@ -152,7 +152,10 @@ abstract class AphrontBaseMySQLDatabaseConnection
     return $result;
   }
 
-  public function executeRawQuery($raw_query) {
+  public function executeQuery(PhutilQueryString $query) {
+    $display_query = $query->getMaskedString();
+    $raw_query = $query->getUnmaskedString();
+
     $this->lastResult = null;
     $retries = max(1, $this->getConfiguration('retries', 3));
     while ($retries--) {
@@ -165,7 +168,7 @@ abstract class AphrontBaseMySQLDatabaseConnection
           array(
             'type'    => 'query',
             'config'  => $this->configuration,
-            'query'   => $raw_query,
+            'query'   => $display_query,
             'write'   => $is_write,
           ));
 

@@ -20,23 +20,34 @@
  *     "List" versions of %d, %s, %f and %B. These are appropriate for use in
  *     an "IN" clause. For example:
  *
- *       qsprintf($escaper, 'WHERE hatID IN(%Ld)', $list_of_hats);
+ *       qsprintf($escaper, 'WHERE hatID IN (%Ld)', $list_of_hats);
  *
  *   %B ("Binary String")
  *     Escapes a string for insertion into a pure binary column, ignoring
  *     tests for characters outside of the basic multilingual plane.
  *
- *   %T ("Table")
- *     Escapes a table name.
- *
- *   %C, %LC
- *     Escapes a column name or a list of column names.
+ *   %C, %LC, %LK ("Column", "Key Column")
+ *     Escapes a column name or a list of column names. The "%LK" variant
+ *     escapes a list of key column specifications which may look like
+ *     "column(32)".
  *
  *   %K ("Comment")
  *     Escapes a comment.
  *
- *   %Q ("Query Fragment")
- *     Injects a raw query fragment. Extremely dangerous! Not escaped!
+ *   %Q, %LA, %LO, %LQ, %LJ ("Query Fragment")
+ *     Injects a query fragment from a prior call to qsprintf(). The list
+ *     variants join a list of query fragments with AND, OR, comma, or space.
+ *
+ *   %Z ("Raw Query")
+ *     Injects a raw, unescaped query fragment. Dangerous!
+ *
+ *   %R ("Database and Table Reference")
+ *     Behaves like "%T.%T" and prints a full reference to a table including
+ *     the database. Accepts a AphrontDatabaseTableRefInterface.
+ *
+ *   %P ("Password or Secret")
+ *     Behaves like "%s", but shows "********" when the query is printed in
+ *     logs or traces. Accepts a PhutilOpaqueEnvelope.
  *
  *   %~ ("Substring")
  *     Escapes a substring query for a LIKE (or NOT LIKE) clause. For example:
@@ -57,16 +68,19 @@
  *
  *       //  Find all rows where `name` ends with $suffix.
  *       qsprintf($escaper, 'WHERE name LIKE %<', $suffix);
+ *
+ *   %T ("Table")
+ *     Escapes a table name. In most cases, you should use "%R" instead.
  */
 function qsprintf(PhutilQsprintfInterface $escaper, $pattern /* , ... */) {
   $args = func_get_args();
   array_shift($args);
-  return xsprintf('xsprintf_query', $escaper, $args);
+  return new PhutilQueryString($escaper, $args);
 }
 
 function vqsprintf(PhutilQsprintfInterface $escaper, $pattern, array $argv) {
   array_unshift($argv, $pattern);
-  return xsprintf('xsprintf_query', $escaper, $argv);
+  return new PhutilQueryString($escaper, $argv);
 }
 
 /**
@@ -74,12 +88,19 @@ function vqsprintf(PhutilQsprintfInterface $escaper, $pattern, array $argv) {
  * @{function:qsprintf}.
  */
 function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
-  $type    = $pattern[$pos];
-  $escaper = $userdata;
-  $next    = (strlen($pattern) > $pos + 1) ? $pattern[$pos + 1] : null;
+  $type = $pattern[$pos];
 
+  if (is_array($userdata)) {
+    $escaper = $userdata['escaper'];
+    $unmasked = $userdata['unmasked'];
+  } else {
+    $escaper = $userdata;
+    $unmasked = false;
+  }
+
+  $next = (strlen($pattern) > $pos + 1) ? $pattern[$pos + 1] : null;
   $nullable = false;
-  $done     = false;
+  $done = false;
 
   $prefix   = '';
 
@@ -162,6 +183,73 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
           }
           $value = implode(', ', $value);
           break;
+        case 'K': // ...key columns.
+          // This is like "%LC", but for escaping column lists passed to key
+          // specifications. These should be escaped as "`column`(123)". For
+          // example:
+          //
+          //   ALTER TABLE `x` ADD KEY `y` (`u`(16), `v`(32));
+
+          foreach ($value as $k => $v) {
+            $matches = null;
+            if (preg_match('/\((\d+)\)\z/', $v, $matches)) {
+              $v = substr($v, 0, -(strlen($matches[1]) + 2));
+              $prefix_len = '('.((int)$matches[1]).')';
+            } else {
+              $prefix_len = '';
+            }
+
+            $value[$k] = $escaper->escapeColumnName($v).$prefix_len;
+          }
+
+          $value = implode(', ', $value);
+          break;
+        case 'Q':
+          // TODO: Here, and in "%LO", "%LA", and "%LJ", we should eventually
+          // stop accepting strings.
+          foreach ($value as $k => $v) {
+            if (is_string($v)) {
+              continue;
+            }
+            $value[$k] = $v->getUnmaskedString();
+          }
+          $value = implode(', ', $value);
+          break;
+        case 'O':
+          foreach ($value as $k => $v) {
+            if (is_string($v)) {
+              continue;
+            }
+            $value[$k] = $v->getUnmaskedString();
+          }
+          if (count($value) == 1) {
+            $value = '('.head($value).')';
+          } else {
+            $value = '(('.implode(') OR (', $value).'))';
+          }
+          break;
+        case 'A':
+          foreach ($value as $k => $v) {
+            if (is_string($v)) {
+              continue;
+            }
+            $value[$k] = $v->getUnmaskedString();
+          }
+          if (count($value) == 1) {
+            $value = '('.head($value).')';
+          } else {
+            $value = '(('.implode(') AND (', $value).'))';
+          }
+          break;
+        case 'J':
+          foreach ($value as $k => $v) {
+            if (is_string($v)) {
+              continue;
+            }
+            $value[$k] = $v->getUnmaskedString();
+          }
+          $value = implode(' ', $value);
+          break;
         default:
           throw new XsprintfUnknownConversionException("%L{$next}");
       }
@@ -190,6 +278,13 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         break;
 
       case 'Q': // Query Fragment
+        if ($value instanceof PhutilQueryString) {
+          $value = $value->getUnmaskedString();
+        }
+        $type = 's';
+        break;
+
+      case 'Z': // Raw Query Fragment
         $type = 's';
         break;
 
@@ -245,6 +340,16 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
         $type = 's';
         break;
 
+      case 'P': // Password or Secret
+        if ($unmasked) {
+          $value = $value->openEnvelope();
+          $value = "'".$escaper->escapeUTF8String($value)."'";
+        } else {
+          $value = '********';
+        }
+        $type = 's';
+        break;
+
       default:
         throw new XsprintfUnknownConversionException($type);
     }
@@ -253,6 +358,7 @@ function xsprintf_query($userdata, &$pattern, &$pos, &$value, &$length) {
   if ($prefix) {
     $value = $prefix.$value;
   }
+
   $pattern[$pos] = $type;
 }
 
@@ -261,8 +367,13 @@ function qsprintf_check_type($value, $type, $query) {
     case 'Ld':
     case 'Ls':
     case 'LC':
+    case 'LK':
     case 'LB':
     case 'Lf':
+    case 'LQ':
+    case 'LA':
+    case 'LO':
+    case 'LJ':
       if (!is_array($value)) {
         throw new AphrontParameterQueryException(
           $query,
@@ -286,8 +397,62 @@ function qsprintf_check_type($value, $type, $query) {
 
 function qsprintf_check_scalar_type($value, $type, $query) {
   switch ($type) {
+    case 'LQ':
+    case 'LA':
+    case 'LO':
+    case 'LJ':
+      // TODO: See T13217. Remove this eventually.
+      if (is_string($value)) {
+        phlog(
+          pht(
+            'UNSAFE: Raw string ("%s") passed to query ("%s") subclause '.
+            'for "%%%s" conversion. Subclause conversions should be passed '.
+            'a list of PhutilQueryString objects.',
+            $value,
+            $query,
+            $type));
+        break;
+      }
+
+      if (!($value instanceof PhutilQueryString)) {
+        throw new AphrontParameterQueryException(
+          $query,
+          pht(
+            'Expected a list of PhutilQueryString objects for %%%s '.
+            'conversion.',
+            $type));
+      }
+      break;
+
     case 'Q':
+      // TODO: See T13217. Remove this eventually.
+      if (is_string($value)) {
+        phlog(
+          pht(
+            'UNSAFE: Raw string ("%s") passed to query ("%s") for "%%Q" '.
+            'conversion. %%Q should be passed a query string.',
+            $value,
+            $query));
+        break;
+      }
+
+      if (!($value instanceof PhutilQueryString)) {
+        throw new AphrontParameterQueryException(
+          $query,
+          pht('Expected a PhutilQueryString for %%%s conversion.', $type));
+      }
+      break;
+
+    case 'Z':
+      if (!is_string($value)) {
+        throw new AphrontParameterQueryException(
+          $query,
+          pht('Value for "%%Z" conversion should be a raw string.'));
+      }
+      break;
+
     case 'LC':
+    case 'LK':
     case 'T':
     case 'C':
       if (!is_string($value)) {
@@ -330,6 +495,16 @@ function qsprintf_check_scalar_type($value, $type, $query) {
             'Parameter to "%s" conversion in "qsprintf(...)" is not an '.
             'instance of AphrontDatabaseTableRefInterface.',
             '%R'));
+      }
+      break;
+
+    case 'P':
+      if (!($value instanceof PhutilOpaqueEnvelope)) {
+        throw new AphrontParameterQueryException(
+          pht(
+            'Parameter to "%s" conversion in "qsprintf(...)" is not an '.
+            'instance of PhutilOpaqueEnvelope.',
+            '%P'));
       }
       break;
 

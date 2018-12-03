@@ -17,7 +17,7 @@ abstract class AphrontDatabaseConnection
   abstract public function getInsertID();
   abstract public function getAffectedRows();
   abstract public function selectAllResults();
-  abstract public function executeRawQuery($raw_query);
+  abstract public function executeQuery(PhutilQueryString $query);
   abstract public function executeRawQueries(array $raw_queries);
   abstract public function close();
   abstract public function openConnection();
@@ -91,6 +91,27 @@ abstract class AphrontDatabaseConnection
 
   public static function resolveAsyncQueries(array $conns, array $asyncs) {
     throw new Exception(pht('Async queries are not supported.'));
+  }
+
+  /**
+   * Is this connection idle and safe to close?
+   *
+   * A connection is "idle" if it can be safely closed without loss of state.
+   * Connections inside a transaction or holding locks are not idle, even
+   * though they may not actively be executing queries.
+   *
+   * @return bool True if the connection is idle and can be safely closed.
+   */
+  public function isIdle() {
+    if ($this->isInsideTransaction()) {
+      return false;
+    }
+
+    if ($this->isHoldingAnyLock()) {
+      return false;
+    }
+
+    return true;
   }
 
 

@@ -366,8 +366,19 @@ final class ExecFuture extends PhutilExecutableFuture {
     list($err, $stdout, $stderr) = $this->resolve($timeout);
     if ($err) {
       $cmd = $this->command;
+
+      if ($this->getWasKilledByTimeout()) {
+        // NOTE: The timeout can be a float and PhutilNumber only handles
+        // integers, so just use "%s" to render it.
+        $message = pht(
+          'Command killed by timeout after running for more than %s seconds.',
+          $this->terminateTimeout);
+      } else {
+        $message = pht('Command failed with error #%d!', $err);
+      }
+
       throw new CommandException(
-        pht('Command failed with error #%d!', $err),
+        $message,
         $cmd,
         $err,
         $stdout,
