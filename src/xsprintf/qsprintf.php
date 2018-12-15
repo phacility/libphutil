@@ -491,6 +491,7 @@ function qsprintf_check_scalar_type($value, $type, $query) {
     case 'R':
       if (!($value instanceof AphrontDatabaseTableRefInterface)) {
         throw new AphrontParameterQueryException(
+          $query,
           pht(
             'Parameter to "%s" conversion in "qsprintf(...)" is not an '.
             'instance of AphrontDatabaseTableRefInterface.',
@@ -501,6 +502,7 @@ function qsprintf_check_scalar_type($value, $type, $query) {
     case 'P':
       if (!($value instanceof PhutilOpaqueEnvelope)) {
         throw new AphrontParameterQueryException(
+          $query,
           pht(
             'Parameter to "%s" conversion in "qsprintf(...)" is not an '.
             'instance of PhutilOpaqueEnvelope.',
