@@ -421,6 +421,13 @@ final class Filesystem extends Phobject {
       throw new Exception(pht('You must generate at least 1 byte of entropy.'));
     }
 
+    // Under PHP 7.2.0 and newer, we have a reasonable builtin. For older
+    // versions, we fall back to various sources which have a roughly similar
+    // effect.
+    if (function_exists('random_bytes')) {
+      return random_bytes($number_of_bytes);
+    }
+
     // Try to use `openssl_random_pseudo_bytes()` if it's available. This source
     // is the most widely available source, and works on Windows/Linux/OSX/etc.
 
@@ -527,6 +534,30 @@ final class Filesystem extends Phobject {
     }
 
     return $result;
+  }
+
+
+  /**
+   * Generate a random integer value in a given range.
+   *
+   * This method uses less-entropic random sources under older versions of PHP.
+   *
+   * @param int Minimum value, inclusive.
+   * @param int Maximum value, inclusive.
+   */
+  public static function readRandomInteger($min, $max) {
+    // Under PHP 7.2.0 and newer, we can just use "random_int()". This function
+    // is intended to generate cryptographically usable entropy.
+    if (function_exists('random_int')) {
+      return random_int($min, $max);
+    }
+
+    // We could find a stronger source for this, but correctly converting raw
+    // bytes to an integer range without biases is fairly hard and it seems
+    // like we're more likely to get that wrong than suffer a PRNG prediction
+    // issue by falling back to "mt_rand()".
+
+    return mt_rand($min, $max);
   }
 
 
