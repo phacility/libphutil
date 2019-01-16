@@ -546,6 +546,22 @@ final class Filesystem extends Phobject {
    * @param int Maximum value, inclusive.
    */
   public static function readRandomInteger($min, $max) {
+    if (!is_int($min)) {
+      throw new Exception(pht('Minimum value must be an integer.'));
+    }
+
+    if (!is_int($max)) {
+      throw new Exception(pht('Maximum value must be an integer.'));
+    }
+
+    if ($min > $max) {
+      throw new Exception(
+        pht(
+          'Minimum ("%d") must not be greater than maximum ("%d").',
+          $min,
+          $max));
+    }
+
     // Under PHP 7.2.0 and newer, we can just use "random_int()". This function
     // is intended to generate cryptographically usable entropy.
     if (function_exists('random_int')) {
@@ -557,7 +573,17 @@ final class Filesystem extends Phobject {
     // like we're more likely to get that wrong than suffer a PRNG prediction
     // issue by falling back to "mt_rand()".
 
-    return mt_rand($min, $max);
+    if (($max - $min) > mt_getrandmax()) {
+      throw new Exception(
+        pht('mt_rand() range is smaller than the requested range.'));
+    }
+
+    $result = mt_rand($min, $max);
+    if (!is_int($result)) {
+      throw new Exception(pht('Bad return value from mt_rand().'));
+    }
+
+    return $result;
   }
 
 
