@@ -4,6 +4,10 @@ final class PhutilArgumentSpellingCorrector extends Phobject {
 
   private $editDistanceMatrix;
   private $maximumDistance;
+  private $mode;
+
+  const MODE_COMMANDS = 'commands';
+  const MODE_FLAGS = 'flags';
 
   /**
    * Build a new corrector with parameters for correcting commands, like
@@ -31,6 +35,7 @@ final class PhutilArgumentSpellingCorrector extends Phobject {
 
     return id(new self())
       ->setEditDistanceMatrix($matrix)
+      ->setMode(self::MODE_COMMANDS)
       ->setMaximumDistance($max_distance);
   }
 
@@ -55,7 +60,17 @@ final class PhutilArgumentSpellingCorrector extends Phobject {
 
     return id(new self())
       ->setEditDistanceMatrix($matrix)
+      ->setMode(self::MODE_FLAGS)
       ->setMaximumDistance($max_distance);
+  }
+
+  public function setMode($mode) {
+    $this->mode = $mode;
+    return $this;
+  }
+
+  public function getMode() {
+    return $this->mode;
   }
 
   public function setEditDistanceMatrix(PhutilEditDistanceMatrix $matrix) {
@@ -85,6 +100,14 @@ final class PhutilArgumentSpellingCorrector extends Phobject {
     $max_distance = $this->getMaximumDistance();
     if (!$max_distance) {
       throw new PhutilInvalidStateException('setMaximumDistance');
+    }
+
+    // If we're correcting commands, never correct an input which begins
+    // with "-", since this is almost certainly intended to be a flag.
+    if ($this->getMode() === self::MODE_COMMANDS) {
+      if (preg_match('/^-/', $input)) {
+        return array();
+      }
     }
 
     $input = $this->normalizeString($input);
