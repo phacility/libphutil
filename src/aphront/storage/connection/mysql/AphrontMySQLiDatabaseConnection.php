@@ -64,18 +64,6 @@ final class AphrontMySQLiDatabaseConnection
       $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeout);
     }
 
-    // See T13238. Attempt to prevent "LOAD DATA LOCAL INFILE", which allows a
-    // malicious server to ask the client for any file.
-
-    // NOTE: See T13238. This option does not appear to ever have any effect.
-    // Only the PHP level configuration of "mysqli.allow_local_infile" is
-    // effective in preventing "LOAD DATA LOCAL INFILE". It appears that the
-    // configuration option may overwrite the local option? Set the local
-    // option to the desired (safe) value anyway in case this starts working
-    // properly in some future version of PHP/MySQLi.
-
-    $conn->options(MYSQLI_OPT_LOCAL_INFILE, 0);
-
     if ($this->getPersistent()) {
       $host = 'p:'.$host;
     }
@@ -92,6 +80,11 @@ final class AphrontMySQLiDatabaseConnection
       $error = $conn->connect_error;
       $this->throwConnectionException($errno, $error, $user, $host);
     }
+
+    // See T13238. Attempt to prevent "LOAD DATA LOCAL INFILE", which allows a
+    // malicious server to ask the client for any file. At time of writing,
+    // this option MUST be set after "real_connect()" on all PHP versions.
+    $conn->options(MYSQLI_OPT_LOCAL_INFILE, 0);
 
     $this->connectionOpen = true;
 
