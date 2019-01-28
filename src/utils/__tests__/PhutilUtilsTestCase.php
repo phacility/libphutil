@@ -882,4 +882,43 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     return array_select_keys($map, $keys);
   }
 
+  public function testQueryStringEncoding() {
+    $expect = array();
+
+    // As a starting point, we expect every character to encode as an "%XX"
+    // escaped version.
+    foreach (range(0, 255) as $byte) {
+      $c = chr($byte);
+      $expect[$c] = sprintf('%%%02X', $byte);
+    }
+
+    // We expect these characters to not be escaped.
+    $ranges = array(
+      range('a', 'z'),
+      range('A', 'Z'),
+      range('0', '9'),
+      array('-', '.', '_', '~'),
+    );
+
+    foreach ($ranges as $range) {
+      foreach ($range as $preserve_char) {
+        $expect[$preserve_char] = $preserve_char;
+      }
+    }
+
+    foreach (range(0, 255) as $byte) {
+      $c = chr($byte);
+
+      $expect_c = $expect[$c];
+      $expect_str = "{$expect_c}={$expect_c}";
+
+      $actual_str = phutil_build_http_querystring(array($c => $c));
+
+      $this->assertEqual(
+        $expect_str,
+        $actual_str,
+        pht('HTTP querystring for byte "%s".', sprintf('0x%02x', $byte)));
+    }
+  }
+
 }

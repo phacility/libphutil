@@ -523,7 +523,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
       // If we don't have any files, just encode the data as a query string,
       // make sure it's not including any files, and we're good to go.
       if (is_array($data)) {
-        $data = http_build_query($data, '', '&');
+        $data = phutil_build_http_querystring($data);
       }
 
       $this->checkForDangerousCURLMagic($data, $is_query_string = true);

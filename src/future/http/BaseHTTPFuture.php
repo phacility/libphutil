@@ -273,7 +273,7 @@ abstract class BaseHTTPFuture extends Future {
       return strlen($data);
     }
 
-    return strlen(http_build_query($data, '', '&'));
+    return strlen(phutil_build_http_querystring($data));
   }
 
 
