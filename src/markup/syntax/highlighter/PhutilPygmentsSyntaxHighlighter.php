@@ -21,8 +21,13 @@ final class PhutilPygmentsSyntaxHighlighter extends Phobject {
 
     if ($language) {
       $language = $this->getPygmentsLexerNameFromLanguageName($language);
+
+      // See T13224. Under Ubuntu, avoid leaving an intermedite "dash" shell
+      // process so we hit "pygmentize" directly if we have to SIGKILL this
+      // because it explodes.
+
       $future = new ExecFuture(
-        'pygmentize -O encoding=utf-8 -O stripnl=False -f html -l %s',
+        'exec pygmentize -O encoding=utf-8 -O stripnl=False -f html -l %s',
         $language);
 
       $scrub = false;
