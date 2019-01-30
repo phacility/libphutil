@@ -670,13 +670,9 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       phutil_var_export(
         array('foo' => array('bar' => array('baz' => array())))));
 
-    // Objects
-    $this->assertEqual(
-      "stdClass::__set_state(array(\n))",
-      phutil_var_export(new stdClass()));
-    $this->assertEqual(
-      "PhutilTestPhobject::__set_state(array(\n))",
-      phutil_var_export(new PhutilTestPhobject()));
+    // NOTE: Object behavior differs across PHP versions. Older versions of
+    // PHP export objects as "stdClass::__set_state(array())". Newer versions
+    // of PHP (7.3+) export objects as "(object) array()".
   }
 
   public function testFnmatch() {

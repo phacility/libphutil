@@ -1558,3 +1558,18 @@ function phutil_build_http_querystring(array $parameters) {
 
   return $query;
 }
+
+function phutil_decode_mime_header($header) {
+  if (function_exists('iconv_mime_decode')) {
+    return iconv_mime_decode($header, 0, 'UTF-8');
+  }
+
+  if (function_exists('mb_decode_mimeheader')) {
+    return mb_decode_mimeheader($header);
+  }
+
+  throw new Exception(
+    pht(
+      'Unable to decode MIME header: install "iconv" or "mbstring" '.
+      'extension.'));
+}

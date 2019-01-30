@@ -539,6 +539,7 @@ phutil_register_library_map(array(
     'phutil_console_wrap' => 'console/format.php',
     'phutil_count' => 'internationalization/pht.php',
     'phutil_date_format' => 'utils/viewutils.php',
+    'phutil_decode_mime_header' => 'utils/utils.php',
     'phutil_deprecated' => 'moduleutils/moduleutils.php',
     'phutil_error_listener_example' => 'error/phlog.php',
     'phutil_escape_html' => 'markup/render.php',
