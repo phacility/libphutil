@@ -1537,3 +1537,39 @@ function phutil_hashes_are_identical($u, $v) {
 
   return ($bits === 0);
 }
+
+
+/**
+ * Build a query string from a dictionary.
+ *
+ * @param map<string, string> Dictionary of parameters.
+ * @return string HTTP query string.
+ */
+function phutil_build_http_querystring(array $parameters) {
+  // We want to encode in RFC3986 mode, but "http_build_query()" did not get
+  // a flag for that mode until PHP 5.4.0. This is equivalent to calling
+  // "http_build_query()" with the "PHP_QUERY_RFC3986" flag.
+
+  $query = array();
+  foreach ($parameters as $key => $value) {
+    $query[] = rawurlencode($key).'='.rawurlencode($value);
+  }
+  $query = implode($query, '&');
+
+  return $query;
+}
+
+function phutil_decode_mime_header($header) {
+  if (function_exists('iconv_mime_decode')) {
+    return iconv_mime_decode($header, 0, 'UTF-8');
+  }
+
+  if (function_exists('mb_decode_mimeheader')) {
+    return mb_decode_mimeheader($header);
+  }
+
+  throw new Exception(
+    pht(
+      'Unable to decode MIME header: install "iconv" or "mbstring" '.
+      'extension.'));
+}

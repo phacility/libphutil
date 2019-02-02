@@ -244,7 +244,7 @@ final class HTTPFuture extends BaseHTTPFuture {
 
     if ($this->getMethod() == 'GET') {
       if (is_array($data)) {
-        $data = http_build_query($data, '', '&');
+        $data = phutil_build_http_querystring($data);
         if (strpos($uri, '?') !== false) {
           $uri .= '&'.$data;
         } else {
@@ -254,7 +254,7 @@ final class HTTPFuture extends BaseHTTPFuture {
       }
     } else {
       if (is_array($data)) {
-        $data = http_build_query($data, '', '&')."\r\n";
+        $data = phutil_build_http_querystring($data)."\r\n";
         $add_headers[] = array(
           'Content-Type',
           'application/x-www-form-urlencoded',

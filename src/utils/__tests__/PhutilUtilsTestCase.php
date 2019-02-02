@@ -670,13 +670,9 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       phutil_var_export(
         array('foo' => array('bar' => array('baz' => array())))));
 
-    // Objects
-    $this->assertEqual(
-      "stdClass::__set_state(array(\n))",
-      phutil_var_export(new stdClass()));
-    $this->assertEqual(
-      "PhutilTestPhobject::__set_state(array(\n))",
-      phutil_var_export(new PhutilTestPhobject()));
+    // NOTE: Object behavior differs across PHP versions. Older versions of
+    // PHP export objects as "stdClass::__set_state(array())". Newer versions
+    // of PHP (7.3+) export objects as "(object) array()".
   }
 
   public function testFnmatch() {
@@ -880,6 +876,45 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $keys = array_keys($map);
     shuffle($keys);
     return array_select_keys($map, $keys);
+  }
+
+  public function testQueryStringEncoding() {
+    $expect = array();
+
+    // As a starting point, we expect every character to encode as an "%XX"
+    // escaped version.
+    foreach (range(0, 255) as $byte) {
+      $c = chr($byte);
+      $expect[$c] = sprintf('%%%02X', $byte);
+    }
+
+    // We expect these characters to not be escaped.
+    $ranges = array(
+      range('a', 'z'),
+      range('A', 'Z'),
+      range('0', '9'),
+      array('-', '.', '_', '~'),
+    );
+
+    foreach ($ranges as $range) {
+      foreach ($range as $preserve_char) {
+        $expect[$preserve_char] = $preserve_char;
+      }
+    }
+
+    foreach (range(0, 255) as $byte) {
+      $c = chr($byte);
+
+      $expect_c = $expect[$c];
+      $expect_str = "{$expect_c}={$expect_c}";
+
+      $actual_str = phutil_build_http_querystring(array($c => $c));
+
+      $this->assertEqual(
+        $expect_str,
+        $actual_str,
+        pht('HTTP querystring for byte "%s".', sprintf('0x%02x', $byte)));
+    }
   }
 
 }

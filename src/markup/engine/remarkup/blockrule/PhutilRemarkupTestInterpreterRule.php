@@ -11,7 +11,7 @@ final class PhutilRemarkupTestInterpreterRule
     return sprintf(
       "Content: (%s)\nArgv: (%s)",
       $content,
-      http_build_query($argv));
+      phutil_build_http_querystring($argv));
   }
 
 }

@@ -174,7 +174,7 @@ final class PhutilURI extends Phobject {
     }
 
     if ($this->query) {
-      $query = '?'.http_build_query($this->query, '', '&');
+      $query = '?'.phutil_build_http_querystring($this->query);
     } else {
       $query = null;
     }
