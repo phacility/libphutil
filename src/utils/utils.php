@@ -1567,6 +1567,13 @@ function phutil_build_http_querystring(array $parameters) {
 
   $query = array();
   foreach ($parameters as $key => $value) {
+    if (is_array($value) || is_object($value)) {
+      throw new Exception(
+        pht(
+          'HTTP query parameter (with key "%s") is not a scalar. Parameters '.
+          'must all be scalars.',
+          $key));
+    }
     $query[] = rawurlencode($key).'='.rawurlencode($value);
   }
   $query = implode($query, '&');
