@@ -1010,11 +1010,26 @@ function phutil_fwrite_nonblocking_stream($stream, $bytes) {
   // the stream, write to it again if PHP claims that it's writable, and
   // consider the pipe broken if the write fails.
 
+  // (Signals received signals during the "fwrite()" do not appear to affect
+  // anything, see D20083.)
+
   $read = array();
   $write = array($stream);
   $except = array();
 
-  @stream_select($read, $write, $except, 0);
+  $result = @stream_select($read, $write, $except, 0);
+  if ($result === false) {
+    // See T13243. If the select is interrupted by a signal, it may return
+    // "false" indicating an underlying EINTR condition. In this case, the
+    // results (notably, "$write") are not usable because "stream_select()"
+    // didn't update them.
+
+    // In this case, treat this stream as blocked and tell the caller to
+    // retry, since EINTR is the only condition we're currently aware of that
+    // can cause "fwrite()" to return "0" and "stream_select()" to return
+    // "false" on the same stream.
+    return 0;
+  }
 
   if (!$write) {
     // The stream isn't writable, so we conclude that it probably really is
@@ -1552,6 +1567,13 @@ function phutil_build_http_querystring(array $parameters) {
 
   $query = array();
   foreach ($parameters as $key => $value) {
+    if (is_array($value) || is_object($value)) {
+      throw new Exception(
+        pht(
+          'HTTP query parameter (with key "%s") is not a scalar. Parameters '.
+          'must all be scalars.',
+          $key));
+    }
     $query[] = rawurlencode($key).'='.rawurlencode($value);
   }
   $query = implode($query, '&');
