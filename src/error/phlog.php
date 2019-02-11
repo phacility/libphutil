@@ -21,7 +21,7 @@ function phlog($value/* , ... */) {
 
   foreach (func_get_args() as $event) {
     $data = $metadata;
-    if ($event instanceof Exception) {
+    if (($event instanceof Exception) || ($event instanceof Throwable)) {
       $type = PhutilErrorHandler::EXCEPTION;
       // If this is an exception, proxy it and generate a composite trace which
       // shows both where the phlog() was called and where the exception was
