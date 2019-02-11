@@ -11,10 +11,15 @@ class PhutilProxyException extends Exception {
 
   private $previousException;
 
-  public function __construct($message, Exception $previous, $code = 0) {
+  public function __construct($message, $previous, $code = 0) {
     $this->previousException = $previous;
 
-    if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
+    // This may be an "Exception" or a "Throwable". The "__construct()" method
+    // for the Exception is documented as taking an Exception, not a Throwable.
+    // Although passing a Throwable appears to work in PHP 7.3, don't risk it.
+    $is_exception = ($previous instanceof Exception);
+
+    if (version_compare(PHP_VERSION, '5.3.0', '>=') && $is_exception) {
       parent::__construct($message, $code, $previous);
     } else {
       parent::__construct($message, $code);
