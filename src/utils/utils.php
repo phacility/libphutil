@@ -1567,24 +1567,77 @@ function phutil_hashes_are_identical($u, $v) {
  * @return string HTTP query string.
  */
 function phutil_build_http_querystring(array $parameters) {
+  $pairs = array();
+  foreach ($parameters as $key => $value) {
+    $pairs[] = array($key, $value);
+  }
+
+  return phutil_build_http_querystring_from_pairs($pairs);
+}
+
+/**
+ * Build a query string from a list of parameter pairs.
+ *
+ * @param list<pair<string, string>> List of pairs.
+ * @return string HTTP query string.
+ */
+function phutil_build_http_querystring_from_pairs(array $pairs) {
   // We want to encode in RFC3986 mode, but "http_build_query()" did not get
   // a flag for that mode until PHP 5.4.0. This is equivalent to calling
   // "http_build_query()" with the "PHP_QUERY_RFC3986" flag.
 
   $query = array();
-  foreach ($parameters as $key => $value) {
-    if (is_array($value) || is_object($value)) {
+  foreach ($pairs as $pair_key => $pair) {
+    if (!is_array($pair) || (count($pair) !== 2)) {
       throw new Exception(
         pht(
-          'HTTP query parameter (with key "%s") is not a scalar. Parameters '.
-          'must all be scalars.',
-          $key));
+          'HTTP parameter pair (with key "%s") is not valid: each pair must '.
+          'be an array with exactly two elements.',
+          $pair_key));
     }
+
+    list($key, $value) = $pair;
+    list($key, $value) = phutil_http_parameter_pair($key, $value);
     $query[] = rawurlencode($key).'='.rawurlencode($value);
   }
   $query = implode($query, '&');
 
   return $query;
+}
+
+/**
+ * Typecheck and cast an HTTP key-value parameter pair.
+ *
+ * Scalar values are converted to strings. Nonscalar values raise exceptions.
+ *
+ * @param scalar HTTP parameter key.
+ * @param scalar HTTP parameter value.
+ * @return pair<string, string> Key and value as strings.
+ */
+function phutil_http_parameter_pair($key, $value) {
+  try {
+    assert_stringlike($key);
+  } catch (InvalidArgumentException $ex) {
+    throw new PhutilProxyException(
+      pht('HTTP query parameter key must be a scalar.'),
+      $ex);
+  }
+
+  $key = (string)$key;
+
+  try {
+    assert_stringlike($value);
+  } catch (InvalidArgumentException $ex) {
+    throw new PhutilProxyException(
+      pht(
+        'HTTP query parameter value (for key "%s") must be a scalar.',
+        $key),
+      $ex);
+  }
+
+  $value = (string)$value;
+
+  return array($key, $value);
 }
 
 function phutil_decode_mime_header($header) {

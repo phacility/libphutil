@@ -94,7 +94,7 @@ final class PhutilOAuth1Future extends FutureProxy {
     }
 
     $params = $params
-            + $this->uri->getQueryParams()
+            + $this->uri->getQueryParamsAsMap()
             + $this->getOAuth1Headers();
 
     return $this->sign($params);

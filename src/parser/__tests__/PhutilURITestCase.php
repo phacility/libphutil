@@ -16,9 +16,12 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('/path/', $uri->getPath(), pht('path'));
     $this->assertEqual(
       array(
-        'query' => 'value',
+        array(
+          'query',
+          'value',
+        ),
       ),
-      $uri->getQueryParams(),
+      $uri->getQueryParamsAsPairList(),
       'query params');
     $this->assertEqual('fragment', $uri->getFragment(), pht('fragment'));
     $this->assertEqual(
@@ -37,7 +40,7 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('/example/example.git', $uri->getPath(), pht('path'));
     $this->assertEqual(
       array(),
-      $uri->getQueryParams(),
+      $uri->getQueryParamsAsPairList(),
       pht('query parameters'));
     $this->assertEqual('', $uri->getFragment(), pht('fragment'));
     $this->assertEqual(
@@ -183,9 +186,12 @@ final class PhutilURITestCase extends PhutilTestCase {
     $this->assertEqual('', $uri->getPath(), pht('path'));
     $this->assertEqual(
       array(
-        'x' => '/',
+        array(
+          'x',
+          '/',
+        ),
       ),
-      $uri->getQueryParams());
+      $uri->getQueryParamsAsPairList());
 
     // This is not a legitimate URI and should not parse as one.
     $uri = new PhutilURI('fruit.list: apple banana cherry');
@@ -273,6 +279,113 @@ final class PhutilURITestCase extends PhutilTestCase {
     }
 
     $this->assertTrue($caught instanceof Exception);
+  }
+
+  public function testDuplicateKeys() {
+    $uri = new PhutilURI('http://www.example.com/?x=1&x=2');
+    $this->assertEqual(
+      'http://www.example.com/?x=1&x=2',
+      (string)$uri);
+
+    $uri->appendQueryParam('x', '3');
+    $this->assertEqual(
+      'http://www.example.com/?x=1&x=2&x=3',
+      (string)$uri);
+
+    $uri->setQueryParam('x', '4');
+    $this->assertEqual(
+      'http://www.example.com/?x=4',
+      (string)$uri);
+
+    $uri->setQueryParam('x', null);
+    $this->assertEqual(
+      'http://www.example.com/',
+      (string)$uri);
+
+    $uri->appendQueryParam('a', 'a');
+    $uri->appendQueryParam('b', 'b');
+    $uri->appendQueryParam('c', 'c');
+    $uri->appendQueryParam('b', 'd');
+
+    $this->assertEqual(
+      'http://www.example.com/?a=a&b=b&c=c&b=d',
+      (string)$uri);
+
+    $uri->setQueryParam('b', 'e');
+    $this->assertEqual(
+      'http://www.example.com/?a=a&b=e&c=c',
+      (string)$uri,
+      pht(
+        'Replacing a parameter should retain position and overwrite other '.
+        'instances of the key.'));
+  }
+
+  public function testBadHTTPParameters() {
+    $uri = new PhutilURI('http://www.example.com/');
+
+    $caught = null;
+    try {
+      $uri->setQueryParam(array(), 'x');
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertTrue(
+      (bool)$caught,
+      pht('Nonscalar HTTP keys should throw.'));
+
+    $caught = null;
+    try {
+      $uri->setQueryParam('x', array());
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertTrue(
+      (bool)$caught,
+      pht('Nonscalar HTTP values should throw.'));
+  }
+
+  public function testHTTPParameterTypes() {
+    // Whether you pass an integer or string, "0" should always be the same
+    // query parameter.
+
+    $uri = new PhutilURI('http://www.example.com/');
+
+    $uri->appendQueryParam(0, 'a');
+    $uri->appendQueryParam('0', 'b');
+    $this->assertEqual(
+      'http://www.example.com/?0=a&0=b',
+      (string)$uri);
+
+    $uri->setQueryParam(0, 'c');
+    $this->assertEqual(
+      'http://www.example.com/?0=c',
+      (string)$uri);
+
+    $uri->setQueryParam(0, 'a');
+    $uri->appendQueryParam('0', 'b');
+    $this->assertEqual(
+      'http://www.example.com/?0=a&0=b',
+      (string)$uri);
+
+    $uri->setQueryParam('0', 'c');
+    $this->assertEqual(
+      'http://www.example.com/?0=c',
+      (string)$uri);
+  }
+
+  public function testGetQueryParamsAsMap() {
+    $uri = new PhutilURI('http://www.example.com/?x=1&x=2');
+
+    $caught = null;
+    try {
+      $map = $uri->getQueryParamsAsMap();
+    } catch (Exception $ex) {
+      $caught = $ex;
+    }
+
+    $this->assertTrue((bool)$caught);
   }
 
 }
