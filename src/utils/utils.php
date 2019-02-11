@@ -1320,7 +1320,15 @@ function phutil_ini_decode($string) {
   $trap = new PhutilErrorTrap();
 
   try {
-    if (!function_exists('parse_ini_string')) {
+    $have_call = false;
+    if (function_exists('parse_ini_string')) {
+      if (defined('INI_SCANNER_RAW')) {
+        $results = @parse_ini_string($string, true, INI_SCANNER_RAW);
+        $have_call = true;
+      }
+    }
+
+    if (!$have_call) {
       throw new PhutilMethodNotImplementedException(
         pht(
           '%s is not compatible with your version of PHP (%s). This function '.
@@ -1328,8 +1336,6 @@ function phutil_ini_decode($string) {
           __FUNCTION__,
           phpversion()));
     }
-
-    $results = @parse_ini_string($string, true, INI_SCANNER_RAW);
 
     if ($results === false) {
       throw new PhutilINIParserException(trim($trap->getErrorsAsString()));
