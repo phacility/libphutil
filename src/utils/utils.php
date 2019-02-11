@@ -1595,3 +1595,52 @@ function phutil_decode_mime_header($header) {
       'Unable to decode MIME header: install "iconv" or "mbstring" '.
       'extension.'));
 }
+
+/**
+ * Perform a "(string)" cast without disabling standard exception behavior.
+ *
+ * When PHP invokes "__toString()" automatically, it fatals if the method
+ * raises an exception. In older versions of PHP (until PHP 7.1), this fatal is
+ * fairly opaque and does not give you any information about the exception
+ * itself, although newer versions of PHP at least include the exception
+ * message.
+ *
+ * This is documented on the "__toString()" manual page:
+ *
+ *   Warning
+ *   You cannot throw an exception from within a __toString() method. Doing
+ *   so will result in a fatal error.
+ *
+ * However, this only applies to implicit invocation by the language runtime.
+ * Application code can safely call `__toString()` directly without any effect
+ * on exception handling behavior. Very cool.
+ *
+ * We also reject arrays. PHP casts them to the string "Array". This behavior
+ * is, charitably, evil.
+ *
+ * @param wild Any value which aspires to be represented as a string.
+ * @return string String representation of the provided value.
+ */
+function phutil_string_cast($value) {
+  if (is_array($value)) {
+    throw new Exception(
+      pht(
+        'Value passed to "phutil_string_cast()" is an array; arrays can '.
+        'not be sensibly cast to strings.'));
+  }
+
+  if (is_object($value)) {
+    $string = $value->__toString();
+
+    if (!is_string($string)) {
+      throw new Exception(
+        pht(
+          'Object (of class "%s") did not return a string from "__toString()".',
+          get_class($value)));
+    }
+
+    return $string;
+  }
+
+  return (string)$value;
+}

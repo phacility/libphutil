@@ -580,6 +580,7 @@ phutil_register_library_map(array(
     'phutil_safe_html' => 'markup/render.php',
     'phutil_set_system_locale' => 'utils/utf8.php',
     'phutil_split_lines' => 'utils/utils.php',
+    'phutil_string_cast' => 'utils/utils.php',
     'phutil_tag' => 'markup/render.php',
     'phutil_tag_div' => 'markup/render.php',
     'phutil_unescape_uri_path_component' => 'markup/render.php',
