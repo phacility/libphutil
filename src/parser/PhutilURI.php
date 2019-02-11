@@ -123,8 +123,13 @@ final class PhutilURI extends Phobject {
     $this->path = idx($parts, 'path', '');
     $query = idx($parts, 'query');
     if ($query) {
-      $this->query = id(new PhutilQueryStringParser())->parseQueryString(
-        $query);
+      $pairs = id(new PhutilQueryStringParser())
+        ->parseQueryStringToPairList($query);
+
+      foreach ($pairs as $pair) {
+        list($key, $value) = $pair;
+        $this->appendQueryParam($key, $value);
+      }
     }
     $this->fragment = idx($parts, 'fragment', '');
 
@@ -174,7 +179,7 @@ final class PhutilURI extends Phobject {
     }
 
     if ($this->query) {
-      $query = '?'.phutil_build_http_querystring($this->query);
+      $query = '?'.phutil_build_http_querystring_from_pairs($this->query);
     } else {
       $query = null;
     }
@@ -196,21 +201,112 @@ final class PhutilURI extends Phobject {
   }
 
   public function setQueryParam($key, $value) {
-    if ($value === null) {
-      unset($this->query[$key]);
-    } else {
-      $this->query[$key] = $value;
+    // To set, we replace the first matching key with the new value, then
+    // remove all other matching keys. This replaces the old value and retains
+    // the parameter order.
+
+    $is_null = ($value === null);
+
+    // Typecheck and cast the key before we compare it to existing keys. This
+    // raises an early exception if the key has a bad type.
+    list($key) = phutil_http_parameter_pair($key, '');
+
+    $found = false;
+    foreach ($this->query as $list_key => $pair) {
+      list($k, $v) = $pair;
+
+      if ($k !== $key) {
+        continue;
+      }
+
+      if ($found) {
+        unset($this->query[$list_key]);
+        continue;
+      }
+
+      $found = true;
+
+      if ($is_null) {
+        unset($this->query[$list_key]);
+      } else {
+        $this->insertQueryParam($key, $value, $list_key);
+      }
     }
+
+    $this->query = array_values($this->query);
+
+    // If we didn't find an existing place to put it, add it to the end.
+    if (!$found) {
+      if (!$is_null) {
+        $this->appendQueryParam($key, $value);
+      }
+    }
+
     return $this;
   }
 
   public function setQueryParams(array $params) {
-    $this->query = $params;
+    $this->query = array();
+
+    foreach ($params as $k => $v) {
+      $this->appendQueryParam($k, $v);
+    }
+
     return $this;
   }
 
+  /**
+   * @deprecated
+   */
   public function getQueryParams() {
+    $map = array();
+
+    foreach ($this->query as $pair) {
+      list($k, $v) = $pair;
+      $map[$k] = $v;
+    }
+
+    return $map;
+  }
+
+  public function getQueryParamsAsMap() {
+    $map = array();
+
+    foreach ($this->query as $pair) {
+      list($k, $v) = $pair;
+
+      if (isset($map[$k])) {
+        throw new Exception(
+          pht(
+            'Query parameters include a duplicate key ("%s") and can not be '.
+            'nondestructively represented as a map.',
+            $k));
+      }
+
+      $map[$k] = $v;
+    }
+
+    return $map;
+  }
+
+  public function getQueryParamsAsPairList() {
     return $this->query;
+  }
+
+  public function appendQueryParam($key, $value) {
+    return $this->insertQueryParam($key, $value);
+  }
+
+  private function insertQueryParam($key, $value, $idx = null) {
+    list($key, $value) = phutil_http_parameter_pair($key, $value);
+
+    if ($idx === null) {
+      $this->query[] = array($key, $value);
+    } else {
+      $this->query[$idx] = array($key, $value);
+    }
+
+    return $this;
   }
 
   public function setProtocol($protocol) {

@@ -242,14 +242,10 @@ final class PhutilAWSv4Signature extends Phobject {
 
   private function getCanonicalParameterList(HTTPSFuture $future) {
     $uri = new PhutilURI($future->getURI());
-    $params = $uri->getQueryParams();
+    $params = $uri->getQueryParamsAsMap();
 
     ksort($params);
-    $canonical_parameters = array();
-    foreach ($params as $key => $value) {
-      $canonical_parameters[] = rawurlencode($key).'='.rawurlencode($value);
-    }
-    $canonical_parameters = implode('&', $canonical_parameters);
+    $canonical_parameters = phutil_build_http_querystring($params);
 
     return $canonical_parameters;
   }
