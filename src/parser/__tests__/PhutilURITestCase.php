@@ -292,12 +292,12 @@ final class PhutilURITestCase extends PhutilTestCase {
       'http://www.example.com/?x=1&x=2&x=3',
       (string)$uri);
 
-    $uri->setQueryParam('x', '4');
+    $uri->replaceQueryParam('x', '4');
     $this->assertEqual(
       'http://www.example.com/?x=4',
       (string)$uri);
 
-    $uri->setQueryParam('x', null);
+    $uri->removeQueryParam('x');
     $this->assertEqual(
       'http://www.example.com/',
       (string)$uri);
@@ -311,13 +311,12 @@ final class PhutilURITestCase extends PhutilTestCase {
       'http://www.example.com/?a=a&b=b&c=c&b=d',
       (string)$uri);
 
-    $uri->setQueryParam('b', 'e');
+    $uri->replaceQueryParam('b', 'e');
     $this->assertEqual(
-      'http://www.example.com/?a=a&b=e&c=c',
+      'http://www.example.com/?a=a&c=c&b=e',
       (string)$uri,
       pht(
-        'Replacing a parameter should retain position and overwrite other '.
-        'instances of the key.'));
+        'Replacing a parameter should overwrite other instances of the key.'));
   }
 
   public function testBadHTTPParameters() {
@@ -325,7 +324,7 @@ final class PhutilURITestCase extends PhutilTestCase {
 
     $caught = null;
     try {
-      $uri->setQueryParam(array(), 'x');
+      $uri->replaceQueryParam(array(), 'x');
     } catch (Exception $ex) {
       $caught = $ex;
     }
@@ -336,7 +335,7 @@ final class PhutilURITestCase extends PhutilTestCase {
 
     $caught = null;
     try {
-      $uri->setQueryParam('x', array());
+      $uri->replaceQueryParam('x', array());
     } catch (Exception $ex) {
       $caught = $ex;
     }
@@ -358,18 +357,18 @@ final class PhutilURITestCase extends PhutilTestCase {
       'http://www.example.com/?0=a&0=b',
       (string)$uri);
 
-    $uri->setQueryParam(0, 'c');
+    $uri->replaceQueryParam(0, 'c');
     $this->assertEqual(
       'http://www.example.com/?0=c',
       (string)$uri);
 
-    $uri->setQueryParam(0, 'a');
+    $uri->replaceQueryParam(0, 'a');
     $uri->appendQueryParam('0', 'b');
     $this->assertEqual(
       'http://www.example.com/?0=a&0=b',
       (string)$uri);
 
-    $uri->setQueryParam('0', 'c');
+    $uri->replaceQueryParam('0', 'c');
     $this->assertEqual(
       'http://www.example.com/?0=c',
       (string)$uri);
@@ -386,6 +385,33 @@ final class PhutilURITestCase extends PhutilTestCase {
     }
 
     $this->assertTrue((bool)$caught);
+  }
+
+  public function testQueryURIConstruction() {
+    $uri = new PhutilURI('http://example.com/', array('y' => '1'));
+    $this->assertEqual(
+      'http://example.com/?y=1',
+      (string)$uri);
+
+    $uri = new PhutilURI('http://example.com/?x=2', array('y' => '1'));
+    $this->assertEqual(
+      'http://example.com/?x=2&y=1',
+      (string)$uri);
+
+    $caught = null;
+    try {
+      $uri = new PhutilURI('http://example.com/?y=3', array('y' => '1'));
+    } catch (InvalidArgumentException $ex) {
+      $caught = $ex;
+    }
+    $this->assertTrue((bool)$caught);
+
+    $uri = new PhutilURI('http://example.com/?a=1', array('b' => '2'));
+    $uri = new PhutilURI($uri, array('c' => '3'));
+
+    $this->assertEqual(
+      'http://example.com/?a=1&b=2&c=3',
+      (string)$uri);
   }
 
 }

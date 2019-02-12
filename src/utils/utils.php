@@ -1623,7 +1623,7 @@ function phutil_http_parameter_pair($key, $value) {
       $ex);
   }
 
-  $key = (string)$key;
+  $key = phutil_string_cast($key);
 
   try {
     assert_stringlike($value);
@@ -1635,7 +1635,7 @@ function phutil_http_parameter_pair($key, $value) {
       $ex);
   }
 
-  $value = (string)$value;
+  $value = phutil_string_cast($value);
 
   return array($key, $value);
 }
