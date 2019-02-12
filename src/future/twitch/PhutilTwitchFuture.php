@@ -48,7 +48,7 @@ final class PhutilTwitchFuture extends FutureProxy {
 
       $uri = new PhutilURI('https://api.twitch.tv/');
       $uri->setPath('/kraken/'.ltrim($this->action, '/'));
-      $uri->setQueryParam('oauth_token', $this->accessToken);
+      $uri->replaceQueryParam('oauth_token', $this->accessToken);
 
       $future = new HTTPSFuture($uri);
       $future->setData($this->params);

@@ -142,19 +142,21 @@ final class PhutilJIRAAuthAdapter extends PhutilOAuth1AuthAdapter {
   }
 
   public function newJIRAFuture($path, $method, $params = array()) {
-    $uri = new PhutilURI($this->getJIRAURI($path));
     if ($method == 'GET') {
-      $uri->setQueryParams($params);
-      $params = array();
+      $uri_params = $params;
+      $body_params = array();
     } else {
       // For other types of requests, JIRA expects the request body to be
       // JSON encoded.
-      $params = json_encode($params);
+      $uri_params = array();
+      $body_params = phutil_json_encode($params);
     }
+
+    $uri = new PhutilURI($this->getJIRAURI($path), $uri_params);
 
     // JIRA returns a 415 error if we don't provide a Content-Type header.
 
-    return $this->newOAuth1Future($uri, $params)
+    return $this->newOAuth1Future($uri, $body_params)
       ->setMethod($method)
       ->addHeader('Content-Type', 'application/json');
   }

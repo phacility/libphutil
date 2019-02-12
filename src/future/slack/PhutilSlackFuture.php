@@ -48,7 +48,7 @@ final class PhutilSlackFuture extends FutureProxy {
 
       $uri = new PhutilURI('https://slack.com/');
       $uri->setPath('/api/'.$this->action);
-      $uri->setQueryParam('token', $this->accessToken);
+      $uri->replaceQueryParam('token', $this->accessToken);
 
       $future = new HTTPSFuture($uri);
       $future->setData($this->params);

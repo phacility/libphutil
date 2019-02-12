@@ -63,7 +63,7 @@ final class PhutilAmazonAuthAdapter extends PhutilOAuthAuthAdapter {
 
   protected function loadOAuthAccountData() {
     $uri = new PhutilURI('https://api.amazon.com/user/profile');
-    $uri->setQueryParam('access_token', $this->getAccessToken());
+    $uri->replaceQueryParam('access_token', $this->getAccessToken());
 
     $future = new HTTPSFuture($uri);
     list($body) = $future->resolvex();

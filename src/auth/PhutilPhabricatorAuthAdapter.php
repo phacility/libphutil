@@ -80,7 +80,7 @@ final class PhutilPhabricatorAuthAdapter extends PhutilOAuthAuthAdapter {
 
   protected function loadOAuthAccountData() {
     $uri = id(new PhutilURI($this->getPhabricatorURI('api/user.whoami')))
-      ->setQueryParam('access_token', $this->getAccessToken());
+      ->replaceQueryParam('access_token', $this->getAccessToken());
     list($body) = id(new HTTPSFuture($uri))->resolvex();
 
     try {
