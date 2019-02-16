@@ -36,7 +36,7 @@ final class PhutilGoogleAuthAdapter extends PhutilOAuthAuthAdapter {
     // a 100x100px image.
     if ($uri !== null) {
       $uri = new PhutilURI($uri);
-      $uri->setQueryParam('sz', 100);
+      $uri->replaceQueryParam('sz', 100);
       $uri = (string)$uri;
     }
 
@@ -82,7 +82,7 @@ final class PhutilGoogleAuthAdapter extends PhutilOAuthAuthAdapter {
 
   protected function loadOAuthAccountData() {
     $uri = new PhutilURI('https://www.googleapis.com/userinfo/v2/me');
-    $uri->setQueryParam('access_token', $this->getAccessToken());
+    $uri->replaceQueryParam('access_token', $this->getAccessToken());
 
     $future = new HTTPSFuture($uri);
     list($status, $body) = $future->resolve();

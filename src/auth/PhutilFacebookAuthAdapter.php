@@ -84,8 +84,8 @@ final class PhutilFacebookAuthAdapter extends PhutilOAuthAuthAdapter {
     );
 
     $uri = new PhutilURI('https://graph.facebook.com/me');
-    $uri->setQueryParam('access_token', $this->getAccessToken());
-    $uri->setQueryParam('fields', implode(',', $fields));
+    $uri->replaceQueryParam('access_token', $this->getAccessToken());
+    $uri->replaceQueryParam('fields', implode(',', $fields));
     list($body) = id(new HTTPSFuture($uri))->resolvex();
 
     $data = null;

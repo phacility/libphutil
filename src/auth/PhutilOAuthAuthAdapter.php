@@ -21,13 +21,13 @@ abstract class PhutilOAuthAuthAdapter extends PhutilAuthAdapter {
 
   public function getAuthenticateURI() {
     $uri = new PhutilURI($this->getAuthenticateBaseURI());
-    $uri->setQueryParam('client_id', $this->getClientID());
-    $uri->setQueryParam('scope', $this->getScope());
-    $uri->setQueryParam('redirect_uri', $this->getRedirectURI());
-    $uri->setQueryParam('state', $this->getState());
+    $uri->replaceQueryParam('client_id', $this->getClientID());
+    $uri->replaceQueryParam('scope', $this->getScope());
+    $uri->replaceQueryParam('redirect_uri', $this->getRedirectURI());
+    $uri->replaceQueryParam('state', $this->getState());
 
     foreach ($this->getExtraAuthenticateParameters() as $key => $value) {
-      $uri->setQueryParam($key, $value);
+      $uri->replaceQueryParam($key, $value);
     }
 
     return (string)$uri;

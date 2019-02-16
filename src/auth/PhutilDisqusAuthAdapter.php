@@ -63,8 +63,8 @@ final class PhutilDisqusAuthAdapter extends PhutilOAuthAuthAdapter {
 
   protected function loadOAuthAccountData() {
     $uri = new PhutilURI('https://disqus.com/api/3.0/users/details.json');
-    $uri->setQueryParam('api_key', $this->getClientID());
-    $uri->setQueryParam('access_token', $this->getAccessToken());
+    $uri->replaceQueryParam('api_key', $this->getClientID());
+    $uri->replaceQueryParam('access_token', $this->getAccessToken());
     $uri = (string)$uri;
 
     $future = new HTTPSFuture($uri);

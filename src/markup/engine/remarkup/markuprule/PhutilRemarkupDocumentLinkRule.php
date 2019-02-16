@@ -102,6 +102,10 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
   public function markupAlternateLink(array $matches) {
     $uri = trim($matches[2]);
 
+    if (!strlen($uri)) {
+      return $matches[0];
+    }
+
     // NOTE: We apply some special rules to avoid false positives here. The
     // major concern is that we do not want to convert `x[0][1](y)` in a
     // discussion about C source code into a link. To this end, we:
@@ -111,10 +115,6 @@ final class PhutilRemarkupDocumentLinkRule extends PhutilRemarkupRule {
     //   - reject URIs which being with a quote character.
 
     if ($uri[0] == '"' || $uri[0] == "'" || $uri[0] == '`') {
-      return $matches[0];
-    }
-
-    if (!strlen($uri[0])) {
       return $matches[0];
     }
 

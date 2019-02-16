@@ -55,11 +55,13 @@ final class PhutilTwitterAuthAdapter extends PhutilOAuth1AuthAdapter {
 
   private function getUserInfo() {
     if ($this->userInfo === null) {
-      $uri = new PhutilURI('https://api.twitter.com/1.1/users/show.json');
-      $uri->setQueryParams(
-        array(
-          'user_id' => $this->getAccountID(),
-        ));
+      $params = array(
+        'user_id' => $this->getAccountID(),
+      );
+
+      $uri = new PhutilURI(
+        'https://api.twitter.com/1.1/users/show.json',
+        $params);
 
       $data = $this->newOAuth1Future($uri)
         ->setMethod('GET')

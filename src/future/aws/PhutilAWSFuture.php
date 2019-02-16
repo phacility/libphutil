@@ -98,9 +98,8 @@ abstract class PhutilAWSFuture extends FutureProxy {
       $path = $this->getPath();
       $data = $this->getData();
 
-      $uri = id(new PhutilURI("https://{$host}/"))
-        ->setPath($path)
-        ->setQueryParams($params);
+      $uri = id(new PhutilURI("https://{$host}/", $params))
+        ->setPath($path);
 
       $future = id(new HTTPSFuture($uri, $data))
         ->setMethod($method);
