@@ -29,7 +29,7 @@ abstract class PhutilOAuthAuthAdapter extends PhutilAuthAdapter {
 
     $uri = new PhutilURI($this->getAuthenticateBaseURI(), $params);
 
-    return phtuil_string_cast($uri);
+    return phutil_string_cast($uri);
   }
 
   public function getAdapterType() {
