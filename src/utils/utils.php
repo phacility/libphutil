@@ -1113,6 +1113,7 @@ function phutil_units($description) {
               $src_unit));
       }
       break;
+
     case 'bytes':
       switch ($src_unit) {
         case 'byte':
@@ -1131,6 +1132,59 @@ function phutil_units($description) {
               $src_unit));
       }
       break;
+
+    case 'milliseconds':
+      switch ($src_unit) {
+        case 'second':
+        case 'seconds':
+          $factor = 1000;
+          break;
+        case 'minute':
+        case 'minutes':
+          $factor = 1000 * 60;
+          break;
+        case 'hour':
+        case 'hours':
+          $factor = 1000 * 60 * 60;
+          break;
+        case 'day':
+        case 'days':
+          $factor = 1000 * 60 * 60 * 24;
+          break;
+        default:
+          throw new InvalidArgumentException(
+            pht(
+              'This function can not convert from the unit "%s".',
+              $src_unit));
+      }
+      break;
+
+    case 'microseconds':
+      switch ($src_unit) {
+        case 'second':
+        case 'seconds':
+          $factor = 1000000;
+          break;
+        case 'minute':
+        case 'minutes':
+          $factor = 1000000 * 60;
+          break;
+        case 'hour':
+        case 'hours':
+          $factor = 1000000 * 60 * 60;
+          break;
+        case 'day':
+        case 'days':
+          $factor = 1000000 * 60 * 60 * 24;
+          break;
+        default:
+          throw new InvalidArgumentException(
+            pht(
+              'This function can not convert from the unit "%s".',
+              $src_unit));
+      }
+      break;
+
     default:
       throw new InvalidArgumentException(
         pht(
