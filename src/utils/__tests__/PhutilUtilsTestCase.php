@@ -474,6 +474,8 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
       '128 bits in bytes' => 16,
       '1 byte in bytes' => 1,
       '8 bits in bytes' => 1,
+      '1 minute in milliseconds' => 60000,
+      '2 minutes in microseconds' => 120000000,
     );
 
     foreach ($cases as $input => $expect) {
@@ -486,7 +488,6 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     $bad_cases = array(
       'quack',
       '3 years in seconds',
-      '1 minute in milliseconds',
       '1 day in days',
       '-1 minutes in seconds',
       '1.5 minutes in seconds',

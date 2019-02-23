@@ -15195,6 +15195,20 @@
       "php.min": "4.0.0",
       "php.max": null
     },
+    "random_int": {
+      "ext.name": "standard",
+      "ext.min": "7.0.0",
+      "ext.max": null,
+      "php.min": "7.0.0",
+      "php.max": null
+    },
+    "random_bytes": {
+      "ext.name": "standard",
+      "ext.min": "7.0.0",
+      "ext.max": null,
+      "php.min": "7.0.0",
+      "php.max": null
+    },
     "range": {
       "ext.name": "standard",
       "ext.min": "4.0.0",
