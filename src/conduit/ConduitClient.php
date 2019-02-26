@@ -348,7 +348,7 @@ final class ConduitClient extends Phobject {
     $out = array();
 
     if (is_array($data)) {
-      if (!$data || (array_keys($data) == range(0, count($data) - 1))) {
+      if (phutil_is_natural_list($data)) {
         $out[] = 'A';
         $out[] = count($data);
         $out[] = ':';

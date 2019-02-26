@@ -62,6 +62,15 @@ final class PhutilBootloader {
 
     $this->registeredLibraries[$name] = $path;
 
+    // If we're loading libphutil itself, load the utility functions first so
+    // we can safely call functions like "id()" when handling errors. In
+    // particular, this improves error behavior when "utils.php" itself can
+    // not load.
+    if ($name === 'phutil') {
+      $root = $this->getLibraryRoot('phutil');
+      $this->executeInclude($root.'/utils/utils.php');
+    }
+
     // For libphutil v2 libraries, load all functions when we load the library.
 
     if (!class_exists('PhutilSymbolLoader', false)) {

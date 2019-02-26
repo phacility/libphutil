@@ -26,10 +26,9 @@ function __phutil_autoload($class_name) {
         $class_name,
         pht('class or interface'),
         pht(
-          "the class or interface '%s' is not defined in the library ".
-          "map for any loaded %s library.",
-          $class_name,
-          'phutil'));
+          'The class or interface "%s" is not defined in the library '.
+          'map of any loaded library.',
+          $class_name));
     }
   } catch (PhutilMissingSymbolException $ex) {
     $should_throw = true;

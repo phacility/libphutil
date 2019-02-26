@@ -386,11 +386,11 @@ final class PhutilSymbolLoader {
     $load_failed = null;
     if ($is_function) {
       if (!function_exists($name)) {
-        $load_failed = pht('function');
+        $load_failed = 'function';
       }
     } else {
       if (!class_exists($name, false) && !interface_exists($name, false)) {
-        $load_failed = pht('class or interface');
+        $load_failed = 'class/interface';
       }
     }
 
@@ -400,14 +400,13 @@ final class PhutilSymbolLoader {
         $name,
         $load_failed,
         pht(
-          "the symbol map for library '%s' (at '%s') claims this %s is ".
-          "defined in '%s', but loading that source file did not cause the ".
-          "%s to become defined.",
+          'The symbol map for library "%s" (at "%s") claims this symbol '.
+          '(of type "%s") is defined in "%s", but loading that source file '.
+          'did not cause the symbol to become defined.',
           $lib_name,
           $lib_path,
           $load_failed,
-          $where,
-          $load_failed));
+          $where));
     }
   }
 
