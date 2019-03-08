@@ -93,7 +93,7 @@ final class PhutilTypeSpec extends Phobject {
         if (!is_array($value)) {
           throw new PhutilTypeCheckException($this, $value, $name);
         }
-        if ($value && (array_keys($value) !== range(0, count($value) - 1))) {
+        if ($value && !phutil_is_natural_list($value)) {
           throw new PhutilTypeCheckException($this, $value, $name);
         }
         try {
@@ -209,7 +209,7 @@ final class PhutilTypeSpec extends Phobject {
       return get_class($value);
     } else if (is_array($value)) {
       $vtype = self::getTypeOfVector($value);
-      if ($value && (array_keys($value) === range(0, count($value) - 1))) {
+      if ($value && phutil_is_natural_list($value)) {
         return 'list<'.$vtype.'>';
       } else {
         $ktype = self::getTypeOfVector(array_keys($value));

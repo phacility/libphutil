@@ -118,7 +118,7 @@ final class PhutilJSON extends Phobject {
    */
   private function encodeFormattedValue($value, $depth) {
     if (is_array($value)) {
-      if (empty($value) || array_keys($value) === range(0, count($value) - 1)) {
+      if (phutil_is_natural_list($value)) {
         return $this->encodeFormattedArray($value, $depth);
       } else {
         return $this->encodeFormattedObject($value, $depth);

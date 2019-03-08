@@ -73,7 +73,7 @@ final class PhutilDefaultSyntaxHighlighterEngine
         ->getHighlightFuture($source);
     }
 
-    if ($language == 'py') {
+    if ($language == 'py' || $language == 'python') {
       return id(new PhutilLexerSyntaxHighlighter())
         ->setConfig('lexer', new PhutilPythonFragmentLexer())
         ->setConfig('language', 'py')

@@ -918,4 +918,21 @@ final class PhutilUtilsTestCase extends PhutilTestCase {
     }
   }
 
+  public function testNaturalList() {
+    $cases = array(
+      array(true, array()),
+      array(true, array(0 => true, 1 => true, 2 => true)),
+      array(true, array('a', 'b', 'c')),
+      array(false, array(0 => true, 2 => true, 1 => true)),
+      array(false, array(1 => true)),
+      array(false, array('sound' => 'quack')),
+    );
+
+    foreach ($cases as $case) {
+      list($expect, $value) = $case;
+      $this->assertEqual($expect, phutil_is_natural_list($value));
+    }
+  }
+
+
 }

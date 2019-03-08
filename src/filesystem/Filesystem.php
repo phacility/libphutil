@@ -1118,11 +1118,46 @@ final class Filesystem extends Phobject {
    * @task   assert
    */
   public static function assertExists($path) {
-    if (!self::pathExists($path)) {
-      throw new FilesystemException(
-        $path,
-        pht("File system entity '%s' does not exist.", $path));
+    if (self::pathExists($path)) {
+      return;
     }
+
+    // Before we claim that the path doesn't exist, try to find a parent we
+    // don't have "+x" on. If we find one, tailor the error message so we don't
+    // say "does not exist" in cases where the path does exist, we just don't
+    // have permission to test its existence.
+    foreach (self::walkToRoot($path) as $parent) {
+      if (!self::pathExists($parent)) {
+        continue;
+      }
+
+      if (!is_dir($parent)) {
+        continue;
+      }
+
+      if (phutil_is_windows()) {
+        // Do nothing. On Windows, there's no obvious equivalent to the
+        // check below because "is_executable(...)" always appears to return
+        // "false" for any directory.
+      } else if (!is_executable($parent)) {
+        // On Linux, note that we don't need read permission ("+r") on parent
+        // directories to determine that a path exists, only execute ("+x").
+        throw new FilesystemException(
+          $path,
+          pht(
+            'Filesystem path "%s" can not be accessed because a parent '.
+            'directory ("%s") is not executable (the current process does '.
+            'not have "+x" permission).',
+            $path,
+            $parent));
+      }
+    }
+
+    throw new FilesystemException(
+      $path,
+      pht(
+        'Filesystem path "%s" does not exist.',
+        $path));
   }
 
 

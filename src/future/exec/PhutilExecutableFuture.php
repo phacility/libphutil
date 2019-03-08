@@ -126,13 +126,51 @@ abstract class PhutilExecutableFuture extends Future {
    * @task config
    */
   final public function setCWD($cwd) {
-    $cwd = (string)$cwd;
+    $cwd = phutil_string_cast($cwd);
+
+    try {
+      Filesystem::assertExists($cwd);
+    } catch (FilesystemException $ex) {
+      throw new PhutilProxyException(
+        pht(
+          'Unable to run a command in directory "%s".',
+          $cwd),
+        $ex);
+    }
 
     if (!is_dir($cwd)) {
       throw new Exception(
         pht(
-          'Preparing to run a command in directory "%s", but that '.
-          'directory does not exist.',
+          'Preparing to run a command in directory "%s", but that path is '.
+          'not a directory.',
+          $cwd));
+    }
+
+    // Although you don't technically need read permission to "chdir()" into
+    // a directory, it is almost certainly a mistake to execute a subprocess
+    // in a CWD we can't read. Refuse to do this. If callers have some
+    // exceptionally clever scheme up their sleeves they can always have the
+    // subprocess "cd" or "chdir()" explicitly.
+
+    if (!is_readable($cwd)) {
+      throw new Exception(
+        pht(
+          'Preparing to run a command in directory "%s", but that directory '.
+          'is not readable (the current process does not have "+r" '.
+          'permission).',
+          $cwd));
+    }
+
+
+    if (phutil_is_windows()) {
+      // Do nothing. On Windows, calling "is_executable(...)" on a directory
+      // always appears to return "false". Skip this check under Windows.
+    } else if (!is_executable($cwd)) {
+      throw new Exception(
+        pht(
+          'Preparing to run a command in directory "%s", but that directory '.
+          'is not executable (the current process does not have "+x" '.
+          'permission).',
           $cwd));
     }
 
