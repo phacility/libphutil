@@ -630,6 +630,38 @@ function assert_instances_of(array $arr, $class) {
 }
 
 /**
+ * Assert that two arrays have the exact same keys, in any order.
+ *
+ * @param map Array with expected keys.
+ * @param map Array with actual keys.
+ * @return void
+ */
+function assert_same_keys(array $expect, array $actual) {
+  foreach ($expect as $key => $value) {
+    if (isset($actual[$key]) || array_key_exists($key, $actual)) {
+      continue;
+    }
+
+    throw new InvalidArgumentException(
+      pht(
+        'Expected to find key "%s", but it is not present.',
+        $key));
+
+  }
+
+  foreach ($actual as $key => $value) {
+    if (isset($expect[$key]) || array_key_exists($key, $expect)) {
+      continue;
+    }
+
+    throw new InvalidArgumentException(
+      pht(
+        'Found unexpected surplus key "%s" where no such key was expected.',
+        $key));
+  }
+}
+
+/**
  * Assert that passed data can be converted to string.
  *
  * @param  string    Assert that this data is valid.
