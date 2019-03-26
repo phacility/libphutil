@@ -24,6 +24,47 @@ final class PhutilRemarkupQuotesBlockRule extends PhutilRemarkupBlockRule {
       $text[$key] = substr($line, 1);
     }
 
+    // If every line in the block is empty or begins with at least one leading
+    // space, strip the initial space off each line. When we quote text, we
+    // normally add "> " (with a space) to the beginning of each line, which
+    // can disrupt some other rules. If the block appears to have this space
+    // in front of each line, remove it.
+
+    $strip_space = true;
+    foreach ($text as $key => $line) {
+      $len = strlen($line);
+
+      if (!$len) {
+        // We'll still strip spaces if there are some completely empty
+        // lines, they may have just had trailing whitespace trimmed.
+        continue;
+      }
+
+      if ($line[0] == ' ' || $line[0] == "\n") {
+        continue;
+      }
+
+      // The first character of this line is something other than a space, so
+      // we can't strip spaces.
+      $strip_space = false;
+      break;
+    }
+
+    if ($strip_space) {
+      foreach ($text as $key => $line) {
+        $len = strlen($line);
+        if (!$len) {
+          continue;
+        }
+
+        if ($line[0] !== ' ') {
+          continue;
+        }
+
+        $text[$key] = substr($line, 1);
+      }
+    }
+
     return array('', implode('', $text));
   }
 
