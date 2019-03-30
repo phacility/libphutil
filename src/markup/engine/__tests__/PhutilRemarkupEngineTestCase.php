@@ -21,6 +21,10 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
 
     list($input_remarkup, $expected_output, $expected_text) = $parts;
 
+    $input_remarkup = $this->unescapeTrailingWhitespace($input_remarkup);
+    $expected_output = $this->unescapeTrailingWhitespace($expected_output);
+    $expected_text = $this->unescapeTrailingWhitespace($expected_text);
+
     $engine = $this->buildNewTestEngine();
 
     switch ($file) {
@@ -116,6 +120,13 @@ final class PhutilRemarkupEngineTestCase extends PhutilTestCase {
     $engine->setBlockRules($blocks);
 
     return $engine;
+  }
+
+
+  private function unescapeTrailingWhitespace($input) {
+    // Remove up to one "~" at the end of each line so trailing whitespace may
+    // be written in tests as " ~".
+    return preg_replace('/~$/m', '', $input);
   }
 
 }
