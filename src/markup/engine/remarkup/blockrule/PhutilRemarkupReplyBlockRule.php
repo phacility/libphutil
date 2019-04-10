@@ -1,6 +1,7 @@
 <?php
 
-final class PhutilRemarkupReplyBlockRule extends PhutilRemarkupBlockRule {
+final class PhutilRemarkupReplyBlockRule
+  extends PhutilRemarkupQuotedBlockRule {
 
   public function getPriority() {
     return 400;
@@ -18,50 +19,23 @@ final class PhutilRemarkupReplyBlockRule extends PhutilRemarkupBlockRule {
     return ($pos - $cursor);
   }
 
-  public function supportsChildBlocks() {
-    return true;
-  }
-
   public function extractChildText($text) {
     $text = phutil_split_lines($text, true);
-
-    $head = array();
-    $body = array();
 
     $head = substr(reset($text), 3);
 
     $body = array_slice($text, 1);
+    $body = implode('', $body);
+    $body = $this->normalizeQuotedBody($body);
 
-    // Remove the carets.
-    foreach ($body as $key => $line) {
-      $body[$key] = substr($line, 1);
-    }
-
-    // Strip leading empty lines.
-    foreach ($body as $key => $line) {
-      if (strlen(trim($line))) {
-        break;
-      }
-      unset($body[$key]);
-    }
-
-    return array(trim($head), implode('', $body));
+    return array(trim($head), $body);
   }
 
   public function markupText($text, $children) {
     $text = $this->applyRules($text);
 
     if ($this->getEngine()->isTextMode()) {
-      $children = phutil_split_lines($children, true);
-      foreach ($children as $key => $child) {
-        if (strlen(trim($child))) {
-          $children[$key] = '> '.$child;
-        } else {
-          $children[$key] = '>'.$child;
-        }
-      }
-      $children = implode('', $children);
-
+      $children = $this->getQuotedText($children);
       return $text."\n\n".$children;
     }
 

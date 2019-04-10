@@ -41,10 +41,8 @@ Previously, fruit:
 >
 > More previously, vegetables:
 >
-> > - Potato
-> > - Potato
-> > - Potato
->
+>> - Potato
+>> - Potato
+>> - Potato
 >
 > The end.
-
