@@ -11,6 +11,6 @@
 <span class="nv">$foo</span> <span class="k">=</span> <span class="s">&#039;bar&#039;</span><span class="k">;</span></pre></div></blockquote>
 ~~~~~~~~~~
 > This should be a code block:
-> 
+>
 >   <?php
 >   $foo = 'bar';

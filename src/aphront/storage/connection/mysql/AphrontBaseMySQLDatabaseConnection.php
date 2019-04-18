@@ -95,17 +95,35 @@ abstract class AphrontBaseMySQLDatabaseConnection
         'database'  => $database,
       ));
 
-    $retries = max(1, $this->getConfiguration('retries', 3));
-    while ($retries--) {
+    // If we receive these errors, we'll retry the connection up to the
+    // retry limit. For other errors, we'll fail immediately.
+    $retry_codes = array(
+      // "Connection Timeout"
+      2002 => true,
+
+      // "Unable to Connect"
+      2003 => true,
+    );
+
+    $max_retries = max(1, $this->getConfiguration('retries', 3));
+    for ($attempt = 1; $attempt <= $max_retries; $attempt++) {
       try {
         $conn = $this->connect();
         $profiler->endServiceCall($call_id, array());
         break;
       } catch (AphrontQueryException $ex) {
-        if ($retries && $ex->getCode() == 2003) {
-          $class = get_class($ex);
-          $message = $ex->getMessage();
-          phlog(pht('Retrying (%d) after %s: %s', $retries, $class, $message));
+        $code = $ex->getCode();
+        if (($attempt < $max_retries) && isset($retry_codes[$code])) {
+          $message = pht(
+            'Retrying database connection to "%s" after connection '.
+            'failure (attempt %d; "%s"; error #%d): %s',
+            $host,
+            $attempt,
+            get_class($ex),
+            $code,
+            $ex->getMessage());
+
+          phlog($message);
         } else {
           $profiler->endServiceCall($call_id, array());
           throw $ex;
