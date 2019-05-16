@@ -7346,7 +7346,7 @@ yyreduce:
 #line 2750 "parser.y" /* yacc.c:1646  */
     {
     (yyval) = NNEW(n_CLASS_DECLARATION);
-    (yyval)->appendChild((yyvsp[-6]));
+    (yyval)->appendChild(NNEW(n_EMPTY));
     (yyval)->appendChild(NNEW(n_EMPTY));
     (yyval)->appendChild((yyvsp[-4]));
     (yyval)->appendChild((yyvsp[-3]));

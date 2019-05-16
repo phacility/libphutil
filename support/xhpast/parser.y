@@ -2749,7 +2749,7 @@ new_expr:
 | T_NEW T_CLASS ctor_arguments extends_from implements_list
   '{' class_statement_list '}' {
     $$ = NNEW(n_CLASS_DECLARATION);
-    $$->appendChild($2);
+    $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild(NNEW(n_EMPTY));
     $$->appendChild($4);
     $$->appendChild($5);
