@@ -52,6 +52,10 @@ function __phutil_init_script__() {
     // Don't limit memory, doing so just generally just prevents us from
     // processing large inputs without many tangible benefits.
     'memory_limit'                => -1,
+
+    // See T13296. On macOS under PHP 7.3.x, PCRE currently segfaults after
+    // "fork()" if "pcre.jit" is enabled.
+    'pcre.jit' => 0,
   );
 
   foreach ($config_map as $config_key => $config_value) {

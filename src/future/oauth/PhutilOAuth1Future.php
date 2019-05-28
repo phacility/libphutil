@@ -23,6 +23,7 @@ final class PhutilOAuth1Future extends FutureProxy {
   private $hasConstructedFuture;
   private $callbackURI;
   private $headers = array();
+  private $timeout;
 
   public function setCallbackURI($callback_uri) {
     $this->callbackURI = $callback_uri;
@@ -72,6 +73,15 @@ final class PhutilOAuth1Future extends FutureProxy {
   public function setMethod($method) {
     $this->method = $method;
     return $this;
+  }
+
+  public function setTimeout($timeout) {
+    $this->timeout = $timeout;
+    return $this;
+  }
+
+  public function getTimeout() {
+    return $this->timeout;
   }
 
   public function __construct($uri, $data = array()) {
@@ -134,6 +144,11 @@ final class PhutilOAuth1Future extends FutureProxy {
         $future->addHeader($header[0], $header[1]);
       }
       $this->headers = array();
+
+      $timeout = $this->getTimeout();
+      if ($timeout !== null) {
+        $future->setTimeout($timeout);
+      }
 
       $this->hasConstructedFuture = true;
     }

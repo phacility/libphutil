@@ -7,6 +7,7 @@ final class PhutilAsanaFuture extends FutureProxy {
   private $action;
   private $params;
   private $method = 'GET';
+  private $timeout;
 
   public function __construct() {
     parent::__construct(null);
@@ -26,6 +27,15 @@ final class PhutilAsanaFuture extends FutureProxy {
   public function setMethod($method) {
     $this->method = $method;
     return $this;
+  }
+
+  public function setTimeout($timeout) {
+    $this->timeout = $timeout;
+    return $this;
+  }
+
+  public function getTimeout() {
+    return $this->timeout;
   }
 
   protected function getProxiedFuture() {
@@ -53,6 +63,11 @@ final class PhutilAsanaFuture extends FutureProxy {
       $future->setData($this->params);
       $future->addHeader('Authorization', 'Bearer '.$this->accessToken);
       $future->setMethod($this->method);
+
+      $timeout = $this->getTimeout();
+      if ($timeout !== null) {
+        $future->setTimeout($timeout);
+      }
 
       $this->future = $future;
     }

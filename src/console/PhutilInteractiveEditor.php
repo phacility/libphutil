@@ -77,6 +77,32 @@ final class PhutilInteractiveEditor extends Phobject {
     $err = $this->invokeEditor($editor, $path, $offset);
 
     if ($err) {
+      // See T13297. On macOS, "vi" and "vim" may exit with errors even though
+      // the edit succeeded. If the binary is "vi" or "vim" and we get an exit
+      // code, we perform an additional test on the binary.
+      $vi_binaries = array(
+        'vi' => true,
+        'vim' => true,
+      );
+
+      $binary = basename($editor);
+      if (isset($vi_binaries[$binary])) {
+        // This runs "Q" (an invalid command), then "q" (a valid command,
+        // meaning "quit"). Vim binaries with behavior that makes them poor
+        // interactive editors will exit "1".
+        list($diagnostic_err) = exec_manual('%R +Q +q', $binary);
+
+        // If we get an error back, the binary is badly behaved. Ignore the
+        // original error and assume it's not meaningful, since it just
+        // indicates the user made a typo in a command when editing
+        // interactively, which is routine and unconcerning.
+        if ($diagnostic_err) {
+          $err = 0;
+        }
+      }
+    }
+
+    if ($err) {
       Filesystem::remove($tmp);
       throw new Exception(pht('Editor exited with an error code (#%d).', $err));
     }
