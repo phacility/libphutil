@@ -394,6 +394,23 @@ function igroup(array $list, $by /* , ... */) {
 function msort(array $list, $method) {
   $surrogate = mpull($list, $method);
 
+  // See T13303. A "PhutilSortVector" is technically a sortable object, so
+  // a method which returns a "PhutilSortVector" is suitable for use with
+  // "msort()". However, it's almost certain that the caller intended to use
+  // "msortv()", not "msort()", and forgot to add a "v". Treat this as an error.
+
+  if ($surrogate) {
+    $item = head($surrogate);
+    if ($item instanceof PhutilSortVector) {
+      throw new Exception(
+        pht(
+          'msort() was passed a method ("%s") which returns '.
+          '"PhutilSortVector" objects. Use "msortv()", not "msort()", to '.
+          'sort a list which produces vectors.',
+          $method));
+    }
+  }
+
   asort($surrogate);
 
   $result = array();
