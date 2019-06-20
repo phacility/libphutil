@@ -263,69 +263,6 @@ EOHELP
     return $this->pools;
   }
 
-
-  /**
-   * Identify running daemons by examining the process table. This isn't
-   * completely reliable, but can be used as a fallback if the pid files fail
-   * or we end up with stray daemons by other means.
-   *
-   * Example output (array keys are process IDs):
-   *
-   *   array(
-   *     12345 => array(
-   *       'type' => 'overseer',
-   *       'command' => 'php launch_daemon.php --daemonize ...',
-   *       'pid' => 12345,
-   *     ),
-   *     12346 => array(
-   *       'type' => 'daemon',
-   *       'command' => 'php exec_daemon.php ...',
-   *       'pid' => 12346,
-   *     ),
-   *  );
-   *
-   * @return dict   Map of PIDs to process information, identifying running
-   *                daemon processes.
-   */
-  public static function findRunningDaemons() {
-    $results = array();
-
-    list($err, $processes) = exec_manual('ps -o pid,command -a -x -w -w -w');
-    if ($err) {
-      return $results;
-    }
-
-    $processes = array_filter(explode("\n", trim($processes)));
-    foreach ($processes as $process) {
-      list($pid, $command) = preg_split('/\s+/', trim($process), 2);
-
-      $pattern = '/((launch|exec)_daemon.php|phd-daemon)/';
-      $matches = null;
-      if (!preg_match($pattern, $command, $matches)) {
-        continue;
-      }
-
-      switch ($matches[1]) {
-        case 'exec_daemon.php':
-          $type = 'daemon';
-          break;
-        case 'launch_daemon.php':
-        case 'phd-daemon':
-        default:
-          $type = 'overseer';
-          break;
-      }
-
-      $results[(int)$pid] = array(
-        'type' => $type,
-        'command' => $command,
-        'pid' => (int)$pid,
-      );
-    }
-
-    return $results;
-  }
-
   private function updatePidfile() {
     if (!$this->piddir) {
       return;
