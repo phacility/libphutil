@@ -15,12 +15,10 @@ final class PhutilDaemonOverseer extends Phobject {
   private $traceMode;
   private $traceMemory;
   private $daemonize;
-  private $piddir;
   private $log;
   private $libraries = array();
   private $modules = array();
   private $verbose;
-  private $lastPidfile;
   private $startEpoch;
   private $autoscale = array();
   private $autoscaleConfig = array();
@@ -99,7 +97,6 @@ EOHELP
     $this->libraries = idx($config, 'load');
     $this->log = idx($config, 'log');
     $this->daemonize = idx($config, 'daemonize');
-    $this->piddir = idx($config, 'piddir');
 
     $this->config = $config;
 
@@ -111,21 +108,6 @@ EOHELP
     self::$instance = $this;
 
     $this->startEpoch = time();
-
-    // Check this before we daemonize, since if it's an issue the child will
-    // exit immediately.
-    if ($this->piddir) {
-      $dir = $this->piddir;
-      try {
-        Filesystem::assertWritable($dir);
-      } catch (Exception $ex) {
-        throw new Exception(
-          pht(
-            "Specified daemon PID directory ('%s') does not exist or is ".
-            "not writable by the daemon user!",
-            $dir));
-      }
-    }
 
     if (!idx($config, 'daemons')) {
       throw new PhutilArgumentUsageException(
@@ -206,7 +188,6 @@ EOHELP
         }
       }
 
-      $this->updatePidfile();
       $this->updateMemory();
 
       $this->waitForDaemonFutures($futures);
@@ -261,54 +242,6 @@ EOHELP
 
   private function getDaemonPools() {
     return $this->pools;
-  }
-
-  private function updatePidfile() {
-    if (!$this->piddir) {
-      return;
-    }
-
-    $pidfile = $this->toDictionary();
-
-    if ($pidfile !== $this->lastPidfile) {
-      $this->lastPidfile = $pidfile;
-      $pidfile_path = $this->piddir.'/daemon.'.getmypid();
-      try {
-        Filesystem::writeFile(
-          $pidfile_path,
-          phutil_json_encode($pidfile));
-      } catch (Exception $ex) {
-        // This write can fail if the disk is full. We already tested the
-        // directory for writability on startup, so just ignore this and
-        // move on rather than crashing. If the disk is full this error may
-        // not make it to a log file, but at least we tried.
-        $this->logMessage(
-          'PIDF',
-          pht(
-            'Unable to update PID file: %s.',
-            $ex->getMessage()));
-      }
-    }
-  }
-
-  public function toDictionary() {
-    $daemons = array();
-    foreach ($this->getDaemonPools() as $pool) {
-      foreach ($pool->getDaemons() as $daemon) {
-        if (!$daemon->isRunning()) {
-          continue;
-        }
-
-        $daemons[] = $daemon->toDictionary();
-      }
-    }
-
-    return array(
-      'pid' => getmypid(),
-      'start' => $this->startEpoch,
-      'config' => $this->config,
-      'daemons' => $daemons,
-    );
   }
 
   private function updateMemory() {

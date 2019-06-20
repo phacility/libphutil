@@ -494,14 +494,6 @@ final class PhutilDaemonHandle extends Phobject {
       ));
   }
 
-  public function toDictionary() {
-    return array(
-      'pid' => $this->getPID(),
-      'id' => $this->getDaemonID(),
-      'config' => $this->properties,
-    );
-  }
-
   public function didExit() {
     if ($this->shouldSendExitEvent) {
       $this->dispatchEvent(self::EVENT_WILL_EXIT);
