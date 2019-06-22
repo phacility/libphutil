@@ -77,7 +77,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
       pht('Exception raised by unloadable edges.'));
   }
 
-  public function testTopographicSortTree() {
+  public function testTopologicalOrder() {
     $graph = array(
       'A' => array('B', 'C'),
       'B' => array('D', 'E'),
@@ -86,12 +86,12 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
       'E' => array(),
     );
 
-    $sorted = $this->getTopographicSort($graph);
+    $sorted = $this->getTopologicalOrder($graph);
 
     $this->assertEqual(
       array('A', 'C', 'B', 'E', 'D'),
       $sorted,
-      pht('Topographically sorted tree.'));
+      pht('Topologically sorted tree.'));
 
     $graph = array(
       'A' => array('B', 'C'),
@@ -101,15 +101,15 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
       'E' => array(),
     );
 
-    $sorted = $this->getTopographicSort($graph);
+    $sorted = $this->getTopologicalOrder($graph);
 
     $this->assertEqual(
       array('A', 'B', 'C', 'D', 'E'),
       $sorted,
-      pht('Topographically sorted tree with nesting.'));
+      pht('Topologically sorted tree with nesting.'));
   }
 
-  public function testBestEffortTopographicSortTree() {
+  public function testRoughTopologicalOrder() {
     $graph = array(
       'A' => array('B', 'C'),
       'B' => array('D', 'E'),
@@ -121,7 +121,7 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
       'H' => array('G'),
     );
 
-    $sorted = $this->getBestEffortTopographicSort($graph);
+    $sorted = $this->getRoughTopologicalOrder($graph);
 
     $this->assertEqual(count($graph), count($sorted));
 
@@ -161,19 +161,19 @@ final class AbstractDirectedGraphTestCase extends PhutilTestCase {
     return $detector->detectCycles($search);
   }
 
-  private function getTopographicSort(array $graph, $seed = 'A') {
+  private function getTopologicalOrder(array $graph, $seed = 'A') {
     $detector = new TestAbstractDirectedGraph();
     $detector->setTestData($graph);
     $detector->addNodes(array_select_keys($graph, array($seed)));
     $detector->loadGraph();
-    return $detector->getTopographicallySortedNodes();
+    return $detector->getNodesInTopologicalOrder();
   }
 
-  private function getBestEffortTopographicSort(array $graph) {
+  private function getRoughTopologicalOrder(array $graph) {
     $detector = new TestAbstractDirectedGraph();
     $detector->setTestData($graph);
     $detector->addNodes(array_keys($graph));
-    return $detector->getBestEffortTopographicallySortedNodes();
+    return $detector->getNodesInRoughTopologicalOrder();
   }
 
 }

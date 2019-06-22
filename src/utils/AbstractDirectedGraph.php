@@ -91,15 +91,12 @@ abstract class AbstractDirectedGraph extends Phobject {
   }
 
   /**
-   * Utility function to get a list of topographically sorted nodes out of a
-   * graph.
+   * Get the nodes in topological order.
    *
-   * This could be useful for example to figure out what order you can safely
-   * apply dependencies.
-   *
-   * Note this will loop indefinitely if the graph has a cycle.
+   * This method requires the graph be acyclic. For graphs which may contain
+   * cycles, see @{method:getNodesInRoughTopologicalOrder}.
    */
-  final public function getTopographicallySortedNodes() {
+  final public function getNodesInTopologicalOrder() {
     $sorted = array();
     $nodes = $this->getNodes();
 
@@ -145,10 +142,17 @@ abstract class AbstractDirectedGraph extends Phobject {
   }
 
   /**
-   * Utility function to get the best effort topographically sorted
-   * nodes out of a graph.
+   * Get the nodes in topological order, or some roughly similar order if
+   * the graph contains cycles.
+   *
+   * This method will return an ordering for cyclic graphs. The method will
+   * attempt to make it look like a topological ordering, but since cyclic
+   * graphs have no complete toplogical ordering, you might get anything.
+   *
+   * If you know the graph is acyclic and want an actual topological order,
+   * use @{method:getNodesInTopologicalOrder}.
    */
-  final public function getBestEffortTopographicallySortedNodes() {
+  final public function getNodesInRoughTopologicalOrder() {
     $nodes = $this->getNodes();
     $edges = $this->loadEdges($nodes);
 
