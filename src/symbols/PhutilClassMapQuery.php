@@ -287,7 +287,21 @@ final class PhutilClassMapQuery extends Phobject {
 
     // Apply the "sort" mechanism, if it is configured.
     if (strlen($sort)) {
-      $map = msort($map, $sort);
+      if ($map) {
+        // The "sort" method may return scalars (which we want to sort with
+        // "msort()"), or may return PhutilSortVector objects (which we want
+        // to sort with "msortv()").
+        $item = call_user_func(array(head($map), $sort));
+
+        // Since we may be early in the stack, use a string to avoid triggering
+        // autoload in old versions of PHP.
+        $vector_class = 'PhutilSortVector';
+        if ($item instanceof $vector_class) {
+          $map = msortv($map, $sort);
+        } else {
+          $map = msort($map, $sort);
+        }
+      }
     }
 
     return $map;
