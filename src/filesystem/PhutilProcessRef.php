@@ -54,6 +54,11 @@ final class PhutilProcessRef
       $pattern = array_values($pattern);
       $is_match = true;
       for ($ii = 0; $ii < count($pattern); $ii++) {
+        if (!isset($argv[$ii])) {
+          $is_match = false;
+          break;
+        }
+
         if (basename($argv[$ii]) !== $pattern[$ii]) {
           $is_match = false;
           break;
