@@ -7,6 +7,7 @@ final class PhutilProcessRef
   private $command;
   private $isOverseer;
   private $instance;
+  private $argv;
 
   public function setPID($pid) {
     $this->pid = $pid;
@@ -17,21 +18,23 @@ final class PhutilProcessRef
     return $this->pid;
   }
 
-  public function setCommand($command) {
-    $this->command = $command;
-    return $this;
-  }
-
   public function getCommand() {
+    if (!$this->command) {
+      $this->command = phutil_string_cast(csprintf('%LR', $this->argv));
+    }
+
     return $this->command;
   }
 
-  public function setIsOverseer($is_overseer) {
-    $this->isOverseer = $is_overseer;
-    return $this;
-  }
-
   public function getIsOverseer() {
+    if ($this->isOverseer === null) {
+      $this->isOverseer = $this->getCommandMatch(
+        array(
+          array('phd-daemon'),
+          array('php', 'phd-daemon'),
+        ));
+    }
+
     return $this->isOverseer;
   }
 
@@ -42,6 +45,36 @@ final class PhutilProcessRef
 
   public function getInstance() {
     return $this->instance;
+  }
+
+  private function getCommandMatch(array $patterns) {
+    $argv = $this->getArgv();
+
+    foreach ($patterns as $pattern) {
+      $pattern = array_values($pattern);
+      $is_match = true;
+      for ($ii = 0; $ii < count($pattern); $ii++) {
+        if (basename($argv[$ii]) !== $pattern[$ii]) {
+          $is_match = false;
+          break;
+        }
+      }
+
+      if ($is_match) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public function setArgv(array $argv) {
+    $this->argv = $argv;
+    return $this;
+  }
+
+  public function getArgv() {
+    return $this->argv;
   }
 
 }

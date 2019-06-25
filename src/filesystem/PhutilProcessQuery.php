@@ -36,13 +36,10 @@ final class PhutilProcessQuery
       list($pid, $command) = $parts;
 
       $ref = id(new PhutilProcessRef())
-        ->setPID((int)$pid)
-        ->setCommand($command);
+        ->setPID((int)$pid);
 
-      // If this process is a "phd-daemon" process, mark it as a daemon
-      // overseer.
-      $is_overseer = (bool)preg_match('/\bphd-daemon\b/', $command);
-      $ref->setIsOverseer($is_overseer);
+      $argv = $this->getArgv($pid, $command);
+      $ref->setArgv($argv);
 
       // If this is an overseer and the command has a "-l" ("Label") argument,
       // the argument contains the "PHABRICATOR_INSTANCE" value for the daemon.
@@ -80,4 +77,49 @@ final class PhutilProcessQuery
     return array_values($refs);
   }
 
+  private function getArgv($pid, $command) {
+
+    // In the output of "ps", arguments in process titles are not escaped, so
+    // we can not distinguish between the processes created by running these
+    // commands by looking only at the output of "ps":
+    //
+    //   echo 'a b'
+    //   echo a b
+    //
+    // Both commands will have the same process title in the output of "ps".
+
+    // This means we may split the command incorrectly in the general case,
+    // and this misparsing may be important if the process binary resides in
+    // a directory with spaces in its path and we're trying to identify which
+    // binary a process is running.
+
+    // On Ubuntu, and likely most other Linux systems, we can get a raw
+    // command line from "/proc" with arguments delimited by "\0".
+
+    // On macOS, there's no "/proc" and we don't currently have a robust way
+    // to split the process command in a way that parses spaces properly, so
+    // fall back to a best effort based on the output of "ps". This is almost
+    // always correct, since it is uncommon to put binaries under paths with
+    // spaces in them.
+
+    $proc_cmdline = sprintf('/proc/%d/cmdline', $pid);
+    try {
+      $argv = Filesystem::readFile($proc_cmdline);
+      $argv = explode("\0", $argv);
+
+      // The output itself is terminated with "\0", so remove the final empty
+      // argument.
+      if (last($argv) === '') {
+        array_pop($argv);
+      }
+
+      return $argv;
+    } catch (Exception $ex) {
+      // If we fail to read "/proc", fall through to less reliable methods.
+    }
+
+    // If we haven't found a better source, just split the "ps" output on
+    // spaces.
+    return preg_split('/\s+/', $command);
+  }
 }
