@@ -15,12 +15,10 @@ final class PhutilDaemonOverseer extends Phobject {
   private $traceMode;
   private $traceMemory;
   private $daemonize;
-  private $piddir;
   private $log;
   private $libraries = array();
   private $modules = array();
   private $verbose;
-  private $lastPidfile;
   private $startEpoch;
   private $autoscale = array();
   private $autoscaleConfig = array();
@@ -99,7 +97,6 @@ EOHELP
     $this->libraries = idx($config, 'load');
     $this->log = idx($config, 'log');
     $this->daemonize = idx($config, 'daemonize');
-    $this->piddir = idx($config, 'piddir');
 
     $this->config = $config;
 
@@ -111,21 +108,6 @@ EOHELP
     self::$instance = $this;
 
     $this->startEpoch = time();
-
-    // Check this before we daemonize, since if it's an issue the child will
-    // exit immediately.
-    if ($this->piddir) {
-      $dir = $this->piddir;
-      try {
-        Filesystem::assertWritable($dir);
-      } catch (Exception $ex) {
-        throw new Exception(
-          pht(
-            "Specified daemon PID directory ('%s') does not exist or is ".
-            "not writable by the daemon user!",
-            $dir));
-      }
-    }
 
     if (!idx($config, 'daemons')) {
       throw new PhutilArgumentUsageException(
@@ -206,7 +188,6 @@ EOHELP
         }
       }
 
-      $this->updatePidfile();
       $this->updateMemory();
 
       $this->waitForDaemonFutures($futures);
@@ -261,117 +242,6 @@ EOHELP
 
   private function getDaemonPools() {
     return $this->pools;
-  }
-
-
-  /**
-   * Identify running daemons by examining the process table. This isn't
-   * completely reliable, but can be used as a fallback if the pid files fail
-   * or we end up with stray daemons by other means.
-   *
-   * Example output (array keys are process IDs):
-   *
-   *   array(
-   *     12345 => array(
-   *       'type' => 'overseer',
-   *       'command' => 'php launch_daemon.php --daemonize ...',
-   *       'pid' => 12345,
-   *     ),
-   *     12346 => array(
-   *       'type' => 'daemon',
-   *       'command' => 'php exec_daemon.php ...',
-   *       'pid' => 12346,
-   *     ),
-   *  );
-   *
-   * @return dict   Map of PIDs to process information, identifying running
-   *                daemon processes.
-   */
-  public static function findRunningDaemons() {
-    $results = array();
-
-    list($err, $processes) = exec_manual('ps -o pid,command -a -x -w -w -w');
-    if ($err) {
-      return $results;
-    }
-
-    $processes = array_filter(explode("\n", trim($processes)));
-    foreach ($processes as $process) {
-      list($pid, $command) = preg_split('/\s+/', trim($process), 2);
-
-      $pattern = '/((launch|exec)_daemon.php|phd-daemon)/';
-      $matches = null;
-      if (!preg_match($pattern, $command, $matches)) {
-        continue;
-      }
-
-      switch ($matches[1]) {
-        case 'exec_daemon.php':
-          $type = 'daemon';
-          break;
-        case 'launch_daemon.php':
-        case 'phd-daemon':
-        default:
-          $type = 'overseer';
-          break;
-      }
-
-      $results[(int)$pid] = array(
-        'type' => $type,
-        'command' => $command,
-        'pid' => (int)$pid,
-      );
-    }
-
-    return $results;
-  }
-
-  private function updatePidfile() {
-    if (!$this->piddir) {
-      return;
-    }
-
-    $pidfile = $this->toDictionary();
-
-    if ($pidfile !== $this->lastPidfile) {
-      $this->lastPidfile = $pidfile;
-      $pidfile_path = $this->piddir.'/daemon.'.getmypid();
-      try {
-        Filesystem::writeFile(
-          $pidfile_path,
-          phutil_json_encode($pidfile));
-      } catch (Exception $ex) {
-        // This write can fail if the disk is full. We already tested the
-        // directory for writability on startup, so just ignore this and
-        // move on rather than crashing. If the disk is full this error may
-        // not make it to a log file, but at least we tried.
-        $this->logMessage(
-          'PIDF',
-          pht(
-            'Unable to update PID file: %s.',
-            $ex->getMessage()));
-      }
-    }
-  }
-
-  public function toDictionary() {
-    $daemons = array();
-    foreach ($this->getDaemonPools() as $pool) {
-      foreach ($pool->getDaemons() as $daemon) {
-        if (!$daemon->isRunning()) {
-          continue;
-        }
-
-        $daemons[] = $daemon->toDictionary();
-      }
-    }
-
-    return array(
-      'pid' => getmypid(),
-      'start' => $this->startEpoch,
-      'config' => $this->config,
-      'daemons' => $daemons,
-    );
   }
 
   private function updateMemory() {

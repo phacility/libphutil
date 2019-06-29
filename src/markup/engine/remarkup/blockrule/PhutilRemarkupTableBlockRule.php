@@ -11,7 +11,7 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
 
       while (isset($lines[$cursor])) {
         $num_lines++;
-        if (preg_match('@</table>$@i', $lines[$cursor])) {
+        if (preg_match('@</table>\s*$@i', $lines[$cursor])) {
           break;
         }
         $cursor++;
@@ -22,86 +22,117 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
   }
 
   public function markupText($text, $children) {
-    $matches = array();
+    $root = id(new PhutilHTMLParser())
+      ->parseDocument($text);
 
-    if (!preg_match('@^\s*<table>(.*)</table>$@si', $text, $matches)) {
-      return $this->fail(
-        $text,
-        pht('Bad table (expected %s)', '<table>...</table>'));
+    $nodes = $root->selectChildrenWithTags(array('table'));
+
+    $out = array();
+    $seen_table = false;
+    foreach ($nodes as $node) {
+      if ($node->isContentNode()) {
+        $content = $node->getContent();
+
+        if (!strlen(trim($content))) {
+          // Ignore whitespace.
+          continue;
+        }
+
+        // If we find other content, fail the rule. This can happen if the
+        // input is two consecutive table tags on one line with some text
+        // in between them, which we currently forbid.
+        return $text;
+      } else {
+        // If we have multiple table tags, just return the raw text.
+        if ($seen_table) {
+          return $text;
+        }
+        $seen_table = true;
+
+        $out[] = $this->newTable($node);
+      }
     }
 
-    $body = $matches[1];
+    return phutil_implode_html('', $out);
+  }
 
-    $row_fragment = '(?:\s*<tr>(.*)</tr>\s*)';
-    $cell_fragment = '(?:\s*<(td|th)>(.*)</(?:td|th)>\s*)';
+  private function newTable(PhutilDOMNode $table) {
+    $nodes = $table->selectChildrenWithTags(
+      array(
+        'colgroup',
+        'tr',
+      ));
 
-    // Test that the body contains only valid rows.
-    if (!preg_match('@^'.$row_fragment.'+$@Usi', $body)) {
-      return $this->fail(
-        $body,
-        pht('Bad table syntax (expected rows %s)', '<tr>...</tr>'));
+    $colgroup = null;
+    $rows = array();
+
+    foreach ($nodes as $node) {
+      if ($node->isContentNode()) {
+        $content = $node->getContent();
+
+        // If this is whitespace, ignore it.
+        if (!strlen(trim($content))) {
+          continue;
+        }
+
+        // If we have nonempty content between the rows, this isn't a valid
+        // table. We can't really do anything reasonable with this, so just
+        // fail out and render the raw text.
+        return $table->newRawString();
+      }
+
+      if ($node->getTagName() === 'colgroup') {
+        // This table has multiple "<colgroup />" tags. Just bail out.
+        if ($colgroup !== null) {
+          return $table->newRawString();
+        }
+
+        // This table has a "<colgroup />" after a "<tr />". We could parse
+        // this, but just reject it out of an abundance of caution.
+        if ($rows) {
+          return $table->newRawString();
+        }
+
+        $colgroup = $node;
+        continue;
+      }
+
+      $rows[] = $node;
     }
 
-    // Capture the rows.
-    $row_regex = '@'.$row_fragment.'@Usi';
-    if (!preg_match_all($row_regex, $body, $matches, PREG_SET_ORDER)) {
-      throw new Exception(
-        pht('Bug in Remarkup tables, parsing fails for input: %s', $text));
-    }
+    $row_specs = array();
 
-    $out_rows = array();
-
-    $rows = $matches;
     foreach ($rows as $row) {
-      $content = $row[1];
+      $cells = $row->selectChildrenWithTags(array('td', 'th'));
 
-      // Test that the row contains only valid cells.
-      if (!preg_match('@^'.$cell_fragment.'+$@Usi', $content)) {
-        return $this->fail(
-          $content,
-          pht('Bad table syntax (expected cells %s)', '<td>...</td>'));
-      }
+      $cell_specs = array();
+      foreach ($cells as $cell) {
+        if ($cell->isContentNode()) {
+          $content = $node->getContent();
 
-      // Capture the cells.
-      $cell_regex = '@'.$cell_fragment.'@Usi';
-      if (!preg_match_all($cell_regex, $content, $matches, PREG_SET_ORDER)) {
-        throw new Exception(
-          pht('Bug in Remarkup tables, parsing fails for input: %s', $text));
-      }
+          if (!strlen(trim($content))) {
+            continue;
+          }
 
-      $out_cells = array();
-      foreach ($matches as $cell) {
-        $cell_type = $cell[1];
-        $cell_content = $cell[2];
+          return $table->newRawString();
+        }
 
-        $out_cells[] = array(
-          'type'      => $cell_type,
-          'content'   => $this->applyRules($cell_content),
+        $content = $cell->getRawContentString();
+        $content = $this->applyRules($content);
+
+        $cell_specs[] = array(
+          'type' => $cell->getTagName(),
+          'content' => $content,
         );
       }
 
-      $out_rows[] = array(
-        'type'    => 'tr',
-        'content' => $out_cells,
+      $row_specs[] = array(
+        'type' => 'tr',
+        'content' => $cell_specs,
       );
     }
 
-    return $this->renderRemarkupTable($out_rows);
-  }
-
-  private function fail($near, $message) {
-    $message = sprintf(
-      '%s near: %s',
-      $message,
-      id(new PhutilUTF8StringTruncator())
-      ->setMaximumGlyphs(32000)
-      ->truncateString($near));
-
-    if ($this->getEngine()->isTextMode()) {
-      return '('.$message.')';
-    }
-
-    return hsprintf('<div style="color: red;">%s</div>', $message);
+    return $this->renderRemarkupTable($row_specs);
   }
 
 }

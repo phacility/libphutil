@@ -1,0 +1,39 @@
+<table><tr><td>a</td><td>b</td><td /></tr></table>
+~~~~~~~~~~
+[
+  {
+    "tag": "table",
+    "attributes": {},
+    "children": [
+      {
+        "tag": "tr",
+        "attributes": {},
+        "children": [
+          {
+            "tag": "td",
+            "attributes": {},
+            "children": [
+              {
+                "content": "a"
+              }
+            ]
+          },
+          {
+            "tag": "td",
+            "attributes": {},
+            "children": [
+              {
+                "content": "b"
+              }
+            ]
+          },
+          {
+            "tag": "td",
+            "attributes": {},
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+]
