@@ -7,7 +7,8 @@ final class PhutilDOMNode extends Phobject {
   private $children = array();
   private $attributes = array();
   private $parentNode;
-  private $rawString;
+  private $rawHead;
+  private $rawTail;
 
   public function setContent($content) {
     $this->content = $content;
@@ -54,13 +55,27 @@ final class PhutilDOMNode extends Phobject {
     return $this->attributes;
   }
 
-  public function setRawString($raw_string) {
-    $this->rawString = $raw_string;
+  public function setRawHead($raw_string) {
+    $this->rawHead = $raw_string;
+    return $this;
+  }
+
+  public function setRawTail($raw_tail) {
+    $this->rawTail = $raw_tail;
     return $this;
   }
 
   public function getRawString() {
-    return $this->rawString;
+    $raw = array();
+    $raw[] = $this->rawHead;
+
+    foreach ($this->getChildren() as $child) {
+      $raw[] = $child->getRawString();
+    }
+
+    $raw[] = $this->rawTail;
+
+    return implode('', $raw);
   }
 
   public function toDictionary() {
@@ -109,11 +124,11 @@ final class PhutilDOMNode extends Phobject {
       // Otherwise, this is some other tag. Convert it into a content
       // node.
 
-      $raw_content = $child->getRawString();
+      $raw_string = $child->getRawString();
 
       $nodes[] = id(new self())
-        ->setContent($raw_content)
-        ->setRawContent($raw_content);
+        ->setContent($raw_string)
+        ->setRawHead($raw_string);
     }
 
     return $this->mergeContentNodes($nodes);
@@ -147,16 +162,16 @@ final class PhutilDOMNode extends Phobject {
   private function mergeContentNodes(array $nodes) {
     $list = array();
     $content_block = array();
-    foreach ($this->getChildren() as $child) {
-      if ($child->isContentNode()) {
-        $content_block[] = $child;
+    foreach ($nodes as $node) {
+      if ($node->isContentNode()) {
+        $content_block[] = $node;
         continue;
       }
 
       $list[] = $content_block;
       $content_block = array();
 
-      $list[] = $child;
+      $list[] = $node;
     }
 
     $list[] = $content_block;
@@ -184,7 +199,7 @@ final class PhutilDOMNode extends Phobject {
 
       $results[] = id(new self())
         ->setContent($parts)
-        ->setRawString($parts);
+        ->setRawHead($parts);
     }
 
     return $results;

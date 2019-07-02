@@ -104,7 +104,7 @@ final class PhutilHTMLParser extends Phobject {
 
       $node = id(new PhutilDOMNode())
         ->setContent($content)
-        ->setRawString($content);
+        ->setRawHead($content);
 
       $this->getCursor()->appendChild($node);
     }
@@ -182,8 +182,12 @@ final class PhutilHTMLParser extends Phobject {
 
       while ($cursor) {
         if ($cursor->getTagName() === $tag_name) {
+          // Add this raw content to the raw content of the tag we're closing.
+          $cursor->setRawTail('<'.$raw_content.'>');
+
           $parent = $cursor->getParentNode();
           $this->setCursor($parent);
+
           return true;
         }
         $cursor = $cursor->getParentNode();
@@ -205,7 +209,7 @@ final class PhutilHTMLParser extends Phobject {
     $node = id(new PhutilDOMNode())
       ->setTagName($tag_name)
       ->setAttributes($attribute_map)
-      ->setRawString('<'.$raw_content.'>');
+      ->setRawHead('<'.$raw_content.'>');
 
     $cursor = $this->getCursor();
     $cursor->appendChild($node);
