@@ -1,0 +1,13 @@
+<math>1 < 2</math>
+~~~~~~~~~~
+[
+  {
+    "tag": "math",
+    "attributes": {},
+    "children": [
+      {
+        "content": "1 < 2"
+      }
+    ]
+  }
+]

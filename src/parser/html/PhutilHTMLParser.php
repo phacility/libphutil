@@ -30,9 +30,13 @@ final class PhutilHTMLParser extends Phobject {
         continue;
       }
 
-      if (!$in_tag && ($c === '<')) {
+      // When we encounter a "<", we start a new tag whether we're already in
+      // a tag or not. We want to parse "<x>1 < 2</x>" as a single tag with
+      // the content "1 < 2".
+
+      if ($c === '<') {
         $segments[] = array(
-          'tag' => $in_tag,
+          'tag' => false,
           'pos' => $segment_pos,
           'end' => $ii,
         );
