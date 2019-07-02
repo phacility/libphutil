@@ -42,4 +42,63 @@ final class PhutilHTMLParserTestCase
     }
   }
 
+  public function testSelectChildrenWithTags() {
+    $input = '<a></a><b></b><a /><c /><a /><x></x><y /><a /><d>x</d><a /><e>';
+    $document = id(new PhutilHTMLParser())
+      ->parseDocument($input);
+
+    $children = $document->selectChildrenWithTags(array('a'));
+
+    $list = array();
+    foreach ($children as $child) {
+      $list[] = $child->toDictionary();
+    }
+
+    $this->assertEqual(
+      array(
+        array(
+          'tag' => 'a',
+          'attributes' => array(),
+          'children' => array(),
+        ),
+        array(
+          'content' => '<b></b>',
+        ),
+        array(
+          'tag' => 'a',
+          'attributes' => array(),
+          'children' => array(),
+        ),
+        array(
+          'content' => '<c />',
+        ),
+        array(
+          'tag' => 'a',
+          'attributes' => array(),
+          'children' => array(),
+        ),
+        array(
+          'content' => '<x></x><y />',
+        ),
+        array(
+          'tag' => 'a',
+          'attributes' => array(),
+          'children' => array(),
+        ),
+        array(
+          'content' => '<d>x</d>',
+        ),
+        array(
+          'tag' => 'a',
+          'attributes' => array(),
+          'children' => array(),
+        ),
+        array(
+          'content' => '<e>',
+        ),
+      ),
+      $list,
+      pht('Child selection of: %s.', $input));
+  }
+
 }
