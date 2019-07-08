@@ -53,7 +53,11 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
       }
     }
 
-    return phutil_implode_html('', $out);
+    if ($this->getEngine()->isTextMode()) {
+      return implode('', $out);
+    } else {
+      return phutil_implode_html('', $out);
+    }
   }
 
   private function newTable(PhutilDOMNode $table) {
@@ -117,7 +121,7 @@ final class PhutilRemarkupTableBlockRule extends PhutilRemarkupBlockRule {
           return $table->newRawString();
         }
 
-        $content = $cell->getRawContentString();
+        $content = $cell->newRawContentString();
         $content = $this->applyRules($content);
 
         $cell_specs[] = array(
