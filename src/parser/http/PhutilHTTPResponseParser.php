@@ -8,6 +8,7 @@ final class PhutilHTTPResponseParser extends Phobject {
   private $buffer;
   private $state = 'headers';
   private $writeHandle;
+  private $progressSink;
 
   public function setFollowLocationHeaders($follow_location_headers) {
     $this->followLocationHeaders = $follow_location_headers;
@@ -25,6 +26,15 @@ final class PhutilHTTPResponseParser extends Phobject {
 
   public function getWriteHandle() {
     return $this->writeHandle;
+  }
+
+  public function setProgressSink(PhutilProgressSink $progress_sink) {
+    $this->progressSink = $progress_sink;
+    return $this;
+  }
+
+  public function getProgressSink() {
+    return $this->progressSink;
   }
 
   public function readBytes($bytes) {
@@ -154,8 +164,15 @@ final class PhutilHTTPResponseParser extends Phobject {
 
       if ($this->state == 'body') {
         if (strlen($this->buffer)) {
-          $this->response->appendBody($this->buffer);
+          $bytes = $this->buffer;
           $this->buffer = '';
+
+          $this->response->appendBody($bytes);
+
+          $sink = $this->getProgressSink();
+          if ($sink) {
+            $sink->didMakeProgress(strlen($bytes));
+          }
         }
         break;
       }

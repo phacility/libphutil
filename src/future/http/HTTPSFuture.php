@@ -25,6 +25,7 @@ final class HTTPSFuture extends BaseHTTPFuture {
   private $downloadPath;
   private $downloadHandle;
   private $parser;
+  private $progressSink;
 
   /**
    * Create a temp file containing an SSL cert, and use it for this session.
@@ -152,6 +153,15 @@ final class HTTPSFuture extends BaseHTTPFuture {
     }
 
     return $this;
+  }
+
+  public function setProgressSink(PhutilProgressSink $progress_sink) {
+    $this->progressSink = $progress_sink;
+    return $this;
+  }
+
+  public function getProgressSink() {
+    return $this->progressSink;
   }
 
   /**
@@ -401,6 +411,11 @@ final class HTTPSFuture extends BaseHTTPFuture {
           $streaming_parser->setWriteHandle($this->downloadHandle);
         }
 
+        $progress_sink = $this->getProgressSink();
+        if ($progress_sink) {
+          $streaming_parser->setProgressSink($progress_sink);
+        }
+
         $this->parser = $streaming_parser;
       }
     } else {
@@ -491,6 +506,16 @@ final class HTTPSFuture extends BaseHTTPFuture {
         fflush($this->downloadHandle);
         fclose($this->downloadHandle);
         $this->downloadHandle = null;
+      }
+    }
+
+    $sink = $this->getProgressSink();
+    if ($sink) {
+      $status = head($this->result);
+      if ($status->isError()) {
+        $sink->didFailWork();
+      } else {
+        $sink->didCompleteWork();
       }
     }
 
