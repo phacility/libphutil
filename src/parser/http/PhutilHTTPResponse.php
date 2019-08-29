@@ -6,6 +6,7 @@ final class PhutilHTTPResponse
   private $headers = array();
   private $body;
   private $status;
+  private $writeHandle;
 
   public function __construct() {
     $this->body = new PhutilRope();
@@ -30,11 +31,32 @@ final class PhutilHTTPResponse
   }
 
   public function appendBody($bytes) {
-    $this->body->append($bytes);
+    if ($this->writeHandle !== null) {
+      $result = @fwrite($this->writeHandle, $bytes);
+      if ($result !== strlen($bytes)) {
+        throw new Exception(
+          pht('Failed to write response to disk. (Maybe the disk is full?)'));
+      }
+    } else {
+      $this->body->append($bytes);
+    }
   }
 
   public function getBody() {
+    if ($this->writeHandle !== null) {
+      return null;
+    }
+
     return $this->body->getAsString();
+  }
+
+  public function setWriteHandle($write_handle) {
+    $this->writeHandle = $write_handle;
+    return $this;
+  }
+
+  public function getWriteHandle() {
+    return $this->writeHandle;
   }
 
 }
