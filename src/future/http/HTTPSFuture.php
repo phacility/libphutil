@@ -389,6 +389,11 @@ final class HTTPSFuture extends BaseHTTPFuture {
       curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $verify_host);
       curl_setopt($curl, CURLOPT_SSLVERSION, 0);
 
+      // See T13391. Recent versions of cURL default to "HTTP/2" on some
+      // connections, but do not support HTTP/2 proxies. Until HTTP/2
+      // stabilizes, force HTTP/1.1 explicitly.
+      curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+
       if ($proxy) {
         curl_setopt($curl, CURLOPT_PROXY, (string)$proxy);
       }
