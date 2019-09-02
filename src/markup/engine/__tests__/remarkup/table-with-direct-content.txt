@@ -1,5 +1,0 @@
-<table>quack</table>
-~~~~~~~~~~
-&lt;table&gt;quack&lt;/table&gt;
-~~~~~~~~~~
-<table>quack</table>
