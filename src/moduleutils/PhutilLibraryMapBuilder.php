@@ -305,6 +305,9 @@ final class PhutilLibraryMapBuilder extends Phobject {
       ->setGenerateChecksums(true)
       ->find();
 
+    $extensions_dir = 'extensions/';
+    $extensions_len = strlen($extensions_dir);
+
     $map = array();
     foreach ($files as $file => $hash) {
       $file = Filesystem::readablePath($file, $root);
@@ -316,8 +319,8 @@ final class PhutilLibraryMapBuilder extends Phobject {
         continue;
       }
 
-      if (dirname($file) == 'extensions') {
-        // Ignore files in the extensions/ directory.
+      // Ignore files in the extensions/ directory.
+      if (!strncmp($file, $extensions_dir, $extensions_len)) {
         continue;
       }
 
