@@ -1703,7 +1703,7 @@ function phutil_build_http_querystring_from_pairs(array $pairs) {
     list($key, $value) = phutil_http_parameter_pair($key, $value);
     $query[] = rawurlencode($key).'='.rawurlencode($value);
   }
-  $query = implode($query, '&');
+  $query = implode('&', $query);
 
   return $query;
 }
