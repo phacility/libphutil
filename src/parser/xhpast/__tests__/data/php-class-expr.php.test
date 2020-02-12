@@ -1,5 +1,0 @@
-<?php
-
-ClassName::{$y.$z}();
-~~~~~~~~~~
-fail-syntax, comment="Wrong, valid syntax in PHP 5.5, see T4334."

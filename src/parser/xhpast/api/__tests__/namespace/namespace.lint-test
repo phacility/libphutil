@@ -1,7 +1,0 @@
-<?php
-namespace SomeNamespace;
-class SomeClass {}
-~~~~~~~~~~
-{
-  "8": "\\SomeNamespace"
-}

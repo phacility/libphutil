@@ -1,0 +1,11 @@
+The "libphutil" library is no longer distributed as a standalone library.
+Instead, it is now bundled with "Arcanist" and "Phabricator".
+
+For more information, see <https://phurl.io/u/libphutil>.
+
+If you are a normal user of Phabricator or Arcanist, you can delete the
+"libphutil/" directory.
+
+If you are a developer who has code with dependencies on "libphutil/",
+update your dependencies to point at "arcanist/" or "phabricator/" as
+appropriate.
