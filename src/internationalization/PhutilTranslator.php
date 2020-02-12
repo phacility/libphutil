@@ -72,6 +72,12 @@ final class PhutilTranslator extends Phobject {
     return $this;
   }
 
+  /**
+   * @phutil-external-symbol class PhutilSafeHTML
+   * @phutil-external-symbol class PhutilSafeHTMLProducerInterface
+   * @phutil-external-symbol function phutil_escape_html
+   * @phutil-external-symbol function phutil_safe_html
+   */
   public function translate($text /* , ... */) {
     $args = func_get_args();
 
