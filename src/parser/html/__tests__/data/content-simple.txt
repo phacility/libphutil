@@ -1,7 +1,0 @@
-quack
-~~~~~~~~~~
-[
-  {
-    "content": "quack"
-  }
-]

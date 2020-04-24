@@ -1,5 +1,0 @@
-<?php
-
-"{$x[""]}";
-~~~~~~~~~~
-fail-syntax, comment="Wrong, should pass, see T1941."

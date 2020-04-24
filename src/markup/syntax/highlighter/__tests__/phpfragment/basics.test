@@ -1,5 +1,0 @@
-public function f() {
-  ExampleClass::EXAMPLE_CONSTANT;
-  ExampleClass::exampleMethod();
-  example_function();
-}

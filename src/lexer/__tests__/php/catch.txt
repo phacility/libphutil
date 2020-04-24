@@ -1,3 +1,0 @@
-<?php
-
-try {} catch (Z $ex) {}

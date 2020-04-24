@@ -1,3 +1,0 @@
-    foreach ($x as $y) {
-      z();
-    }
